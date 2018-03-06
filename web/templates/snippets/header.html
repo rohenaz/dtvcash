@@ -1,0 +1,23 @@
+<html>
+<head>
+    <title>Memo</title>
+    <base href="{{ .BaseUrl }}"/>
+    {{ range $file := .cssFiles -}}
+    <link rel="stylesheet" type="text/css" href="{{ $file }}"/>
+    {{ end -}}
+    {{ range $file := .jsFiles }}
+    <script type="text/javascript" src="{{ $file }}"></script>
+    {{- end }}
+
+    <script type="text/javascript">
+        $(function () {
+            MemoApp.InitCsrf("{{ .CsrfToken }}");
+            MemoApp.SetBaseUrl("{{ .BaseUrl }}");
+        });
+    </script>
+</head>
+<body>
+
+<h1><a href="">Memo</a></h1>
+
+<hr/>
