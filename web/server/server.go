@@ -2,6 +2,7 @@ package server
 
 import (
 	"git.jasonc.me/main/memo/app/auth"
+	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/res"
 	"github.com/jchavannes/jgo/web"
 	"log"
@@ -59,7 +60,15 @@ func getUrlWithBaseUrl(url string, r *web.Response) string {
 	return baseUrl + url
 }
 
+const BitcoinPeerAddress = "dev1.jasonc.me:8333"
+var bitcoinNode node.Node
+
 func Run(sessionCookieInsecure bool) {
+	// Start bitcoin node
+	bitcoinNode.Address = BitcoinPeerAddress
+	bitcoinNode.Start()
+
+	// Start web server
 	ws := web.Server{
 		CookiePrefix:   "memo",
 		InsecureCookie: sessionCookieInsecure,
