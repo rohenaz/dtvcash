@@ -21,7 +21,7 @@ var (
 				r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
 				return
 			}
-			privateKeys, err := db.GetPrivateKeysForUser(user.Id)
+			privateKeys, err := db.GetPublicKeysForUser(user.Id)
 			if err != nil {
 				r.Error(jerr.Get("error getting private keys for user", err), http.StatusInternalServerError)
 				return

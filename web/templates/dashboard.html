@@ -13,7 +13,7 @@
     <tr>
         <td>{{ .Id }}</td>
         <td>{{ .Name }}</td>
-        <td>{{ .GetPrivateKey.GetPublicKey.GetAddress.GetEncoded }}</td>
+        <td>{{ .GetPublicKey.GetAddress.GetEncoded }}</td>
         <td>{{ .CreatedAt.Format "2006-01-02 15:04" }}</td>
     </tr>
 {{ end }}
@@ -24,8 +24,12 @@
 
 <form id="create-private-key">
     <p>
-        <label for="private-key-name">Wallet Name</label>
+        <label for="private-key-name">Key Name</label>
         <input id="private-key-name" type="text" name="name"/>
+    </p>
+    <p>
+        <label for="private-key-password">Password</label>
+        <input id="private-key-password" type="password" name="password"/>
     </p>
     <p>
         <input type="submit" value="Create Private Key"/>

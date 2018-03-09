@@ -13,13 +13,14 @@ var createPrivateKeySubmitRoute = web.Route{
 	CsrfProtect: true,
 	NeedsLogin:  true,
 	Handler: func(r *web.Response) {
-		var user, err = auth.GetSessionUser(r.Session.CookieId)
+		user, err := auth.GetSessionUser(r.Session.CookieId)
 		if err != nil {
 			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
 			return
 		}
-		var name = r.Request.GetFormValue("name")
-		_, err = db.CreateNewPrivateKey(name, user.Id)
+		name := r.Request.GetFormValue("name")
+		password := r.Request.GetFormValue("password")
+		_, err = db.CreateNewPrivateKey(name, password, user.Id)
 		if err != nil {
 			r.Error(jerr.Get("error creating new private key", err), http.StatusInternalServerError)
 		}
