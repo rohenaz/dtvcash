@@ -17,6 +17,9 @@ const (
 	UrlLoginSubmit  = "/login-submit"
 	UrlLogout       = "/logout"
 )
+const (
+	UrlCreatePrivateKeySubmit = "/create-private-key-submit"
+)
 
 var UseMinJS bool
 
@@ -61,6 +64,7 @@ func getUrlWithBaseUrl(url string, r *web.Response) string {
 }
 
 const BitcoinPeerAddress = "dev1.jasonc.me:8333"
+
 var bitcoinNode node.Node
 
 func Run(sessionCookieInsecure bool) {
@@ -82,6 +86,7 @@ func Run(sessionCookieInsecure bool) {
 			logoutRoute,
 			signupRoute,
 			signupSubmitRoute,
+			createPrivateKeySubmitRoute,
 		},
 		StaticFilesDir: "web/public",
 		TemplatesDir:   "web/templates",

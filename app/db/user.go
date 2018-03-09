@@ -9,7 +9,6 @@ type User struct {
 	Id           uint   `gorm:"primary_key"`
 	Username     string `gorm:"unique_index"`
 	PasswordHash string
-	Settings     Settings
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }

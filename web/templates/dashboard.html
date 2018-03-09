@@ -2,4 +2,40 @@
 
 <h2>Dashboard</h2>
 
+<table class="table">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Created</th>
+    </tr>
+{{ range .PrivateKeys }}
+    <tr>
+        <td>{{ .Id }}</td>
+        <td>{{ .Name }}</td>
+        <td>{{ .GetPrivateKey.GetPublicKey.GetAddress.GetEncoded }}</td>
+        <td>{{ .CreatedAt.Format "2006-01-02 15:04" }}</td>
+    </tr>
+{{ end }}
+</table>
+
+
+<h3>Create Private Key</h3>
+
+<form id="create-private-key">
+    <p>
+        <label for="private-key-name">Wallet Name</label>
+        <input id="private-key-name" type="text" name="name"/>
+    </p>
+    <p>
+        <input type="submit" value="Create Private Key"/>
+    </p>
+</form>
+
+<script type="text/javascript">
+    $(function() {
+        MemoApp.Form.CreatePrivateKey($("#create-private-key"));
+    });
+</script>
+
 {{ template "snippets/footer.html" . }}

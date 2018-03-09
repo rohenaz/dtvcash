@@ -48,6 +48,7 @@ var MemoApp = {
     MemoApp.URL = {
         Index: "",
         LoginSubmit: "login-submit",
-        SignupSubmit: "signup-submit"
+        SignupSubmit: "signup-submit",
+        CreatePrivateKeySubmit: "create-private-key-submit"
     };
 })();
