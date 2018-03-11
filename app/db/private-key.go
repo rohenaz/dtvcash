@@ -58,7 +58,7 @@ func CreateNewPrivateKey(name string, password string, userId uint) (*PrivateKey
 	return dbPrivateKey, nil
 }
 
-func GetPublicKeysForUser(userId uint) ([]*PrivateKey, error) {
+func GetPrivateKeysForUser(userId uint) ([]*PrivateKey, error) {
 	var privateKeys []*PrivateKey
 	err := find(&privateKeys, PrivateKey{
 		UserId: userId,
