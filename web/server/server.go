@@ -18,7 +18,9 @@ const (
 	UrlLogout       = "/logout"
 )
 const (
-	UrlCreatePrivateKeySubmit = "/create-private-key-submit"
+	UrlKeyView                = "/key"
+	UrlKeyLoad                = "/key/load"
+	UrlCreatePrivateKeySubmit = "/key/create-submit"
 )
 
 var UseMinJS bool
@@ -63,6 +65,11 @@ func getUrlWithBaseUrl(url string, r *web.Response) string {
 	return baseUrl + url
 }
 
+var urlId = web.UrlParam{
+	Id:   "id",
+	Type: web.UrlParamInteger,
+}
+
 const BitcoinPeerAddress = "dev1.jasonc.me:8333"
 
 var bitcoinNode node.Node
@@ -87,6 +94,8 @@ func Run(sessionCookieInsecure bool) {
 			signupRoute,
 			signupSubmitRoute,
 			createPrivateKeySubmitRoute,
+			viewKeyRoute,
+			loadKeyRoute,
 		},
 		StaticFilesDir: "web/public",
 		TemplatesDir:   "web/templates",

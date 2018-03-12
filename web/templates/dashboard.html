@@ -8,6 +8,7 @@
         <th>Name</th>
         <th>Address</th>
         <th>Created</th>
+        <th>Actions</th>
     </tr>
 {{ range .PrivateKeys }}
     <tr>
@@ -15,6 +16,9 @@
         <td>{{ .Name }}</td>
         <td>{{ .GetPublicKey.GetAddress.GetEncoded }}</td>
         <td>{{ .CreatedAt.Format "2006-01-02 15:04" }}</td>
+        <td>
+            <a href="key/{{ .Id }}">View</a>
+        </td>
     </tr>
 {{ end }}
 </table>

@@ -10,7 +10,7 @@ var JsFiles = []string{
 	"js/init.js",
 	"js/login.js",
 	"js/signup.js",
-	"js/create-private-key.js",
+	"js/key.js",
 }
 
 var CssFiles = []string{

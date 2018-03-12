@@ -43,12 +43,24 @@ var MemoApp = {
         return BaseURL;
     };
 
+    /**
+     * @param {XMLHttpRequest} xhr
+     */
+    MemoApp.Form.ErrorHandler = function (xhr) {
+        var errorMessage =
+            "Error with request (response code " + xhr.status + "):\n" +
+            (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+            "If this problem persists, try refreshing the page.";
+        alert(errorMessage);
+    };
+
     MemoApp.Events = {};
 
     MemoApp.URL = {
         Index: "",
         LoginSubmit: "login-submit",
         SignupSubmit: "signup-submit",
-        CreatePrivateKeySubmit: "create-private-key-submit"
+        CreatePrivateKeySubmit: "key/create-submit",
+        LoadKey: "key/load"
     };
 })();

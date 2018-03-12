@@ -26,9 +26,14 @@ func (p PrivateKey) GetPrivateKey(password string) (*wallet.PrivateKey, error) {
 	if err != nil {
 		return nil, jerr.Get("failed to decrypt", err)
 	}
-	return &wallet.PrivateKey{
+	privateKey := wallet.PrivateKey{
 		Secret: decrypted,
-	}, nil
+	}
+	address := privateKey.GetPublicKey().GetAddress().GetEncoded()
+	if address != p.GetPublicKey().GetAddress().GetEncoded() {
+		return nil, jerr.New("error decrypting, address doesn't match")
+	}
+	return &privateKey, nil
 }
 
 func (p PrivateKey) GetPublicKey() wallet.PublicKey {
@@ -56,6 +61,18 @@ func CreateNewPrivateKey(name string, password string, userId uint) (*PrivateKey
 		return nil, jerr.Get("error saving private key", result.Error)
 	}
 	return dbPrivateKey, nil
+}
+
+func GetPrivateKey(id uint, userId uint) (*PrivateKey, error) {
+	var privateKey PrivateKey
+	err := find(&privateKey, PrivateKey{
+		Id:     id,
+		UserId: userId,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &privateKey, nil
 }
 
 func GetPrivateKeysForUser(userId uint) ([]*PrivateKey, error) {

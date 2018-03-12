@@ -1,0 +1,44 @@
+{{ template "snippets/header.html" . }}
+
+<h2>Key</h2>
+
+<table class="table left">
+    <tr>
+        <th>Id</th>
+        <td>{{ .Key.Id }}</td>
+    </tr>
+    <tr>
+        <th>Name</th>
+        <td>{{ .Key.Name }}</td>
+    </tr>
+    <tr>
+        <th>Public Key</th>
+        <td>{{ .Key.GetPublicKey.GetSerializedString }}</td>
+    </tr>
+    <tr>
+        <th>Address</th>
+        <td>{{ .Key.GetPublicKey.GetAddress.GetEncoded }}</td>
+    </tr>
+    <tr>
+        <th>Created</th>
+        <td>{{ .Key.CreatedAt.Format "2006-01-02 15:04" }}</td>
+    </tr>
+</table>
+
+<br/>
+
+<div id="private-key">
+    <form id="key-password-form" method="post">
+        <label for="key-password">Key Password:</label>
+        <input type="password" name="password" id="key-password"/>
+        <input type="submit" value="Unlock"/>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        MemoApp.Form.LoadKey({{ .Key.Id }}, $("#key-password-form"), $("#private-key"));
+    });
+</script>
+
+{{ template "snippets/footer.html" . }}
