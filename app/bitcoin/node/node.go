@@ -1,6 +1,7 @@
 package node
 
 import (
+	"git.jasonc.me/main/bitcoin/wallet"
 	"github.com/btcsuite/btcd/peer"
 	"log"
 	"net"
@@ -15,7 +16,7 @@ func (n Node) Start() {
 	var p, err = peer.NewOutboundPeer(&peer.Config{
 		UserAgentName:    "bch-lite-node",
 		UserAgentVersion: "0.1.0",
-		ChainParams:      mainNetParams,
+		ChainParams:      &wallet.MainNetParams,
 		DisableRelayTx:   true,
 		Listeners: peer.MessageListeners{
 		},

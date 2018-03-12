@@ -18,32 +18,21 @@
         <td>{{ .CreatedAt.Format "2006-01-02 15:04" }}</td>
         <td>
             <a href="key/{{ .Id }}">View</a>
+            <a href="#" class="key-delete" data-id="{{ .Id }}">Delete</a>
         </td>
     </tr>
 {{ end }}
 </table>
 
-
-<h3>Create Private Key</h3>
-
-<form id="create-private-key">
-    <p>
-        <label for="private-key-name">Key Name</label>
-        <input id="private-key-name" type="text" name="name"/>
-    </p>
-    <p>
-        <label for="private-key-password">Password</label>
-        <input id="private-key-password" type="password" name="password"/>
-    </p>
-    <p>
-        <input type="submit" value="Create Private Key"/>
-    </p>
-</form>
-
 <script type="text/javascript">
-    $(function() {
-        MemoApp.Form.CreatePrivateKey($("#create-private-key"));
+    $(function () {
+        MemoApp.Form.DeleteKeys($(".key-delete"));
     });
 </script>
+
+<p>
+    <a href="key/create" class="btn">Create Private Key</a>
+    <a href="key/import" class="btn">Import Private Key</a>
+</p>
 
 {{ template "snippets/footer.html" . }}

@@ -20,7 +20,11 @@ const (
 const (
 	UrlKeyView                = "/key"
 	UrlKeyLoad                = "/key/load"
+	UrlKeyImport              = "/key/import"
+	UrlKeyImportSubmit        = "/key/import-submit"
+	UrlKeyCreate              = "/key/create"
 	UrlCreatePrivateKeySubmit = "/key/create-submit"
+	UrlKeyDeleteSubmit        = "/key/delete-submit"
 )
 
 var UseMinJS bool
@@ -93,9 +97,13 @@ func Run(sessionCookieInsecure bool) {
 			logoutRoute,
 			signupRoute,
 			signupSubmitRoute,
+			createKeyRoute,
 			createPrivateKeySubmitRoute,
 			viewKeyRoute,
 			loadKeyRoute,
+			importKeyRoute,
+			importKeySubmitRoute,
+			deleteKeySubmitRoute,
 		},
 		StaticFilesDir: "web/public",
 		TemplatesDir:   "web/templates",

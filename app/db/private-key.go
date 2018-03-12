@@ -29,9 +29,9 @@ func (p PrivateKey) GetPrivateKey(password string) (*wallet.PrivateKey, error) {
 	privateKey := wallet.PrivateKey{
 		Secret: decrypted,
 	}
-	address := privateKey.GetPublicKey().GetAddress().GetEncoded()
-	if address != p.GetPublicKey().GetAddress().GetEncoded() {
-		return nil, jerr.New("error decrypting, address doesn't match")
+	pubKey := privateKey.GetPublicKey().GetSerializedString()
+	if pubKey != p.GetPublicKey().GetSerializedString() {
+		return nil, jerr.New("error decrypting, public key doesn't match")
 	}
 	return &privateKey, nil
 }
@@ -40,12 +40,36 @@ func (p PrivateKey) GetPublicKey() wallet.PublicKey {
 	return wallet.GetPublicKey(p.PublicKey)
 }
 
+func (p PrivateKey) Delete() error {
+	result := remove(&p)
+	if result.Error != nil {
+		return jerr.Get("error deleting private key", result.Error)
+	}
+	return nil
+}
+
 func CreateNewPrivateKey(name string, password string, userId uint) (*PrivateKey, error) {
 	key, err := cryptography.GenerateKeyFromPassword(password)
 	if err != nil {
 		return nil, jerr.Get("error generating key from password", err)
 	}
 	privateKey := wallet.GeneratePrivateKey()
+	return createPrivateKey(name, privateKey, key, userId)
+}
+
+func ImportPrivateKey(name string, password string, wif string, userId uint) (*PrivateKey, error) {
+	key, err := cryptography.GenerateKeyFromPassword(password)
+	if err != nil {
+		return nil, jerr.Get("error generating key from password", err)
+	}
+	privateKey, err := wallet.ImportPrivateKey(wif)
+	if err != nil {
+		return nil, jerr.Get("error importing private key from wif", err)
+	}
+	return createPrivateKey(name, privateKey, key, userId)
+}
+
+func createPrivateKey(name string, privateKey wallet.PrivateKey, key []byte, userId uint) (*PrivateKey, error) {
 	encryptedSecret, err := cryptography.Encrypt(privateKey.Secret, key)
 	if err != nil {
 		return nil, jerr.Get("failed to encrypt", err)

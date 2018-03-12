@@ -9,6 +9,14 @@ import (
 	"strconv"
 )
 
+var createKeyRoute = web.Route{
+	Pattern:    UrlKeyCreate,
+	NeedsLogin: true,
+	Handler: func(r *web.Response) {
+		r.Render()
+	},
+}
+
 var createPrivateKeySubmitRoute = web.Route{
 	Pattern:     UrlCreatePrivateKeySubmit,
 	CsrfProtect: true,
@@ -54,9 +62,9 @@ var viewKeyRoute = web.Route{
 }
 
 var loadKeyRoute = web.Route{
-	Pattern:    UrlKeyLoad,
+	Pattern:     UrlKeyLoad,
 	CsrfProtect: true,
-	NeedsLogin: true,
+	NeedsLogin:  true,
 	Handler: func(r *web.Response) {
 		user, err := auth.GetSessionUser(r.Session.CookieId)
 		if err != nil {
@@ -79,5 +87,58 @@ var loadKeyRoute = web.Route{
 		}
 		r.Helper["PrivateKey"] = privateKey
 		r.RenderTemplate(UrlKeyLoad)
+	},
+}
+
+var importKeyRoute = web.Route{
+	Pattern:    UrlKeyImport,
+	NeedsLogin: true,
+	Handler: func(r *web.Response) {
+		r.Render()
+	},
+}
+
+var importKeySubmitRoute = web.Route{
+	Pattern:     UrlKeyImportSubmit,
+	CsrfProtect: true,
+	NeedsLogin:  true,
+	Handler: func(r *web.Response) {
+		user, err := auth.GetSessionUser(r.Session.CookieId)
+		if err != nil {
+			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
+			return
+		}
+		name := r.Request.GetFormValue("name")
+		password := r.Request.GetFormValue("password")
+		wif := r.Request.GetFormValue("wif")
+		_, err = db.ImportPrivateKey(name, password, wif, user.Id)
+		if err != nil {
+			r.Error(jerr.Get("error importing private key", err), http.StatusInternalServerError)
+		}
+	},
+}
+
+var deleteKeySubmitRoute = web.Route{
+	Pattern:     UrlKeyDeleteSubmit,
+	CsrfProtect: true,
+	NeedsLogin:  true,
+	Handler: func(r *web.Response) {
+		user, err := auth.GetSessionUser(r.Session.CookieId)
+		if err != nil {
+			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
+			return
+		}
+		id := r.Request.GetFormValueUint("id")
+
+		privateKey, err := db.GetPrivateKey(uint(id), user.Id)
+		if err != nil {
+			r.Error(jerr.Get("error getting private key", err), http.StatusUnprocessableEntity)
+			return
+		}
+
+		err = privateKey.Delete()
+		if err != nil {
+			r.Error(jerr.Get("error deleting private key", err), http.StatusInternalServerError)
+		}
 	},
 }
