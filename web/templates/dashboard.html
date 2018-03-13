@@ -19,6 +19,7 @@
         <td>
             <a href="key/{{ .Id }}">View</a>
             <a href="#" class="key-delete" data-id="{{ .Id }}">Delete</a>
+            <a href="#" class="key-load" data-id="{{ .Id }}">Load Data</a>
         </td>
     </tr>
 {{ end }}
@@ -27,6 +28,7 @@
 <script type="text/javascript">
     $(function () {
         MemoApp.Form.DeleteKeys($(".key-delete"));
+        MemoApp.Form.LoadDataKeys($(".key-load"));
     });
 </script>
 

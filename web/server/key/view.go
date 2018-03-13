@@ -27,7 +27,7 @@ var viewKeyRoute = web.Route{
 		}
 		privateKey, err := db.GetKey(uint(id), user.Id)
 		if err != nil {
-			r.Error(jerr.Get("error getting private key", err), http.StatusInternalServerError)
+			r.Error(jerr.Get("error getting key", err), http.StatusInternalServerError)
 			return
 		}
 		r.Helper["Key"] = privateKey
@@ -51,7 +51,7 @@ var loadKeyRoute = web.Route{
 
 		dbPrivateKey, err := db.GetKey(uint(id), user.Id)
 		if err != nil {
-			r.Error(jerr.Get("error getting private key", err), http.StatusInternalServerError)
+			r.Error(jerr.Get("error getting key", err), http.StatusInternalServerError)
 			return
 		}
 		privateKey, err := dbPrivateKey.GetPrivateKey(password)

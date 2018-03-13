@@ -13,13 +13,12 @@ import (
 
 var conn *gorm.DB
 
-var (
-	dbInterfaces = []interface{}{
-		User{},
-		Session{},
-		Key{},
-	}
-)
+var dbInterfaces = []interface{}{
+	User{},
+	Session{},
+	Key{},
+	Address{},
+}
 
 func getDb() (*gorm.DB, error) {
 	if conn == nil {
@@ -41,7 +40,7 @@ func getDb() (*gorm.DB, error) {
 	return conn, nil
 }
 
-func isRecordNotFoundError(e error) bool {
+func IsRecordNotFoundError(e error) bool {
 	err, ok := e.(jerr.JError)
 	if !ok {
 		return e.Error() == "record not found"

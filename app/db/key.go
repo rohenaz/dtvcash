@@ -43,7 +43,7 @@ func (p Key) GetPublicKey() wallet.PublicKey {
 func (p Key) Delete() error {
 	result := remove(&p)
 	if result.Error != nil {
-		return jerr.Get("error deleting private key", result.Error)
+		return jerr.Get("error deleting key", result.Error)
 	}
 	return nil
 }
@@ -64,7 +64,7 @@ func ImportKey(name string, password string, wif string, userId uint) (*Key, err
 	}
 	privateKey, err := wallet.ImportPrivateKey(wif)
 	if err != nil {
-		return nil, jerr.Get("error importing private key from wif", err)
+		return nil, jerr.Get("error importing key from wif", err)
 	}
 	return createKey(name, privateKey, key, userId)
 }
@@ -82,7 +82,7 @@ func createKey(name string, privateKey wallet.PrivateKey, key []byte, userId uin
 	}
 	result := save(dbPrivateKey)
 	if result.Error != nil {
-		return nil, jerr.Get("error saving private key", result.Error)
+		return nil, jerr.Get("error saving key", result.Error)
 	}
 	return dbPrivateKey, nil
 }

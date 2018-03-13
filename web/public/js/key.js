@@ -137,4 +137,30 @@
             });
         });
     };
+    /**
+     * @param {jQuery} $keyLinks
+     */
+    MemoApp.Form.LoadDataKeys = function ($keyLinks) {
+        $keyLinks.click(function (e) {
+            e.preventDefault();
+
+            var $this = $(this);
+            var id = $this.attr("data-id");
+
+            $.ajax({
+                type: "POST",
+                url: MemoApp.GetBaseUrl() + MemoApp.URL.KeyDataLoadSubmit,
+                data: {
+                    id: id
+                },
+                success: function () {
+                    console.log("loading data...");
+                },
+                /**
+                 * @param {XMLHttpRequest} xhr
+                 */
+                error: MemoApp.Form.ErrorHandler
+            });
+        });
+    };
 })();

@@ -21,15 +21,15 @@ var deleteKeySubmitRoute = web.Route{
 		}
 		id := r.Request.GetFormValueUint("id")
 
-		privateKey, err := db.GetKey(uint(id), user.Id)
+		key, err := db.GetKey(uint(id), user.Id)
 		if err != nil {
-			r.Error(jerr.Get("error getting private key", err), http.StatusUnprocessableEntity)
+			r.Error(jerr.Get("error getting key", err), http.StatusUnprocessableEntity)
 			return
 		}
 
-		err = privateKey.Delete()
+		err = key.Delete()
 		if err != nil {
-			r.Error(jerr.Get("error deleting private key", err), http.StatusInternalServerError)
+			r.Error(jerr.Get("error deleting key", err), http.StatusInternalServerError)
 		}
 	},
 }

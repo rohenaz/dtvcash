@@ -16,5 +16,6 @@ func GetRoutes() []web.Route {
 		importKeyRoute,
 		importKeySubmitRoute,
 		deleteKeySubmitRoute,
+		dataLoadSubmitRoute,
 	}
 }

@@ -10,11 +10,12 @@ const (
 )
 
 const (
-	UrlKeyView         = "/key"
-	UrlKeyLoad         = "/key/load"
-	UrlKeyImport       = "/key/import"
-	UrlKeyImportSubmit = "/key/import-submit"
-	UrlKeyCreate       = "/key/create"
-	UrlKeyCreateSubmit = "/key/create-submit"
-	UrlKeyDeleteSubmit = "/key/delete-submit"
+	UrlKeyView           = "/key"
+	UrlKeyLoad           = "/key/load"
+	UrlKeyImport         = "/key/import"
+	UrlKeyImportSubmit   = "/key/import-submit"
+	UrlKeyCreate         = "/key/create"
+	UrlKeyCreateSubmit   = "/key/create-submit"
+	UrlKeyDeleteSubmit   = "/key/delete-submit"
+	UrlKeyDataLoadSubmit = "/key/data-load-submit"
 )

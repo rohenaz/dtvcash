@@ -1,6 +1,7 @@
 package key
 
 import (
+	"fmt"
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"
@@ -9,16 +10,8 @@ import (
 	"net/http"
 )
 
-var importKeyRoute = web.Route{
-	Pattern:    res.UrlKeyImport,
-	NeedsLogin: true,
-	Handler: func(r *web.Response) {
-		r.Render()
-	},
-}
-
-var importKeySubmitRoute = web.Route{
-	Pattern:     res.UrlKeyImportSubmit,
+var dataLoadSubmitRoute = web.Route{
+	Pattern:     res.UrlKeyDataLoadSubmit,
 	CsrfProtect: true,
 	NeedsLogin:  true,
 	Handler: func(r *web.Response) {
@@ -27,12 +20,20 @@ var importKeySubmitRoute = web.Route{
 			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
 			return
 		}
-		name := r.Request.GetFormValue("name")
-		password := r.Request.GetFormValue("password")
-		wif := r.Request.GetFormValue("wif")
-		_, err = db.ImportKey(name, password, wif, user.Id)
+		id := r.Request.GetFormValueUint("id")
+
+		key, err := db.GetKey(uint(id), user.Id)
 		if err != nil {
-			r.Error(jerr.Get("error importing key", err), http.StatusInternalServerError)
+			r.Error(jerr.Get("error getting key", err), http.StatusUnprocessableEntity)
+			return
 		}
+
+		address, err := db.GetAddress(key)
+		if err != nil {
+			r.Error(jerr.Get("error getting address", err), http.StatusUnprocessableEntity)
+			return
+		}
+		fmt.Printf("address: %#v\n", address)
+		res.BitcoinNode.SendGetHeaders()
 	},
 }
