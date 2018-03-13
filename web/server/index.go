@@ -3,6 +3,7 @@ package server
 import (
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/db"
+	"git.jasonc.me/main/memo/app/res"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"net/http"
@@ -10,7 +11,7 @@ import (
 
 var (
 	indexRoute = web.Route{
-		Pattern: UrlIndex,
+		Pattern: res.UrlIndex,
 		Handler: func(r *web.Response) {
 			if ! auth.IsLoggedIn(r.Session.CookieId) {
 				r.Render()
@@ -21,7 +22,7 @@ var (
 				r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
 				return
 			}
-			privateKeys, err := db.GetPrivateKeysForUser(user.Id)
+			privateKeys, err := db.GetKeysForUser(user.Id)
 			if err != nil {
 				r.Error(jerr.Get("error getting private keys for user", err), http.StatusInternalServerError)
 				return

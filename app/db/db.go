@@ -17,7 +17,7 @@ var (
 	dbInterfaces = []interface{}{
 		User{},
 		Session{},
-		PrivateKey{},
+		Key{},
 	}
 )
 

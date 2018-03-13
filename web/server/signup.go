@@ -2,15 +2,16 @@ package server
 
 import (
 	"git.jasonc.me/main/memo/app/auth"
+	"git.jasonc.me/main/memo/app/res"
 	"github.com/jchavannes/jgo/web"
 	"net/http"
 )
 
 var signupRoute = web.Route{
-	Pattern: UrlSignup,
+	Pattern: res.UrlSignup,
 	Handler: func(r *web.Response) {
 		if auth.IsLoggedIn(r.Session.CookieId) {
-			r.SetRedirect(getUrlWithBaseUrl(UrlIndex, r))
+			r.SetRedirect(getUrlWithBaseUrl(res.UrlIndex, r))
 			return
 		}
 		r.Render()
@@ -18,11 +19,11 @@ var signupRoute = web.Route{
 }
 
 var signupSubmitRoute = web.Route{
-	Pattern:     UrlSignupSubmit,
+	Pattern:     res.UrlSignupSubmit,
 	CsrfProtect: true,
 	Handler: func(r *web.Response) {
 		if auth.IsLoggedIn(r.Session.CookieId) {
-			r.SetRedirect(getUrlWithBaseUrl(UrlIndex, r))
+			r.SetRedirect(getUrlWithBaseUrl(res.UrlIndex, r))
 			return
 		}
 		// Protects against some session hi-jacking attacks

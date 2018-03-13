@@ -4,27 +4,10 @@ import (
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/res"
+	"git.jasonc.me/main/memo/web/server/key"
 	"github.com/jchavannes/jgo/web"
 	"log"
 	"net/http"
-)
-
-const (
-	UrlIndex        = "/"
-	UrlSignup       = "/signup"
-	UrlSignupSubmit = "/signup-submit"
-	UrlLogin        = "/login"
-	UrlLoginSubmit  = "/login-submit"
-	UrlLogout       = "/logout"
-)
-const (
-	UrlKeyView                = "/key"
-	UrlKeyLoad                = "/key/load"
-	UrlKeyImport              = "/key/import"
-	UrlKeyImportSubmit        = "/key/import-submit"
-	UrlKeyCreate              = "/key/create"
-	UrlCreatePrivateKeySubmit = "/key/create-submit"
-	UrlKeyDeleteSubmit        = "/key/delete-submit"
 )
 
 var UseMinJS bool
@@ -69,11 +52,6 @@ func getUrlWithBaseUrl(url string, r *web.Response) string {
 	return baseUrl + url
 }
 
-var urlId = web.UrlParam{
-	Id:   "id",
-	Type: web.UrlParamInteger,
-}
-
 const BitcoinPeerAddress = "dev1.jasonc.me:8333"
 
 var bitcoinNode node.Node
@@ -90,21 +68,14 @@ func Run(sessionCookieInsecure bool) {
 		IsLoggedIn:     isLoggedIn,
 		Port:           8261,
 		PreHandler:     preHandler,
-		Routes: []web.Route{
+		Routes: append([]web.Route{
 			indexRoute,
 			loginRoute,
 			loginSubmitRoute,
 			logoutRoute,
 			signupRoute,
 			signupSubmitRoute,
-			createKeyRoute,
-			createPrivateKeySubmitRoute,
-			viewKeyRoute,
-			loadKeyRoute,
-			importKeyRoute,
-			importKeySubmitRoute,
-			deleteKeySubmitRoute,
-		},
+		}, key.GetRoutes()...),
 		StaticFilesDir: "web/public",
 		TemplatesDir:   "web/templates",
 		UseSessions:    true,
