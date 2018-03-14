@@ -19,6 +19,28 @@
         <th>Hash</th>
         <td>{{ .Block.GetChainhash.String }}</td>
     </tr>
+    <tr>
+        <th>Merkle Root</th>
+        <td>{{ .Block.GetMerkleRoot.String }}</td>
+    </tr>
+    <tr>
+        <th>Bits</th>
+        <td>{{ .Block.Bits }}</td>
+    </tr>
+    <tr>
+        <th>Nonce</th>
+        <td>{{ .Block.Nonce }}</td>
+    </tr>
+    <tr>
+        <th>TxnCount</th>
+        <td>{{ .Block.TxnCount }}</td>
+    </tr>
+    <tr>
+        <th>Version</th>
+        <td>{{ .Block.Version }}</td>
+    </tr>
 </table>
+
+{{ template "snippets/block-form.html" . }}
 
 {{ template "snippets/footer.html" . }}

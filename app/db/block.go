@@ -18,7 +18,7 @@ type Block struct {
 	Nonce      uint32
 	TxnCount   uint32
 	Version    int32
-	Difficulty uint32
+	Bits       uint32
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }
@@ -33,6 +33,11 @@ func (b Block) GetPrevBlockChainhash() *chainhash.Hash {
 	return hash
 }
 
+func (b Block) GetMerkleRoot() *chainhash.Hash {
+	hash, _ := chainhash.NewHash(b.MerkleRoot)
+	return hash
+}
+
 func GetGenesis() (*Block, error) {
 	var block = Block{
 		Height:     0,
@@ -42,7 +47,7 @@ func GetGenesis() (*Block, error) {
 		Nonce:      2083236893,
 		TxnCount:   1,
 		Version:    1,
-		Difficulty: 0x1d00ffff,
+		Bits:       0x1d00ffff,
 	}
 	err := find(&block, &block)
 	if err == nil {
@@ -69,7 +74,7 @@ func ConvertMessageToBlock(msg *wire.MsgMerkleBlock) (*Block) {
 		Nonce:      header.Nonce,
 		TxnCount:   msg.Transactions,
 		Version:    header.Version,
-		Difficulty: header.Bits,
+		Bits:       header.Bits,
 	}
 }
 
