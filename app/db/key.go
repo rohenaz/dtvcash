@@ -40,6 +40,10 @@ func (p Key) GetPublicKey() wallet.PublicKey {
 	return wallet.GetPublicKey(p.PublicKey)
 }
 
+func (p Key) GetAddress() wallet.Address {
+	return p.GetPublicKey().GetAddress()
+}
+
 func (p Key) Delete() error {
 	result := remove(&p)
 	if result.Error != nil {

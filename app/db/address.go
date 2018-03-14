@@ -1,6 +1,7 @@
 package db
 
 import (
+	"git.jasonc.me/main/bitcoin/wallet"
 	"github.com/jchavannes/jgo/jerr"
 	"time"
 )
@@ -13,6 +14,12 @@ type Address struct {
 	HeightChecked uint
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
+}
+
+func (a Address) GetAddress() wallet.Address {
+	return wallet.Address{
+
+	}
 }
 
 func (a Address) Save() error {

@@ -2,8 +2,10 @@ package server
 
 import (
 	"git.jasonc.me/main/memo/app/auth"
+	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"
 	"git.jasonc.me/main/memo/web/server/key"
+	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"log"
 	"net/http"
@@ -53,8 +55,12 @@ func getUrlWithBaseUrl(url string, r *web.Response) string {
 
 func Run(sessionCookieInsecure bool) {
 	// Start bitcoin node
-	res.BitcoinNode.Address = res.BitcoinPeerAddress
-	res.BitcoinNode.Start()
+	block, err := db.GetRecentBlock()
+	if err == nil {
+		res.BitcoinNode.Address = res.BitcoinPeerAddress
+		res.BitcoinNode.Start()
+		res.BitcoinNode.SendGetHeaders(block.GetChainhash())
+	}
 
 	// Start web server
 	ws := web.Server{

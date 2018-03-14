@@ -6,4 +6,4 @@ import (
 
 const BitcoinPeerAddress = "dev1.jasonc.me:8333"
 
-var BitcoinNode node.Node
+var BitcoinNode node.BlockNode

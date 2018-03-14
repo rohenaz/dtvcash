@@ -3,6 +3,7 @@ package key
 import (
 	"fmt"
 	"git.jasonc.me/main/memo/app/auth"
+	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"
 	"github.com/jchavannes/jgo/jerr"
@@ -28,12 +29,6 @@ var dataLoadSubmitRoute = web.Route{
 			return
 		}
 
-		address, err := db.GetAddress(key)
-		if err != nil {
-			r.Error(jerr.Get("error getting address", err), http.StatusUnprocessableEntity)
-			return
-		}
-		fmt.Printf("address: %#v\n", address)
-		res.BitcoinNode.SendGetHeaders()
+		addressNode := node.GetAddressNode(key)
 	},
 }
