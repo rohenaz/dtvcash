@@ -4,6 +4,10 @@ import (
 	"git.jasonc.me/main/memo/app/db"
 )
 
+const BitcoinPeerAddress = "dev1.jasonc.me:8333"
+
+var BitcoinNode BlockNode
+
 var addressNodes map[string]*AddressNode
 
 func GetAddressNode(key db.Key) (*AddressNode) {

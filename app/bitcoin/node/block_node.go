@@ -38,6 +38,7 @@ func (n *BlockNode) Start() {
 		log.Fatal(err)
 	}
 	n.Peer = p
+	fmt.Printf("Starting bitcoin block node: %s\n", n.Address)
 	conn, err := net.Dial("tcp", n.Address)
 	if err != nil {
 		log.Fatal(err)
@@ -45,7 +46,14 @@ func (n *BlockNode) Start() {
 	p.AssociateConnection(conn)
 }
 
-func (n *BlockNode) OnVerAck(p *peer.Peer, msg *wire.MsgVerAck) {}
+func (n *BlockNode) OnVerAck(p *peer.Peer, msg *wire.MsgVerAck) {
+	block, err := db.GetRecentBlock()
+	if err != nil {
+		fmt.Println(jerr.Get("error getting recent block", err))
+		return
+	}
+	n.SendGetHeaders(block.GetChainhash())
+}
 
 func (n *BlockNode) OnHeaders(p *peer.Peer, msg *wire.MsgHeaders) {
 	msgGetData := wire.NewMsgGetData()

@@ -2,7 +2,6 @@ package db
 
 import (
 	"git.jasonc.me/main/bitcoin/wallet"
-	"github.com/Masterminds/glide/msg"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"

@@ -1,7 +1,6 @@
 package key
 
 import (
-	"fmt"
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/db"
@@ -29,6 +28,6 @@ var dataLoadSubmitRoute = web.Route{
 			return
 		}
 
-		addressNode := node.GetAddressNode(key)
+		node.GetAddressNode(*key)
 	},
 }
