@@ -1,0 +1,24 @@
+{{ template "snippets/header.html" . }}
+
+<h2>Block</h2>
+
+<table class="table left">
+    <tr>
+        <th>Id</th>
+        <td>{{ .Block.Id }}</td>
+    </tr>
+    <tr>
+        <th>Height</th>
+        <td>{{ .Block.Height }}</td>
+    </tr>
+    <tr>
+        <th>Timestamp</th>
+        <td>{{ .Block.Timestamp.Format "2006-01-02 15:04" }}</td>
+    </tr>
+    <tr>
+        <th>Hash</th>
+        <td>{{ .Block.GetChainhash.String }}</td>
+    </tr>
+</table>
+
+{{ template "snippets/footer.html" . }}

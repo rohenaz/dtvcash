@@ -19,3 +19,7 @@ const (
 	UrlKeyDeleteSubmit   = "/key/delete-submit"
 	UrlKeyDataLoadSubmit = "/key/data-load-submit"
 )
+
+const (
+	UrlBlockView = "/block"
+)

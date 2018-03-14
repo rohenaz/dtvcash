@@ -10,6 +10,11 @@ import (
 	"net/http"
 )
 
+var paramHeight = web.UrlParam{
+	Id:   "height",
+	Type: web.UrlParamInteger,
+}
+
 var UseMinJS bool
 
 func isLoggedIn(r *web.Response) bool {
@@ -71,6 +76,7 @@ func Run(sessionCookieInsecure bool) {
 			logoutRoute,
 			signupRoute,
 			signupSubmitRoute,
+			blockRoute,
 		}, key.GetRoutes()...),
 		StaticFilesDir: "web/public",
 		TemplatesDir:   "web/templates",

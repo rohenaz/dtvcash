@@ -73,6 +73,17 @@ func ConvertMessageToBlock(msg *wire.MsgMerkleBlock) (*Block) {
 	}
 }
 
+func GetBlockByHeight(height uint) (*Block, error) {
+	var block = Block{
+		Height: height,
+	}
+	err := find(&block, &block)
+	if err != nil {
+		return nil, jerr.Get("error getting block", err)
+	}
+	return &block, nil
+}
+
 func GetBlockByHash(hash chainhash.Hash) (*Block, error) {
 	var block = Block{
 		Hash: hash.CloneBytes(),
