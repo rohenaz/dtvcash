@@ -20,12 +20,11 @@ type AddressNode struct {
 	Peer         *peer.Peer
 	Key          db.Key
 	Address      db.Address
-	BloomFilter  *bloom.Filter
+	CheckedTxns  uint
 	QueuedBlocks uint
 }
 
 func (n *AddressNode) Start() {
-	n.BloomFilter = bloom.NewFilter(2, 0, 0.0000001, wire.BloomUpdateAll)
 	var p, err = peer.NewOutboundPeer(&peer.Config{
 		UserAgentName:    "bch-lite-node",
 		UserAgentVersion: "0.1.0",
@@ -42,7 +41,7 @@ func (n *AddressNode) Start() {
 		log.Fatal(err)
 	}
 	n.Peer = p
-	fmt.Printf("Starting bitcoin address node: %s\n", n.Address)
+	fmt.Printf("Starting bitcoin address node: %s\n", BitcoinPeerAddress)
 	conn, err := net.Dial("tcp", BitcoinPeerAddress)
 	if err != nil {
 		log.Fatal(err)
@@ -52,15 +51,17 @@ func (n *AddressNode) Start() {
 
 func (n *AddressNode) OnVerAck(p *peer.Peer, msg *wire.MsgVerAck) {
 	// Set bloom filter
-	n.BloomFilter.Add(n.Key.GetAddress().GetScriptAddress())
-	n.Peer.QueueMessage(n.BloomFilter.MsgFilterLoad(), nil)
+	bloomFilter := bloom.NewFilter(2, 0, 0.0000001, wire.BloomUpdateAll)
+	fmt.Printf("Adding filter for address: %s\n", n.Key.GetAddress().GetEncoded())
+	bloomFilter.Add(n.Key.GetAddress().GetScriptAddress())
+	n.Peer.QueueMessage(bloomFilter.MsgFilterLoad(), nil)
 	// Start checking all blocks
-	genesisBlock, err := db.GetGenesis()
+	firstBlock, err := db.GetBlockByHeight(520000)
 	if err != nil {
-		fmt.Println(jerr.Get("error getting genesis block", err))
+		fmt.Println(jerr.Get("error getting first block", err))
 		return
 	}
-	n.SendGetHeaders(genesisBlock.GetChainhash())
+	n.SendGetHeaders(firstBlock.GetChainhash())
 }
 
 func (n *AddressNode) OnHeaders(p *peer.Peer, msg *wire.MsgHeaders) {
@@ -88,6 +89,7 @@ func (n *AddressNode) SendGetHeaders(startingBlock *chainhash.Hash) {
 }
 
 func (n *AddressNode) OnTx(p *peer.Peer, msg *wire.MsgTx) {
+	n.CheckedTxns++
 	scriptAddress := n.Key.GetAddress().GetScriptAddress()
 	//fmt.Printf("Transaction - version: %d, locktime: %d, inputs: %d, outputs: %d\n", msg.Version, msg.LockTime, len(msg.TxIn), len(msg.TxOut))
 	for _, in := range msg.TxIn {
@@ -130,7 +132,7 @@ func (n *AddressNode) OnMerkleBlock(p *peer.Peer, msg *wire.MsgMerkleBlock) {
 	}*/
 	n.QueuedBlocks--
 	if n.QueuedBlocks == 0 {
-		fmt.Printf("Querying more... (current height checked: %d, time: %s)\n", n.Address.HeightChecked, time.Now().Format("2006-01-02 15:04:05"))
+		fmt.Printf("Querying more... (current height checked: %d, txns: %d, time: %s)\n", n.Address.HeightChecked, n.CheckedTxns, time.Now().Format("2006-01-02 15:04:05"))
 		/*if recentBlock.Height >= 25000 {
 			fmt.Println("Hit max height. Stopping...")
 			return

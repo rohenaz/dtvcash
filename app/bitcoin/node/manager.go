@@ -16,6 +16,9 @@ func GetAddressNode(key db.Key) (*AddressNode) {
 	if ok {
 		return existingNode
 	}
+	if addressNodes == nil {
+		addressNodes = make(map[string]*AddressNode)
+	}
 	var node = AddressNode{
 		Key: key,
 	}

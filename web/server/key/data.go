@@ -1,6 +1,7 @@
 package key
 
 import (
+	"fmt"
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/db"
@@ -28,6 +29,7 @@ var dataLoadSubmitRoute = web.Route{
 			return
 		}
 
-		node.GetAddressNode(*key)
+		addressNode := node.GetAddressNode(*key)
+		fmt.Printf("addressNode.CheckedTxns: %d\n", addressNode.CheckedTxns)
 	},
 }
