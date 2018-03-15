@@ -92,35 +92,42 @@ func (n *AddressNode) OnTx(p *peer.Peer, msg *wire.MsgTx) {
 	n.CheckedTxns++
 	scriptAddress := n.Key.GetAddress().GetScriptAddress()
 	//fmt.Printf("Transaction - version: %d, locktime: %d, inputs: %d, outputs: %d\n", msg.Version, msg.LockTime, len(msg.TxIn), len(msg.TxOut))
+	var found bool
+	var txnInfo string
 	for _, in := range msg.TxIn {
 		if bytes.Equal(in.SignatureScript, scriptAddress) {
-			unlockScript, err := txscript.DisasmString(in.SignatureScript)
-			if err != nil {
-				fmt.Printf("Error disassembling unlockScript: %s\n", err.Error())
-			}
-			fmt.Printf("  TxIn - Sequence: %d\n"+
-				"    prevOut: %s\n"+
-				"    unlockScript: %s\n",
-				in.Sequence, in.PreviousOutPoint.String(), unlockScript)
+			found = true
 		}
+		unlockScript, err := txscript.DisasmString(in.SignatureScript)
+		if err != nil {
+			txnInfo = txnInfo + fmt.Sprintf("Error disassembling unlockScript: %s\n", err.Error())
+		}
+		txnInfo = txnInfo + fmt.Sprintf("  TxIn - Sequence: %d\n"+
+			"    prevOut: %s\n"+
+			"    unlockScript: %s\n",
+			in.Sequence, in.PreviousOutPoint.String(), unlockScript)
 	}
 	for _, out := range msg.TxOut {
 		lockScript, err := txscript.DisasmString(out.PkScript)
 		if err != nil {
-			fmt.Printf("Error disassembling lockScript: %s\n", err.Error())
+			txnInfo = txnInfo + fmt.Sprintf("Error disassembling lockScript: %s\n", err.Error())
 			continue
 		}
 		scriptClass, addresses, sigCount, err := txscript.ExtractPkScriptAddrs(out.PkScript, &wallet.MainNetParams)
 		for _, address := range addresses {
 			if bytes.Equal(address.ScriptAddress(), scriptAddress) {
-				fmt.Printf("  TxOut - value: %d\n"+
-					"    lockScript: %s\n"+
-					"    scriptClass: %s\n"+
-					"    requiredSigs: %d\n",
-					out.Value, lockScript, scriptClass, sigCount)
-				fmt.Printf("    address: %s\n", address.String())
+				found = true
 			}
+			txnInfo = txnInfo + fmt.Sprintf("  TxOut - value: %d\n"+
+				"    lockScript: %s\n"+
+				"    scriptClass: %s\n"+
+				"    requiredSigs: %d\n",
+				out.Value, lockScript, scriptClass, sigCount)
+			txnInfo = txnInfo + fmt.Sprintf("    address: %s\n", address.String())
 		}
+	}
+	if found {
+		fmt.Printf(txnInfo)
 	}
 }
 
