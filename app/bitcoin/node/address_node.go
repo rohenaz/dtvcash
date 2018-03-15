@@ -127,7 +127,16 @@ func (n *AddressNode) OnTx(p *peer.Peer, msg *wire.MsgTx) {
 		}
 	}
 	if found {
+		txnInfo = "Saving transaction...\n" + txnInfo
 		fmt.Printf(txnInfo)
+		var transaction = db.Transaction{
+			Address: scriptAddress,
+		}
+		err := transaction.Save()
+		if err != nil {
+			fmt.Println(jerr.Get("error saving transaction", err))
+			return
+		}
 	}
 }
 

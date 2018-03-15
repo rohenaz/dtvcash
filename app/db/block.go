@@ -23,6 +23,14 @@ type Block struct {
 	UpdatedAt  time.Time
 }
 
+func (b *Block) Save() error {
+	result := save(b)
+	if result.Error != nil {
+		return jerr.Get("error saving block", result.Error)
+	}
+	return nil
+}
+
 func (b Block) GetChainhash() *chainhash.Hash {
 	hash, _ := chainhash.NewHash(b.Hash)
 	return hash
@@ -36,6 +44,16 @@ func (b Block) GetPrevBlockChainhash() *chainhash.Hash {
 func (b Block) GetMerkleRoot() *chainhash.Hash {
 	hash, _ := chainhash.NewHash(b.MerkleRoot)
 	return hash
+}
+
+func SaveBlocks(blocks []*Block) error {
+	for _, block := range blocks {
+		err := block.Save()
+		if err != nil {
+			return jerr.Get("error saving blocks", err)
+		}
+	}
+	return nil
 }
 
 func GetGenesis() (*Block, error) {
@@ -64,7 +82,12 @@ func GetGenesis() (*Block, error) {
 }
 
 func ConvertMessageToBlock(msg *wire.MsgMerkleBlock) (*Block) {
-	header := msg.Header
+	block := ConvertMessageHeaderToBlock(&msg.Header)
+	block.TxnCount = msg.Transactions
+	return block
+}
+
+func ConvertMessageHeaderToBlock(header *wire.BlockHeader) (*Block) {
 	blockHash := header.BlockHash()
 	return &Block{
 		Timestamp:  header.Timestamp,
@@ -72,7 +95,6 @@ func ConvertMessageToBlock(msg *wire.MsgMerkleBlock) (*Block) {
 		PrevBlock:  header.PrevBlock.CloneBytes(),
 		MerkleRoot: header.MerkleRoot.CloneBytes(),
 		Nonce:      header.Nonce,
-		TxnCount:   msg.Transactions,
 		Version:    header.Version,
 		Bits:       header.Bits,
 	}
@@ -138,4 +160,17 @@ func GetRecentBlock() (*Block, error) {
 		return nil, jerr.Get("error querying first block", err)
 	}
 	return &block, nil
+}
+
+func GetBlocksInHeightRange(startHeight uint, endHeight uint) ([]*Block, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	var blocks []*Block
+	result := db.Where("height >= ? AND height <= ?", startHeight, endHeight).Find(&blocks)
+	if result.Error != nil {
+		return nil, jerr.Get("error querying blocks", result.Error)
+	}
+	return blocks, nil
 }

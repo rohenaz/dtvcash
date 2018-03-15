@@ -19,6 +19,7 @@ var dbInterfaces = []interface{}{
 	Key{},
 	Address{},
 	Block{},
+	Transaction{},
 }
 
 func getDb() (*gorm.DB, error) {
