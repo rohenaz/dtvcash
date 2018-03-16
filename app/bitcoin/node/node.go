@@ -16,15 +16,32 @@ import (
 	"time"
 )
 
+/**
+Strategy:
+- First node catches up and downloads all block headers
+- After caught up, add bloom filter for all addresses
+- Start with most recent block and work back to genesis, getting merkle blocks and searching transactions
+- Track starting block and progress, if restarted later, only update starting block once all new blocks have been checked
+  - e.g.
+    Start height: 20,000
+    End height: 10,000
+  - Restart at 25,000, only update Start once 25,000-20,000 have been checked, then skip to 10,000 and continue
+- During normal checking, update End every once in awhile (e.g. every 2,000 blocks)
+- If a new address is added, start over
+- Each address independently tracks progress
+ */
+
 type Node struct {
-	Peer         *peer.Peer
-	NetAddress   string
-	Keys         []*db.Key
-	Address      db.Address
-	BloomFilter  *bloom.Filter
-	CheckedTxns  uint
-	LastBlock    *db.Block
-	QueuedBlocks uint
+	Peer            *peer.Peer
+	NetAddress      string
+	Keys            []*db.Key
+	Address         db.Address
+	scriptAddresses []*wallet.Address
+	BloomFilter     *bloom.Filter
+	CheckedTxns     uint
+	LastBlock       *db.Block
+	LastMerkleBlock *db.Block
+	QueuedBlocks    map[string]*db.Block
 }
 
 func (n *Node) Start() {
@@ -61,6 +78,7 @@ func (n *Node) OnVerAck(p *peer.Peer, msg *wire.MsgVerAck) {
 		fmt.Println(jerr.Get("error getting recent block", err))
 		return
 	}
+	n.QueuedBlocks = make(map[string]*db.Block)
 	n.SendGetHeaders(block.GetChainhash())
 }
 
@@ -99,7 +117,7 @@ func (n *Node) OnHeaders(p *peer.Peer, msg *wire.MsgHeaders) {
 
 func (n *Node) SetBloomFilters() {
 	// Set bloom filter
-	bloomFilter := bloom.NewFilter(2, 0, 0.0000001, wire.BloomUpdateAll)
+	bloomFilter := bloom.NewFilter(uint32(len(n.Keys)), 0, 0, wire.BloomUpdateAll)
 	for _, key := range n.Keys {
 		fmt.Printf("Adding filter for address: %s\n", key.GetAddress().GetEncoded())
 		bloomFilter.Add(key.GetAddress().GetScriptAddress())
@@ -120,10 +138,10 @@ func (n *Node) QueueMerkleBlocks(startingBlock *db.Block) {
 		fmt.Println(jerr.Get("error getting blocks in height range", err))
 		return
 	}
-	fmt.Printf("Got blocks: %d\n", len(blocks))
 	msgGetData := wire.NewMsgGetData()
-	for _, block := range blocks {
-		n.QueuedBlocks++
+	for i := len(blocks) - 1; i >= 0; i-- {
+		block := blocks[i]
+		n.QueuedBlocks[block.GetChainhash().String()] = block
 		err := msgGetData.AddInvVect(&wire.InvVect{
 			Type: wire.InvTypeFilteredBlock,
 			Hash: *block.GetChainhash(),
@@ -178,18 +196,25 @@ func (n *Node) GetTransaction(txId chainhash.Hash) {
 	n.Peer.QueueMessage(msgGetData, nil)
 }
 
+func (n *Node) GetScriptAddresses() []*wallet.Address {
+	if len(n.scriptAddresses) == 0 {
+		for _, key := range n.Keys {
+			address := key.GetAddress()
+			n.scriptAddresses = append(n.scriptAddresses, &address)
+		}
+	}
+	return n.scriptAddresses
+}
+
 func (n *Node) OnTx(p *peer.Peer, msg *wire.MsgTx) {
 	n.CheckedTxns++
-	var scriptAddresses []wallet.Address
-	for _, key := range n.Keys {
-		scriptAddresses = append(scriptAddresses, key.GetAddress())
-	}
 	//fmt.Printf("Transaction - version: %d, locktime: %d, inputs: %d, outputs: %d\n", msg.Version, msg.LockTime, len(msg.TxIn), len(msg.TxOut))
+	scriptAddresses := n.GetScriptAddresses()
 	var found bool
 	var txnInfo string
 	for _, in := range msg.TxIn {
-		for _, key := range n.Keys {
-			if bytes.Equal(in.SignatureScript, key.GetAddress().GetScriptAddress()) {
+		for _, scriptAddress := range scriptAddresses {
+			if bytes.Equal(in.SignatureScript, scriptAddress.GetScriptAddress()) {
 				found = true
 			}
 		}
@@ -210,8 +235,8 @@ func (n *Node) OnTx(p *peer.Peer, msg *wire.MsgTx) {
 		}
 		scriptClass, addresses, sigCount, err := txscript.ExtractPkScriptAddrs(out.PkScript, &wallet.MainNetParams)
 		for _, address := range addresses {
-			for _, key := range n.Keys {
-				if bytes.Equal(address.ScriptAddress(), key.GetAddress().GetScriptAddress()) {
+			for _, scriptAddress := range scriptAddresses {
+				if bytes.Equal(address.ScriptAddress(), scriptAddress.GetScriptAddress()) {
 					found = true
 				}
 			}
@@ -238,18 +263,25 @@ func (n *Node) OnTx(p *peer.Peer, msg *wire.MsgTx) {
 }
 
 func (n *Node) OnMerkleBlock(p *peer.Peer, msg *wire.MsgMerkleBlock) {
-	block := db.ConvertMessageToBlock(msg)
-	n.Address.HeightChecked = block.Height
-	/*if n.Address.HeightChecked % 1000 == 0 {
+	hash := msg.Header.BlockHash().String()
+	block, ok := n.QueuedBlocks[hash]
+	if !ok {
+		fmt.Println(jerr.New("got merkle block that wasn't queued!"))
+		return
+	}
+	delete(n.QueuedBlocks, hash)
+	n.LastMerkleBlock = block
 
-	}*/
-	n.QueuedBlocks--
-	if n.QueuedBlocks == 0 {
-		fmt.Printf("Querying more... (current height checked: %d, txns: %d, time: %s)\n", n.Address.HeightChecked, n.CheckedTxns, time.Now().Format("2006-01-02 15:04:05"))
+	if len(n.QueuedBlocks) == 0 {
+		if n.LastMerkleBlock.Height == 0 {
+			fmt.Printf("checked entire chain!")
+			return
+		}
+		fmt.Printf("Querying more... (current height checked: %d, txns: %d, block time: %s, time: %s)\n", n.LastMerkleBlock.Height, n.CheckedTxns, n.LastMerkleBlock.Timestamp.Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
 		/*if recentBlock.Height >= 25000 {
 			fmt.Println("Hit max height. Stopping...")
 			return
 		}*/
-		n.QueueMerkleBlocks(block)
+		n.QueueMerkleBlocks(n.LastMerkleBlock)
 	}
 }
