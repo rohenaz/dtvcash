@@ -13,16 +13,26 @@ type Key struct {
 	UserId    uint
 	Value     []byte
 	PublicKey []byte
+	MaxCheck  uint // maximum block height checked for transactions
+	MinCheck  uint // minimum block height checked for transactions
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-func (p Key) GetPrivateKey(password string) (*wallet.PrivateKey, error) {
+func (k *Key) Save() error {
+	result := save(k)
+	if result.Error != nil {
+		return jerr.Get("error saving key", result.Error)
+	}
+	return nil
+}
+
+func (k Key) GetPrivateKey(password string) (*wallet.PrivateKey, error) {
 	key, err := cryptography.GenerateKeyFromPassword(password)
 	if err != nil {
 		return nil, jerr.Get("error generating key from password", err)
 	}
-	decrypted, err := cryptography.Decrypt(p.Value, key)
+	decrypted, err := cryptography.Decrypt(k.Value, key)
 	if err != nil {
 		return nil, jerr.Get("failed to decrypt", err)
 	}
@@ -30,22 +40,22 @@ func (p Key) GetPrivateKey(password string) (*wallet.PrivateKey, error) {
 		Secret: decrypted,
 	}
 	pubKey := privateKey.GetPublicKey().GetSerializedString()
-	if pubKey != p.GetPublicKey().GetSerializedString() {
+	if pubKey != k.GetPublicKey().GetSerializedString() {
 		return nil, jerr.New("error decrypting, public key doesn't match")
 	}
 	return &privateKey, nil
 }
 
-func (p Key) GetPublicKey() wallet.PublicKey {
-	return wallet.GetPublicKey(p.PublicKey)
+func (k Key) GetPublicKey() wallet.PublicKey {
+	return wallet.GetPublicKey(k.PublicKey)
 }
 
-func (p Key) GetAddress() wallet.Address {
-	return p.GetPublicKey().GetAddress()
+func (k Key) GetAddress() wallet.Address {
+	return k.GetPublicKey().GetAddress()
 }
 
-func (p Key) Delete() error {
-	result := remove(&p)
+func (k Key) Delete() error {
+	result := remove(&k)
 	if result.Error != nil {
 		return jerr.Get("error deleting key", result.Error)
 	}

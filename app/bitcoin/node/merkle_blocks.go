@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func OnMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
+func onMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
 	hash := msg.Header.BlockHash().String()
 	block, ok := n.QueuedBlocks[hash]
 	if !ok {
@@ -18,18 +18,38 @@ func OnMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
 	delete(n.QueuedBlocks, hash)
 	n.LastMerkleBlock = block
 
+	if block.Height != 0 {
+		for _, key := range n.Keys {
+			if key.MaxCheck == 0 {
+				key.MaxCheck = block.Height
+				key.MinCheck = block.Height
+			} else if block.Height == key.MaxCheck+1 {
+				key.MaxCheck = block.Height
+			} else if block.Height == key.MinCheck-1 {
+				key.MinCheck = block.Height
+			}
+		}
+	}
+
+	if block.Height%1000 == 0 {
+		saveKeys(n)
+	}
+
 	if len(n.QueuedBlocks) == 0 {
 		if n.LastMerkleBlock.Height == 0 {
 			fmt.Printf("checked entire chain!")
 			return
 		}
 		fmt.Printf("Querying more... (current height checked: %d, txns: %d, block time: %s, time: %s)\n", n.LastMerkleBlock.Height, n.CheckedTxns, n.LastMerkleBlock.Timestamp.Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
-		n.QueueMerkleBlocks(n.LastMerkleBlock)
+		queueMerkleBlocks(n, n.LastMerkleBlock.Height, 0)
 	}
 }
 
-func QueueMerkleBlocks(n *Node, startingBlock *db.Block) {
-	blocks, err := db.GetBlocksInHeightRange(startingBlock.Height-1999, startingBlock.Height)
+func queueMerkleBlocks(n *Node, endingBlockHeight uint, startingBlockHeight uint) {
+	if startingBlockHeight == 0 {
+		startingBlockHeight = endingBlockHeight - 2000
+	}
+	blocks, err := db.GetBlocksInHeightRange(startingBlockHeight, endingBlockHeight)
 	if err != nil {
 		fmt.Println(jerr.Get("error getting blocks in height range", err))
 		return

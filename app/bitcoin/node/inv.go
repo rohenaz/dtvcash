@@ -6,7 +6,7 @@ import (
 	"github.com/jchavannes/jgo/jerr"
 )
 
-func OnInv(n *Node, msg *wire.MsgInv) {
+func onInv(n *Node, msg *wire.MsgInv) {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -16,9 +16,10 @@ func OnInv(n *Node, msg *wire.MsgInv) {
 		for _, inv := range msg.InvList {
 			switch inv.Type {
 			case wire.InvTypeBlock:
-				n.SendGetHeaders(&inv.Hash)
+				fmt.Printf("Got InvTypeBlock\n")
+				sendGetHeaders(n, &inv.Hash)
 			case wire.InvTypeTx:
-				n.GetTransaction(inv.Hash)
+				getTransaction(n, inv.Hash)
 			default:
 				continue
 			}

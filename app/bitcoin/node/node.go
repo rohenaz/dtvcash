@@ -25,6 +25,10 @@ Strategy:
 - During normal checking, update End every once in awhile (e.g. every 2,000 blocks)
 - If a new address is added, start over
 - Each address independently tracks progress
+
+TODO:
+  - Capture new blocks
+  - Save transactions to database and display in UI
  */
 
 const BitcoinPeerAddress = "dev1.jasonc.me:8333"
@@ -35,7 +39,6 @@ type Node struct {
 	Peer            *peer.Peer
 	NetAddress      string
 	Keys            []*db.Key
-	Address         db.Address
 	scriptAddresses []*wallet.Address
 	BloomFilter     *bloom.Filter
 	CheckedTxns     uint
@@ -72,45 +75,28 @@ func (n *Node) Start() {
 }
 
 func (n *Node) SetKeys() {
-	SetKeys(n)
-}
-
-func (n *Node) GetScriptAddresses() []*wallet.Address {
-	return GetScriptAddresses(n)
+	setKeys(n)
+	if n.SyncComplete {
+		setBloomFilters(n)
+	}
 }
 
 func (n *Node) OnVerAck(p *peer.Peer, msg *wire.MsgVerAck) {
-	OnVerAck(n, msg)
+	onVerAck(n, msg)
 }
 
 func (n *Node) OnHeaders(p *peer.Peer, msg *wire.MsgHeaders) {
-	OnHeaders(n, msg)
-}
-
-func (n *Node) SetBloomFilters() {
-	SetBloomFilters(n)
-}
-
-func (n *Node) QueueMerkleBlocks(startingBlock *db.Block) {
-	QueueMerkleBlocks(n, startingBlock)
-}
-
-func (n *Node) SendGetHeaders(startingBlock *chainhash.Hash) {
-	SendGetHeaders(n, startingBlock)
+	onHeaders(n, msg)
 }
 
 func (n *Node) OnInv(p *peer.Peer, msg *wire.MsgInv) {
-	OnInv(n, msg)
-}
-
-func (n *Node) GetTransaction(txId chainhash.Hash) {
-	GetTransaction(n, txId)
+	onInv(n, msg)
 }
 
 func (n *Node) OnTx(p *peer.Peer, msg *wire.MsgTx) {
-	OnTx(n, msg)
+	onTx(n, msg)
 }
 
 func (n *Node) OnMerkleBlock(p *peer.Peer, msg *wire.MsgMerkleBlock) {
-	OnMerkleBlock(n, msg)
+	onMerkleBlock(n, msg)
 }

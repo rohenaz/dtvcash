@@ -168,7 +168,13 @@ func GetBlocksInHeightRange(startHeight uint, endHeight uint) ([]*Block, error) 
 		return nil, jerr.Get("error getting db", err)
 	}
 	var blocks []*Block
-	result := db.Where("height >= ? AND height <= ?", startHeight, endHeight).Find(&blocks)
+	query := db
+	if startHeight > endHeight {
+		query = query.Order("height desc")
+		startHeight, endHeight = endHeight, startHeight
+	}
+	query = query.Where("height >= ? AND height <= ?", startHeight, endHeight)
+	result := query.Find(&blocks)
 	if result.Error != nil {
 		return nil, jerr.Get("error querying blocks", result.Error)
 	}

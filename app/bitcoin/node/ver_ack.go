@@ -7,7 +7,7 @@ import (
 	"github.com/jchavannes/jgo/jerr"
 )
 
-func OnVerAck(n *Node, msg *wire.MsgVerAck) {
+func onVerAck(n *Node, msg *wire.MsgVerAck) {
 	block, err := db.GetRecentBlock()
 	n.LastBlock = block
 	if err != nil {
@@ -15,5 +15,5 @@ func OnVerAck(n *Node, msg *wire.MsgVerAck) {
 		return
 	}
 	n.QueuedBlocks = make(map[string]*db.Block)
-	n.SendGetHeaders(block.GetChainhash())
+	sendGetHeaders(n, block.GetChainhash())
 }

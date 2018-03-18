@@ -9,10 +9,10 @@ import (
 	"github.com/btcsuite/btcd/wire"
 )
 
-func OnTx(n *Node, msg *wire.MsgTx) {
+func onTx(n *Node, msg *wire.MsgTx) {
 	n.CheckedTxns++
 	//fmt.Printf("Transaction - version: %d, locktime: %d, inputs: %d, outputs: %d\n", msg.Version, msg.LockTime, len(msg.TxIn), len(msg.TxOut))
-	scriptAddresses := n.GetScriptAddresses()
+	scriptAddresses := getScriptAddresses(n)
 	var found bool
 	var txnInfo string
 	for _, in := range msg.TxIn {
@@ -66,7 +66,7 @@ func OnTx(n *Node, msg *wire.MsgTx) {
 	}
 }
 
-func GetTransaction(n *Node, txId chainhash.Hash) {
+func getTransaction(n *Node, txId chainhash.Hash) {
 	msgGetData := wire.NewMsgGetData()
 	err := msgGetData.AddInvVect(&wire.InvVect{
 		Type: wire.InvTypeTx,

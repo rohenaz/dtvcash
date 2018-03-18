@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func SendGetHeaders(n *Node, startingBlock *chainhash.Hash) {
+func sendGetHeaders(n *Node, startingBlock *chainhash.Hash) {
 	msgGetHeaders := wire.NewMsgGetHeaders()
 	msgGetHeaders.BlockLocatorHashes = []*chainhash.Hash{
 		startingBlock,
@@ -18,16 +18,15 @@ func SendGetHeaders(n *Node, startingBlock *chainhash.Hash) {
 	n.Peer.QueueMessage(msgGetHeaders, nil)
 }
 
-func OnHeaders(n *Node, msg *wire.MsgHeaders) {
+func onHeaders(n *Node, msg *wire.MsgHeaders) {
 	var blocksToSave []*db.Block
 	for _, header := range msg.Headers {
 		block := db.ConvertMessageHeaderToBlock(header)
-		lastChainHash := n.LastBlock.GetChainhash().CloneBytes()
-		if bytes.Equal(block.Hash, lastChainHash) {
+		if bytes.Equal(block.Hash, n.LastBlock.Hash) {
 			// Skipping block since we already have it
 			continue
 		}
-		if ! bytes.Equal(block.PrevBlock, lastChainHash) {
+		if ! bytes.Equal(block.PrevBlock, n.LastBlock.Hash) {
 			fmt.Println(jerr.New("block prev hash does not match!"))
 			fromDb, err := db.GetBlockByHash(*block.GetChainhash())
 			if err != nil {
@@ -45,9 +44,8 @@ func OnHeaders(n *Node, msg *wire.MsgHeaders) {
 		if ! n.SyncComplete {
 			n.SyncComplete = true
 			fmt.Printf("done... " + statusMsg + "all caught up!\n")
-			n.SetBloomFilters()
+			setBloomFilters(n)
 		}
-		fmt.Printf("n.LastBlock.Height: %d\n", n.LastBlock.Height)
 		return
 	}
 	err := db.SaveBlocks(blocksToSave)
@@ -57,5 +55,5 @@ func OnHeaders(n *Node, msg *wire.MsgHeaders) {
 	}
 
 	fmt.Printf("Querying more... " + statusMsg)
-	n.SendGetHeaders(n.LastBlock.GetChainhash())
+	sendGetHeaders(n, n.LastBlock.GetChainhash())
 }

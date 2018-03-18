@@ -35,6 +35,5 @@ var createPrivateKeySubmitRoute = web.Route{
 			r.Error(jerr.Get("error creating new private key", err), http.StatusInternalServerError)
 		}
 		node.BitcoinNode.SetKeys()
-		node.BitcoinNode.SetBloomFilters()
 	},
 }
