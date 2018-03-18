@@ -2,6 +2,7 @@ package key
 
 import (
 	"git.jasonc.me/main/memo/app/auth"
+	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"
 	"github.com/jchavannes/jgo/jerr"
@@ -33,5 +34,7 @@ var createPrivateKeySubmitRoute = web.Route{
 		if err != nil {
 			r.Error(jerr.Get("error creating new private key", err), http.StatusInternalServerError)
 		}
+		node.BitcoinNode.SetKeys()
+		node.BitcoinNode.SetBloomFilters()
 	},
 }

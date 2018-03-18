@@ -1,13 +1,10 @@
 package server
 
 import (
-	"fmt"
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/bitcoin/node"
-	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"
 	"git.jasonc.me/main/memo/web/server/key"
-	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"log"
 	"net/http"
@@ -61,14 +58,9 @@ func getUrlWithBaseUrl(url string, r *web.Response) string {
 }
 
 func Run(sessionCookieInsecure bool) {
-	allKeys, err := db.GetAllKeys()
-	if err != nil {
-		fmt.Println(jerr.Get("error getting keys from db", err))
-		return
-	}
-	node.BitcoinNode.Keys = allKeys
 	// Start bitcoin node
 	node.BitcoinNode.NetAddress = node.BitcoinPeerAddress
+	node.BitcoinNode.SetKeys()
 	node.BitcoinNode.Start()
 
 	// Start web server
@@ -91,7 +83,7 @@ func Run(sessionCookieInsecure bool) {
 		TemplatesDir:   "web/templates",
 		UseSessions:    true,
 	}
-	err = ws.Run()
+	err := ws.Run()
 	if err != nil {
 		log.Fatal(err)
 	}
