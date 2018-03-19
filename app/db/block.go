@@ -8,8 +8,6 @@ import (
 	"time"
 )
 
-const BlockTable = "Block"
-
 type Block struct {
 	Id         uint   `gorm:"primary_key"`
 	Height     uint   `gorm:"unique;"`

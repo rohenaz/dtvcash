@@ -1,6 +1,10 @@
 package db
 
-import "time"
+import (
+	"encoding/hex"
+	"strconv"
+	"time"
+)
 
 type TransactionIn struct {
 	Id                    uint   `gorm:"primary_key"`
@@ -13,4 +17,8 @@ type TransactionIn struct {
 	Sequence              uint32
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
+}
+
+func (t TransactionIn) GetPrevOutPointString() string {
+	return hex.EncodeToString(t.PreviousOutPointHash) + ":" + strconv.Itoa(int(t.PreviousOutPointIndex))
 }

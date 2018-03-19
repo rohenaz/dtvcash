@@ -10,6 +10,14 @@ import (
 	"time"
 )
 
+const (
+	BlockTable        = "Block"
+	KeyTable          = "Key"
+	TxInTable         = "TxIn"
+	TxOutTable        = "TxOut"
+	TxOutAddressTable = "TxOut.Addresses"
+)
+
 type Transaction struct {
 	Id        uint   `gorm:"primary_key"`
 	KeyId     uint
@@ -52,6 +60,9 @@ func GetTransactionById(transactionId uint) (*Transaction, error) {
 	err := findPreloadColumns([]string{
 		BlockTable,
 		KeyTable,
+		TxInTable,
+		TxOutTable,
+		TxOutAddressTable,
 	}, &transaction, Transaction{
 		Id: transactionId,
 	})

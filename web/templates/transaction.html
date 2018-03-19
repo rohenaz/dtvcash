@@ -25,4 +25,70 @@
     </tr>
 </table>
 
+<h3>Inputs</h3>
+
+{{ range .Transaction.TxIn }}
+
+<table class="table left">
+    <tr>
+        <th>Id</th>
+        <td>{{ .Id }}</td>
+    </tr>
+    <tr>
+        <th>Sequence</th>
+        <td>{{ .Sequence }}</td>
+    </tr>
+    <tr>
+        <th>Previous Output</th>
+        <td>{{ .GetPrevOutPointString }}</td>
+    </tr>
+    <tr>
+        <th>Unlock String</th>
+        <td>{{ .UnlockString }}</td>
+    </tr>
+</table>
+
+{{ end }}
+
+<h3>Outputs</h3>
+
+{{ range .Transaction.TxOut }}
+
+<table class="table left">
+    <tr>
+        <th>Id</th>
+        <td>{{ .Id }}</td>
+    </tr>
+    <tr>
+        <th>Value</th>
+        <td>{{ formatBigInt .Value }} satoshis ({{ formatBigFloat .ValueInBCH }} BCH)</td>
+    </tr>
+    <tr>
+        <th>Lock Script</th>
+        <td>{{ .LockString }}</td>
+    </tr>
+    <tr>
+        <th>Required Signatures</th>
+        <td>{{ .RequiredSigs }}</td>
+    </tr>
+    <tr>
+        <th>Script Class</th>
+        <td>{{ .GetScriptClass }}</td>
+    </tr>
+    <tr>
+        <th>Address(es)</th>
+        <td>
+        {{ range .Addresses }}{{ .String }}<br/>{{ end }}
+        </td>
+    </tr>
+</table>
+
+<br/>
+
+{{ end }}
+
+<p>
+    <a class="btn" href="key/{{ .Transaction.KeyId }}">Back to Key</a>
+</p>
+
 {{ template "snippets/footer.html" . }}

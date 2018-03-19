@@ -13,7 +13,6 @@ import (
 
 /**
 TODO:
-- View transactions details in UI (inputs and outputs)
 - Catch new transaction being added to mempool
 - Create and broadcast transaction
  */
