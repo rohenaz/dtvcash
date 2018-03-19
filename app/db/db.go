@@ -1,6 +1,7 @@
 package db
 
 import (
+	"errors"
 	"fmt"
 	"git.jasonc.me/main/memo/app/config"
 	"github.com/jchavannes/gorm"
@@ -12,6 +13,9 @@ import (
 )
 
 var conn *gorm.DB
+
+const alreadyExistsErrorMessage = "record already exists"
+var alreadyExistsError = errors.New(alreadyExistsErrorMessage)
 
 var dbInterfaces = []interface{}{
 	User{},
@@ -47,12 +51,23 @@ func getDb() (*gorm.DB, error) {
 }
 
 func IsRecordNotFoundError(e error) bool {
+	return hasError(e, "record not found")
+}
+
+func IsAlreadyExistsError(e error) bool {
+	return hasError(e, alreadyExistsErrorMessage)
+}
+
+func hasError(e error, s string) bool {
+	if e == nil {
+		return false
+	}
 	err, ok := e.(jerr.JError)
 	if !ok {
-		return e.Error() == "record not found"
+		return e.Error() == s
 	}
 	for _, errMessage := range err.Messages {
-		if errMessage == "record not found" {
+		if errMessage == s {
 			return true
 		}
 	}

@@ -35,6 +35,27 @@
     </form>
 </div>
 
+<h3>Transactions</h3>
+
+<table class="table">
+    <tr>
+        <th>Id</th>
+        <th>Key Id</th>
+        <th>Address</th>
+        <th>Block Height</th>
+        <th>Block Date (UTC)</th>
+    </tr>
+{{ range .Transactions }}
+    <tr>
+        <td>{{ .Id }}</td>
+        <td>{{ .KeyId }}</td>
+        <td>{{ .Key.GetPublicKey.GetAddress.GetEncoded }}</td>
+        <td>{{ .Block.Height }}</td>
+        <td>{{ .Block.Timestamp.Format "2006-01-02 15:04" }}</td>
+    </tr>
+{{ end }}
+</table>
+
 <script type="text/javascript">
     $(function () {
         MemoApp.Form.LoadKey({{ .Key.Id }}, $("#key-password-form"), $("#private-key"));

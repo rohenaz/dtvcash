@@ -15,5 +15,6 @@ func onVerAck(n *Node, msg *wire.MsgVerAck) {
 		return
 	}
 	n.QueuedBlocks = make(map[string]*db.Block)
+	n.BlockHashes = make(map[string]*db.Block)
 	sendGetHeaders(n, block.GetChainhash())
 }

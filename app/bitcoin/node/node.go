@@ -26,7 +26,6 @@ Strategy:
 - Each address independently tracks progress
 
 TODO:
-  - Capture new blocks
   - Save transactions to database and display in UI
  */
 
@@ -45,6 +44,8 @@ type Node struct {
 	SyncComplete    bool
 	LastMerkleBlock *db.Block
 	QueuedBlocks    map[string]*db.Block
+	BlockHashes     map[string]*db.Block
+	PrevBlockHashes map[string]*db.Block
 }
 
 func (n *Node) Start() {

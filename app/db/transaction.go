@@ -3,10 +3,10 @@ package db
 import (
 	"fmt"
 	"git.jasonc.me/main/bitcoin/wallet"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/jchavannes/transactions/app/db"
 	"time"
 )
 
@@ -14,6 +14,8 @@ type Transaction struct {
 	Id        uint   `gorm:"primary_key"`
 	KeyId     uint
 	Key       *Key
+	BlockId   uint
+	Block     *Block
 	Hash      []byte `gorm:"unique;"`
 	Version   int32
 	TxIn      []*TransactionIn
@@ -26,11 +28,11 @@ type Transaction struct {
 func (t *Transaction) Save() error {
 	if t.Id == 0 {
 		transaction, err := GetTransactionByHash(t.Hash)
-		if err != nil && ! db.IsRecordNotFoundError(err) {
+		if err != nil && ! IsRecordNotFoundError(err) {
 			return jerr.Get("error getting transaction by hash", err)
 		}
 		if transaction != nil {
-			return jerr.New("transaction already exists")
+			return jerr.Get("transaction already exists", alreadyExistsError)
 		}
 	}
 	result := save(t)
@@ -38,6 +40,29 @@ func (t *Transaction) Save() error {
 		return jerr.Get("error saving transaction", result.Error)
 	}
 	return nil
+}
+
+func (t *Transaction) GetChainHash() *chainhash.Hash {
+	hash, _ := chainhash.NewHash(t.Hash)
+	return hash
+}
+
+func GetTransactionsForKey(keyId uint) ([]*Transaction, error) {
+	var transactions []*Transaction
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	result := db.
+		Preload("Block").
+		Preload("Key").
+		Find(&transactions, Transaction{
+		KeyId: keyId,
+	})
+	if result.Error != nil {
+		return nil, jerr.Get("error running query", result.Error)
+	}
+	return transactions, nil
 }
 
 func GetTransactionByHash(hash []byte) (*Transaction, error) {

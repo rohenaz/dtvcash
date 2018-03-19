@@ -3,9 +3,9 @@ package node
 import (
 	"fmt"
 	"git.jasonc.me/main/memo/app/db"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
-	"time"
 )
 
 func onMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
@@ -30,18 +30,22 @@ func onMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
 		}
 	}
 
+	for _, hash := range msg.Hashes {
+		n.BlockHashes[hash.String()] = block
+	}
+
 	if len(n.QueuedBlocks) == 0 {
 		saveKeys(n)
 		if block.Height == 0 {
 			fmt.Printf("checked entire chain!")
 			return
 		}
-		fmt.Printf("Querying more... (last height checked: %d, txns: %d, block time: %s, time: %s)\n",
+		/*fmt.Printf("Querying merkle blocks... last height checked: %d, txns: %d, block time: %s, time: %s\n",
 			block.Height,
 			n.CheckedTxns,
 			block.Timestamp.Format("2006-01-02 15:04:05"),
 			time.Now().Format("2006-01-02 15:04:05"),
-		)
+		)*/
 		queueMoreMerkleBlocks(n)
 	}
 }
@@ -65,6 +69,8 @@ func queueMerkleBlocks(n *Node, endingBlockHeight uint, startingBlockHeight uint
 			return 0
 		}
 	}
+	n.PrevBlockHashes = n.BlockHashes
+	n.BlockHashes = make(map[string]*db.Block)
 	n.Peer.QueueMessage(msgGetData, nil)
 	return uint(len(blocks))
 }
@@ -95,26 +101,40 @@ func queueMoreMerkleBlocks(n *Node) {
 	}
 
 	var numQueued uint
+	// Initially start at the top
 	if maxHeightChecked == 0 {
 		numQueued += queueMerkleBlocks(n, recentBlock.Height, recentBlock.Height-2000)
 	}
+	// See if any new blocks need to be checked (usually after restarting)
 	if numQueued < 2000 && recentBlock.Height > maxHeightChecked {
 		endQueue := recentBlock.Height - 2000 + numQueued
-		if endQueue < maxHeightChecked {
-			endQueue = maxHeightChecked
+		if endQueue <= maxHeightChecked {
+			endQueue = maxHeightChecked + 1
 		}
 		numQueued += queueMerkleBlocks(n, endQueue, recentBlock.Height)
 	}
+	// Work way back to genesis
 	if numQueued < 2000 && minHeightChecked > 1 {
 		var startQueue uint
-		if minHeightChecked > 2000 - numQueued {
-			startQueue = minHeightChecked-2000+numQueued
+		if minHeightChecked > 2000-numQueued {
+			startQueue = minHeightChecked - 2000 + numQueued
 		}
 		numQueued += queueMerkleBlocks(n, minHeightChecked, startQueue)
 	}
 	if numQueued > 0 {
-		fmt.Printf("Queued %d merkle blocks...\n", numQueued)
+		//fmt.Printf("Queued %d merkle blocks...\n", numQueued)
 	} else {
-		fmt.Println("Merkle blocks all caught up!")
+		//fmt.Println("Merkle blocks all caught up!")
 	}
+}
+
+func findHashBlock(n *Node, hash *chainhash.Hash) *db.Block {
+	for _, hashMap := range []map[string]*db.Block{n.BlockHashes, n.PrevBlockHashes} {
+		for hashString, block := range hashMap {
+			if hashString == hash.String() {
+				return block
+			}
+		}
+	}
+	return nil
 }

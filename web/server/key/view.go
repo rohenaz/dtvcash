@@ -31,6 +31,12 @@ var viewKeyRoute = web.Route{
 			return
 		}
 		r.Helper["Key"] = privateKey
+		transactions, err := db.GetTransactionsForKey(privateKey.Id)
+		if err != nil {
+			r.Error(jerr.Get("error getting transactions for key", err), http.StatusInternalServerError)
+			return
+		}
+		r.Helper["Transactions"] = transactions
 		r.RenderTemplate(res.UrlKeyView)
 	},
 }
