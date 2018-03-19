@@ -1,0 +1,28 @@
+{{ template "snippets/header.html" . }}
+
+<h2>Transaction</h2>
+
+<table class="table left">
+    <tr>
+        <th>Id</th>
+        <td>{{ .Transaction.Id }}</td>
+    </tr>
+    <tr>
+        <th>Key Id</th>
+        <td>{{ .Transaction.KeyId }}</td>
+    </tr>
+    <tr>
+        <th>Address</th>
+        <td>{{ .Transaction.Key.GetPublicKey.GetAddress.GetEncoded }}</td>
+    </tr>
+    <tr>
+        <th>Block Height</th>
+        <td>{{ .Transaction.Block.Height }}</td>
+    </tr>
+    <tr>
+        <th>Block Date (UTC)</th>
+        <td>{{ .Transaction.Block.Timestamp.Format "2006-01-02 15:04" }}</td>
+    </tr>
+</table>
+
+{{ template "snippets/footer.html" . }}

@@ -8,28 +8,21 @@ import (
 )
 
 func onInv(n *Node, msg *wire.MsgInv) {
-	go func() {
-		defer func() {
-			if err := recover(); err != nil {
-				fmt.Println(jerr.Get("error saving blocks", fmt.Errorf("Recover: %#v\n", err)))
+	for _, inv := range msg.InvList {
+		switch inv.Type {
+		case wire.InvTypeBlock:
+			fmt.Printf("Got InvTypeBlock: %s\n", inv.Hash.String())
+			recentBlock, err := db.GetRecentBlock()
+			if err != nil {
+				fmt.Println(jerr.Get("error getting recent block", err))
+				return
 			}
-		}()
-		for _, inv := range msg.InvList {
-			switch inv.Type {
-			case wire.InvTypeBlock:
-				fmt.Printf("Got InvTypeBlock: %s\n", inv.Hash.String())
-				recentBlock, err := db.GetRecentBlock()
-				if err != nil {
-					fmt.Println(jerr.Get("error getting recent block", err))
-					return
-				}
-				sendGetHeaders(n, recentBlock.GetChainhash())
-			case wire.InvTypeTx:
-				getTransaction(n, inv.Hash)
-			default:
-				continue
-			}
-
+			sendGetHeaders(n, recentBlock.GetChainhash())
+		case wire.InvTypeTx:
+			getTransaction(n, inv.Hash)
+		default:
+			continue
 		}
-	}()
+
+	}
 }

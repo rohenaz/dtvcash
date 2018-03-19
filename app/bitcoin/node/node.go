@@ -12,21 +12,10 @@ import (
 )
 
 /**
-Strategy:
-- First node catches up and downloads all block headers
-- After caught up, add bloom filter for all addresses
-- Start with most recent block and work back to genesis, getting merkle blocks and searching transactions
-- Track starting block and progress, if restarted later, only update starting block once all new blocks have been checked
-  - e.g.
-    Start height: 20,000
-    End height: 10,000
-  - Restart at 25,000, only update Start once 25,000-20,000 have been checked, then skip to 10,000 and continue
-- During normal checking, update End every once in awhile (e.g. every 2,000 blocks)
-- If a new address is added, start over
-- Each address independently tracks progress
-
 TODO:
-  - Save transactions to database and display in UI
+- View transactions details in UI (inputs and outputs)
+- Catch new transaction being added to mempool
+- Create and broadcast transaction
  */
 
 const BitcoinPeerAddress = "dev1.jasonc.me:8333"

@@ -23,3 +23,7 @@ const (
 const (
 	UrlBlockView = "/block"
 )
+
+const (
+	UrlTransactionView = "/transaction"
+)

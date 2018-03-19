@@ -40,12 +40,6 @@ func onMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
 			fmt.Printf("checked entire chain!")
 			return
 		}
-		/*fmt.Printf("Querying merkle blocks... last height checked: %d, txns: %d, block time: %s, time: %s\n",
-			block.Height,
-			n.CheckedTxns,
-			block.Timestamp.Format("2006-01-02 15:04:05"),
-			time.Now().Format("2006-01-02 15:04:05"),
-		)*/
 		queueMoreMerkleBlocks(n)
 	}
 }

@@ -13,7 +13,6 @@ import (
 
 func onTx(n *Node, msg *wire.MsgTx) {
 	n.CheckedTxns++
-	//fmt.Printf("Transaction - version: %d, locktime: %d, inputs: %d, outputs: %d\n", msg.Version, msg.LockTime, len(msg.TxIn), len(msg.TxOut))
 	scriptAddresses := getScriptAddresses(n)
 	var found *wallet.Address
 	var txnInfo string

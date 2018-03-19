@@ -47,20 +47,30 @@ func (t *Transaction) GetChainHash() *chainhash.Hash {
 	return hash
 }
 
+func GetTransactionById(transactionId uint) (*Transaction, error) {
+	var transaction Transaction
+	err := findPreloadColumns([]string{
+		BlockTable,
+		KeyTable,
+	}, &transaction, Transaction{
+		Id: transactionId,
+	})
+	if err != nil {
+		return nil, jerr.Get("error finding transaction", err)
+	}
+	return &transaction, nil
+}
+
 func GetTransactionsForKey(keyId uint) ([]*Transaction, error) {
 	var transactions []*Transaction
-	db, err := getDb()
-	if err != nil {
-		return nil, jerr.Get("error getting db", err)
-	}
-	result := db.
-		Preload("Block").
-		Preload("Key").
-		Find(&transactions, Transaction{
+	err := findPreloadColumns([]string{
+		BlockTable,
+		KeyTable,
+	}, &transactions, Transaction{
 		KeyId: keyId,
 	})
-	if result.Error != nil {
-		return nil, jerr.Get("error running query", result.Error)
+	if err != nil {
+		return nil, jerr.Get("error finding transactions", err)
 	}
 	return transactions, nil
 }

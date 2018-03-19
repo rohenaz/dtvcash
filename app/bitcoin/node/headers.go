@@ -38,10 +38,9 @@ func onHeaders(n *Node, msg *wire.MsgHeaders) {
 		blocksToSave = append(blocksToSave, block)
 		n.LastBlock = block
 	}
-	statusMsg := fmt.Sprintf("Current block height: %d, Block time: %s\n",
-		n.LastBlock.Height, n.LastBlock.Timestamp.Format("2006-01-02 15:04:05"))
 	if len(blocksToSave) == 0 {
-		fmt.Printf(statusMsg)
+		fmt.Printf("Current block height: %d, Block time: %s\n",
+			n.LastBlock.Height, n.LastBlock.Timestamp.Format("2006-01-02 15:04:05"))
 		if ! n.SyncComplete {
 			n.SyncComplete = true
 			setBloomFilters(n)
@@ -55,6 +54,5 @@ func onHeaders(n *Node, msg *wire.MsgHeaders) {
 		fmt.Println(jerr.Get("error saving blocks", err))
 		return
 	}
-	//fmt.Printf("Querying more headers... " + statusMsg)
 	sendGetHeaders(n, n.LastBlock.GetChainhash())
 }

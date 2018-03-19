@@ -44,6 +44,7 @@
         <th>Address</th>
         <th>Block Height</th>
         <th>Block Date (UTC)</th>
+        <th>Actions</th>
     </tr>
 {{ range .Transactions }}
     <tr>
@@ -52,6 +53,9 @@
         <td>{{ .Key.GetPublicKey.GetAddress.GetEncoded }}</td>
         <td>{{ .Block.Height }}</td>
         <td>{{ .Block.Timestamp.Format "2006-01-02 15:04" }}</td>
+        <td>
+            <a href="transaction/{{ .Id }}">View</a>
+        </td>
     </tr>
 {{ end }}
 </table>

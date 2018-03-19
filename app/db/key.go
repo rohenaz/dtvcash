@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+const KeyTable = "Key"
+
 type Key struct {
 	Id        uint `gorm:"primary_key"`
 	Name      string
