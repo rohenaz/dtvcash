@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"git.jasonc.me/main/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/db"
-	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/peer"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/btcsuite/btcutil/bloom"
@@ -66,7 +65,7 @@ func (n *Node) Start() {
 		log.Fatal(err)
 	}
 	n.Peer = p
-	fmt.Printf("Starting bitcoin block node: %s\n", n.NetAddress)
+	fmt.Printf("Starting bitcoin node: %s\n", n.NetAddress)
 	conn, err := net.Dial("tcp", n.NetAddress)
 	if err != nil {
 		log.Fatal(err)

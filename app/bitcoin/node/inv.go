@@ -18,6 +18,7 @@ func onInv(n *Node, msg *wire.MsgInv) {
 			case wire.InvTypeBlock:
 				fmt.Printf("Got InvTypeBlock\n")
 				sendGetHeaders(n, &inv.Hash)
+				queueMoreMerkleBlocks(n)
 			case wire.InvTypeTx:
 				getTransaction(n, inv.Hash)
 			default:

@@ -10,9 +10,9 @@ import (
 
 type Block struct {
 	Id         uint   `gorm:"primary_key"`
-	Height     uint   `gorm:"index:height"`
+	Height     uint   `gorm:"unique;"`
 	Timestamp  time.Time
-	Hash       []byte `gorm:"index:hash"`
+	Hash       []byte `gorm:"unique;"`
 	PrevBlock  []byte
 	MerkleRoot []byte
 	Nonce      uint32

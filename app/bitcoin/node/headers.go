@@ -7,7 +7,6 @@ import (
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
-	"time"
 )
 
 func sendGetHeaders(n *Node, startingBlock *chainhash.Hash) {
@@ -39,11 +38,12 @@ func onHeaders(n *Node, msg *wire.MsgHeaders) {
 		blocksToSave = append(blocksToSave, block)
 		n.LastBlock = block
 	}
-	statusMsg := fmt.Sprintf("(current height: %d, time: %s)\n", n.LastBlock.Height, time.Now().Format("2006-01-02 15:04:05"))
+	statusMsg := fmt.Sprintf("Current block height: %d, Block time: %s\n",
+		n.LastBlock.Height, n.LastBlock.Timestamp.Format("2006-01-02 15:04:05"))
 	if len(blocksToSave) == 0 {
 		if ! n.SyncComplete {
 			n.SyncComplete = true
-			fmt.Printf("done... " + statusMsg + "all caught up!\n")
+			fmt.Printf(statusMsg + "Headers all caught up!\n")
 			setBloomFilters(n)
 		}
 		return
@@ -54,6 +54,6 @@ func onHeaders(n *Node, msg *wire.MsgHeaders) {
 		return
 	}
 
-	fmt.Printf("Querying more... " + statusMsg)
+	fmt.Printf("Querying more headers... " + statusMsg)
 	sendGetHeaders(n, n.LastBlock.GetChainhash())
 }

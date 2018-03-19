@@ -35,3 +35,12 @@ func getScriptAddresses(n *Node) []*wallet.Address {
 	}
 	return n.scriptAddresses
 }
+
+func getKeyFromScriptAddress(n *Node, address *wallet.Address) *db.Key {
+	for _, key := range n.Keys {
+		if address.GetEncoded() == key.GetAddress().GetEncoded() {
+			return key
+		}
+	}
+	return nil
+}

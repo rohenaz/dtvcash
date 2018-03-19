@@ -20,6 +20,10 @@ var dbInterfaces = []interface{}{
 	Address{},
 	Block{},
 	Transaction{},
+	TransactionIn{},
+	Witness{},
+	TransactionOut{},
+	Address{},
 }
 
 func getDb() (*gorm.DB, error) {
