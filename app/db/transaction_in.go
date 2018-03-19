@@ -2,7 +2,10 @@ package db
 
 import (
 	"encoding/hex"
-	"strconv"
+	"git.jasonc.me/main/bitcoin/wallet"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
+	"github.com/btcsuite/btcd/wire"
+	"strings"
 	"time"
 )
 
@@ -19,6 +22,23 @@ type TransactionIn struct {
 	UpdatedAt             time.Time
 }
 
+func (t TransactionIn) GetOutPoint() *wire.OutPoint {
+	hash, _ := chainhash.NewHash(t.PreviousOutPointHash)
+	return wire.NewOutPoint(hash, t.PreviousOutPointIndex)
+}
+
 func (t TransactionIn) GetPrevOutPointString() string {
-	return hex.EncodeToString(t.PreviousOutPointHash) + ":" + strconv.Itoa(int(t.PreviousOutPointIndex))
+	return t.GetOutPoint().String()
+}
+
+func (t TransactionIn) GetAddress() string {
+	split := strings.Split(t.UnlockString, " ")
+	if len(split) != 2 {
+		return ""
+	}
+	pubKey, err := hex.DecodeString(split[1])
+	if err != nil {
+		return ""
+	}
+	return wallet.GetAddress(pubKey).GetEncoded()
 }

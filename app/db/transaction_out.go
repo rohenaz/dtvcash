@@ -19,7 +19,7 @@ type TransactionOut struct {
 }
 
 func (t TransactionOut) ValueInBCH() float64 {
-	return float64(t.Value) * 1.e-9
+	return float64(t.Value) * 1.e-8
 }
 
 func (t TransactionOut) GetScriptClass() string {

@@ -8,6 +8,10 @@
         <td>{{ .Transaction.Id }}</td>
     </tr>
     <tr>
+        <th>Hash</th>
+        <td>{{ .Transaction.GetChainHash.String }}</td>
+    </tr>
+    <tr>
         <th>Key Id</th>
         <td>{{ .Transaction.KeyId }}</td>
     </tr>
@@ -37,6 +41,10 @@
     <tr>
         <th>Sequence</th>
         <td>{{ .Sequence }}</td>
+    </tr>
+    <tr>
+        <th>Address</th>
+        <td>{{ .GetAddress }}</td>
     </tr>
     <tr>
         <th>Previous Output</th>
