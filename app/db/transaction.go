@@ -12,11 +12,15 @@ import (
 )
 
 const (
-	BlockTable        = "Block"
-	KeyTable          = "Key"
-	TxInTable         = "TxIn"
-	TxOutTable        = "TxOut"
-	TxOutAddressTable = "TxOut.Addresses"
+	BlockTable         = "Block"
+	KeyTable           = "Key"
+	TxInTable          = "TxIn"
+	TxInTxnOutTable    = "TxIn.TxnOut"
+	TxInTxnOutTxnTable = "TxIn.TxnOut.Transaction"
+	TxOutTable         = "TxOut"
+	TxOutTxnInTable    = "TxOut.TxnIn"
+	TxOutTxnInTxnTable = "TxOut.TxnIn.Transaction"
+	TxOutAddressTable  = "TxOut.Addresses"
 )
 
 type Transaction struct {
@@ -71,16 +75,24 @@ func (t *Transaction) GetChainHash() *chainhash.Hash {
 }
 
 func GetTransactionById(transactionId uint) (*Transaction, error) {
+	return getTransaction(Transaction{
+		Id: transactionId,
+	})
+}
+
+func getTransaction(txn Transaction) (*Transaction, error) {
 	var transaction Transaction
 	err := findPreloadColumns([]string{
 		BlockTable,
 		KeyTable,
 		TxInTable,
+		TxInTxnOutTable,
+		TxInTxnOutTxnTable,
 		TxOutTable,
+		TxOutTxnInTable,
+		TxOutTxnInTxnTable,
 		TxOutAddressTable,
-	}, &transaction, Transaction{
-		Id: transactionId,
-	})
+	}, &transaction, txn)
 	if err != nil {
 		return nil, jerr.Get("error finding transaction", err)
 	}
@@ -92,6 +104,7 @@ func GetTransactionsForKey(keyId uint) ([]*Transaction, error) {
 	err := findPreloadColumns([]string{
 		BlockTable,
 		KeyTable,
+		TxOutTable,
 	}, &transactions, Transaction{
 		KeyId: keyId,
 	})

@@ -20,6 +20,10 @@ var transactionRoute = web.Route{
 		}
 		id := r.Request.GetUrlNamedQueryVariableUInt(paramId.Id)
 		transaction, err := db.GetTransactionById(id)
+		if err != nil {
+			r.Error(jerr.Get("error getting transaction by id", err), http.StatusInternalServerError)
+			return
+		}
 		if transaction.Key.UserId != user.Id {
 			r.Error(jerr.New("unauthorized access to transaction"), http.StatusUnauthorized)
 			return

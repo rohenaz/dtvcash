@@ -54,6 +54,14 @@
         <th>Unlock String</th>
         <td>{{ .UnlockString }}</td>
     </tr>
+    <tr>
+        <th>Actions</th>
+        <td>
+        {{ if .HasOut }}
+            <a href="transaction/{{ .TxnOut.Transaction.Id }}">View Transaction</a>
+        {{ end }}
+        </td>
+    </tr>
 </table>
 
 {{ end }}
@@ -87,6 +95,15 @@
         <th>Address(es)</th>
         <td>
         {{ range .Addresses }}{{ .String }}<br/>{{ end }}
+        </td>
+    </tr>
+    <tr>
+        <th>Actions</th>
+        <td>
+        {{ if .HasIn }}
+            <a href="transaction/{{ .TxnIn.Transaction.Id }}">View Transaction</a>
+        {{ end }}
+            <!--<a href="spend/{{ .Id }}">Spend</a>-->
         </td>
     </tr>
 </table>
