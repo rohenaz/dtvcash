@@ -46,6 +46,17 @@ func (b Block) GetMerkleRoot() *chainhash.Hash {
 	return hash
 }
 
+func (b Block) NextHeight() uint {
+	return b.Height + 1
+}
+
+func (b Block) PrevHeight() uint {
+	if b.Height == 0 {
+		return 0
+	}
+	return b.Height - 1
+}
+
 func SaveBlocks(blocks []*Block) error {
 	for _, block := range blocks {
 		err := block.Save()
@@ -101,12 +112,14 @@ func ConvertMessageHeaderToBlock(header *wire.BlockHeader) (*Block) {
 }
 
 func GetBlockByHeight(height uint) (*Block, error) {
-	var block = Block{
-		Height: height,
-	}
-	err := find(&block, &block)
+	db, err := getDb()
 	if err != nil {
-		return nil, jerr.Get("error getting block", err)
+		return nil, jerr.Get("error getting db", err)
+	}
+	var block = Block{}
+	result := db.Where("height = ?", height).Find(&block)
+	if result.Error != nil {
+		return nil, jerr.Get("error getting block", result.Error)
 	}
 	return &block, nil
 }
