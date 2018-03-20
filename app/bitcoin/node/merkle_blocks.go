@@ -2,6 +2,7 @@ package node
 
 import (
 	"fmt"
+	"git.jasonc.me/main/bitcoin/transaction"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
@@ -30,14 +31,14 @@ func onMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
 		}
 	}
 
-	for _, hash := range msg.Hashes {
-		n.BlockHashes[hash.String()] = block
+	transactionHashes := transaction.GetTransactionsFromMerkleBlock(msg)
+	for _, transactionHash := range transactionHashes {
+		n.BlockHashes[transactionHash.GetTxId().String()] = block
 	}
 
 	if len(n.QueuedBlocks) == 0 {
 		saveKeys(n)
 		if block.Height == 0 {
-			fmt.Printf("checked entire chain!")
 			return
 		}
 		queueMoreMerkleBlocks(n)

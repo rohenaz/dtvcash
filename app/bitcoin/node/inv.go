@@ -19,6 +19,7 @@ func onInv(n *Node, msg *wire.MsgInv) {
 			}
 			sendGetHeaders(n, recentBlock.GetChainhash())
 		case wire.InvTypeTx:
+			fmt.Printf("Got InvTypeTx: %s\n", inv.Hash.String())
 			getTransaction(n, inv.Hash)
 		default:
 			continue
