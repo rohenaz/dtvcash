@@ -7,6 +7,7 @@ import (
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
+	"strconv"
 	"time"
 )
 
@@ -31,6 +32,20 @@ type Transaction struct {
 	LockTime  uint32
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+func (t *Transaction) GetBlockHeight() string {
+	if t.Block == nil {
+		return "Unknown"
+	}
+	return strconv.Itoa(int(t.Block.Height))
+}
+
+func (t *Transaction) GetBlockTime() string {
+	if t.Block == nil {
+		return "-"
+	}
+	return t.Block.Timestamp.Format("2006-01-02 15:04")
 }
 
 func (t *Transaction) Save() error {

@@ -51,8 +51,8 @@
         <td>{{ .Id }}</td>
         <td>{{ .KeyId }}</td>
         <td>{{ .Key.GetPublicKey.GetAddress.GetEncoded }}</td>
-        <td>{{ .Block.Height }}</td>
-        <td>{{ .Block.Timestamp.Format "2006-01-02 15:04" }}</td>
+        <td>{{ .GetBlockHeight }}</td>
+        <td>{{ .GetBlockTime }}</td>
         <td>
             <a href="transaction/{{ .Id }}">View</a>
         </td>

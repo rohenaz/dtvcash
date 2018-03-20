@@ -11,10 +11,10 @@ import (
 
 type TransactionIn struct {
 	Id                    uint   `gorm:"primary_key"`
-	TransactionId         uint
+	TransactionId         uint   `gorm:"unique_index:transaction_in_script;"`
 	PreviousOutPointHash  []byte
 	PreviousOutPointIndex uint32
-	SignatureScript       []byte `gorm:"unique;"`
+	SignatureScript       []byte `gorm:"unique_index:transaction_in_script;"`
 	UnlockString          string
 	Witnesses             []*Witness
 	Sequence              uint32

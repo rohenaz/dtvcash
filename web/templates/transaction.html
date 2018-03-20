@@ -21,11 +21,11 @@
     </tr>
     <tr>
         <th>Block Height</th>
-        <td>{{ .Transaction.Block.Height }}</td>
+        <td>{{ .Transaction.GetBlockHeight }}</td>
     </tr>
     <tr>
         <th>Block Date (UTC)</th>
-        <td>{{ .Transaction.Block.Timestamp.Format "2006-01-02 15:04" }}</td>
+        <td>{{ .Transaction.GetBlockTime }}</td>
     </tr>
 </table>
 

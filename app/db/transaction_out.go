@@ -7,9 +7,9 @@ import (
 
 type TransactionOut struct {
 	Id            uint   `gorm:"primary_key"`
-	TransactionId uint
+	TransactionId uint   `gorm:"unique_index:transaction_out_script;"`
 	Value         int64
-	PkScript      []byte `gorm:"unique;"`
+	PkScript      []byte `gorm:"unique_index:transaction_out_script;"`
 	LockString    string
 	RequiredSigs  uint
 	ScriptClass   uint

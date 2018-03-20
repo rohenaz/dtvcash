@@ -58,17 +58,30 @@ func onTx(n *Node, msg *wire.MsgTx) {
 	if found != nil {
 		transaction := db.ConvertMsgToTransaction(msg)
 		transaction.Block = findHashBlock(n, transaction.GetChainHash())
-		if transaction.Block == nil {
-			fmt.Println(jerr.New("error finding block for transaction!"))
+		if transaction.Block != nil {
+			transaction.BlockId = transaction.Block.Id
+		}
+
+		existingTransaction, err := db.GetTransactionByHash(transaction.Hash)
+		if err != nil && !db.IsRecordNotFoundError(err) {
+			fmt.Println(jerr.Get("error getting transaction from db", err))
 			return
 		}
-		transaction.Key = getKeyFromScriptAddress(n, found)
-		transaction.KeyId = transaction.Key.Id
-		err := transaction.Save()
-		if db.IsAlreadyExistsError(err) {
-			return
+		if existingTransaction != nil {
+			if existingTransaction.BlockId != 0 || transaction.BlockId == 0 {
+				// Only thing that should update is potentially block height
+				return
+			}
+			fmt.Printf("Updating existing transaction...\n" + txnInfo)
+			existingTransaction.BlockId = transaction.BlockId
+			existingTransaction.Block = transaction.Block
+			transaction = existingTransaction
+		} else {
+			fmt.Printf("Found new transaction...\n" + txnInfo)
+			transaction.Key = getKeyFromScriptAddress(n, found)
+			transaction.KeyId = transaction.Key.Id
 		}
-		fmt.Printf("Found new transaction...\n" + txnInfo)
+		err = transaction.Save()
 		if err != nil {
 			fmt.Println(jerr.Get("error saving transaction", err))
 			return
