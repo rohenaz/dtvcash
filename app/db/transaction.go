@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"git.jasonc.me/main/bitcoin/wallet"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/txscript"
@@ -132,7 +131,7 @@ func ConvertMsgToTransaction(msg *wire.MsgTx) *Transaction {
 		Version:  msg.Version,
 		LockTime: msg.LockTime,
 	}
-	for _, in := range msg.TxIn {
+	for index, in := range msg.TxIn {
 		var witnesses []*Witness
 		for _, witness := range in.Witness {
 			witnesses = append(witnesses, &Witness{
@@ -141,10 +140,11 @@ func ConvertMsgToTransaction(msg *wire.MsgTx) *Transaction {
 		}
 		unlockScript, err := txscript.DisasmString(in.SignatureScript)
 		if err != nil {
-			fmt.Printf("Error disassembling unlockScript: %s\n", err.Error())
+			jerr.Get("error disassembling unlockScript: %s\n", err).Print()
 			return nil
 		}
 		var transactionIn = TransactionIn{
+			Index:                 uint(index),
 			PreviousOutPointHash:  in.PreviousOutPoint.Hash.CloneBytes(),
 			PreviousOutPointIndex: in.PreviousOutPoint.Index,
 			SignatureScript:       in.SignatureScript,
@@ -154,10 +154,10 @@ func ConvertMsgToTransaction(msg *wire.MsgTx) *Transaction {
 		}
 		transaction.TxIn = append(transaction.TxIn, &transactionIn)
 	}
-	for _, out := range msg.TxOut {
+	for index, out := range msg.TxOut {
 		lockScript, err := txscript.DisasmString(out.PkScript)
 		if err != nil {
-			fmt.Printf("Error disassembling lockScript: %s\n", err.Error())
+			jerr.Get("rror disassembling lockScript: %s\n", err).Print()
 			return nil
 		}
 		scriptClass, addresses, sigCount, err := txscript.ExtractPkScriptAddrs(out.PkScript, &wallet.MainNetParams)
@@ -169,6 +169,7 @@ func ConvertMsgToTransaction(msg *wire.MsgTx) *Transaction {
 			})
 		}
 		var transactionOut = TransactionOut{
+			Index:        uint(index),
 			Value:        out.Value,
 			PkScript:     out.PkScript,
 			LockString:   lockScript,

@@ -21,18 +21,18 @@ const BitcoinPeerAddress = "dev1.jasonc.me:8333"
 var BitcoinNode Node
 
 type Node struct {
-	Peer            *peer.Peer
-	NetAddress      string
-	Keys            []*db.Key
-	scriptAddresses []*wallet.Address
-	BloomFilter     *bloom.Filter
-	CheckedTxns     uint
-	LastBlock       *db.Block
-	SyncComplete    bool
-	LastMerkleBlock *db.Block
-	QueuedBlocks    map[string]*db.Block
-	BlockHashes     map[string]*db.Block
-	PrevBlockHashes map[string]*db.Block
+	Peer               *peer.Peer
+	NetAddress         string
+	Keys               []*db.Key
+	scriptAddresses    []*wallet.Address
+	BloomFilter        *bloom.Filter
+	CheckedTxns        uint
+	LastBlock          *db.Block
+	SyncComplete       bool
+	LastMerkleBlock    *db.Block
+	QueuedMerkleBlocks map[string]*db.Block
+	BlockHashes        map[string]*db.Block
+	PrevBlockHashes    map[string]*db.Block
 }
 
 func (n *Node) Start() {

@@ -8,6 +8,7 @@ import (
 
 type TransactionOut struct {
 	Id            uint   `gorm:"primary_key"`
+	Index         uint
 	TransactionId uint   `gorm:"unique_index:transaction_out_script;"`
 	Transaction   *Transaction
 	Value         int64
@@ -23,7 +24,7 @@ type TransactionOut struct {
 }
 
 func (t TransactionOut) Save() error {
-	result := save(t)
+	result := save(&t)
 	if result.Error != nil {
 		return jerr.Get("error saving transaction output", result.Error)
 	}

@@ -10,9 +10,9 @@ import (
 
 type Block struct {
 	Id         uint   `gorm:"primary_key"`
-	Height     uint   `gorm:"unique;"`
+	Height     uint   `gorm:"unique"`
 	Timestamp  time.Time
-	Hash       []byte `gorm:"unique;"`
+	Hash       []byte `gorm:"unique"`
 	PrevBlock  []byte
 	MerkleRoot []byte
 	Nonce      uint32
@@ -92,12 +92,6 @@ func GetGenesis() (*Block, error) {
 	return &block, nil
 }
 
-func ConvertMessageToBlock(msg *wire.MsgMerkleBlock) (*Block) {
-	block := ConvertMessageHeaderToBlock(&msg.Header)
-	block.TxnCount = msg.Transactions
-	return block
-}
-
 func ConvertMessageHeaderToBlock(header *wire.BlockHeader) (*Block) {
 	blockHash := header.BlockHash()
 	return &Block{
@@ -149,13 +143,6 @@ func AddBlock(block *Block) error {
 	if result.Error != nil {
 		return jerr.Get("error saving block", result.Error)
 	}
-	/*transactions := transaction.GetTransactionsFromMerkleBlock(msg)
-	if len(transactions) > 0 {
-		for _, txn := range transactions {
-			txn.GetTxId()
-		}
-		fmt.Printf("Txns: %d (height: %d)\n", len(transactions), newBlock.Height)
-	}*/
 	return nil
 }
 
@@ -176,12 +163,11 @@ func GetRecentBlock() (*Block, error) {
 }
 
 func GetBlocksInHeightRange(startHeight uint, endHeight uint) ([]*Block, error) {
-	db, err := getDb()
+	query, err := getDb()
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
 	}
 	var blocks []*Block
-	query := db
 	if startHeight > endHeight {
 		query = query.Order("height desc")
 		startHeight, endHeight = endHeight, startHeight

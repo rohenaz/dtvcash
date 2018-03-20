@@ -1,7 +1,6 @@
 package node
 
 import (
-	"fmt"
 	"git.jasonc.me/main/bitcoin/transaction"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
@@ -11,12 +10,12 @@ import (
 
 func onMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
 	hash := msg.Header.BlockHash().String()
-	block, ok := n.QueuedBlocks[hash]
+	block, ok := n.QueuedMerkleBlocks[hash]
 	if !ok {
-		fmt.Println(jerr.New("got merkle block that wasn't queued!"))
+		jerr.Newf("got merkle block that wasn't queued! (hash: %s)", hash).Print()
 		return
 	}
-	delete(n.QueuedBlocks, hash)
+	delete(n.QueuedMerkleBlocks, hash)
 
 	if block.Height != 0 {
 		for _, key := range n.Keys {
@@ -36,7 +35,7 @@ func onMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
 		n.BlockHashes[transactionHash.GetTxId().String()] = block
 	}
 
-	if len(n.QueuedBlocks) == 0 {
+	if len(n.QueuedMerkleBlocks) == 0 {
 		saveKeys(n)
 		if block.Height == 0 {
 			return
@@ -45,22 +44,21 @@ func onMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
 	}
 }
 
-func queueMerkleBlocks(n *Node, endingBlockHeight uint, startingBlockHeight uint) uint {
+func queueMerkleBlocks(n *Node, startingBlockHeight uint, endingBlockHeight uint) uint {
 	blocks, err := db.GetBlocksInHeightRange(startingBlockHeight, endingBlockHeight)
 	if err != nil {
-		fmt.Println(jerr.Get("error getting blocks in height range", err))
+		jerr.Get("error getting blocks in height range", err).Print()
 		return 0
 	}
 	msgGetData := wire.NewMsgGetData()
-	for i := len(blocks) - 1; i >= 0; i-- {
-		block := blocks[i]
-		n.QueuedBlocks[block.GetChainhash().String()] = block
+	for _, block := range blocks {
+		n.QueuedMerkleBlocks[block.GetChainhash().String()] = block
 		err := msgGetData.AddInvVect(&wire.InvVect{
 			Type: wire.InvTypeFilteredBlock,
 			Hash: *block.GetChainhash(),
 		})
 		if err != nil {
-			fmt.Printf("error adding invVect: %s\n", err)
+			jerr.Get("error adding invVect: %s\n", err).Print()
 			return 0
 		}
 	}
@@ -91,7 +89,7 @@ func queueMoreMerkleBlocks(n *Node) {
 	}
 	recentBlock, err := db.GetRecentBlock()
 	if err != nil {
-		fmt.Println(jerr.Get("error getting recent block", err))
+		jerr.Get("error getting recent block", err).Print()
 		return
 	}
 
@@ -102,19 +100,19 @@ func queueMoreMerkleBlocks(n *Node) {
 	}
 	// See if any new blocks need to be checked (usually after restarting)
 	if numQueued < 2000 && recentBlock.Height > maxHeightChecked {
-		endQueue := recentBlock.Height - 2000 + numQueued
-		if endQueue <= maxHeightChecked {
-			endQueue = maxHeightChecked + 1
+		var endQueue = maxHeightChecked + 2000 - numQueued
+		if endQueue > recentBlock.Height {
+			endQueue = recentBlock.Height
 		}
-		numQueued += queueMerkleBlocks(n, endQueue, recentBlock.Height)
+		numQueued += queueMerkleBlocks(n, maxHeightChecked + 1, endQueue)
 	}
 	// Work way back to genesis
 	if numQueued < 2000 && minHeightChecked > 1 {
-		var startQueue uint
-		if minHeightChecked > 2000-numQueued {
-			startQueue = minHeightChecked - 2000 + numQueued
+		var endQueue = minHeightChecked - 2000 + numQueued
+		if endQueue < 0 || endQueue > minHeightChecked {
+			endQueue = 0
 		}
-		numQueued += queueMerkleBlocks(n, minHeightChecked, startQueue)
+		numQueued += queueMerkleBlocks(n, minHeightChecked, endQueue)
 	}
 	if numQueued > 0 {
 		//fmt.Printf("Queued %d merkle blocks...\n", numQueued)

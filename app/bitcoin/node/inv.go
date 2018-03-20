@@ -12,12 +12,14 @@ func onInv(n *Node, msg *wire.MsgInv) {
 		switch inv.Type {
 		case wire.InvTypeBlock:
 			fmt.Printf("Got InvTypeBlock: %s\n", inv.Hash.String())
-			recentBlock, err := db.GetRecentBlock()
-			if err != nil {
-				fmt.Println(jerr.Get("error getting recent block", err))
-				return
+			if n.SyncComplete {
+				recentBlock, err := db.GetRecentBlock()
+				if err != nil {
+					fmt.Println(jerr.Get("error getting recent block", err))
+					return
+				}
+				sendGetHeaders(n, recentBlock.GetChainhash())
 			}
-			sendGetHeaders(n, recentBlock.GetChainhash())
 		case wire.InvTypeTx:
 			fmt.Printf("Got InvTypeTx: %s\n", inv.Hash.String())
 			getTransaction(n, inv.Hash)

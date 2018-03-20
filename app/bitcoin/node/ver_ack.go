@@ -14,7 +14,7 @@ func onVerAck(n *Node, msg *wire.MsgVerAck) {
 		fmt.Println(jerr.Get("error getting recent block", err))
 		return
 	}
-	n.QueuedBlocks = make(map[string]*db.Block)
+	n.QueuedMerkleBlocks = make(map[string]*db.Block)
 	n.BlockHashes = make(map[string]*db.Block)
 	sendGetHeaders(n, block.GetChainhash())
 }

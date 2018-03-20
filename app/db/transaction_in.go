@@ -11,6 +11,7 @@ import (
 
 type TransactionIn struct {
 	Id                    uint   `gorm:"primary_key"`
+	Index                 uint
 	TransactionId         uint   `gorm:"unique_index:transaction_in_script;"`
 	Transaction           *Transaction
 	PreviousOutPointHash  []byte

@@ -63,7 +63,7 @@ func onTx(n *Node, msg *wire.MsgTx) {
 		}
 		existingTransactions, err := db.GetTransactionsForKey(transaction.KeyId)
 		if err != nil {
-			fmt.Println(jerr.Get("error getting transactions for key", err))
+			jerr.Get("error getting transactions for key", err).Print()
 			return
 		}
 		var updateOldOutput struct {
@@ -73,7 +73,16 @@ func onTx(n *Node, msg *wire.MsgTx) {
 		for _, existingTransaction := range existingTransactions {
 			for _, in := range transaction.TxIn {
 				if bytes.Equal(in.PreviousOutPointHash, existingTransaction.Hash) {
-					txOut := existingTransaction.TxOut[in.PreviousOutPointIndex]
+					var txOut *db.TransactionOut
+					for _, existingTxOut := range existingTransaction.TxOut {
+						if uint32(existingTxOut.Index) == in.PreviousOutPointIndex {
+							txOut = existingTxOut
+						}
+					}
+					if txOut == nil {
+						jerr.New("error finding matching txOut!").Print()
+						return
+					}
 					in.TxnOutId = txOut.Id
 					txnInfo += fmt.Sprintf("matched existing transaction: %s\n", existingTransaction.GetChainHash().String())
 					updateOldOutput.txOut = txOut
@@ -103,14 +112,15 @@ func onTx(n *Node, msg *wire.MsgTx) {
 		}
 		err = transaction.Save()
 		if err != nil {
-			fmt.Println(jerr.Get("error saving transaction", err))
+			jerr.Get("error saving transaction", err).Print()
 			return
 		}
 		if updateOldOutput.txOut != nil {
 			updateOldOutput.txOut.TxnInId = updateOldOutput.txIn.Id
 			err := updateOldOutput.txOut.Save()
 			if err != nil {
-				fmt.Println(jerr.Get("error updating old transaction output", err))
+				jerr.Get("error updating old transaction output", err).Print()
+				return
 			}
 		}
 	}
@@ -123,7 +133,7 @@ func getTransaction(n *Node, txId chainhash.Hash) {
 		Hash: txId,
 	})
 	if err != nil {
-		fmt.Printf("error adding invVect: %s\n", err)
+		jerr.Get("error adding invVect: %s\n", err).Print()
 		return
 	}
 	n.Peer.QueueMessage(msgGetData, nil)
