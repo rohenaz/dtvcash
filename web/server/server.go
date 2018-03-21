@@ -84,6 +84,7 @@ func Run(sessionCookieInsecure bool) {
 			signupSubmitRoute,
 			blockRoute,
 			transactionRoute,
+			spendRoute,
 		}, key.GetRoutes()...),
 		StaticFilesDir: "web/public",
 		TemplatesDir:   "web/templates",

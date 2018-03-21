@@ -39,6 +39,20 @@ func (t TransactionOut) HasIn() bool {
 	return t.TxnInId > 0
 }
 
+func (t TransactionOut) IsSpendable() bool {
+	if t.TxnInId > 0 {
+		return false
+	}
+	transactionAddress := t.Transaction.Key.GetAddress().GetEncoded()
+	var addressFound bool
+	for _, address := range t.Addresses {
+		if address.String == transactionAddress {
+			addressFound = true
+		}
+	}
+	return addressFound
+}
+
 func (t TransactionOut) GetScriptClass() string {
 	return txscript.ScriptClass(t.ScriptClass).String()
 }

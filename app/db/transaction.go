@@ -17,6 +17,8 @@ const (
 	TxInTxnOutTable    = "TxIn.TxnOut"
 	TxInTxnOutTxnTable = "TxIn.TxnOut.Transaction"
 	TxOutTable         = "TxOut"
+	TxOutTxnTable      = "TxOut.Transaction"
+	TxOutTxnKeyTable   = "TxOut.Transaction.Key"
 	TxOutTxnInTable    = "TxOut.TxnIn"
 	TxOutTxnInTxnTable = "TxOut.TxnIn.Transaction"
 	TxOutAddressTable  = "TxOut.Addresses"
@@ -29,6 +31,8 @@ var allColumns = []string{
 	TxInTxnOutTable,
 	TxInTxnOutTxnTable,
 	TxOutTable,
+	TxOutTxnTable,
+	TxOutTxnKeyTable,
 	TxOutTxnInTable,
 	TxOutTxnInTxnTable,
 	TxOutAddressTable,

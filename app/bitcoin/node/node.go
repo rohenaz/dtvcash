@@ -13,6 +13,8 @@ import (
 
 /**
 TODO:
+- Make usable with public (untrusted) nodes
+  - Basically just need to connect to a few and verify you're getting the same block headers
 - Create and broadcast transaction
  */
 

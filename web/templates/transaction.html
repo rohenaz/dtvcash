@@ -29,7 +29,8 @@
     </tr>
     <tr>
         <th>Value</th>
-        <td>{{ formatBigInt .Transaction.GetValue }} satoshis ({{ formatBigFloat .Transaction.GetValueBCH }} BCH)</td></td>
+        <td>{{ formatBigInt .Transaction.GetValue }} satoshis ({{ formatBigFloat .Transaction.GetValueBCH }} BCH)</td>
+        </td>
     </tr>
     <tr>
         <th>Fee</th>
@@ -129,15 +130,18 @@
         {{ range .Addresses }}{{ .String }}<br/>{{ end }}
         </td>
     </tr>
-{{ if .HasIn }}
     <tr>
         <th>Actions</th>
         <td>
+        {{ if .HasIn }}
             <a href="transaction/{{ .TxnIn.Transaction.Id }}">View Transaction</a>
-            <!--<a href="spend/{{ .Id }}">Spend</a>-->
+        {{ end }}
+        {{if .IsSpendable }}
+            <a href="spend/{{ .Id }}">Spend</a>
+        {{ end }}
         </td>
     </tr>
-{{ end }}
+
 </table>
 
 <br/>

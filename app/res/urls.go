@@ -27,3 +27,7 @@ const (
 const (
 	UrlTransactionView = "/transaction"
 )
+
+const (
+	UrlSpend = "/spend"
+)
