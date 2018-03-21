@@ -22,6 +22,18 @@ const (
 	TxOutAddressTable  = "TxOut.Addresses"
 )
 
+var allColumns = []string{
+	BlockTable,
+	KeyTable,
+	TxInTable,
+	TxInTxnOutTable,
+	TxInTxnOutTxnTable,
+	TxOutTable,
+	TxOutTxnInTable,
+	TxOutTxnInTxnTable,
+	TxOutAddressTable,
+}
+
 type Transaction struct {
 	Id        uint   `gorm:"primary_key"`
 	KeyId     uint
@@ -49,6 +61,53 @@ func (t *Transaction) GetBlockTime() string {
 		return "-"
 	}
 	return t.Block.Timestamp.Format("2006-01-02 15:04")
+}
+
+func (t *Transaction) GetValueBCH() float64 {
+	return float64(t.GetValue()) * 1.e-8
+}
+
+func (t *Transaction) GetValue() int64 {
+	var inputTotal int64
+	var outputTotal int64
+	keyAddress := t.Key.GetAddress().GetEncoded()
+	for _, in := range t.TxIn {
+		if in.TxnOutId != 0 {
+			inputTotal += in.TxnOut.Value
+		}
+	}
+	for _, out := range t.TxOut {
+		for _, address := range out.Addresses {
+			if address.String == keyAddress {
+				outputTotal += out.Value
+			}
+		}
+
+	}
+	return outputTotal - inputTotal
+}
+
+func (t *Transaction) HasFee() bool {
+	return t.GetFee() > 0
+}
+
+func (t *Transaction) GetFeeBCH() float64 {
+	return float64(t.GetFee()) * 1.e-8
+}
+
+func (t *Transaction) GetFee() int64 {
+	var inputTotal int64
+	var outputTotal int64
+	for _, in := range t.TxIn {
+		if in.TxnOutId == 0 {
+			return 0
+		}
+		inputTotal += in.TxnOut.Value
+	}
+	for _, out := range t.TxOut {
+		outputTotal += out.Value
+	}
+	return inputTotal - outputTotal
 }
 
 func (t *Transaction) Save() error {
@@ -81,17 +140,7 @@ func GetTransactionById(transactionId uint) (*Transaction, error) {
 
 func getTransaction(txn Transaction) (*Transaction, error) {
 	var transaction Transaction
-	err := findPreloadColumns([]string{
-		BlockTable,
-		KeyTable,
-		TxInTable,
-		TxInTxnOutTable,
-		TxInTxnOutTxnTable,
-		TxOutTable,
-		TxOutTxnInTable,
-		TxOutTxnInTxnTable,
-		TxOutAddressTable,
-	}, &transaction, txn)
+	err := findPreloadColumns(allColumns, &transaction, txn)
 	if err != nil {
 		return nil, jerr.Get("error finding transaction", err)
 	}
@@ -100,11 +149,7 @@ func getTransaction(txn Transaction) (*Transaction, error) {
 
 func GetTransactionsForKey(keyId uint) ([]*Transaction, error) {
 	var transactions []*Transaction
-	err := findPreloadColumns([]string{
-		BlockTable,
-		KeyTable,
-		TxOutTable,
-	}, &transactions, Transaction{
+	err := findPreloadColumns(allColumns, &transactions, Transaction{
 		KeyId: keyId,
 	})
 	if err != nil {

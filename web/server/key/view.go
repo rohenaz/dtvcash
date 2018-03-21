@@ -36,7 +36,16 @@ var viewKeyRoute = web.Route{
 			r.Error(jerr.Get("error getting transactions for key", err), http.StatusInternalServerError)
 			return
 		}
+		var balance int64
+		var balanceBCH float64
+		for _, transaction := range transactions {
+			balance += transaction.GetValue()
+			balanceBCH += transaction.GetValueBCH()
+		}
 		r.Helper["Transactions"] = transactions
+		r.Helper["Balance"] = balance
+		r.Helper["BalanceBCH"] = balanceBCH
+
 		r.RenderTemplate(res.UrlKeyView)
 	},
 }

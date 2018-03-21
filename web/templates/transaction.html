@@ -27,6 +27,20 @@
         <th>Block Date (UTC)</th>
         <td>{{ .Transaction.GetBlockTime }}</td>
     </tr>
+    <tr>
+        <th>Value</th>
+        <td>{{ formatBigInt .Transaction.GetValue }} satoshis ({{ formatBigFloat .Transaction.GetValueBCH }} BCH)</td></td>
+    </tr>
+    <tr>
+        <th>Fee</th>
+    <td>
+    {{ if .Transaction.HasFee }}
+    {{ formatBigInt .Transaction.GetFee }} satoshis ({{ formatBigFloat .Transaction.GetFeeBCH }} BCH)</td>
+    {{ else }}
+        Unknown
+    {{ end }}
+        </td>
+    </tr>
 </table>
 
 <h3>Inputs</h3>
@@ -42,6 +56,12 @@
         <th>Index</th>
         <td>{{ .Index }}</td>
     </tr>
+{{ if .HasOut }}
+    <tr>
+        <th>Value</th>
+        <td>{{ formatBigInt .TxnOut.Value }} satoshis ({{ formatBigFloat .TxnOut.ValueInBCH }} BCH)</td>
+    </tr>
+{{ end }}
     <tr>
         <th>Sequence</th>
         <td>{{ .Sequence }}</td>
@@ -62,14 +82,14 @@
         <th>Unlock String</th>
         <td>{{ .UnlockString }}</td>
     </tr>
+{{ if .HasOut }}
     <tr>
         <th>Actions</th>
         <td>
-        {{ if .HasOut }}
             <a href="transaction/{{ .TxnOut.Transaction.Id }}">View Transaction</a>
-        {{ end }}
         </td>
     </tr>
+{{ end }}
 </table>
 
 {{ end }}
@@ -109,15 +129,15 @@
         {{ range .Addresses }}{{ .String }}<br/>{{ end }}
         </td>
     </tr>
+{{ if .HasIn }}
     <tr>
         <th>Actions</th>
         <td>
-        {{ if .HasIn }}
             <a href="transaction/{{ .TxnIn.Transaction.Id }}">View Transaction</a>
-        {{ end }}
             <!--<a href="spend/{{ .Id }}">Spend</a>-->
         </td>
     </tr>
+{{ end }}
 </table>
 
 <br/>

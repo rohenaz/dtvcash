@@ -23,6 +23,10 @@
         <th>Created</th>
         <td>{{ .Key.CreatedAt.Format "2006-01-02 15:04" }}</td>
     </tr>
+    <tr>
+        <th>Balance</th>
+        <td>{{ formatBigInt .Balance }} satoshis ({{ formatBigFloat .BalanceBCH }} BCH)</td>
+    </tr>
 </table>
 
 <br/>
@@ -44,6 +48,7 @@
         <th>Address</th>
         <th>Block Height</th>
         <th>Block Date (UTC)</th>
+        <th>Value</th>
         <th>Actions</th>
     </tr>
 {{ range .Transactions }}
@@ -53,6 +58,7 @@
         <td>{{ .Key.GetPublicKey.GetAddress.GetEncoded }}</td>
         <td>{{ .GetBlockHeight }}</td>
         <td>{{ .GetBlockTime }}</td>
+        <td>{{ formatBigInt .GetValue }} satoshis ({{ formatBigFloat .GetValueBCH }} BCH)</td>
         <td>
             <a href="transaction/{{ .Id }}">View</a>
         </td>
