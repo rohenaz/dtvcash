@@ -7,7 +7,6 @@ import (
 	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"
-	"github.com/btcsuite/btcd/btcec"
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
@@ -21,29 +20,6 @@ var spendRoute = web.Route{
 	Handler: func(r *web.Response) {
 		utxoId := r.Request.GetUrlNamedQueryVariableUInt(paramId.Id)
 		r.Helper["UtxoId"] = utxoId
-
-		txOut, err := db.GetTransactionOutputById(utxoId)
-		if err != nil {
-			r.Error(jerr.Get("error getting transaction output by id", err), http.StatusUnprocessableEntity)
-			return
-		}
-		address := txOut.Transaction.Key.GetAddress()
-		fmt.Printf("address: %s, txOut: %#v\n", address.GetEncoded(), txOut)
-
-		pkScript, err := txscript.PayToAddrScript(address.GetAddress())
-		if err != nil {
-			r.Error(jerr.Get("error creating pay to addr script", err), http.StatusInternalServerError)
-			return
-		}
-		fmt.Printf("pkScript: %x\n", pkScript)
-
-		/*var authoredTx = txauthor.AuthoredTx{
-			Tx:          unsignedTransaction,
-			PrevScripts: scripts,
-			TotalInput:  inputAmount,
-			ChangeIndex: changeIndex,
-		}*/
-
 		r.RenderTemplate(res.UrlSpend)
 	},
 }
@@ -81,13 +57,13 @@ var spendSignRoute = web.Route{
 			r.Error(jerr.Get("error creating pay to addr script (manual)", err), http.StatusInternalServerError)
 			return
 		}
-		fmt.Printf("pkScriptManual: %x\n", pkScript)
+		fmt.Printf("pkScript: %x\n", pkScript)
 
 		newTxIn := wire.NewTxIn(&wire.OutPoint{
 			Hash:  *txOut.Transaction.GetChainHash(),
 			Index: uint32(txOut.Index),
 		}, nil, nil)
-		newTxOut := wire.NewTxOut(4200, pkScript)
+		newTxOut := wire.NewTxOut(420001, pkScript)
 
 		var unsignedTransaction = &wire.MsgTx{
 			Version: wire.TxVersion,
@@ -102,34 +78,43 @@ var spendSignRoute = web.Route{
 
 		fmt.Printf("unsignedTransaction: %#v\n", unsignedTransaction)
 
-		var keyDb = wallet.KeyDB{
+		/*var keyDb = wallet.KeyDB{
 			Keys: map[string]*btcec.PrivateKey{
 				address.GetEncoded(): privateKey.GetBtcEcPrivateKey(),
 			},
-		}
+		}*/
 		writer := new(bytes.Buffer)
-		unsignedTransaction.BtcEncode(writer, 1, wire.BaseEncoding)
+		unsignedTransaction.BtcEncode(writer, 0, wire.BaseEncoding)
 		fmt.Printf("Unsigned: %s\nHex: %x\n", unsignedTransaction.TxHash().String(), writer.Bytes())
 
-		signature, err := txscript.SignTxOutput(
+		signature, err := txscript.SignatureScript(
+			unsignedTransaction,
+			0,
+			pkScript,
+			txscript.SigHashAll+wallet.SigHashForkID,
+			privateKey.GetBtcEcPrivateKey(),
+			true,
+		)
+
+		/*signature, err := txscript.SignTxOutput(
 			&wallet.MainNetParams,
 			unsignedTransaction,
 			0,
 			pkScript,
-			txscript.SigHashAll,
+			txscript.SigHashAll + wallet.SigHashForkID,
 			keyDb,
 			wallet.ScriptDb{},
 			txOut.PkScript,
-		)
+		)*/
 		if err != nil {
 			r.Error(jerr.Get("error signing transaction", err), http.StatusInternalServerError)
 			return
 		}
-		newTxIn.Witness = append(newTxIn.Witness, signature)
+		newTxIn.SignatureScript = signature
 
 		fmt.Printf("Signature: %x\n", signature)
 		writer = new(bytes.Buffer)
-		err = unsignedTransaction.BtcEncode(writer, 0, wire.WitnessEncoding)
+		err = unsignedTransaction.BtcEncode(writer, 1, wire.WitnessEncoding)
 		if err != nil {
 			r.Error(jerr.Get("error encoding transaction", err), http.StatusInternalServerError)
 			return
