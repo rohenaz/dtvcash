@@ -29,5 +29,6 @@ const (
 )
 
 const (
-	UrlSpend = "/spend"
+	UrlSpend     = "/spend"
+	UrlSpendSign = "/spend/sign"
 )

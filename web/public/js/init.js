@@ -65,6 +65,7 @@ var MemoApp = {
         DeleteKeySubmit: "key/delete-submit",
         KeyDataLoadSubmit: "key/data-load-submit",
         LoadKey: "key/load",
+        SpendSign: "spend/sign",
         Block: "block"
     };
 })();

@@ -16,6 +16,7 @@ TODO:
 - Make usable with public (untrusted) nodes
   - Basically just need to connect to a few and verify you're getting the same block headers
 - Create and broadcast transaction
+- Handle transaction between two known keys
  */
 
 const BitcoinPeerAddress = "dev1.jasonc.me:8333"

@@ -63,10 +63,12 @@ func getUrlWithBaseUrl(url string, r *web.Response) string {
 }
 
 func Run(sessionCookieInsecure bool) {
-	// Start bitcoin node
-	node.BitcoinNode.NetAddress = node.BitcoinPeerAddress
-	node.BitcoinNode.SetKeys()
-	node.BitcoinNode.Start()
+	go func() {
+		// Start bitcoin node
+		node.BitcoinNode.NetAddress = node.BitcoinPeerAddress
+		node.BitcoinNode.SetKeys()
+		node.BitcoinNode.Start()
+	}()
 
 	// Start web server
 	ws := web.Server{
@@ -85,6 +87,7 @@ func Run(sessionCookieInsecure bool) {
 			blockRoute,
 			transactionRoute,
 			spendRoute,
+			spendSignRoute,
 		}, key.GetRoutes()...),
 		StaticFilesDir: "web/public",
 		TemplatesDir:   "web/templates",

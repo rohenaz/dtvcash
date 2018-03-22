@@ -2,4 +2,22 @@
 
 <h2>Spend</h2>
 
+<div id="private-key">
+    <form id="key-password-form" method="post">
+        <label for="key-password">Key Password:</label>
+        <input autocomplete="new-password" type="password" name="password" id="key-password"/>
+        <input type="submit" value="Spend"/>
+    </form>
+</div>
+
+<h4>Output</h4>
+
+<div id="output"></div>
+
+<script type="text/javascript">
+    $(function () {
+        MemoApp.Form.Spend({{ .UtxoId }}, $("#key-password-form"), $("#output"));
+    });
+</script>
+
 {{ template "snippets/footer.html" . }}

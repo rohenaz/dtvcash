@@ -56,3 +56,21 @@ func (t TransactionOut) IsSpendable() bool {
 func (t TransactionOut) GetScriptClass() string {
 	return txscript.ScriptClass(t.ScriptClass).String()
 }
+
+func GetTransactionOutputById(id uint) (*TransactionOut, error) {
+	query, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	var txOut TransactionOut
+	result := query.
+		Preload("Transaction").
+		Preload("Transaction.Key").
+		Find(&txOut, TransactionOut{
+		Id: id,
+	})
+	if result.Error != nil {
+		return nil, jerr.Get("error finding transaction out", result.Error)
+	}
+	return &txOut, nil
+}
