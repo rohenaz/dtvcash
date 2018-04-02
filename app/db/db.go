@@ -15,6 +15,7 @@ import (
 var conn *gorm.DB
 
 const alreadyExistsErrorMessage = "record already exists"
+
 var alreadyExistsError = errors.New(alreadyExistsErrorMessage)
 
 var dbInterfaces = []interface{}{
@@ -28,6 +29,7 @@ var dbInterfaces = []interface{}{
 	Witness{},
 	TransactionOut{},
 	Address{},
+	Peer{},
 }
 
 func getDb() (*gorm.DB, error) {
@@ -86,6 +88,10 @@ func create(value interface{}) error {
 	return nil
 }
 
+func Find(out interface{}, where ...interface{}) error {
+	return find(out, where...)
+}
+
 func find(out interface{}, where ...interface{}) error {
 	db, err := getDb()
 	if err != nil {
@@ -109,6 +115,18 @@ func findPreloadColumns(columns []string, out interface{}, where ...interface{})
 	result := db.Find(out, where...)
 	if result.Error != nil {
 		return jerr.Get("error running query", result.Error)
+	}
+	return nil
+}
+
+func Save(value interface{}) error {
+	db, _ := getDb()
+	if db.Error != nil {
+		return jerr.Get("error getting db", db.Error)
+	}
+	result := db.Save(value)
+	if result.Error != nil {
+		return jerr.Get("error saving value", result.Error)
 	}
 	return nil
 }
