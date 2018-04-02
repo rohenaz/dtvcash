@@ -28,6 +28,19 @@ var (
 				return
 			}
 			r.Helper["PrivateKeys"] = privateKeys
+
+			recentBlock, err := db.GetRecentBlock()
+			if err != nil {
+				r.Error(jerr.Get("error getting recent block", err), http.StatusInternalServerError)
+				return
+			}
+
+			blocks, err := db.GetBlocksInHeightRange(recentBlock.Height, recentBlock.Height - 10)
+			if err != nil {
+				r.Error(jerr.Get("error getting blocks in range", err), http.StatusInternalServerError)
+				return
+			}
+			r.Helper["Blocks"] = blocks
 			r.RenderTemplate("dashboard")
 		},
 	}

@@ -69,6 +69,9 @@ func queueMerkleBlocks(n *Node, startingBlockHeight uint, endingBlockHeight uint
 }
 
 func queueMoreMerkleBlocks(n *Node) {
+	if ! n.SyncComplete {
+		return
+	}
 	var minHeightChecked uint
 	for _, key := range n.Keys {
 		if key.MinCheck == 0 {

@@ -93,3 +93,7 @@ func (n *Node) OnMerkleBlock(p *peer.Peer, msg *wire.MsgMerkleBlock) {
 func (n *Node) OnReject(p *peer.Peer, msg *wire.MsgReject) {
 	onReject(n, msg)
 }
+
+func (n *Node) QueueMore() {
+	queueMoreMerkleBlocks(n)
+}

@@ -163,4 +163,27 @@
             });
         });
     };
+    /**
+     * @param {int} keyId
+     * @param {jQuery} $form
+     */
+    MemoApp.Form.RefreshTransactions = function (keyId, $form) {
+        $form.submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: MemoApp.GetBaseUrl() + MemoApp.URL.RefreshKeySubmit,
+                data: {
+                    id: keyId
+                },
+                success: function () {
+                    location.reload();
+                },
+                /**
+                 * @param {XMLHttpRequest} xhr
+                 */
+                error: MemoApp.Form.ErrorHandler
+            });
+        });
+    };
 })();

@@ -41,7 +41,10 @@ func (t TransactionOut) HasIn() bool {
 
 func (t TransactionOut) IsSpendable() bool {
 	if t.TxnInId > 0 {
-		return false
+		txIn, _ := GetTransactionInputById(t.TxnInId)
+		if txIn.Transaction.BlockId > 0 {
+			return false
+		}
 	}
 	transactionAddress := t.Transaction.Key.GetAddress().GetEncoded()
 	var addressFound bool

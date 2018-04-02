@@ -18,6 +18,7 @@ const (
 	UrlKeyCreateSubmit   = "/key/create-submit"
 	UrlKeyDeleteSubmit   = "/key/delete-submit"
 	UrlKeyDataLoadSubmit = "/key/data-load-submit"
+	UrlKeyRefreshSubmit  = "/key/refresh-submit"
 )
 
 const (

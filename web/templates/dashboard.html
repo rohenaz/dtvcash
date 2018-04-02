@@ -2,6 +2,8 @@
 
 <h2>Dashboard</h2>
 
+<h3>Keys</h3>
+
 <table class="table">
     <tr>
         <th>Id</th>
@@ -17,9 +19,9 @@
         <td>{{ .GetPublicKey.GetAddress.GetEncoded }}</td>
         <td>{{ .CreatedAt.Format "2006-01-02 15:04" }}</td>
         <td>
-            <a href="key/{{ .Id }}">View</a>
-            <a href="#" class="key-delete" data-id="{{ .Id }}">Delete</a>
-            <a href="#" class="key-load" data-id="{{ .Id }}">Load Data</a>
+            <a class="btn" href="key/{{ .Id }}">View</a>
+            <a class="btn" href="#" class="key-delete" data-id="{{ .Id }}">Delete</a>
+            <a class="btn" href="#" class="key-load" data-id="{{ .Id }}">Load Data</a>
         </td>
     </tr>
 {{ end }}
@@ -36,6 +38,32 @@
     <a href="key/create" class="btn">Create Private Key</a>
     <a href="key/import" class="btn">Import Private Key</a>
 </p>
+
+<h3>Recent Blocks</h3>
+
+<table class="table">
+    <tr>
+        <th>Id</th>
+        <th>Height</th>
+        <th>Timestamp</th>
+        <th>Hash</th>
+        <th>Actions</th>
+    </tr>
+{{ range .Blocks }}
+    <tr>
+        <td>{{ .Id }}</td>
+        <td>{{ .Height }}</td>
+        <td>{{ .Timestamp.Format "2006-01-02 15:04" }}</td>
+        <td>{{ .GetChainhash.String }}</td>
+        <td>
+            <a class="btn" href="block/{{ .Height }}">View</a>
+            <a class="btn" href="https://blockchair.com/bitcoin-cash/block/{{ .Height }}">
+                View on Blockchair
+            </a>
+        </td>
+    </tr>
+{{ end }}
+</table>
 
 {{ template "snippets/block-form.html" . }}
 

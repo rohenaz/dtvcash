@@ -26,9 +26,7 @@ var dbInterfaces = []interface{}{
 	Block{},
 	Transaction{},
 	TransactionIn{},
-	Witness{},
 	TransactionOut{},
-	Address{},
 	Peer{},
 }
 

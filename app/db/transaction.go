@@ -131,6 +131,26 @@ func (t *Transaction) Save() error {
 	return nil
 }
 
+func (t *Transaction) Delete() error {
+	for _, in := range t.TxIn {
+		err := in.Delete()
+		if err != nil {
+			return jerr.Get("error removing transaction input", err)
+		}
+	}
+	for _, out := range t.TxOut {
+		result := remove(out)
+		if result.Error != nil {
+			return jerr.Get("error removing transaction output", result.Error)
+		}
+	}
+	result := remove(t)
+	if result.Error != nil {
+		return jerr.Get("error removing transaction", result.Error)
+	}
+	return nil
+}
+
 func (t *Transaction) GetChainHash() *chainhash.Hash {
 	hash, _ := chainhash.NewHash(t.Hash)
 	return hash
