@@ -7,8 +7,8 @@ import (
 	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"
-	"github.com/btcsuite/btcd/txscript"
-	"github.com/btcsuite/btcd/wire"
+	"github.com/cpacia/btcd/txscript"
+	"github.com/cpacia/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"net/http"
@@ -62,10 +62,10 @@ var spendSignRoute = web.Route{
 		newTxIn := wire.NewTxIn(&wire.OutPoint{
 			Hash:  *txOut.Transaction.GetChainHash(),
 			Index: uint32(txOut.Index),
-		}, nil, nil)
-		newTxOut := wire.NewTxOut(420001, pkScript)
+		}, nil)
+		newTxOut := wire.NewTxOut(txOut.Value-192, pkScript)
 
-		var unsignedTransaction = &wire.MsgTx{
+		var tx = &wire.MsgTx{
 			Version: wire.TxVersion,
 			TxIn: []*wire.TxIn{
 				newTxIn,
@@ -76,36 +76,16 @@ var spendSignRoute = web.Route{
 			LockTime: 0,
 		}
 
-		fmt.Printf("unsignedTransaction: %#v\n", unsignedTransaction)
-
-		/*var keyDb = wallet.KeyDB{
-			Keys: map[string]*btcec.PrivateKey{
-				address.GetEncoded(): privateKey.GetBtcEcPrivateKey(),
-			},
-		}*/
-		writer := new(bytes.Buffer)
-		unsignedTransaction.BtcEncode(writer, 0, wire.BaseEncoding)
-		fmt.Printf("Unsigned: %s\nHex: %x\n", unsignedTransaction.TxHash().String(), writer.Bytes())
-
 		signature, err := txscript.SignatureScript(
-			unsignedTransaction,
+			tx,
 			0,
 			pkScript,
 			txscript.SigHashAll+wallet.SigHashForkID,
 			privateKey.GetBtcEcPrivateKey(),
 			true,
+			txOut.Value,
 		)
 
-		/*signature, err := txscript.SignTxOutput(
-			&wallet.MainNetParams,
-			unsignedTransaction,
-			0,
-			pkScript,
-			txscript.SigHashAll + wallet.SigHashForkID,
-			keyDb,
-			wallet.ScriptDb{},
-			txOut.PkScript,
-		)*/
 		if err != nil {
 			r.Error(jerr.Get("error signing transaction", err), http.StatusInternalServerError)
 			return
@@ -113,13 +93,14 @@ var spendSignRoute = web.Route{
 		newTxIn.SignatureScript = signature
 
 		fmt.Printf("Signature: %x\n", signature)
-		writer = new(bytes.Buffer)
-		err = unsignedTransaction.BtcEncode(writer, 1, wire.WitnessEncoding)
+		writer := new(bytes.Buffer)
+		err = tx.BtcEncode(writer, 1)
 		if err != nil {
 			r.Error(jerr.Get("error encoding transaction", err), http.StatusInternalServerError)
 			return
 		}
-		fmt.Printf("Txn: %s\nHex: %x\n", unsignedTransaction.TxHash().String(), writer.Bytes())
-		node.BitcoinNode.Peer.QueueMessage(unsignedTransaction, nil)
+		fmt.Printf("Txn: %s\nHex: %x\n", tx.TxHash().String(), writer.Bytes())
+		node.BitcoinNode.Peer.QueueMessage(tx, nil)
+		node.BitcoinNode.OnTx(nil, tx)
 	},
 }

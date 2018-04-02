@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"git.jasonc.me/main/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/db"
-	"github.com/btcsuite/btcd/peer"
-	"github.com/btcsuite/btcd/wire"
-	"github.com/btcsuite/btcutil/bloom"
+	"github.com/cpacia/btcd/peer"
+	"github.com/cpacia/btcd/wire"
 	"log"
 	"net"
 )
@@ -28,7 +27,6 @@ type Node struct {
 	NetAddress         string
 	Keys               []*db.Key
 	scriptAddresses    []*wallet.Address
-	BloomFilter        *bloom.Filter
 	CheckedTxns        uint
 	LastBlock          *db.Block
 	SyncComplete       bool
@@ -50,6 +48,7 @@ func (n *Node) Start() {
 			OnInv:         n.OnInv,
 			OnMerkleBlock: n.OnMerkleBlock,
 			OnTx:          n.OnTx,
+			OnReject:      n.OnReject,
 		},
 	}, n.NetAddress)
 	if err != nil {
@@ -89,4 +88,8 @@ func (n *Node) OnTx(p *peer.Peer, msg *wire.MsgTx) {
 
 func (n *Node) OnMerkleBlock(p *peer.Peer, msg *wire.MsgMerkleBlock) {
 	onMerkleBlock(n, msg)
+}
+
+func (n *Node) OnReject(p *peer.Peer, msg *wire.MsgReject) {
+	onReject(n, msg)
 }

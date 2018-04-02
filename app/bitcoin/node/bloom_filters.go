@@ -2,8 +2,8 @@ package node
 
 import (
 	"fmt"
-	"github.com/btcsuite/btcd/wire"
-	"github.com/btcsuite/btcutil/bloom"
+	"github.com/cpacia/bchutil/bloom"
+	"github.com/cpacia/btcd/wire"
 )
 
 func setBloomFilters(n *Node) {

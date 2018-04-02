@@ -6,8 +6,8 @@ import (
 	"git.jasonc.me/main/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/btcsuite/btcd/txscript"
-	"github.com/btcsuite/btcd/wire"
+	"github.com/cpacia/btcd/txscript"
+	"github.com/cpacia/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
 )
 
@@ -30,9 +30,6 @@ func onTx(n *Node, msg *wire.MsgTx) {
 			"    prevOut: %s\n"+
 			"    unlockScript: %s\n",
 			in.Sequence, in.PreviousOutPoint.String(), unlockScript)
-		for _, witness := range in.Witness {
-			txnInfo = txnInfo + fmt.Sprintf("    witness: %x\n", witness)
-		}
 	}
 	for _, out := range msg.TxOut {
 		lockScript, err := txscript.DisasmString(out.PkScript)
@@ -40,7 +37,7 @@ func onTx(n *Node, msg *wire.MsgTx) {
 			txnInfo = txnInfo + fmt.Sprintf("Error disassembling lockScript: %s\n", err.Error())
 			continue
 		}
-		scriptClass, addresses, sigCount, err := txscript.ExtractPkScriptAddrs(out.PkScript, &wallet.MainNetParams)
+		scriptClass, addresses, sigCount, err := txscript.ExtractPkScriptAddrs(out.PkScript, &wallet.MainNetParamsOld)
 		for _, address := range addresses {
 			for _, scriptAddress := range scriptAddresses {
 				if bytes.Equal(address.ScriptAddress(), scriptAddress.GetScriptAddress()) {

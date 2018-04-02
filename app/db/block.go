@@ -3,7 +3,7 @@ package db
 import (
 	"git.jasonc.me/main/bitcoin/wallet"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/btcsuite/btcd/wire"
+	"github.com/cpacia/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
 	"time"
 )

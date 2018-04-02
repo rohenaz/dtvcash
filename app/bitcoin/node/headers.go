@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/btcsuite/btcd/wire"
+	"github.com/cpacia/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
 )
 
