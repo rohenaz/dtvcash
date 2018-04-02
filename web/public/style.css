@@ -6,9 +6,18 @@ a {
     color: #005;
 }
 
+h1 {
+    margin-bottom: 10px;
+}
 h1 a {
     text-decoration: none;
     color: #000;
+}
+h1 a img {
+    display: inline-block;
+    vertical-align: bottom;
+    width: 40px;
+    height: 40px;
 }
 
 input, textarea, select {

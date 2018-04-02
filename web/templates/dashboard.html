@@ -53,7 +53,7 @@
     <tr>
         <td>{{ .Id }}</td>
         <td>{{ .Height }}</td>
-        <td>{{ .Timestamp.Format "2006-01-02 15:04" }}</td>
+        <td>{{ .Timestamp.Format "2006-01-02 15:04:05" }}</td>
         <td>{{ .GetChainhash.String }}</td>
         <td>
             <a class="btn" href="block/{{ .Height }}">View</a>

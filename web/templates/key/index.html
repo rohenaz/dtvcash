@@ -27,6 +27,14 @@
         <th>Balance</th>
         <td>{{ formatBigInt .Balance }} satoshis ({{ formatBigFloat .BalanceBCH }} BCH)</td>
     </tr>
+    <tr>
+        <th>Actions</th>
+        <td>
+            <a class="btn" href="https://blockchair.com/bitcoin-cash/address/{{ .Key.GetPublicKey.GetAddress.GetEncoded }}">
+                View on Blockchair
+            </a>
+        </td>
+    </tr>
 </table>
 
 <br/>
