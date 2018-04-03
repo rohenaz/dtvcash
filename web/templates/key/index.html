@@ -68,7 +68,7 @@
         <td>{{ .GetBlockHeight }}</td>
         <td>{{ .GetBlockTime }}</td>
         <td>{{ formatBigInt .GetValue }} satoshis ({{ formatBigFloat .GetValueBCH }} BCH)</td>
-        <td>{{ .CreatedAt.Format "2006-01-02 15:04" }}</td>
+        <td>{{ .CreatedAt.Format "2006-01-02 15:04:05" }}</td>
         <td>
             <a class="btn" href="transaction/{{ .Id }}">View</a>
             <a class="btn" href="https://blockchair.com/bitcoin-cash/transaction/{{ .GetChainHash.String }}">View on
