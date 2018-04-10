@@ -26,6 +26,14 @@ type TransactionIn struct {
 	UpdatedAt             time.Time
 }
 
+func (t TransactionIn) Save() error {
+	result := save(&t)
+	if result.Error != nil {
+		return jerr.Get("error saving transaction input", result.Error)
+	}
+	return nil
+}
+
 func (t TransactionIn) GetOutPoint() *wire.OutPoint {
 	hash, _ := chainhash.NewHash(t.PreviousOutPointHash)
 	return wire.NewOutPoint(hash, t.PreviousOutPointIndex)
@@ -43,16 +51,19 @@ func (t TransactionIn) HasOut() bool {
 	return t.TxnOutId > 0
 }
 
-func (t TransactionIn) GetAddress() string {
+func (t TransactionIn) GetAddressString() string {
+	return t.GetAddress().GetEncoded()
+}
+func (t TransactionIn) GetAddress() wallet.Address {
 	split := strings.Split(t.UnlockString, " ")
 	if len(split) != 2 {
-		return ""
+		return wallet.Address{}
 	}
 	pubKey, err := hex.DecodeString(split[1])
 	if err != nil {
-		return ""
+		return wallet.Address{}
 	}
-	return wallet.GetAddress(pubKey).GetEncoded()
+	return wallet.GetAddress(pubKey)
 }
 
 func (t TransactionIn) Delete() error {

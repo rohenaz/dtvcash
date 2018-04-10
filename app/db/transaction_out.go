@@ -1,14 +1,17 @@
 package db
 
 import (
-	"github.com/btcsuite/btcd/txscript"
+	"bytes"
+	"git.jasonc.me/main/bitcoin/bitcoin/memo"
+	"github.com/cpacia/btcd/txscript"
 	"github.com/jchavannes/jgo/jerr"
+	"strings"
 	"time"
 )
 
 type TransactionOut struct {
 	Id            uint   `gorm:"primary_key"`
-	Index         uint
+	Index         uint32
 	TransactionId uint   `gorm:"unique_index:transaction_out_script;"`
 	Transaction   *Transaction
 	Value         int64
@@ -58,6 +61,32 @@ func (t TransactionOut) IsSpendable() bool {
 
 func (t TransactionOut) GetScriptClass() string {
 	return txscript.ScriptClass(t.ScriptClass).String()
+}
+
+func (t TransactionOut) GetMessage() string {
+	if txscript.ScriptClass(t.ScriptClass) == txscript.NullDataTy {
+		data, err := txscript.PushedData(t.PkScript)
+		if err != nil || len(data) == 0 {
+			return ""
+		}
+		return string(data[0])
+	}
+	if len(t.PkScript) < 5 || ! bytes.Equal(t.PkScript[0:3], []byte{
+		txscript.OP_RETURN,
+		txscript.OP_DATA_2,
+		memo.CodePrefix,
+	}) {
+		return ""
+	}
+	data, err := txscript.PushedData(t.PkScript[3:])
+	if err != nil || len(data) == 0 {
+		return ""
+	}
+	var stringArray []string
+	for _, bt := range data {
+		stringArray = append(stringArray, string(bt))
+	}
+	return strings.Join(stringArray, " ")
 }
 
 func GetTransactionOutputById(id uint) (*TransactionOut, error) {

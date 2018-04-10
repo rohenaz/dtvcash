@@ -1,23 +1,32 @@
 package node
 
 import (
-	"git.jasonc.me/main/bitcoin/bitcoin/transaction"
+	"git.jasonc.me/main/memo/app/bitcoin/transaction"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/cpacia/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
 )
 
+const MinCheckHeight = 520000
+
 func onMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
 	hash := msg.Header.BlockHash().String()
+	var block *db.Block
+	var err error
 	block, ok := n.QueuedMerkleBlocks[hash]
 	if !ok {
-		jerr.Newf("got merkle block that wasn't queued! (hash: %s)", hash).Print()
-		return
+		//jerr.Newf("got merkle block that wasn't queued! (hash: %s)", hash).Print()
+		block, err = db.GetBlockByHash(msg.Header.PrevBlock)
+		if err != nil {
+			jerr.Get("error matching prevHash to a db block", err).Print()
+			return
+		}
+	} else {
+		delete(n.QueuedMerkleBlocks, hash)
 	}
-	delete(n.QueuedMerkleBlocks, hash)
 
-	if block.Height != 0 {
+	if block != nil && block.Height != 0 {
 		for _, key := range n.Keys {
 			if key.MaxCheck == 0 {
 				key.MaxCheck = block.Height
@@ -37,7 +46,7 @@ func onMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
 
 	if len(n.QueuedMerkleBlocks) == 0 {
 		saveKeys(n)
-		if block.Height == 0 {
+		if block.Height < MinCheckHeight {
 			return
 		}
 		queueMoreMerkleBlocks(n)
@@ -117,15 +126,10 @@ func queueMoreMerkleBlocks(n *Node) {
 		}
 		numQueued += queueMerkleBlocks(n, minHeightChecked, endQueue)
 	}
-	if numQueued > 0 {
-		//fmt.Printf("Queued %d merkle blocks...\n", numQueued)
-	} else {
-		//fmt.Println("Merkle blocks all caught up!")
-	}
 }
 
-func findHashBlock(n *Node, hash *chainhash.Hash) *db.Block {
-	for _, hashMap := range []map[string]*db.Block{n.BlockHashes, n.PrevBlockHashes} {
+func findHashBlock(blockHashes []map[string]*db.Block, hash chainhash.Hash) *db.Block {
+	for _, hashMap := range blockHashes {
 		for hashString, block := range hashMap {
 			if hashString == hash.String() {
 				return block

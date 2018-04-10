@@ -76,7 +76,7 @@ func (t *Transaction) GetValue() int64 {
 	var outputTotal int64
 	keyAddress := t.Key.GetAddress().GetEncoded()
 	for _, in := range t.TxIn {
-		if in.TxnOutId != 0 {
+		if in.TxnOutId != 0 && in.TxnOut != nil {
 			inputTotal += in.TxnOut.Value
 		}
 	}
@@ -231,7 +231,7 @@ func ConvertMsgToTransaction(msg *wire.MsgTx) *Transaction {
 			})
 		}
 		var transactionOut = TransactionOut{
-			Index:        uint(index),
+			Index:        uint32(index),
 			Value:        out.Value,
 			PkScript:     out.PkScript,
 			LockString:   lockScript,

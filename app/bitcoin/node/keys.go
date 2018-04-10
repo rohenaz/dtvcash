@@ -2,15 +2,15 @@ package node
 
 import (
 	"fmt"
-	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/db"
+	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"github.com/jchavannes/jgo/jerr"
 )
 
 func setKeys(n *Node) {
 	allKeys, err := db.GetAllKeys()
 	if err != nil {
-		jerr.Get("error getting keys from db", err).Print()
+		fmt.Println(jerr.Get("error getting keys from db", err))
 		return
 	}
 	n.Keys = allKeys
