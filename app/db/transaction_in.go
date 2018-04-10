@@ -2,7 +2,7 @@ package db
 
 import (
 	"encoding/hex"
-	"git.jasonc.me/main/bitcoin/wallet"
+	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/cpacia/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"

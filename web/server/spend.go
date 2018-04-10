@@ -3,7 +3,7 @@ package server
 import (
 	"bytes"
 	"fmt"
-	"git.jasonc.me/main/bitcoin/wallet"
+	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"

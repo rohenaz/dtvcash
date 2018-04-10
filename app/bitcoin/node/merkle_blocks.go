@@ -1,7 +1,7 @@
 package node
 
 import (
-	"git.jasonc.me/main/bitcoin/transaction"
+	"git.jasonc.me/main/bitcoin/bitcoin/transaction"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/cpacia/btcd/wire"

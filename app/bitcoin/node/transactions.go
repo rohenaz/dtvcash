@@ -3,7 +3,7 @@ package node
 import (
 	"bytes"
 	"fmt"
-	"git.jasonc.me/main/bitcoin/wallet"
+	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/cpacia/btcd/txscript"

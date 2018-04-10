@@ -2,7 +2,7 @@ package node
 
 import (
 	"fmt"
-	"git.jasonc.me/main/bitcoin/wallet"
+	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
 )
