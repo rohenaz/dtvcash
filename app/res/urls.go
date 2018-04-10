@@ -20,16 +20,3 @@ const (
 	UrlKeyDataLoadSubmit = "/key/data-load-submit"
 	UrlKeyRefreshSubmit  = "/key/refresh-submit"
 )
-
-const (
-	UrlBlockView = "/block"
-)
-
-const (
-	UrlTransactionView = "/transaction"
-)
-
-const (
-	UrlSpend     = "/spend"
-	UrlSpendSign = "/spend/sign"
-)

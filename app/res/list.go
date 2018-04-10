@@ -11,8 +11,6 @@ var JsFiles = []string{
 	"js/login.js",
 	"js/signup.js",
 	"js/key.js",
-	"js/block.js",
-	"js/spend.js",
 }
 
 var CssFiles = []string{

@@ -1,24 +1,14 @@
 package server
 
 import (
-	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/bitcoin/node"
+	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/res"
 	"git.jasonc.me/main/memo/web/server/key"
 	"github.com/jchavannes/jgo/web"
 	"log"
 	"net/http"
 )
-
-var paramHeight = web.UrlParam{
-	Id:   "height",
-	Type: web.UrlParamInteger,
-}
-
-var paramId = web.UrlParam{
-	Id:   "id",
-	Type: web.UrlParamInteger,
-}
 
 var UseMinJS bool
 
@@ -84,10 +74,6 @@ func Run(sessionCookieInsecure bool) {
 			logoutRoute,
 			signupRoute,
 			signupSubmitRoute,
-			blockRoute,
-			transactionRoute,
-			spendRoute,
-			spendSignRoute,
 		}, key.GetRoutes()...),
 		StaticFilesDir: "web/public",
 		TemplatesDir:   "web/templates",
