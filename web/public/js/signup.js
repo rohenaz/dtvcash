@@ -43,7 +43,7 @@
                 data: {
                     username: username,
                     password: password,
-                    private_key: privateKey
+                    wif: privateKey
                 },
                 success: function () {
                     window.location = MemoApp.GetBaseUrl() + MemoApp.URL.Index

@@ -28,7 +28,7 @@ func (k *Key) Save() error {
 }
 
 func (k Key) GetPrivateKey(password string) (*wallet.PrivateKey, error) {
-	key, err := cryptography.GenerateKeyFromPassword(password)
+	key, err := cryptography.GenerateEncryptionKeyFromPassword(password)
 	if err != nil {
 		return nil, jerr.Get("error generating key from password", err)
 	}
@@ -63,16 +63,16 @@ func (k Key) Delete() error {
 }
 
 func GenerateKey(name string, password string, userId uint) (*Key, error) {
-	key, err := cryptography.GenerateKeyFromPassword(password)
+	encryptionKey, err := cryptography.GenerateEncryptionKeyFromPassword(password)
 	if err != nil {
-		return nil, jerr.Get("error generating key from password", err)
+		return nil, jerr.Get("error generating encryption key from password", err)
 	}
 	privateKey := wallet.GeneratePrivateKey()
-	return createKey(name, privateKey, key, userId)
+	return createKey(name, privateKey, encryptionKey, userId)
 }
 
 func ImportKey(name string, password string, wif string, userId uint) (*Key, error) {
-	key, err := cryptography.GenerateKeyFromPassword(password)
+	key, err := cryptography.GenerateEncryptionKeyFromPassword(password)
 	if err != nil {
 		return nil, jerr.Get("error generating key from password", err)
 	}
@@ -113,6 +113,7 @@ func GetKey(id uint, userId uint) (*Key, error) {
 	return &privateKey, nil
 }
 
+// Deprecated: Only one key per user now
 func GetKeysForUser(userId uint) ([]*Key, error) {
 	var privateKeys []*Key
 	err := find(&privateKeys, Key{
@@ -122,6 +123,17 @@ func GetKeysForUser(userId uint) ([]*Key, error) {
 		return nil, err
 	}
 	return privateKeys, nil
+}
+
+func GetKeyForUser(userId uint) (*Key, error) {
+	var privateKey Key
+	err := find(&privateKey, Key{
+		UserId: userId,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &privateKey, nil
 }
 
 func GetAllKeys() ([]*Key, error) {

@@ -22,25 +22,12 @@ var (
 				r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
 				return
 			}
-			privateKeys, err := db.GetKeysForUser(user.Id)
+			key, err := db.GetKeyForUser(user.Id)
 			if err != nil {
-				r.Error(jerr.Get("error getting private keys for user", err), http.StatusInternalServerError)
+				r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
 				return
 			}
-			r.Helper["PrivateKeys"] = privateKeys
-
-			recentBlock, err := db.GetRecentBlock()
-			if err != nil {
-				r.Error(jerr.Get("error getting recent block", err), http.StatusInternalServerError)
-				return
-			}
-
-			blocks, err := db.GetBlocksInHeightRange(recentBlock.Height, recentBlock.Height - 10)
-			if err != nil {
-				r.Error(jerr.Get("error getting blocks in range", err), http.StatusInternalServerError)
-				return
-			}
-			r.Helper["Blocks"] = blocks
+			r.Helper["Key"] = key
 			r.RenderTemplate("dashboard")
 		},
 	}
