@@ -2,7 +2,30 @@
 
 <h2>Dashboard</h2>
 
-KeyId: {{ .Key.Id }}<br/>
-KeyName: {{ .Key.Name }}
+<table class="table left">
+    <tr>
+        <th>Address</th>
+        <td>{{ .Key.GetPublicKey.GetAddress.GetEncoded }}</td>
+    </tr>
+    <tr>
+        <th>Balance</th>
+        <td>{{ formatBigInt .Balance }} satoshis ({{ formatBigFloat .BalanceBCH }} BCH)</td>
+    </tr>
+    <tr>
+        <th>Actions</th>
+        <td>
+            <a class="btn"
+               href="https://blockchair.com/bitcoin-cash/address/{{ .Key.GetPublicKey.GetAddress.GetEncoded }}">
+                View on Blockchair
+            </a>
+        </td>
+    </tr>
+</table>
+
+{{ if eq .Balance 0 }}
+<p>
+    Send yourself some BCH to start posting.
+</p>
+{{ end }}
 
 {{ template "snippets/footer.html" . }}
