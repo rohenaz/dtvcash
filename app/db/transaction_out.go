@@ -1,11 +1,10 @@
 package db
 
 import (
-	"bytes"
-	"git.jasonc.me/main/bitcoin/bitcoin/memo"
+	"git.jasonc.me/main/bitcoin/bitcoin/transaction"
 	"github.com/cpacia/btcd/txscript"
 	"github.com/jchavannes/jgo/jerr"
-	"strings"
+	"html"
 	"time"
 )
 
@@ -71,22 +70,7 @@ func (t TransactionOut) GetMessage() string {
 		}
 		return string(data[0])
 	}
-	if len(t.PkScript) < 5 || ! bytes.Equal(t.PkScript[0:3], []byte{
-		txscript.OP_RETURN,
-		txscript.OP_DATA_2,
-		memo.CodePrefix,
-	}) {
-		return ""
-	}
-	data, err := txscript.PushedData(t.PkScript[3:])
-	if err != nil || len(data) == 0 {
-		return ""
-	}
-	var stringArray []string
-	for _, bt := range data {
-		stringArray = append(stringArray, string(bt))
-	}
-	return strings.Join(stringArray, " ")
+	return html.EscapeString(transaction.GetScriptString(t.PkScript))
 }
 
 func GetTransactionOutputById(id uint) (*TransactionOut, error) {

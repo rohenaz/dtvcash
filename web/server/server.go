@@ -57,6 +57,7 @@ func Run(sessionCookieInsecure bool) {
 		Routes: web.Routes(
 			[]web.Route{
 				indexRoute,
+				testsRoute,
 			},
 			key.GetRoutes(),
 			auth2.GetRoutes(),

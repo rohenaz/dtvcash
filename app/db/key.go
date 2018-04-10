@@ -72,15 +72,15 @@ func GenerateKey(name string, password string, userId uint) (*Key, error) {
 }
 
 func ImportKey(name string, password string, wif string, userId uint) (*Key, error) {
-	key, err := cryptography.GenerateEncryptionKeyFromPassword(password)
+	encryptionKey, err := cryptography.GenerateEncryptionKeyFromPassword(password)
 	if err != nil {
-		return nil, jerr.Get("error generating key from password", err)
+		return nil, jerr.Get("error generating encryption key from password", err)
 	}
 	privateKey, err := wallet.ImportPrivateKey(wif)
 	if err != nil {
 		return nil, jerr.Get("error importing key from wif", err)
 	}
-	return createKey(name, privateKey, key, userId)
+	return createKey(name, privateKey, encryptionKey, userId)
 }
 
 func createKey(name string, privateKey wallet.PrivateKey, key []byte, userId uint) (*Key, error) {

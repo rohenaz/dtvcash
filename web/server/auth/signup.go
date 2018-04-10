@@ -3,6 +3,7 @@ package auth
 import (
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/auth"
+	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"
 	"github.com/jchavannes/jgo/jerr"
@@ -54,15 +55,16 @@ var signupSubmitRoute = web.Route{
 			return
 		}
 		if wif == "" {
-			_, err = db.GenerateKey(username+"-default", password, user.Id)
+			_, err = db.GenerateKey(username+"-generated", password, user.Id)
 			if err != nil {
 				r.Error(jerr.Get("error creating new private key", err), http.StatusInternalServerError)
 			}
 		} else {
-			_, err = db.ImportKey(username, password, wif, user.Id)
+			_, err = db.ImportKey(username+"-imported", password, wif, user.Id)
 			if err != nil {
 				r.Error(jerr.Get("error importing key", err), http.StatusInternalServerError)
 			}
 		}
+		node.BitcoinNode.SetKeys()
 	},
 }

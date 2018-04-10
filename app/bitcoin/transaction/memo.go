@@ -23,7 +23,7 @@ func FindAndSaveMemos(txn *db.Transaction) {
 		}
 		var test = db.MemoTest{
 			TxHash: txn.GetChainHash().CloneBytes(),
-			Address: address,
+			PkHash: address,
 			PkScript: out.PkScript,
 		}
 		err := test.Save()
