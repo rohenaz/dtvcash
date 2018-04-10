@@ -1,7 +1,9 @@
 package db
 
 import (
-	"git.jasonc.me/main/bitcoin/bitcoin/transaction"
+	"git.jasonc.me/main/bitcoin/bitcoin/script"
+	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"github.com/btcsuite/btcutil"
 	"github.com/cpacia/btcd/txscript"
 	"github.com/jchavannes/jgo/jerr"
 	"html"
@@ -70,7 +72,15 @@ func (t TransactionOut) GetMessage() string {
 		}
 		return string(data[0])
 	}
-	return html.EscapeString(transaction.GetScriptString(t.PkScript))
+	return html.EscapeString(script.GetScriptString(t.PkScript))
+}
+
+func (t TransactionOut) GetAddress() btcutil.Address {
+	_, addresses, _, _ := txscript.ExtractPkScriptAddrs(t.PkScript, &wallet.MainNetParamsOld)
+	if len(addresses) == 0 {
+		return nil
+	}
+	return addresses[0]
 }
 
 func GetTransactionOutputById(id uint) (*TransactionOut, error) {

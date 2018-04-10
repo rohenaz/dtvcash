@@ -6,6 +6,7 @@ import (
 	"git.jasonc.me/main/memo/app/res"
 	auth2 "git.jasonc.me/main/memo/web/server/auth"
 	"git.jasonc.me/main/memo/web/server/key"
+	"git.jasonc.me/main/memo/web/server/memo"
 	"github.com/jchavannes/jgo/web"
 	"log"
 	"net/http"
@@ -61,6 +62,7 @@ func Run(sessionCookieInsecure bool) {
 			},
 			key.GetRoutes(),
 			auth2.GetRoutes(),
+			memo.GetRoutes(),
 		),
 		StaticFilesDir: "web/public",
 		TemplatesDir:   "web/templates",

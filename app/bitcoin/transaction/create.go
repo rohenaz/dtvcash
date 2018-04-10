@@ -3,6 +3,7 @@ package transaction
 import (
 	"bytes"
 	"fmt"
+	"git.jasonc.me/main/bitcoin/bitcoin/memo"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"github.com/cpacia/btcd/txscript"
@@ -49,10 +50,17 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(0, pkScript))
 		case SpendOutputTypeMemoMessage:
+			msgBytes := []byte(spendOutput.Message)
+			if len(msgBytes) > memo.MaxPostSize {
+				return nil, jerr.New("message size too large")
+			}
+			if len(msgBytes) == 0 {
+				return nil, jerr.New("empty message")
+			}
 			pkScript, err := txscript.NewScriptBuilder().
 				AddOp(txscript.OP_RETURN).
-				AddData([]byte{0x6d, 0x00}).
-				AddData([]byte(spendOutput.Message)).
+				AddData([]byte{memo.CodePrefix, memo.CodePost}).
+				AddData(msgBytes).
 				Script()
 			if err != nil {
 				return nil, jerr.Get("error creating memo message output", err)

@@ -2,9 +2,9 @@ package transaction
 
 import (
 	"fmt"
-	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/bitcoin/bitcoin/peer"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"git.jasonc.me/main/memo/app/db"
 	btcdPeer "github.com/cpacia/btcd/peer"
 	"github.com/jchavannes/jgo/jerr"
 	"time"

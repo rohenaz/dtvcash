@@ -22,6 +22,11 @@ const (
 	UrlKeyDeleteSubmit = "/key/delete-submit"
 )
 
+const (
+	UrlMemoNew       = "/memo/new"
+	UrlMemoNewSubmit = "/memo/new-submit"
+)
+
 func GetBaseUrl(r *web.Response) string {
 	baseUrl := r.Request.GetHeader("AppPath")
 	if baseUrl == "" {

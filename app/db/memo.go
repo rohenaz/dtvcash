@@ -1,7 +1,7 @@
 package db
 
 import (
-	"git.jasonc.me/main/bitcoin/bitcoin/transaction"
+	"git.jasonc.me/main/bitcoin/bitcoin/script"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"github.com/btcsuite/btcutil"
 	"github.com/cpacia/btcd/chaincfg/chainhash"
@@ -46,7 +46,7 @@ func (m MemoTest) GetAddressString() string {
 }
 
 func (m MemoTest) GetScriptString() string {
-	return html.EscapeString(transaction.GetScriptString(m.PkScript))
+	return html.EscapeString(script.GetScriptString(m.PkScript))
 }
 
 func GetMemoTests() ([]*MemoTest, error) {

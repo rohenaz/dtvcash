@@ -60,13 +60,6 @@ var MemoApp = {
         Index: "",
         LoginSubmit: "login-submit",
         SignupSubmit: "signup-submit",
-        CreatePrivateKeySubmit: "key/create-submit",
-        ImportKeySubmit: "key/import-submit",
-        DeleteKeySubmit: "key/delete-submit",
-        KeyDataLoadSubmit: "key/data-load-submit",
-        LoadKey: "key/load",
-        RefreshKeySubmit: "key/refresh-submit",
-        SpendSign: "spend/sign",
-        Block: "block"
+        MemoNewSubmit: "memo/new-submit"
     };
 })();
