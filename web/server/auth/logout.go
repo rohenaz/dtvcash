@@ -1,4 +1,4 @@
-package server
+package auth
 
 import (
 	"git.jasonc.me/main/memo/app/auth"
@@ -17,6 +17,6 @@ var logoutRoute = web.Route{
 				return
 			}
 		}
-		r.SetRedirect(getUrlWithBaseUrl(res.UrlIndex, r))
+		r.SetRedirect(res.GetUrlWithBaseUrl(res.UrlIndex, r))
 	},
 }

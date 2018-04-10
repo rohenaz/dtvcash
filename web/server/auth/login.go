@@ -1,4 +1,4 @@
-package server
+package auth
 
 import (
 	"git.jasonc.me/main/memo/app/auth"
@@ -7,23 +7,20 @@ import (
 	"net/http"
 )
 
-var signupRoute = web.Route{
-	Pattern: res.UrlSignup,
+
+var loginRoute = web.Route{
+	Pattern: res.UrlLogin,
 	Handler: func(r *web.Response) {
-		if auth.IsLoggedIn(r.Session.CookieId) {
-			r.SetRedirect(getUrlWithBaseUrl(res.UrlIndex, r))
-			return
-		}
 		r.Render()
 	},
 }
 
-var signupSubmitRoute = web.Route{
-	Pattern:     res.UrlSignupSubmit,
+var loginSubmitRoute = web.Route{
+	Pattern:     res.UrlLoginSubmit,
 	CsrfProtect: true,
 	Handler: func(r *web.Response) {
 		if auth.IsLoggedIn(r.Session.CookieId) {
-			r.SetRedirect(getUrlWithBaseUrl(res.UrlIndex, r))
+			r.SetRedirect(res.GetUrlWithBaseUrl(res.UrlIndex, r))
 			return
 		}
 		// Protects against some session hi-jacking attacks
@@ -31,7 +28,7 @@ var signupSubmitRoute = web.Route{
 		username := r.Request.GetFormValue("username")
 		password := r.Request.GetFormValue("password")
 
-		err := auth.Signup(r.Session.CookieId, username, password)
+		err := auth.Login(r.Session.CookieId, username, password)
 		if err != nil {
 			r.Error(err, http.StatusUnauthorized)
 		}

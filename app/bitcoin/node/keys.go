@@ -10,7 +10,7 @@ import (
 func setKeys(n *Node) {
 	allKeys, err := db.GetAllKeys()
 	if err != nil {
-		fmt.Println(jerr.Get("error getting keys from db", err))
+		jerr.Get("error getting keys from db", err).Print()
 		return
 	}
 	n.Keys = allKeys

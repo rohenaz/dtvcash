@@ -1,9 +1,10 @@
 package server
 
 import (
-	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/auth"
+	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/res"
+	auth2 "git.jasonc.me/main/memo/web/server/auth"
 	"git.jasonc.me/main/memo/web/server/key"
 	"github.com/jchavannes/jgo/web"
 	"log"
@@ -21,7 +22,7 @@ func isLoggedIn(r *web.Response) bool {
 }
 
 func preHandler(r *web.Response) {
-	r.Helper["BaseUrl"] = getBaseUrl(r)
+	r.Helper["BaseUrl"] = res.GetBaseUrl(r)
 	if auth.IsLoggedIn(r.Session.CookieId) {
 		user, err := auth.GetSessionUser(r.Session.CookieId)
 		if err != nil {
@@ -36,20 +37,6 @@ func preHandler(r *web.Response) {
 		r.Helper["jsFiles"] = res.GetResJsFiles()
 	}
 	r.Helper["cssFiles"] = res.CssFiles
-}
-
-func getBaseUrl(r *web.Response) string {
-	baseUrl := r.Request.GetHeader("AppPath")
-	if baseUrl == "" {
-		baseUrl = "/"
-	}
-	return baseUrl
-}
-
-func getUrlWithBaseUrl(url string, r *web.Response) string {
-	baseUrl := getBaseUrl(r)
-	baseUrl = baseUrl[:len(baseUrl)-1]
-	return baseUrl + url
 }
 
 func Run(sessionCookieInsecure bool) {
@@ -67,14 +54,13 @@ func Run(sessionCookieInsecure bool) {
 		IsLoggedIn:     isLoggedIn,
 		Port:           8261,
 		PreHandler:     preHandler,
-		Routes: append([]web.Route{
-			indexRoute,
-			loginRoute,
-			loginSubmitRoute,
-			logoutRoute,
-			signupRoute,
-			signupSubmitRoute,
-		}, key.GetRoutes()...),
+		Routes: web.Routes(
+			[]web.Route{
+				indexRoute,
+			},
+			key.GetRoutes(),
+			auth2.GetRoutes(),
+		),
 		StaticFilesDir: "web/public",
 		TemplatesDir:   "web/templates",
 		UseSessions:    true,

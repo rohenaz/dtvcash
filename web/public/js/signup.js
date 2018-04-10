@@ -1,12 +1,23 @@
 (function () {
     /**
-     * @param {jQuery} $ele
+     * @param {jQuery} $form
+     * @param {jQuery} $privateKeyField
      */
-    MemoApp.Form.Signup = function ($ele) {
-        $ele.submit(function (e) {
+    MemoApp.Form.Signup = function ($form, $privateKeyField) {
+        var $radio = $form.find("[name=key-type]");
+        $radio.change(function () {
+            console.log($radio.val());
+            if ($radio.filter(':checked').val() === "import") {
+                $privateKeyField.show();
+            } else {
+                $privateKeyField.hide();
+            }
+        });
+
+        $form.submit(function (e) {
             e.preventDefault();
-            var username = $ele.find("[name=username]").val();
-            var password = $ele.find("[name=password]").val();
+            var username = $form.find("[name=username]").val();
+            var password = $form.find("[name=password]").val();
 
             if (username.length === 0) {
                 alert("Must enter a username.");
@@ -17,13 +28,22 @@
                 alert("Must enter a password.");
                 return;
             }
+            var privateKey;
+            if ($radio.filter(':checked').val() === "import") {
+                privateKey = $form.find("[name=private-key]").val();
+                if (privateKey.length === 0) {
+                    alert("Must enter a private key for import.");
+                    return;
+                }
+            }
 
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.SignupSubmit,
                 data: {
                     username: username,
-                    password: password
+                    password: password,
+                    private_key: privateKey
                 },
                 success: function () {
                     window.location = MemoApp.GetBaseUrl() + MemoApp.URL.Index

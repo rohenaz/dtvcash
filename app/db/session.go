@@ -7,7 +7,7 @@ import (
 
 type Session struct {
 	Id           uint   `gorm:"primary_key"`
-	CookieId     string `gorm:"unique_index"`
+	CookieId     string `gorm:"unique;size:140"`
 	HasLoggedOut bool
 	UserId       uint
 	StartTs      uint

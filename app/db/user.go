@@ -7,7 +7,7 @@ import (
 
 type User struct {
 	Id           uint   `gorm:"primary_key"`
-	Username     string `gorm:"unique_index"`
+	Username     string `gorm:"unique;size:50"`
 	PasswordHash string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time

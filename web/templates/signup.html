@@ -14,13 +14,31 @@
                autocomplete="on" required>
     </p>
     <p>
-        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign up" />
+        <input type="radio" id="key-create" name="key-type" value="create" checked/>
+        <label for="key-create">Create Key</label>
+    </p>
+    <p>
+        <input type="radio" id="key-import" name="key-type" value="import"/>
+        <label for="key-import">Import Key</label>
+    </p>
+    <p id="private-key-field">
+        <label for="private-key">Private Key (WIF)</label>
+        <input id="private-key" type="password" name="private-key"/>
+    </p>
+    <p>
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign up"/>
     </p>
 </form>
 
+<style type="text/css">
+    #private-key-field {
+        display: none;
+    }
+</style>
+
 <script type="text/javascript">
     $(function () {
-        MemoApp.Form.Signup($("#form-signup"));
+        MemoApp.Form.Signup($("#form-signup"), $("#private-key-field"));
     });
 </script>
 
