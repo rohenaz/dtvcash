@@ -91,6 +91,42 @@ func (t *Transaction) GetValue() int64 {
 	return outputTotal - inputTotal
 }
 
+type Value struct {
+	amount int64
+}
+
+func (v Value) GetValue() int64 {
+	return v.amount
+}
+
+func (v Value) GetValueBCH() float64 {
+	return float64(v.GetValue()) * 1.e-8
+}
+
+func (t *Transaction) GetValues() map[string]*Value {
+	var values = make(map[string]*Value)
+	for _, in := range t.TxIn {
+		if in.KeyId != 0 {
+			_, ok := values[in.Key.GetAddress().GetEncoded()]
+			if !ok {
+				values[in.Key.GetAddress().GetEncoded()] = &Value{}
+			}
+			values[in.Key.GetAddress().GetEncoded()].amount += in.TxnOut.Value
+		}
+	}
+	for _, out := range t.TxOut {
+		if out.KeyId != 0 {
+			_, ok := values[out.Key.GetAddress().GetEncoded()]
+			if !ok {
+				values[out.Key.GetAddress().GetEncoded()] = &Value{}
+			}
+			values[out.Key.GetAddress().GetEncoded()].amount -= out.Value
+		}
+
+	}
+	return values
+}
+
 func (t *Transaction) HasFee() bool {
 	return t.GetFee() > 0
 }

@@ -35,6 +35,6 @@ var importKeySubmitRoute = web.Route{
 		if err != nil {
 			r.Error(jerr.Get("error importing key", err), http.StatusInternalServerError)
 		}
-		node.BitcoinNode.SetKeys()
+		node.BitcoinNode.QueueSetKeys()
 	},
 }

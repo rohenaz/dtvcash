@@ -53,7 +53,12 @@ func onMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
 		if block.Height == 0 || block.Height == recentBlock.Height {
 			return
 		}
-		queueMoreMerkleBlocks(n)
+		if n.NeedsSetKeys {
+			n.NeedsSetKeys = false
+			n.SetKeys()
+		} else {
+			queueMoreMerkleBlocks(n)
+		}
 	}
 }
 

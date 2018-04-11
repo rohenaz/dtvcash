@@ -15,6 +15,8 @@ type TransactionOut struct {
 	Index         uint32
 	TransactionId uint   `gorm:"unique_index:transaction_out_script;"`
 	Transaction   *Transaction
+	KeyId         uint
+	Key           *Key
 	Value         int64
 	PkScript      []byte `gorm:"unique_index:transaction_out_script;"`
 	LockString    string

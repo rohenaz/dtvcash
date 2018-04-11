@@ -67,7 +67,11 @@
         </td>
         <td>{{ .GetBlockHeight }}</td>
         <td>{{ .GetBlockTime }}</td>
-        <td>{{ formatBigInt .GetValue }} satoshis ({{ formatBigFloat .GetValueBCH }} BCH)</td>
+        <td>
+        {{ range $address, $value := .GetValues }}
+        {{ $address }}: {{ formatBigInt $value.GetValue }} satoshis ({{ formatBigFloat $value.GetValueBCH }} BCH)<br/>
+        {{ end }}
+        </td>
         <td>{{ .CreatedAt.Format "2006-01-02 15:04:05" }}</td>
         <td>
             <a class="btn" href="transaction/{{ .Id }}">View</a>

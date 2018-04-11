@@ -30,6 +30,7 @@ type Node struct {
 	CheckedTxns        uint
 	LastBlock          *db.Block
 	SyncComplete       bool
+	NeedsSetKeys       bool
 	LastMerkleBlock    *db.Block
 	QueuedMerkleBlocks map[string]*db.Block
 	BlockHashes        map[string]*db.Block
@@ -61,6 +62,14 @@ func (n *Node) Start() {
 		log.Fatal(err)
 	}
 	p.AssociateConnection(conn)
+}
+
+func (n *Node) QueueSetKeys() {
+	if len(n.QueuedMerkleBlocks) > 0 {
+		n.NeedsSetKeys = true
+	} else {
+		n.SetKeys()
+	}
 }
 
 func (n *Node) SetKeys() {

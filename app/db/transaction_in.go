@@ -15,6 +15,8 @@ type TransactionIn struct {
 	Index                 uint
 	TransactionId         uint   `gorm:"unique_index:transaction_in_script;"`
 	Transaction           *Transaction
+	KeyId                 uint
+	Key                   *Key
 	PreviousOutPointHash  []byte
 	PreviousOutPointIndex uint32
 	SignatureScript       []byte `gorm:"unique_index:transaction_in_script;"`

@@ -34,6 +34,6 @@ var createPrivateKeySubmitRoute = web.Route{
 		if err != nil {
 			r.Error(jerr.Get("error creating new private key", err), http.StatusInternalServerError)
 		}
-		node.BitcoinNode.SetKeys()
+		node.BitcoinNode.QueueSetKeys()
 	},
 }
