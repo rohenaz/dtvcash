@@ -10,7 +10,7 @@ import (
 	"github.com/jchavannes/jgo/jerr"
 )
 
-func FindAndSaveMemos(txn *db.Transaction) {
+func FindAndSaveMemos(txn *db.Transaction, block *db.Block) {
 	var pkHash []byte
 	for _, in := range txn.TxIn {
 		pkHash = in.GetAddress().GetScriptAddress()
@@ -21,6 +21,7 @@ func FindAndSaveMemos(txn *db.Transaction) {
 		return
 	}
 	address := addressPkHash.EncodeAddress()
+	txnHash := txn.GetChainHash().CloneBytes()
 	for _, out := range txn.TxOut {
 		if len(out.PkScript) < 5 || ! bytes.Equal(out.PkScript[0:3], []byte{
 			txscript.OP_RETURN,
@@ -31,29 +32,61 @@ func FindAndSaveMemos(txn *db.Transaction) {
 		}
 		// Save MemoTest
 		var test = db.MemoTest{
-			TxHash:   txn.GetChainHash().CloneBytes(),
+			TxHash:   txnHash,
 			PkHash:   pkHash,
 			PkScript: out.PkScript,
 			Address:  address,
 		}
+		if block != nil {
+			test.BlockId = block.Id
+		}
 		err := test.Save()
 		if err != nil {
-			jerr.Get("error saving memo test", err).Print()
-			return
+			if ! db.IsAlreadyExistsError(err) || block == nil {
+				jerr.Get("error saving memo test", err).Print()
+				return
+			}
+			memoTest, err := db.GetMemoTest(txnHash)
+			if err != nil {
+				jerr.Get("error getting existing memo test", err).Print()
+				return
+			}
+			memoTest.BlockId = block.Id
+			err = memoTest.Save()
+			if err != nil {
+				jerr.Get("error saving existing memo test", err).Print()
+				return
+			}
 		}
 		switch out.PkScript[3] {
 		case memo.CodePost:
 			var post = db.MemoPost{
-				TxHash:   txn.GetChainHash().CloneBytes(),
+				TxHash:   txnHash,
 				PkHash:   pkHash,
 				PkScript: out.PkScript,
 				Address:  address,
 				Message:  string(out.PkScript[5:]),
 			}
+			if block != nil {
+				post.BlockId = block.Id
+			}
 			err := post.Save()
 			if err != nil {
-				jerr.Get("error saving memo post", err).Print()
-				return
+				if ! db.IsAlreadyExistsError(err) || block == nil {
+					jerr.Get("error saving memo post", err).Print()
+					return
+				}
+				post, err := db.GetMemoTest(txnHash)
+				if err != nil {
+					jerr.Get("error getting existing memo post", err).Print()
+					return
+				}
+				post.BlockId = block.Id
+				err = post.Save()
+				if err != nil {
+					jerr.Get("error saving existing memo post", err).Print()
+					return
+				}
 			}
 		}
 	}

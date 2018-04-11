@@ -17,6 +17,8 @@ type MemoTest struct {
 	PkHash    []byte
 	PkScript  []byte
 	Address   string
+	BlockId   uint
+	Block     *Block
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -56,6 +58,17 @@ func (m MemoTest) GetCode() string {
 		return ""
 	}
 	return hex.EncodeToString(m.PkScript[2:4])
+}
+
+func GetMemoTest(txHash []byte) (*MemoTest, error) {
+	var memoTest MemoTest
+	err := find(&memoTest, MemoTest{
+		TxHash: txHash,
+	})
+	if err != nil {
+		return nil, jerr.Get("error getting memo test", err)
+	}
+	return &memoTest, nil
 }
 
 func GetMemoTests() ([]*MemoTest, error) {

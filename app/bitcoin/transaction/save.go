@@ -10,7 +10,7 @@ import (
 
 func SaveTransaction(msg *wire.MsgTx, key *db.Key, block *db.Block) error {
 	txn := db.ConvertMsgToTransaction(msg)
-	FindAndSaveMemos(txn)
+	FindAndSaveMemos(txn, block)
 	if block != nil {
 		txn.BlockId = block.Id
 		txn.Block = block

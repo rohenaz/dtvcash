@@ -41,6 +41,7 @@
         <th>Address</th>
         <th>PK Script</th>
         <th>Message</th>
+        <th>Time</th>
         <th>Created</th>
     </tr>
 {{ range .Posts }}
@@ -49,6 +50,7 @@
         <td>{{ .GetAddressString }}</td>
         <td>{{ .GetScriptString }}</td>
         <td>{{ .GetMessage }}</td>
+        <td>{{ .GetTimeString }}</td>
         <td>{{ .CreatedAt.Format "2006-01-02 15:04" }}</td>
     </tr>
 {{ end }}

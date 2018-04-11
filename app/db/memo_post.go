@@ -17,6 +17,8 @@ type MemoPost struct {
 	PkScript  []byte
 	Address   string
 	Message   string
+	BlockId   uint
+	Block     *Block
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -55,9 +57,29 @@ func (m MemoPost) GetMessage() string {
 	return html.EscapeString(m.Message)
 }
 
+func (m MemoPost) GetTimeString() string {
+	if m.BlockId != 0 {
+		return m.Block.Timestamp.Format("2006-01-02 15:04:05")
+	}
+	return "Unconfirmed"
+}
+
+func GetMemoPost(txHash []byte) (*MemoPost, error) {
+	var memoPost MemoPost
+	err := find(&memoPost, MemoPost{
+		TxHash: txHash,
+	})
+	if err != nil {
+		return nil, jerr.Get("error getting memo post", err)
+	}
+	return &memoPost, nil
+}
+
 func GetPostsForPkHash(pkHash []byte) ([]*MemoPost, error) {
 	var memoPosts []*MemoPost
-	err := find(&memoPosts, &MemoPost{
+	err := findPreloadColumns([]string{
+		BlockTable,
+	},&memoPosts, &MemoPost{
 		PkHash: pkHash,
 	})
 	if err != nil {
