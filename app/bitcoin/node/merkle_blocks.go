@@ -16,7 +16,6 @@ func onMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
 	var err error
 	block, ok := n.QueuedMerkleBlocks[hash]
 	if !ok {
-		//jerr.Newf("got merkle block that wasn't queued! (hash: %s)", hash).Print()
 		block, err = db.GetBlockByHash(msg.Header.PrevBlock)
 		if err != nil {
 			jerr.Get("error matching prevHash to a db block", err).Print()
@@ -46,7 +45,12 @@ func onMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
 
 	if len(n.QueuedMerkleBlocks) == 0 {
 		saveKeys(n)
-		if block.Height < MinCheckHeight {
+		recentBlock, err := db.GetRecentBlock()
+		if err != nil {
+			jerr.Get("error getting recent block", err).Print()
+			return
+		}
+		if block.Height == 0 || block.Height == recentBlock.Height {
 			return
 		}
 		queueMoreMerkleBlocks(n)

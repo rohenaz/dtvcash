@@ -6,6 +6,7 @@
     <tr>
         <th>Tx Hash</th>
         <th>Address</th>
+        <th>Code</th>
         <th>PK Script</th>
         <th>Created</th>
     </tr>
@@ -13,8 +14,8 @@
     <tr>
         <td>{{ .GetTransactionHashString }}</td>
         <td>{{ .GetAddressString }}</td>
+        <td>{{ .GetCode }}</td>
         <td>{{ .GetScriptString }}</td>
-
         <td>{{ .CreatedAt.Format "2006-01-02 15:04" }}</td>
     </tr>
 {{ end }}

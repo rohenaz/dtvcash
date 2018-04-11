@@ -1,7 +1,6 @@
 package db
 
 import (
-	"encoding/hex"
 	"git.jasonc.me/main/bitcoin/bitcoin/script"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"github.com/btcsuite/btcutil"
@@ -11,17 +10,18 @@ import (
 	"time"
 )
 
-type MemoTest struct {
+type MemoPost struct {
 	Id        uint   `gorm:"primary_key"`
 	TxHash    []byte `gorm:"unique;size:50"`
 	PkHash    []byte
 	PkScript  []byte
 	Address   string
+	Message   string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-func (m MemoTest) Save() error {
+func (m MemoPost) Save() error {
 	result := save(&m)
 	if result.Error != nil {
 		return jerr.Get("error saving memo test", result.Error)
@@ -29,40 +29,39 @@ func (m MemoTest) Save() error {
 	return nil
 }
 
-func (m MemoTest) GetTransactionHashString() string {
+func (m MemoPost) GetTransactionHashString() string {
 	hash, err := chainhash.NewHash(m.TxHash)
 	if err != nil {
-		jerr.Get("error getting chainhash from memo test", err).Print()
+		jerr.Get("error getting chainhash from memo post", err).Print()
 		return ""
 	}
 	return hash.String()
 }
 
-func (m MemoTest) GetAddressString() string {
+func (m MemoPost) GetAddressString() string {
 	pkHash, err := btcutil.NewAddressPubKeyHash(m.PkHash, &wallet.MainNetParamsOld)
 	if err != nil {
-		jerr.Get("error getting pubkeyhash from memo test", err).Print()
+		jerr.Get("error getting pubkeyhash from memo post", err).Print()
 		return ""
 	}
 	return pkHash.EncodeAddress()
 }
 
-func (m MemoTest) GetScriptString() string {
+func (m MemoPost) GetScriptString() string {
 	return html.EscapeString(script.GetScriptString(m.PkScript))
 }
 
-func (m MemoTest) GetCode() string {
-	if len(m.PkScript) < 5 {
-		return ""
-	}
-	return hex.EncodeToString(m.PkScript[2:4])
+func (m MemoPost) GetMessage() string {
+	return html.EscapeString(m.Message)
 }
 
-func GetMemoTests() ([]*MemoTest, error) {
-	var memoTests []*MemoTest
-	err := find(&memoTests)
+func GetPostsForPkHash(pkHash []byte) ([]*MemoPost, error) {
+	var memoPosts []*MemoPost
+	err := find(&memoPosts, &MemoPost{
+		PkHash: pkHash,
+	})
 	if err != nil {
-		return nil, jerr.Get("error getting memo tests", err)
+		return nil, jerr.Get("error getting memo posts", err)
 	}
-	return memoTests, nil
+	return memoPosts, nil
 }

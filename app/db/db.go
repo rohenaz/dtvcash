@@ -29,6 +29,7 @@ var dbInterfaces = []interface{}{
 	TransactionOut{},
 	Peer{},
 	MemoTest{},
+	MemoPost{},
 }
 
 func getDb() (*gorm.DB, error) {

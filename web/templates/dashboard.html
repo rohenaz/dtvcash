@@ -33,4 +33,25 @@
     <a class="btn" href="memo/new">New Memo</a>
 </p>
 
+<h3>Posts</h3>
+
+<table class="table">
+    <tr>
+        <th>Tx Hash</th>
+        <th>Address</th>
+        <th>PK Script</th>
+        <th>Message</th>
+        <th>Created</th>
+    </tr>
+{{ range .Posts }}
+    <tr>
+        <td>{{ .GetTransactionHashString }}</td>
+        <td>{{ .GetAddressString }}</td>
+        <td>{{ .GetScriptString }}</td>
+        <td>{{ .GetMessage }}</td>
+        <td>{{ .CreatedAt.Format "2006-01-02 15:04" }}</td>
+    </tr>
+{{ end }}
+</table>
+
 {{ template "snippets/footer.html" . }}

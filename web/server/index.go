@@ -45,6 +45,14 @@ var (
 			}
 			r.Helper["Balance"] = balance
 			r.Helper["BalanceBCH"] = balanceBCH
+
+			posts, err := db.GetPostsForPkHash(key.GetPublicKey().GetAddress().GetScriptAddress())
+			if err != nil {
+				r.Error(jerr.Get("error getting posts for hash", err), http.StatusInternalServerError)
+				return
+			}
+			r.Helper["Posts"] = posts
+
 			r.RenderTemplate("dashboard")
 		},
 	}
