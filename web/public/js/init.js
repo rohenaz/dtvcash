@@ -58,6 +58,7 @@ var MemoApp = {
 
     MemoApp.URL = {
         Index: "",
+        LoadKey: "key/load",
         LoginSubmit: "login-submit",
         SignupSubmit: "signup-submit",
         MemoNewSubmit: "memo/new-submit",

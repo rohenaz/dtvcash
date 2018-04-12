@@ -9,12 +9,7 @@ var urlId = web.UrlParam{
 
 func GetRoutes() []web.Route {
 	return []web.Route{
-		createKeyRoute,
-		createPrivateKeySubmitRoute,
 		viewKeyRoute,
 		loadKeyRoute,
-		importKeyRoute,
-		importKeySubmitRoute,
-		deleteKeySubmitRoute,
 	}
 }

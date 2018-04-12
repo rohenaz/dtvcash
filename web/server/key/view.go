@@ -7,11 +7,10 @@ import (
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"net/http"
-	"strconv"
 )
 
 var viewKeyRoute = web.Route{
-	Pattern:    res.UrlKeyView + "/" + urlId.UrlPart(),
+	Pattern:    res.UrlKeyExport,
 	NeedsLogin: true,
 	Handler: func(r *web.Response) {
 		user, err := auth.GetSessionUser(r.Session.CookieId)
@@ -19,38 +18,13 @@ var viewKeyRoute = web.Route{
 			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
 			return
 		}
-		idString := r.Request.GetUrlNamedQueryVariable(urlId.Id)
-		id, err := strconv.Atoi(idString)
+		key, err := db.GetKeyForUser(user.Id)
 		if err != nil {
-			r.Error(jerr.Get("error parsing id", err), http.StatusInternalServerError)
-			return
-		}
-		key, err := db.GetKey(uint(id), user.Id)
-		if err != nil {
-			r.Error(jerr.Get("error getting key", err), http.StatusInternalServerError)
+			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
 			return
 		}
 		r.Helper["Key"] = key
-		transactions, err := db.GetTransactionsForPkHash(key.PkHash)
-		if err != nil {
-			r.Error(jerr.Get("error getting transactions for key", err), http.StatusInternalServerError)
-			return
-		}
-		var balance int64
-		var balanceBCH float64
-		for _, transaction := range transactions {
-			for address, value := range transaction.GetValues() {
-				if address == key.GetAddress().GetEncoded() {
-					balance += value.GetValue()
-					balanceBCH += value.GetValueBCH()
-				}
-			}
-		}
-		r.Helper["Transactions"] = transactions
-		r.Helper["Balance"] = balance
-		r.Helper["BalanceBCH"] = balanceBCH
-
-		r.RenderTemplate(res.UrlKeyView)
+		r.RenderTemplate(res.UrlKeyExport)
 	},
 }
 

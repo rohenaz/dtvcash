@@ -13,13 +13,8 @@ const (
 )
 
 const (
-	UrlKeyView         = "/key"
-	UrlKeyLoad         = "/key/load"
-	UrlKeyImport       = "/key/import"
-	UrlKeyImportSubmit = "/key/import-submit"
-	UrlKeyCreate       = "/key/create"
-	UrlKeyCreateSubmit = "/key/create-submit"
-	UrlKeyDeleteSubmit = "/key/delete-submit"
+	UrlKeyExport = "/key/export"
+	UrlKeyLoad   = "/key/load"
 )
 
 const (
