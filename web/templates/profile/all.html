@@ -5,9 +5,9 @@
 {{ range .Profiles }}
 <p>
 {{ if .NameSet }}
-    <a href="/profile/{{ .GetAddressString }}">{{ .Name }} ({{ .GetAddressString }})</a>
+    <a class="btn" href="/profile/{{ .GetAddressString }}">{{ .Name }} ({{ .GetAddressString }})</a>
 {{ else }}
-    <a href="/profile/{{ .GetAddressString }}">{{ .GetAddressString }}</a>
+    <a class="btn" href="/profile/{{ .GetAddressString }}">{{ .GetAddressString }}</a>
 {{ end }}
 </p>
 {{ end }}
