@@ -66,6 +66,9 @@ func FindAndSaveMemos(txn *db.Transaction, block *db.Block) error {
 				Address:  address,
 				Message:  string(out.PkScript[5:]),
 			}
+			if len(txn.TxIn) == 1 {
+				post.ParentHash = txn.TxIn[0].PreviousOutPointHash
+			}
 			if block != nil {
 				post.BlockId = block.Id
 			}

@@ -1,26 +1,29 @@
 package db
 
 import (
+	"bytes"
 	"git.jasonc.me/main/bitcoin/bitcoin/script"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"github.com/btcsuite/btcutil"
 	"github.com/cpacia/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 	"html"
+	"sort"
 	"time"
 )
 
 type MemoPost struct {
-	Id        uint   `gorm:"primary_key"`
-	TxHash    []byte `gorm:"unique;size:50"`
-	PkHash    []byte
-	PkScript  []byte
-	Address   string
-	Message   string
-	BlockId   uint
-	Block     *Block
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Id         uint   `gorm:"primary_key"`
+	TxHash     []byte `gorm:"unique;size:50"`
+	ParentHash []byte
+	PkHash     []byte
+	PkScript   []byte
+	Address    string
+	Message    string
+	BlockId    uint
+	Block      *Block
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 func (m MemoPost) Save() error {
@@ -75,16 +78,40 @@ func GetMemoPost(txHash []byte) (*MemoPost, error) {
 	return &memoPost, nil
 }
 
+type memoPostSortByDate []*MemoPost
+
+func (txns memoPostSortByDate) Len() int                      { return len(txns) }
+func (txns memoPostSortByDate) Swap(i, j int)      { txns[i], txns[j] = txns[j], txns[i] }
+func (txns memoPostSortByDate) Less(i, j int) bool {
+	if bytes.Equal(txns[i].ParentHash, txns[j].TxHash) {
+		return true
+	}
+	if bytes.Equal(txns[i].TxHash, txns[j].ParentHash) {
+		return false
+	}
+	if txns[i].Block == nil && txns[j].Block == nil{
+		return false
+	}
+	if txns[i].Block == nil {
+		return true
+	}
+	if txns[j].Block == nil {
+		return false
+	}
+	return txns[i].Block.Height > txns[j].Block.Height
+}
+
 func GetPostsForPkHash(pkHash []byte) ([]*MemoPost, error) {
 	var memoPosts []*MemoPost
 	err := findPreloadColumns([]string{
 		BlockTable,
-	},&memoPosts, &MemoPost{
+	}, &memoPosts, &MemoPost{
 		PkHash: pkHash,
 	})
 	if err != nil {
 		return nil, jerr.Get("error getting memo posts", err)
 	}
+	sort.Sort(memoPostSortByDate(memoPosts))
 	return memoPosts, nil
 }
 
