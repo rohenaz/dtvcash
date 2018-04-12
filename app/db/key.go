@@ -8,11 +8,12 @@ import (
 )
 
 type Key struct {
-	Id        uint `gorm:"primary_key"`
+	Id        uint   `gorm:"primary_key"`
 	Name      string
 	UserId    uint
 	Value     []byte
-	PublicKey []byte
+	PublicKey []byte `gorm:"unique"`
+	PkHash    []byte `gorm:"unique"`
 	MaxCheck  uint // maximum block height checked for transactions
 	MinCheck  uint // minimum block height checked for transactions
 	CreatedAt time.Time
@@ -63,24 +64,24 @@ func (k Key) Delete() error {
 }
 
 func GenerateKey(name string, password string, userId uint) (*Key, error) {
-	encryptionKey, err := cryptography.GenerateEncryptionKeyFromPassword(password)
+	key, err := cryptography.GenerateEncryptionKeyFromPassword(password)
 	if err != nil {
-		return nil, jerr.Get("error generating encryption key from password", err)
+		return nil, jerr.Get("error generating key from password", err)
 	}
 	privateKey := wallet.GeneratePrivateKey()
-	return createKey(name, privateKey, encryptionKey, userId)
+	return createKey(name, privateKey, key, userId)
 }
 
 func ImportKey(name string, password string, wif string, userId uint) (*Key, error) {
-	encryptionKey, err := cryptography.GenerateEncryptionKeyFromPassword(password)
+	key, err := cryptography.GenerateEncryptionKeyFromPassword(password)
 	if err != nil {
-		return nil, jerr.Get("error generating encryption key from password", err)
+		return nil, jerr.Get("error generating key from password", err)
 	}
 	privateKey, err := wallet.ImportPrivateKey(wif)
 	if err != nil {
 		return nil, jerr.Get("error importing key from wif", err)
 	}
-	return createKey(name, privateKey, encryptionKey, userId)
+	return createKey(name, privateKey, key, userId)
 }
 
 func createKey(name string, privateKey wallet.PrivateKey, key []byte, userId uint) (*Key, error) {
@@ -113,6 +114,17 @@ func GetKey(id uint, userId uint) (*Key, error) {
 	return &privateKey, nil
 }
 
+func GetKeyFromPublicKey(publicKey []byte) (*Key, error) {
+	var key Key
+	err := find(&key, Key{
+		PublicKey: publicKey,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &key, nil
+}
+
 // Deprecated: Only one key per user now
 func GetKeysForUser(userId uint) ([]*Key, error) {
 	var privateKeys []*Key
@@ -124,7 +136,6 @@ func GetKeysForUser(userId uint) ([]*Key, error) {
 	}
 	return privateKeys, nil
 }
-
 func GetKeyForUser(userId uint) (*Key, error) {
 	var privateKey Key
 	err := find(&privateKey, Key{

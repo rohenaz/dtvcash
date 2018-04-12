@@ -1,32 +1,79 @@
 package db
 
 import (
+	"encoding/hex"
+	"fmt"
 	"git.jasonc.me/main/bitcoin/bitcoin/script"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"github.com/btcsuite/btcutil"
+	"github.com/cpacia/btcd/chaincfg/chainhash"
 	"github.com/cpacia/btcd/txscript"
 	"github.com/jchavannes/jgo/jerr"
 	"html"
+	"strings"
 	"time"
 )
 
+var transactionOutColumns = []string{
+	KeyTable,
+	TransactionTable,
+	TransactionBlockTbl,
+}
+
 type TransactionOut struct {
-	Id            uint   `gorm:"primary_key"`
-	Index         uint32
-	TransactionId uint   `gorm:"unique_index:transaction_out_script;"`
-	Transaction   *Transaction
-	KeyId         uint
-	Key           *Key
-	Value         int64
-	PkScript      []byte `gorm:"unique_index:transaction_out_script;"`
-	LockString    string
-	RequiredSigs  uint
-	ScriptClass   uint
-	Addresses     []*Address
-	TxnInId       uint
-	TxnIn         *TransactionIn
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
+	Id              uint           `gorm:"primary_key"`
+	Index           uint32
+	HashString      string
+	TransactionHash []byte         `gorm:"unique_index:transaction_out_script;"`
+	Transaction     *Transaction   `gorm:"foreignkey:TransactionHash"`
+	KeyPkHash       []byte
+	Key             *Key           `gorm:"foreignkey:KeyPkHash"`
+	Value           int64
+	PkScript        []byte         `gorm:"unique_index:transaction_out_script;"`
+	LockString      string
+	RequiredSigs    uint
+	ScriptClass     uint
+	TxnInHashString string
+	TxnIn           *TransactionIn `gorm:"foreignkey:TxnInHashString"`
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+}
+
+func getHashString(txHash []byte, index uint32) string {
+	hash, err := chainhash.NewHash(txHash)
+	if err != nil {
+		return ""
+	}
+	return fmt.Sprintf("out:%s:%d", hash.String(), index)
+}
+
+func (t TransactionOut) GetHashString() string {
+	return getHashString(t.TransactionHash, t.Index)
+}
+
+func (t TransactionOut) IsMemo() bool {
+	return strings.HasPrefix(t.LockString, "OP_RETURN 6d")
+}
+
+func (t TransactionOut) GetPkHash() []byte {
+	split := strings.Split(t.LockString, " ")
+	if len(split) != 5 {
+		return []byte{}
+	}
+	pubKey, err := hex.DecodeString(split[2])
+	if err != nil {
+		return []byte{}
+	}
+	return pubKey
+}
+
+func (t TransactionOut) GetAddressString() string {
+	addressPkHash, err := btcutil.NewAddressPubKeyHash(t.KeyPkHash, &wallet.MainNetParamsOld)
+	if err != nil {
+		jerr.Get("error parsing address", err).Print()
+		return ""
+	}
+	return addressPkHash.String()
 }
 
 func (t TransactionOut) Save() error {
@@ -42,24 +89,17 @@ func (t TransactionOut) ValueInBCH() float64 {
 }
 
 func (t TransactionOut) HasIn() bool {
-	return t.TxnInId > 0
+	return len(t.TxnInHashString) > 0
 }
 
 func (t TransactionOut) IsSpendable() bool {
-	if t.TxnInId > 0 {
-		txIn, _ := GetTransactionInputById(t.TxnInId)
+	if len(t.TxnInHashString) > 0 {
+		txIn, _ := GetTransactionInputByHashString(t.TxnInHashString)
 		if txIn.Transaction.BlockId > 0 {
 			return false
 		}
 	}
-	transactionAddress := t.Transaction.Key.GetAddress().GetEncoded()
-	var addressFound bool
-	for _, address := range t.Addresses {
-		if address.String == transactionAddress {
-			addressFound = true
-		}
-	}
-	return addressFound
+	return true
 }
 
 func (t TransactionOut) GetScriptClass() string {
@@ -77,28 +117,24 @@ func (t TransactionOut) GetMessage() string {
 	return html.EscapeString(script.GetScriptString(t.PkScript))
 }
 
-func (t TransactionOut) GetAddress() btcutil.Address {
-	_, addresses, _, _ := txscript.ExtractPkScriptAddrs(t.PkScript, &wallet.MainNetParamsOld)
-	if len(addresses) == 0 {
-		return nil
-	}
-	return addresses[0]
-}
-
 func GetTransactionOutputById(id uint) (*TransactionOut, error) {
-	query, err := getDb()
-	if err != nil {
-		return nil, jerr.Get("error getting db", err)
-	}
 	var txOut TransactionOut
-	result := query.
-		Preload("Transaction").
-		Preload("Transaction.Key").
-		Find(&txOut, TransactionOut{
+	err := findPreloadColumns(transactionOutColumns, &txOut, TransactionOut{
 		Id: id,
 	})
-	if result.Error != nil {
-		return nil, jerr.Get("error finding transaction out", result.Error)
+	if err != nil {
+		return nil, jerr.Get("error finding transaction out", err)
 	}
 	return &txOut, nil
+}
+
+func GetTransactionOutputsForPkHash(pkHash []byte) ([]*TransactionOut, error) {
+	var transactionOuts []*TransactionOut
+	err := findPreloadColumns(transactionOutColumns, &transactionOuts, TransactionOut{
+		KeyPkHash: pkHash,
+	})
+	if err != nil {
+		return nil, jerr.Get("error finding transaction outputs", err)
+	}
+	return transactionOuts, nil
 }

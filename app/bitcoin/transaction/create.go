@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"git.jasonc.me/main/bitcoin/bitcoin/memo"
-	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"git.jasonc.me/main/memo/app/db"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/cpacia/btcd/txscript"
 	"github.com/cpacia/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
@@ -82,8 +83,12 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 		}
 	}
 
+	hash, err := chainhash.NewHash(txOut.TransactionHash)
+	if err != nil {
+		return nil, jerr.Get("error getting transaction hash", err)
+	}
 	newTxIn := wire.NewTxIn(&wire.OutPoint{
-		Hash:  *txOut.Transaction.GetChainHash(),
+		Hash:  *hash,
 		Index: uint32(txOut.Index),
 	}, nil)
 

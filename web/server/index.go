@@ -29,7 +29,7 @@ var (
 			}
 			r.Helper["Key"] = key
 
-			transactions, err := db.GetTransactionsForKey(key.Id)
+			transactions, err := db.GetTransactionsForPkHash(key.PkHash)
 			if err != nil {
 				r.Error(jerr.Get("error getting transactions for key", err), http.StatusInternalServerError)
 				return
@@ -37,11 +37,12 @@ var (
 			var balance int64
 			var balanceBCH float64
 			for _, transaction := range transactions {
-				balance += transaction.GetValue()
-				balanceBCH += transaction.GetValueBCH()
-			}
-			for i, j := 0, len(transactions)-1; i < j; i, j = i+1, j-1 {
-				transactions[i], transactions[j] = transactions[j], transactions[i]
+				for address, value := range transaction.GetValues() {
+					if address == key.GetAddress().GetEncoded() {
+						balance += value.GetValue()
+						balanceBCH += value.GetValueBCH()
+					}
+				}
 			}
 			r.Helper["Balance"] = balance
 			r.Helper["BalanceBCH"] = balanceBCH

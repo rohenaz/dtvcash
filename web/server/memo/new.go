@@ -1,6 +1,7 @@
 package memo
 
 import (
+	"bytes"
 	"fmt"
 	"git.jasonc.me/main/bitcoin/bitcoin/memo"
 	"git.jasonc.me/main/memo/app/auth"
@@ -38,12 +39,11 @@ var newSubmitRoute = web.Route{
 			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
 			return
 		}
-		transactions, err := db.GetTransactionsForKey(key.Id)
+		transactions, err := db.GetTransactionsForPkHash(key.PkHash)
 		var txOut *db.TransactionOut
 		for _, txn := range transactions {
 			for _, out := range txn.TxOut {
-				address := out.GetAddress()
-				if out.TxnInId == 0 && out.Value > 1000 && address.EncodeAddress() == key.GetAddress().GetEncoded() {
+				if out.TxnIn == nil && out.Value > 1000 && bytes.Equal(out.KeyPkHash, key.PkHash) {
 					txOut = out
 				}
 			}
@@ -61,8 +61,6 @@ var newSubmitRoute = web.Route{
 
 		address := key.GetAddress()
 		var fee = int64(283 - memo.MaxPostSize + len([]byte(message)))
-		fmt.Printf("fee: %d\n", fee)
-		fmt.Printf("txOut: %#v\n", txOut)
 		tx, err := transaction.Create(txOut, privateKey, []transaction.SpendOutput{{
 			Type:    transaction.SpendOutputTypeP2PK,
 			Address: address,
@@ -72,16 +70,16 @@ var newSubmitRoute = web.Route{
 			Message: message,
 		}})
 		if err != nil {
-			r.Error(jerr.Get("error creating low fee tx", err), http.StatusInternalServerError)
+			r.Error(jerr.Get("error creating tx", err), http.StatusInternalServerError)
 			return
 		}
 
 		fmt.Println(transaction.GetTxInfo(tx))
 		node.BitcoinNode.Peer.QueueMessage(tx, nil)
 
-		err = transaction.SaveTransaction(tx, txOut.Transaction.Key, nil)
+		err = transaction.SaveTransaction(tx, nil)
 		if err != nil {
-			r.Error(jerr.Get("error saving low fee transaction", err), http.StatusUnprocessableEntity)
+			r.Error(jerr.Get("error saving transaction", err), http.StatusUnprocessableEntity)
 			return
 		}
 	},

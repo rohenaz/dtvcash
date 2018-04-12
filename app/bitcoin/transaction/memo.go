@@ -10,15 +10,14 @@ import (
 	"github.com/jchavannes/jgo/jerr"
 )
 
-func FindAndSaveMemos(txn *db.Transaction, block *db.Block) {
+func FindAndSaveMemos(txn *db.Transaction, block *db.Block) error {
 	var pkHash []byte
 	for _, in := range txn.TxIn {
 		pkHash = in.GetAddress().GetScriptAddress()
 	}
 	addressPkHash, err := btcutil.NewAddressPubKeyHash(pkHash, &wallet.MainNetParamsOld)
 	if err != nil {
-		jerr.Get("error getting pubkeyhash from memo test", err).Print()
-		return
+		return jerr.Get("error getting pubkeyhash from memo test", err)
 	}
 	address := addressPkHash.EncodeAddress()
 	txnHash := txn.GetChainHash().CloneBytes()
@@ -43,19 +42,16 @@ func FindAndSaveMemos(txn *db.Transaction, block *db.Block) {
 		err := test.Save()
 		if err != nil {
 			if ! db.IsAlreadyExistsError(err) || block == nil {
-				jerr.Get("error saving memo test", err).Print()
-				return
+				return jerr.Get("error saving memo test", err)
 			}
 			memoTest, err := db.GetMemoTest(txnHash)
 			if err != nil {
-				jerr.Get("error getting existing memo test", err).Print()
-				return
+				return jerr.Get("error getting existing memo test", err)
 			}
 			memoTest.BlockId = block.Id
 			err = memoTest.Save()
 			if err != nil {
-				jerr.Get("error saving existing memo test", err).Print()
-				return
+				return jerr.Get("error saving existing memo test", err)
 			}
 		}
 		switch out.PkScript[3] {
@@ -73,21 +69,19 @@ func FindAndSaveMemos(txn *db.Transaction, block *db.Block) {
 			err := post.Save()
 			if err != nil {
 				if ! db.IsAlreadyExistsError(err) || block == nil {
-					jerr.Get("error saving memo post", err).Print()
-					return
+					return jerr.Get("error saving memo post", err)
 				}
 				post, err := db.GetMemoTest(txnHash)
 				if err != nil {
-					jerr.Get("error getting existing memo post", err).Print()
-					return
+					return jerr.Get("error getting existing memo post", err)
 				}
 				post.BlockId = block.Id
 				err = post.Save()
 				if err != nil {
-					jerr.Get("error saving existing memo post", err).Print()
-					return
+					return jerr.Get("error saving existing memo post", err)
 				}
 			}
 		}
 	}
+	return nil
 }

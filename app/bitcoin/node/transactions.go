@@ -10,18 +10,13 @@ import (
 )
 
 func onTx(n *Node, msg *wire.MsgTx) {
-	address := transaction.GetAddressInTx(msg, getScriptAddresses(n))
-	if address == nil {
-		return
-	}
-	key := getKeyFromScriptAddress(n, address)
 	block := findHashBlock([]map[string]*db.Block{n.BlockHashes, n.PrevBlockHashes}, msg.TxHash())
-	err := transaction.SaveTransaction(msg, key, block)
+	err := transaction.SaveTransaction(msg, block)
 	n.CheckedTxns++
 	if err != nil {
 		fmt.Println(jerr.Get("error saving transaction", err))
 	}
-	fmt.Println(transaction.GetTxInfo(msg))
+	//fmt.Println(transaction.GetTxInfo(msg))
 }
 
 func getTransaction(n *Node, txId chainhash.Hash) {

@@ -41,7 +41,7 @@ func Spend(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutputs
 		return jerr.Get("error sending low fee transaction", err)
 	}
 	fmt.Println(GetTxInfo(tx))
-	err = SaveTransaction(tx, txOut.Transaction.Key, nil)
+	err = SaveTransaction(tx, nil)
 	if err != nil {
 		return jerr.Get("error saving low fee transaction", err)
 	}

@@ -10,44 +10,26 @@ import (
 	"time"
 )
 
-const (
-	BlockTable         = "Block"
-	KeyTable           = "Key"
-	TxInTable          = "TxIn"
-	TxInTxnOutTable    = "TxIn.TxnOut"
-	TxInTxnOutTxnTable = "TxIn.TxnOut.Transaction"
-	TxOutTable         = "TxOut"
-	TxOutTxnTable      = "TxOut.Transaction"
-	TxOutTxnKeyTable   = "TxOut.Transaction.Key"
-	TxOutTxnInTable    = "TxOut.TxnIn"
-	TxOutTxnInTxnTable = "TxOut.TxnIn.Transaction"
-	TxOutAddressTable  = "TxOut.Addresses"
-)
-
-var allColumns = []string{
+var transactionColumns = []string{
 	BlockTable,
-	KeyTable,
 	TxInTable,
 	TxInTxnOutTable,
+	TxInKeyTable,
 	TxInTxnOutTxnTable,
 	TxOutTable,
-	TxOutTxnTable,
-	TxOutTxnKeyTable,
+	TxOutKeyTable,
 	TxOutTxnInTable,
 	TxOutTxnInTxnTable,
-	TxOutAddressTable,
 }
 
 type Transaction struct {
-	Id        uint   `gorm:"primary_key"`
-	KeyId     uint
-	Key       *Key
+	Id        uint              `gorm:"primary_key"`
 	BlockId   uint
 	Block     *Block
-	Hash      []byte `gorm:"unique;"`
+	Hash      []byte            `gorm:"unique;"`
 	Version   int32
-	TxIn      []*TransactionIn
-	TxOut     []*TransactionOut
+	TxIn      []*TransactionIn  `gorm:"foreignkey:TransactionHash"`
+	TxOut     []*TransactionOut `gorm:"foreignkey:TransactionHash"`
 	LockTime  uint32
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -67,28 +49,11 @@ func (t *Transaction) GetBlockTime() string {
 	return t.Block.Timestamp.Format("2006-01-02 15:04")
 }
 
-func (t *Transaction) GetValueBCH() float64 {
-	return float64(t.GetValue()) * 1.e-8
-}
-
-func (t *Transaction) GetValue() int64 {
-	var inputTotal int64
-	var outputTotal int64
-	keyAddress := t.Key.GetAddress().GetEncoded()
-	for _, in := range t.TxIn {
-		if in.TxnOutId != 0 && in.TxnOut != nil {
-			inputTotal += in.TxnOut.Value
-		}
+func (t *Transaction) GetKeyId() uint {
+	if len(t.TxIn) != 1 || t.TxIn[0].Key == nil {
+		return 0
 	}
-	for _, out := range t.TxOut {
-		for _, address := range out.Addresses {
-			if address.String == keyAddress {
-				outputTotal += out.Value
-			}
-		}
-
-	}
-	return outputTotal - inputTotal
+	return t.TxIn[0].Key.Id
 }
 
 type Value struct {
@@ -106,23 +71,26 @@ func (v Value) GetValueBCH() float64 {
 func (t *Transaction) GetValues() map[string]*Value {
 	var values = make(map[string]*Value)
 	for _, in := range t.TxIn {
-		if in.KeyId != 0 {
-			_, ok := values[in.Key.GetAddress().GetEncoded()]
-			if !ok {
-				values[in.Key.GetAddress().GetEncoded()] = &Value{}
-			}
-			values[in.Key.GetAddress().GetEncoded()].amount += in.TxnOut.Value
+		if in.TxnOut == nil || in.Key == nil {
+			continue
 		}
+		mapKey := in.Key.GetAddress().GetEncoded()
+		_, ok := values[mapKey]
+		if !ok {
+			values[mapKey] = &Value{}
+		}
+		values[mapKey].amount -= in.TxnOut.Value
 	}
 	for _, out := range t.TxOut {
-		if out.KeyId != 0 {
-			_, ok := values[out.Key.GetAddress().GetEncoded()]
-			if !ok {
-				values[out.Key.GetAddress().GetEncoded()] = &Value{}
-			}
-			values[out.Key.GetAddress().GetEncoded()].amount -= out.Value
+		if out.Key == nil {
+			continue
 		}
-
+		mapKey := out.Key.GetAddress().GetEncoded()
+		_, ok := values[mapKey]
+		if !ok {
+			values[mapKey] = &Value{}
+		}
+		values[mapKey].amount += out.Value
 	}
 	return values
 }
@@ -139,7 +107,8 @@ func (t *Transaction) GetFee() int64 {
 	var inputTotal int64
 	var outputTotal int64
 	for _, in := range t.TxIn {
-		if in.TxnOutId == 0 {
+		if in.TxnOut == nil {
+			// Unknown input, unable to calculate fee
 			return 0
 		}
 		inputTotal += in.TxnOut.Value
@@ -152,14 +121,15 @@ func (t *Transaction) GetFee() int64 {
 
 func (t *Transaction) Save() error {
 	if t.Id == 0 {
-		transaction, err := GetTransactionByHash(t.Hash)
+		txn, err := GetTransactionByHash(t.Hash)
 		if err != nil && ! IsRecordNotFoundError(err) {
 			return jerr.Get("error getting transaction by hash", err)
 		}
-		if transaction != nil {
+		if txn != nil {
 			return jerr.Get("transaction already exists", alreadyExistsError)
 		}
 	}
+	//fmt.Printf("Saving transaction: %#v\n", t)
 	result := save(t)
 	if result.Error != nil {
 		return jerr.Get("error saving transaction", result.Error)
@@ -192,46 +162,90 @@ func (t *Transaction) GetChainHash() *chainhash.Hash {
 	return hash
 }
 
+func (t *Transaction) HasUserKey(userId uint) bool {
+	for _, in := range t.TxIn {
+		if in.Key != nil && in.Key.UserId == userId {
+			return true
+		}
+	}
+	for _, out := range t.TxOut {
+		if out.Key != nil && out.Key.UserId == userId {
+			return true
+		}
+	}
+	return false
+}
+
 func GetTransactionById(transactionId uint) (*Transaction, error) {
 	return getTransaction(Transaction{
 		Id: transactionId,
 	})
 }
 
-func getTransaction(txn Transaction) (*Transaction, error) {
-	var transaction Transaction
-	err := findPreloadColumns(allColumns, &transaction, txn)
+func getTransaction(whereTxn Transaction) (*Transaction, error) {
+	var txn Transaction
+	err := findPreloadColumns(transactionColumns, &txn, whereTxn)
 	if err != nil {
 		return nil, jerr.Get("error finding transaction", err)
 	}
-	return &transaction, nil
+	return &txn, nil
 }
 
-func GetTransactionsForKey(keyId uint) ([]*Transaction, error) {
+func GetTransactions() ([]*Transaction, error) {
 	var transactions []*Transaction
-	err := findPreloadColumns(allColumns, &transactions, Transaction{
-		KeyId: keyId,
-	})
+	err := findPreloadColumns(transactionColumns, &transactions)
 	if err != nil {
 		return nil, jerr.Get("error finding transactions", err)
 	}
 	return transactions, nil
 }
 
+func GetTransactionsForPkHash(pkHash []byte) ([]*Transaction, error) {
+	ins, err := GetTransactionInputsForPkHash(pkHash)
+	if err != nil {
+		return nil, jerr.Get("error getting ins", err)
+	}
+	outs, err := GetTransactionOutputsForPkHash(pkHash)
+	if err != nil {
+		return nil, jerr.Get("error getting outs", err)
+	}
+	var hashes [][]byte
+	for _, in := range ins {
+		hashes = append(hashes, in.TransactionHash)
+	}
+	for _, out := range outs {
+		hashes = append(hashes, out.TransactionHash)
+	}
+	query, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	for _, column := range transactionColumns {
+		query = query.Preload(column)
+	}
+	var transactions []*Transaction
+	result := query.Where("hash in (?)", hashes).Find(&transactions)
+
+	if result.Error != nil {
+		return nil, jerr.Get("error finding transactions", result.Error)
+	}
+	return transactions, nil
+}
+
 func GetTransactionByHash(hash []byte) (*Transaction, error) {
-	var transaction = Transaction{
+	var txn = Transaction{
 		Hash: hash,
 	}
-	err := find(&transaction, transaction)
+	err := find(&txn, txn)
 	if err != nil {
 		return nil, jerr.Get("error finding transaction", err)
 	}
-	return &transaction, nil
+	return &txn, nil
 }
 
-func ConvertMsgToTransaction(msg *wire.MsgTx) *Transaction {
+func ConvertMsgToTransaction(msg *wire.MsgTx) (*Transaction, error) {
 	txHash := msg.TxHash()
-	var transaction = Transaction{
+	var txn = Transaction{
 		Hash:     txHash.CloneBytes(),
 		Version:  msg.Version,
 		LockTime: msg.LockTime,
@@ -239,8 +253,7 @@ func ConvertMsgToTransaction(msg *wire.MsgTx) *Transaction {
 	for index, in := range msg.TxIn {
 		unlockScript, err := txscript.DisasmString(in.SignatureScript)
 		if err != nil {
-			jerr.Get("error disassembling unlockScript: %s\n", err).Print()
-			return nil
+			return nil, jerr.Get("error disassembling unlockScript: %s\n", err)
 		}
 		var transactionIn = TransactionIn{
 			Index:                 uint(index),
@@ -249,33 +262,47 @@ func ConvertMsgToTransaction(msg *wire.MsgTx) *Transaction {
 			SignatureScript:       in.SignatureScript,
 			Sequence:              in.Sequence,
 			UnlockString:          unlockScript,
+			TransactionHash:       txHash.CloneBytes(),
 		}
-		transaction.TxIn = append(transaction.TxIn, &transactionIn)
+		transactionIn.KeyPkHash = transactionIn.GetPkHash()
+		transactionIn.HashString = transactionIn.GetHashString()
+		transactionIn.TxnOutHashString = getHashString(transactionIn.PreviousOutPointHash, transactionIn.PreviousOutPointIndex)
+		txn.TxIn = append(txn.TxIn, &transactionIn)
 	}
 	for index, out := range msg.TxOut {
 		lockScript, err := txscript.DisasmString(out.PkScript)
 		if err != nil {
-			jerr.Get("rror disassembling lockScript: %s\n", err).Print()
-			return nil
+			return nil, jerr.Get("error disassembling lockScript: %s\n", err)
 		}
-		scriptClass, addresses, sigCount, err := txscript.ExtractPkScriptAddrs(out.PkScript, &wallet.MainNetParamsOld)
-		var dbAddresses []*Address
-		for _, address := range addresses {
-			dbAddresses = append(dbAddresses, &Address{
-				Data:   address.ScriptAddress(),
-				String: address.String(),
-			})
-		}
+		scriptClass, _, sigCount, err := txscript.ExtractPkScriptAddrs(out.PkScript, &wallet.MainNetParamsOld)
 		var transactionOut = TransactionOut{
-			Index:        uint32(index),
-			Value:        out.Value,
-			PkScript:     out.PkScript,
-			LockString:   lockScript,
-			RequiredSigs: uint(sigCount),
-			Addresses:    dbAddresses,
-			ScriptClass:  uint(scriptClass),
+			Index:           uint32(index),
+			Value:           out.Value,
+			PkScript:        out.PkScript,
+			LockString:      lockScript,
+			RequiredSigs:    uint(sigCount),
+			ScriptClass:     uint(scriptClass),
+			TransactionHash: txHash.CloneBytes(),
 		}
-		transaction.TxOut = append(transaction.TxOut, &transactionOut)
+		if transactionOut.IsMemo() && len(txn.TxIn) == 1 {
+			transactionOut.KeyPkHash = txn.TxIn[0].KeyPkHash
+		} else {
+			transactionOut.KeyPkHash = transactionOut.GetPkHash()
+		}
+		transactionOut.HashString = transactionOut.GetHashString()
+		txn.TxOut = append(txn.TxOut, &transactionOut)
 	}
-	return &transaction
+	return &txn, nil
+}
+
+func GetPubKeyInInput(in *TransactionIn) wallet.PublicKey {
+	return wallet.GetPublicKey(in.SignatureScript)
+}
+
+func GetPubKeyInOutput(out *TransactionOut) wallet.PublicKey {
+	_, addresses, _, _ := txscript.ExtractPkScriptAddrs(out.PkScript, &wallet.MainNetParamsOld)
+	if len(addresses) != 1 {
+		return wallet.PublicKey{}
+	}
+	return wallet.GetPublicKey(addresses[0].ScriptAddress())
 }

@@ -25,13 +25,13 @@ var viewKeyRoute = web.Route{
 			r.Error(jerr.Get("error parsing id", err), http.StatusInternalServerError)
 			return
 		}
-		privateKey, err := db.GetKey(uint(id), user.Id)
+		key, err := db.GetKey(uint(id), user.Id)
 		if err != nil {
 			r.Error(jerr.Get("error getting key", err), http.StatusInternalServerError)
 			return
 		}
-		r.Helper["Key"] = privateKey
-		transactions, err := db.GetTransactionsForKey(privateKey.Id)
+		r.Helper["Key"] = key
+		transactions, err := db.GetTransactionsForPkHash(key.PkHash)
 		if err != nil {
 			r.Error(jerr.Get("error getting transactions for key", err), http.StatusInternalServerError)
 			return
@@ -39,8 +39,12 @@ var viewKeyRoute = web.Route{
 		var balance int64
 		var balanceBCH float64
 		for _, transaction := range transactions {
-			balance += transaction.GetValue()
-			balanceBCH += transaction.GetValueBCH()
+			for address, value := range transaction.GetValues() {
+				if address == key.GetAddress().GetEncoded() {
+					balance += value.GetValue()
+					balanceBCH += value.GetValueBCH()
+				}
+			}
 		}
 		r.Helper["Transactions"] = transactions
 		r.Helper["Balance"] = balance

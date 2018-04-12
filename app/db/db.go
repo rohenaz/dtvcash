@@ -12,6 +12,21 @@ import (
 	"unicode"
 )
 
+const (
+	BlockTable          = "Block"
+	KeyTable            = "Key"
+	TxInTable           = "TxIn"
+	TxInKeyTable        = "TxIn.Key"
+	TxInTxnOutTable     = "TxIn.TxnOut"
+	TxInTxnOutTxnTable  = "TxIn.TxnOut.Transaction"
+	TxOutTable          = "TxOut"
+	TxOutKeyTable       = "TxOut.Key"
+	TxOutTxnInTable     = "TxOut.TxnIn"
+	TxOutTxnInTxnTable  = "TxOut.TxnIn.Transaction"
+	TransactionTable    = "Transaction"
+	TransactionBlockTbl = "Transaction.Block"
+)
+
 var conn *gorm.DB
 
 const alreadyExistsErrorMessage = "record already exists"
@@ -22,7 +37,6 @@ var dbInterfaces = []interface{}{
 	User{},
 	Session{},
 	Key{},
-	Address{},
 	Block{},
 	Transaction{},
 	TransactionIn{},
