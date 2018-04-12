@@ -2,36 +2,17 @@
 
 <h2>Dashboard</h2>
 
-<table class="table left">
-    <tr>
-        <th>Address</th>
-        <td>{{ .Key.GetPublicKey.GetAddress.GetEncoded }}</td>
-    </tr>
-    <tr>
-        <th>Balance</th>
-        <td>{{ formatBigInt .Balance }} satoshis ({{ formatBigFloat .BalanceBCH }} BCH)</td>
-    </tr>
-    <tr>
-        <th>Actions</th>
-        <td>
-            <a class="btn"
-               href="https://blockchair.com/bitcoin-cash/address/{{ .Key.GetPublicKey.GetAddress.GetEncoded }}">
-                View on Blockchair
-            </a>
-        </td>
-    </tr>
-</table>
+{{ template "snippets/profile.html" .Profile }}
 
-{{ if eq .Balance 0 }}
+{{ if not .Profile.HasBalance }}
 <p>
     Send yourself some BCH to start posting.
 </p>
 {{ end }}
 
 <p>
-    <a class="btn" href="tests">View Tests</a>
     <a class="btn" href="memo/new">New Memo</a>
-    <a class="btn" href="profiles">Profiles</a>
+    <a class="btn" href="memo/set-name">Set Name</a>
 </p>
 
 {{ template "snippets/posts.html" .Posts }}

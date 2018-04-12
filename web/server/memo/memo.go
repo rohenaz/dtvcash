@@ -6,5 +6,7 @@ func GetRoutes() []web.Route {
 	return []web.Route{
 		newRoute,
 		newSubmitRoute,
+		setNameRoute,
+		setNameSubmitRoute,
 	}
 }

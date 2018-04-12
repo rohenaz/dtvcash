@@ -14,20 +14,20 @@ import (
 	"net/http"
 )
 
-var newRoute = web.Route{
-	Pattern:    res.UrlMemoNew,
+var setNameRoute = web.Route{
+	Pattern:    res.UrlMemoSetName,
 	NeedsLogin: true,
 	Handler: func(r *web.Response) {
 		r.Render()
 	},
 }
 
-var newSubmitRoute = web.Route{
-	Pattern:     res.UrlMemoNewSubmit,
+var setNameSubmitRoute = web.Route{
+	Pattern:     res.UrlMemoSetNameSubmit,
 	NeedsLogin:  true,
 	CsrfProtect: true,
 	Handler: func(r *web.Response) {
-		message := r.Request.GetFormValue("message")
+		name := r.Request.GetFormValue("name")
 		password := r.Request.GetFormValue("password")
 		user, err := auth.GetSessionUser(r.Session.CookieId)
 		if err != nil {
@@ -60,14 +60,14 @@ var newSubmitRoute = web.Route{
 		}
 
 		address := key.GetAddress()
-		var fee = int64(283 - memo.MaxPostSize + len([]byte(message)))
+		var fee = int64(283 - memo.MaxPostSize + len([]byte(name)))
 		tx, err := transaction.Create(txOut, privateKey, []transaction.SpendOutput{{
 			Type:    transaction.SpendOutputTypeP2PK,
 			Address: address,
 			Amount:  txOut.Value - fee,
 		}, {
-			Type: transaction.SpendOutputTypeMemoMessage,
-			Data: message,
+			Type: transaction.SpendOutputTypeMemoSetName,
+			Data: name,
 		}})
 		if err != nil {
 			r.Error(jerr.Get("error creating tx", err), http.StatusInternalServerError)

@@ -20,6 +20,7 @@ const (
 	SpendOutputTypeP2PK        SpendOutputType = iota
 	SpendOutputTypeReturn
 	SpendOutputTypeMemoMessage
+	SpendOutputTypeMemoSetName
 	SpendOutputTypeMemoReply
 )
 
@@ -43,7 +44,7 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 		case SpendOutputTypeReturn:
 			pkScript, err := txscript.NewScriptBuilder().
 				AddOp(txscript.OP_RETURN).
-				AddData([]byte(spendOutput.Message)).
+				AddData([]byte(spendOutput.Data)).
 				Script()
 			if err != nil {
 				return nil, jerr.Get("error creating op return output", err)
@@ -51,7 +52,7 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(0, pkScript))
 		case SpendOutputTypeMemoMessage:
-			msgBytes := []byte(spendOutput.Message)
+			msgBytes := []byte(spendOutput.Data)
 			if len(msgBytes) > memo.MaxPostSize {
 				return nil, jerr.New("message size too large")
 			}
@@ -68,12 +69,30 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 			}
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
+		case SpendOutputTypeMemoSetName:
+			nameBytes := []byte(spendOutput.Data)
+			if len(nameBytes) > memo.MaxPostSize {
+				return nil, jerr.New("name too large")
+			}
+			if len(nameBytes) == 0 {
+				return nil, jerr.New("empty name")
+			}
+			pkScript, err := txscript.NewScriptBuilder().
+				AddOp(txscript.OP_RETURN).
+				AddData([]byte{memo.CodePrefix, memo.CodeSetName}).
+				AddData(nameBytes).
+				Script()
+			if err != nil {
+				return nil, jerr.Get("error creating memo set name output", err)
+			}
+			fmt.Printf("pkScript: %x\n", pkScript)
+			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
 		case SpendOutputTypeMemoReply:
 			pkScript, err := txscript.NewScriptBuilder().
 				AddOp(txscript.OP_RETURN).
 				AddData([]byte{0x6d, 0x00}).
 				AddData(spendOutput.ReplyHash).
-				AddData([]byte(spendOutput.Message)).
+				AddData([]byte(spendOutput.Data)).
 				Script()
 			if err != nil {
 				return nil, jerr.Get("error creating memo message output", err)

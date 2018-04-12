@@ -8,6 +8,7 @@ import (
 	"github.com/btcsuite/btcutil"
 	"github.com/cpacia/btcd/txscript"
 	"github.com/jchavannes/jgo/jerr"
+	"html"
 )
 
 func FindAndSaveMemos(txn *db.Transaction, block *db.Block) error {
@@ -17,6 +18,10 @@ func FindAndSaveMemos(txn *db.Transaction, block *db.Block) error {
 		if len(tmpPkHash) > 0 {
 			pkHash = tmpPkHash
 		}
+	}
+	if len(pkHash) == 0 {
+		// Unknown script type
+		return nil
 	}
 	addressPkHash, err := btcutil.NewAddressPubKeyHash(pkHash, &wallet.MainNetParamsOld)
 	if err != nil {
@@ -64,7 +69,7 @@ func FindAndSaveMemos(txn *db.Transaction, block *db.Block) error {
 				PkHash:   pkHash,
 				PkScript: out.PkScript,
 				Address:  address,
-				Message:  string(out.PkScript[5:]),
+				Message:  html.EscapeString(string(out.PkScript[5:])),
 			}
 			if len(txn.TxIn) == 1 {
 				post.ParentHash = txn.TxIn[0].PreviousOutPointHash
@@ -85,6 +90,35 @@ func FindAndSaveMemos(txn *db.Transaction, block *db.Block) error {
 				err = post.Save()
 				if err != nil {
 					return jerr.Get("error saving existing memo post", err)
+				}
+			}
+		case memo.CodeSetName:
+			var setName = db.MemoSetName{
+				TxHash:   txnHash,
+				PkHash:   pkHash,
+				PkScript: out.PkScript,
+				Address:  address,
+				Name:     html.EscapeString(string(out.PkScript[5:])),
+			}
+			if len(txn.TxIn) == 1 {
+				setName.ParentHash = txn.TxIn[0].PreviousOutPointHash
+			}
+			if block != nil {
+				setName.BlockId = block.Id
+			}
+			err := setName.Save()
+			if err != nil {
+				if ! db.IsAlreadyExistsError(err) || block == nil {
+					return jerr.Get("error saving memo set name", err)
+				}
+				setName, err := db.GetMemoTest(txnHash)
+				if err != nil {
+					return jerr.Get("error getting existing memo set name", err)
+				}
+				setName.BlockId = block.Id
+				err = setName.Save()
+				if err != nil {
+					return jerr.Get("error saving existing memo set name", err)
 				}
 			}
 		}

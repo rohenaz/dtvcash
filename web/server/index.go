@@ -3,6 +3,7 @@ package server
 import (
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/db"
+	"git.jasonc.me/main/memo/app/profile"
 	"git.jasonc.me/main/memo/app/res"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
@@ -29,31 +30,20 @@ var (
 			}
 			r.Helper["Key"] = key
 
-			transactions, err := db.GetTransactionsForPkHash(key.PkHash)
+			pf, err := profile.GetProfileAndSetBalances(key.PkHash)
 			if err != nil {
-				r.Error(jerr.Get("error getting transactions for key", err), http.StatusInternalServerError)
+				r.Error(jerr.Get("error getting profile for hash", err), http.StatusInternalServerError)
 				return
 			}
-			var balance int64
-			var balanceBCH float64
-			for _, transaction := range transactions {
-				for address, value := range transaction.GetValues() {
-					if address == key.GetAddress().GetEncoded() {
-						balance += value.GetValue()
-						balanceBCH += value.GetValueBCH()
-					}
-				}
-			}
-			r.Helper["Balance"] = balance
-			r.Helper["BalanceBCH"] = balanceBCH
+			pf.Self = true
+			r.Helper["Profile"] = pf
 
-			posts, err := db.GetPostsForPkHash(key.GetPublicKey().GetAddress().GetScriptAddress())
+			posts, err := db.GetPostsForPkHash(key.PkHash)
 			if err != nil {
 				r.Error(jerr.Get("error getting posts for hash", err), http.StatusInternalServerError)
 				return
 			}
 			r.Helper["Posts"] = posts
-
 			r.RenderTemplate("dashboard")
 		},
 	}

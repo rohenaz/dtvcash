@@ -60,6 +60,7 @@ var MemoApp = {
         Index: "",
         LoginSubmit: "login-submit",
         SignupSubmit: "signup-submit",
-        MemoNewSubmit: "memo/new-submit"
+        MemoNewSubmit: "memo/new-submit",
+        MemoSetNameSubmit: "memo/set-name-submit"
     };
 })();

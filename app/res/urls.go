@@ -23,8 +23,10 @@ const (
 )
 
 const (
-	UrlMemoNew       = "/memo/new"
-	UrlMemoNewSubmit = "/memo/new-submit"
+	UrlMemoNew           = "/memo/new"
+	UrlMemoNewSubmit     = "/memo/new-submit"
+	UrlMemoSetName       = "/memo/set-name"
+	UrlMemoSetNameSubmit = "/memo/set-name-submit"
 )
 
 const (

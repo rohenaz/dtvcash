@@ -1,0 +1,31 @@
+<table class="table left">
+    <tr>
+        <th>Name</th>
+        <td>{{ .Name }}</td>
+    </tr>
+    <tr>
+        <th>Address</th>
+        <td>{{ .GetAddressString }}</td>
+    </tr>
+{{ if .HasBalance }}
+    <tr>
+        <th>Balance</th>
+        <td>{{ formatBigInt .Balance }} satoshis ({{ formatBigFloat .BalanceBCH }} BCH)</td>
+    </tr>
+{{ end }}
+    <tr>
+        <th>Actions</th>
+        <td>
+            <a class="btn" target="_blank"
+               href="https://blockchair.com/bitcoin-cash/address/{{ .GetAddressString }}">
+                View Address on Blockchair
+            </a>
+        {{ if .NameSet }}
+            <a class="btn" target="_blank"
+               href="https://blockchair.com/bitcoin-cash/transaction/{{ .GetNameTx }}">
+                View Name on Blockchair
+            </a>
+        {{ end }}
+        </td>
+    </tr>
+</table>

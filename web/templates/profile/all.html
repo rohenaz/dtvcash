@@ -2,9 +2,13 @@
 
 <h2>Profiles</h2>
 
-{{ range .Addresses }}
+{{ range .Profiles }}
 <p>
-    <a href="/profile/{{ . }}">{{ . }}</a>
+{{ if .NameSet }}
+    <a href="/profile/{{ .GetAddressString }}">{{ .Name }} ({{ .GetAddressString }})</a>
+{{ else }}
+    <a href="/profile/{{ .GetAddressString }}">{{ .GetAddressString }}</a>
+{{ end }}
 </p>
 {{ end }}
 
