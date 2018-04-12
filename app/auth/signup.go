@@ -4,9 +4,11 @@ import (
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
 	"golang.org/x/crypto/bcrypt"
+	"strings"
 )
 
 func Signup(cookieId string, username string, password string) error {
+	username = strings.ToLower(username)
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return err

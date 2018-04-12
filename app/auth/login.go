@@ -4,9 +4,11 @@ import (
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
 	"golang.org/x/crypto/bcrypt"
+	"strings"
 )
 
 func Login(cookieId string, username string, password string) error {
+	username = strings.ToLower(username)
 	user, err := db.GetUserByUsername(username)
 	if err != nil {
 		return err
