@@ -1,0 +1,15 @@
+{{ template "snippets/header.html" . }}
+
+<h2>Profile</h2>
+
+<p>
+    <b>Address:</b> {{ .Address }}
+</p>
+
+{{ template "snippets/posts.html" .Posts }}
+
+<p>
+    <a class="btn" href="profiles">View All</a>
+</p>
+
+{{ template "snippets/footer.html" . }}

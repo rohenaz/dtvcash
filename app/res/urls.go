@@ -27,6 +27,13 @@ const (
 	UrlMemoNewSubmit = "/memo/new-submit"
 )
 
+const (
+	UrlProfiles    = "/profiles"
+	UrlProfileView = "/profile"
+
+	TmplProfiles = "/profile/all"
+)
+
 func GetBaseUrl(r *web.Response) string {
 	baseUrl := r.Request.GetHeader("AppPath")
 	if baseUrl == "" {

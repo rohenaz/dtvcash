@@ -1,0 +1,11 @@
+{{ template "snippets/header.html" . }}
+
+<h2>Profiles</h2>
+
+{{ range .Addresses }}
+<p>
+    <a href="/profile/{{ . }}">{{ . }}</a>
+</p>
+{{ end }}
+
+{{ template "snippets/footer.html" . }}

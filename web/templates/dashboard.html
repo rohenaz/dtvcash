@@ -31,29 +31,9 @@
 <p>
     <a class="btn" href="tests">View Tests</a>
     <a class="btn" href="memo/new">New Memo</a>
+    <a class="btn" href="profiles">Profiles</a>
 </p>
 
-<h3>Posts</h3>
-
-<table class="table">
-    <tr>
-        <th>Tx Hash</th>
-        <th>Address</th>
-        <th>PK Script</th>
-        <th>Message</th>
-        <th>Time</th>
-        <th>Created</th>
-    </tr>
-{{ range .Posts }}
-    <tr>
-        <td>{{ .GetTransactionHashString }}</td>
-        <td>{{ .GetAddressString }}</td>
-        <td>{{ .GetScriptString }}</td>
-        <td>{{ .GetMessage }}</td>
-        <td>{{ .GetTimeString }}</td>
-        <td>{{ .CreatedAt.Format "2006-01-02 15:04" }}</td>
-    </tr>
-{{ end }}
-</table>
+{{ template "snippets/posts.html" .Posts }}
 
 {{ template "snippets/footer.html" . }}

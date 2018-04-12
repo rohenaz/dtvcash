@@ -87,3 +87,24 @@ func GetPostsForPkHash(pkHash []byte) ([]*MemoPost, error) {
 	}
 	return memoPosts, nil
 }
+
+func GetUniqueMemoAPkHashes() ([][]byte, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	rows, err := db.Table("memo_posts").Select("DISTINCT(pk_hash)").Rows()
+	if err != nil {
+		return nil, jerr.Get("error getting distinct pk hashes", err)
+	}
+	var pkHashes [][]byte
+	for rows.Next() {
+		var pkHash []byte
+		err := rows.Scan(&pkHash)
+		if err != nil {
+			return nil, jerr.Get("error scanning row with pkHash", err)
+		}
+		pkHashes = append(pkHashes, pkHash)
+	}
+	return pkHashes, nil
+}

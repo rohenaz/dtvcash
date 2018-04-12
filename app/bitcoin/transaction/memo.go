@@ -13,7 +13,10 @@ import (
 func FindAndSaveMemos(txn *db.Transaction, block *db.Block) error {
 	var pkHash []byte
 	for _, in := range txn.TxIn {
-		pkHash = in.GetAddress().GetScriptAddress()
+		tmpPkHash := in.GetAddress().GetScriptAddress()
+		if len(tmpPkHash) > 0 {
+			pkHash = tmpPkHash
+		}
 	}
 	addressPkHash, err := btcutil.NewAddressPubKeyHash(pkHash, &wallet.MainNetParamsOld)
 	if err != nil {

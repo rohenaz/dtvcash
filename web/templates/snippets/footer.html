@@ -1,13 +1,12 @@
-{{ with .Username }}
-
 <hr/>
 
 <p>
     <a class="btn" href="">Dashboard</a>
+    <a class="btn" href="profiles">Profiles</a>
+{{ with .Username }}
     <a class="btn" href="logout">Logout <b>{{ . }}</b></a>
-</p>
-
 {{ end }}
+</p>
 
 </body>
 </html>
