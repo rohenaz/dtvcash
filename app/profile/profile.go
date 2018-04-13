@@ -28,7 +28,7 @@ func (p Profile) IsSelf() bool {
 }
 
 func (p Profile) CanFollow() bool {
-	if p.IsSelf() {
+	if p.IsSelf() || len(p.SelfPkHash) == 0 {
 		return false
 	}
 	for	_, follower := range p.Followers {
@@ -40,7 +40,7 @@ func (p Profile) CanFollow() bool {
 }
 
 func (p Profile) CanUnFollow() bool {
-	if p.IsSelf() {
+	if p.IsSelf() || len(p.SelfPkHash) == 0 {
 		return false
 	}
 	for	_, follower := range p.Followers {
