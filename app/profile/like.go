@@ -29,6 +29,13 @@ func (l *Like) GetTransactionHashString() string {
 	return hash.String()
 }
 
+func (l *Like) GetTimeString() string {
+	if ! l.Timestamp.IsZero() {
+		return l.Timestamp.Format("2006-01-02 15:04:05")
+	}
+	return "Unconfirmed"
+}
+
 func AttachLikesToPosts(posts []*Post) error {
 	for _, post := range posts {
 		memoLikes, err := db.GetLikesForTxnHash(post.Memo.TxHash)

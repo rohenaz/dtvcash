@@ -11,7 +11,7 @@
 {{ range .Post.Likes }}
 <li>
     <a href="profile/{{ .GetAddressString }}">{{ .Name }} - {{ formatBigInt .Amount }} satoshis</a>
-    ({{ .Timestamp.Format "2006-01-02 15:04" }})
+    ({{ .GetTimeString }})
     <a target="_blank"
        href="https://blockchair.com/bitcoin-cash/transaction/{{ .GetTransactionHashString }}">View on Blockchair</a>
 </li>
