@@ -13,6 +13,14 @@ type User struct {
 	UpdatedAt    time.Time
 }
 
+func (u *User) Save() error {
+	result := save(u)
+	if result.Error != nil {
+		return jerr.Get("error saving user", result.Error)
+	}
+	return nil
+}
+
 func CreateUser(username string, hashedPassword string) (*User, error) {
 	user := &User{
 		Username:     username,

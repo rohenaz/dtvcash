@@ -15,8 +15,10 @@ const (
 )
 
 const (
-	UrlKeyExport = "/key/export"
-	UrlKeyLoad   = "/key/load"
+	UrlKeyExport               = "/key/export"
+	UrlKeyLoad                 = "/key/load"
+	UrlKeyChangePassword       = "/key/change-password"
+	UrlKeyChangePasswordSubmit = "/key/change-password-submit"
 )
 
 const (

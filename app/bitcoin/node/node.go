@@ -79,6 +79,15 @@ func (n *Node) SetKeys() {
 	}
 }
 
+func (n *Node) GetKey(keyId uint) *db.Key {
+	for _, key := range n.Keys {
+		if keyId == key.Id {
+			return key
+		}
+	}
+	return nil
+}
+
 func (n *Node) OnVerAck(p *peer.Peer, msg *wire.MsgVerAck) {
 	onVerAck(n, msg)
 }

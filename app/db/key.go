@@ -47,6 +47,27 @@ func (k Key) GetPrivateKey(password string) (*wallet.PrivateKey, error) {
 	return &privateKey, nil
 }
 
+func (k *Key) UpdatePassword(oldPassword string, newPassword string) error {
+	privateKey, err := k.GetPrivateKey(oldPassword)
+	if err != nil {
+		return jerr.Get("error getting key from password", err)
+	}
+	encryptionKey, err := cryptography.GenerateEncryptionKeyFromPassword(newPassword)
+	if err != nil {
+		return jerr.Get("error generating key from password", err)
+	}
+	encryptedSecret, err := cryptography.Encrypt(privateKey.Secret, encryptionKey)
+	if err != nil {
+		return jerr.Get("failed to encrypt", err)
+	}
+	k.Value = encryptedSecret
+	err = k.Save()
+	if err != nil {
+		return jerr.Get("error saving key", err)
+	}
+	return nil
+}
+
 func (k Key) GetPublicKey() wallet.PublicKey {
 	return wallet.GetPublicKey(k.PublicKey)
 }

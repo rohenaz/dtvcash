@@ -65,6 +65,7 @@ var MemoApp = {
         MemoNewSubmit: "memo/new-submit",
         MemoFollowSubmit: "memo/follow-submit",
         MemoUnfollowSubmit: "memo/unfollow-submit",
-        MemoSetNameSubmit: "memo/set-name-submit"
+        MemoSetNameSubmit: "memo/set-name-submit",
+        KeyChangePasswordSubmit: "key/change-password-submit"
     };
 })();

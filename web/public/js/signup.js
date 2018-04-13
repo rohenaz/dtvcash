@@ -18,6 +18,7 @@
             e.preventDefault();
             var username = $form.find("[name=username]").val();
             var password = $form.find("[name=password]").val();
+            var retypePassword = $form.find("[name=retype-password]").val();
             if (!$form.find("[name=accept]").is(':checked')) {
                 alert("Please accept the disclaimer");
                 return;
@@ -32,6 +33,17 @@
                 alert("Must enter a password.");
                 return;
             }
+
+            if (retypePassword.length === 0) {
+                alert("Must retype password.");
+                return;
+            }
+
+            if (retypePassword !== password) {
+                alert("Password don't match.");
+                return;
+            }
+
             var privateKey;
             if ($radio.filter(':checked').val() === "import") {
                 privateKey = $form.find("[name=private-key]").val();

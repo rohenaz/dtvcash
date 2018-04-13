@@ -2,14 +2,11 @@ package key
 
 import "github.com/jchavannes/jgo/web"
 
-var urlId = web.UrlParam{
-	Id:   "id",
-	Type: web.UrlParamInteger,
-}
-
 func GetRoutes() []web.Route {
 	return []web.Route{
 		viewKeyRoute,
 		loadKeyRoute,
+		changePasswordRoute,
+		changePasswordSubmitRoute,
 	}
 }
