@@ -7,17 +7,25 @@
 {{ range . }}
 <div class="post">
     <p>
-        <b>User:</b> {{ .GetAddressString }}
+        <b>User:</b>
+        <a href="profile/{{ .Memo.GetAddressString }}">
+        {{ $len := len .Name }}
+        {{ if gt $len 0 }}
+            {{ .Name }}
+        {{ else }}
+            {{ .Memo.GetAddressString }}
+        {{ end }}
+        </a>
     </p>
     <p>
-        <b>Time:</b> {{ .GetTimeString }}
+        <b>Time:</b> {{ .Memo.GetTimeString }}
     </p>
     <p>
-    {{ .GetMessage }}
+    {{ .Memo.GetMessage }}
     </p>
     <p>
         <a class="btn btn-leave" target="_blank"
-           href="https://blockchair.com/bitcoin-cash/transaction/{{ .GetTransactionHashString }}">
+           href="https://blockchair.com/bitcoin-cash/transaction/{{ .Memo.GetTransactionHashString }}">
             View Memo on Blockchair</a>
     </p>
 </div>

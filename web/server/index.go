@@ -41,9 +41,13 @@ var indexRoute = web.Route{
 		}
 		r.Helper["Profile"] = pf
 
-		posts, err := db.GetPostsForPkHash(key.PkHash)
+		var pkHashes [][]byte
+		for _, following := range pf.Following {
+			pkHashes = append(pkHashes, following.PkHash)
+		}
+		posts, err := profile.GetPostsForHashes(pkHashes)
 		if err != nil {
-			r.Error(jerr.Get("error getting posts for hash", err), http.StatusInternalServerError)
+			r.Error(jerr.Get("error getting posts for hashes", err), http.StatusInternalServerError)
 			return
 		}
 		r.Helper["Posts"] = posts

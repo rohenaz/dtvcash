@@ -33,7 +33,7 @@ var viewRoute = web.Route{
 			return
 		}
 
-		posts, err := db.GetPostsForPkHash(pkHash)
+		posts, err := profile.GetPostsForHash(pkHash)
 		if err != nil {
 			r.Error(jerr.Get("error getting posts for hash", err), http.StatusInternalServerError)
 			return
