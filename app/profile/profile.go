@@ -16,10 +16,11 @@ type Profile struct {
 	Self       bool
 	Balance    int64
 	BalanceBCH float64
+	hasBalance bool
 }
 
 func (p Profile) HasBalance() bool {
-	return p.Balance != 0
+	return p.hasBalance
 }
 
 func (p Profile) NameSet() bool {
@@ -59,6 +60,7 @@ func (p *Profile) SetBalances() error {
 	}
 	p.Balance = balance
 	p.BalanceBCH = balanceBCH
+	p.hasBalance = true
 	return nil
 }
 
