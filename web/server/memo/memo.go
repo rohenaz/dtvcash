@@ -7,6 +7,11 @@ var urlAddress = web.UrlParam{
 	Type: web.UrlParamString,
 }
 
+var urlTxHash = web.UrlParam{
+	Id:   "tx-hash",
+	Type: web.UrlParamString,
+}
+
 func GetRoutes() []web.Route {
 	return []web.Route{
 		newRoute,
@@ -17,5 +22,8 @@ func GetRoutes() []web.Route {
 		followSubmitRoute,
 		unfollowRoute,
 		unfollowSubmitRoute,
+		postRoute,
+		likeRoute,
+		likeSubmitRoute,
 	}
 }

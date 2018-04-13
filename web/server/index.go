@@ -50,9 +50,14 @@ var indexRoute = web.Route{
 		for _, following := range pf.Following {
 			pkHashes = append(pkHashes, following.PkHash)
 		}
-		posts, err := profile.GetPostsForHashes(pkHashes)
+		posts, err := profile.GetPostsForHashes(pkHashes, key.PkHash)
 		if err != nil {
 			r.Error(jerr.Get("error getting posts for hashes", err), http.StatusInternalServerError)
+			return
+		}
+		err = profile.AttachLikesToPosts(posts)
+		if err != nil {
+			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
 		}
 		r.Helper["Posts"] = posts

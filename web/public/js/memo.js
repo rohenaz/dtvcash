@@ -127,4 +127,43 @@
             });
         });
     };
+    /**
+     * @param {jQuery} $form
+     */
+    MemoApp.Form.Like = function ($form) {
+        $form.submit(function (e) {
+            e.preventDefault();
+            var txHash = $form.find("[name=tx-hash]").val();
+            if (txHash.length === 0) {
+                alert("Form error, tx hash not set.");
+                return;
+            }
+
+            var tip = $form.find("[name=tip]").val();
+            if (tip.length !== 0 && tip < 546) {
+                alert("Must enter a tip greater than 546 (the minimum dust limit).");
+                return;
+            }
+
+            var password = $form.find("[name=password]").val();
+            if (password.length === 0) {
+                alert("Must enter a password.");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoLikeSubmit,
+                data: {
+                    txHash: txHash,
+                    tip: tip,
+                    password: password
+                },
+                success: function () {
+                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoPost + "/" + txHash
+                },
+                error: MemoApp.Form.ErrorHandler
+            });
+        });
+    };
 })();

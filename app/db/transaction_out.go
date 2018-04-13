@@ -1,6 +1,7 @@
 package db
 
 import (
+	"bytes"
 	"encoding/hex"
 	"fmt"
 	"git.jasonc.me/main/bitcoin/bitcoin/script"
@@ -137,4 +138,23 @@ func GetTransactionOutputsForPkHash(pkHash []byte) ([]*TransactionOut, error) {
 		return nil, jerr.Get("error finding transaction outputs", err)
 	}
 	return transactionOuts, nil
+}
+
+func GetSpendableTxOut(pkHash []byte) (*TransactionOut, error) {
+	transactions, err := GetTransactionsForPkHash(pkHash)
+	if err != nil {
+		return nil, jerr.Get("error getting transactions", err)
+	}
+	var txOut *TransactionOut
+	for _, txn := range transactions {
+		for _, out := range txn.TxOut {
+			if out.TxnIn == nil && out.Value > 1000 && bytes.Equal(out.KeyPkHash, pkHash) {
+				txOut = out
+			}
+		}
+	}
+	if txOut == nil {
+		return nil, jerr.New("unable to find an output to spend")
+	}
+	return txOut, nil
 }

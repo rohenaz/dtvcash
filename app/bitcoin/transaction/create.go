@@ -23,6 +23,7 @@ const (
 	SpendOutputTypeMemoSetName
 	SpendOutputTypeMemoFollow
 	SpendOutputTypeMemoUnfollow
+	SpendOutputTypeMemoLike
 	SpendOutputTypeMemoReply
 )
 
@@ -118,6 +119,23 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 				Script()
 			if err != nil {
 				return nil, jerr.Get("error creating memo unfollow output", err)
+			}
+			fmt.Printf("pkScript: %x\n", pkScript)
+			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
+		case SpendOutputTypeMemoLike:
+			if len(spendOutput.Data) > memo.MaxPostSize {
+				return nil, jerr.New("data too large")
+			}
+			if len(spendOutput.Data) == 0 {
+				return nil, jerr.New("empty data")
+			}
+			pkScript, err := txscript.NewScriptBuilder().
+				AddOp(txscript.OP_RETURN).
+				AddData([]byte{memo.CodePrefix, memo.CodeLike}).
+				AddData(spendOutput.Data).
+				Script()
+			if err != nil {
+				return nil, jerr.Get("error creating memo like output", err)
 			}
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))

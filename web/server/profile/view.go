@@ -32,9 +32,14 @@ var viewRoute = web.Route{
 			userPkHash = key.PkHash
 		}
 
-		posts, err := profile.GetPostsForHash(pkHash)
+		posts, err := profile.GetPostsForHash(pkHash, userPkHash)
 		if err != nil {
 			r.Error(jerr.Get("error getting posts for hash", err), http.StatusInternalServerError)
+			return
+		}
+		err = profile.AttachLikesToPosts(posts)
+		if err != nil {
+			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
 		}
 		r.Helper["Posts"] = posts

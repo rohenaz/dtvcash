@@ -125,24 +125,3 @@ func GetFollowsForFollowPkHash(followPkHash []byte) ([]*MemoFollow, error) {
 	sort.Sort(memoFollowSortByDate(memoFollows))
 	return memoFollows, nil
 }
-
-func GetUniqueMemoFollowPkHashes() ([][]byte, error) {
-	db, err := getDb()
-	if err != nil {
-		return nil, jerr.Get("error getting db", err)
-	}
-	rows, err := db.Table("memo_follows").Select("DISTINCT(pk_hash)").Rows()
-	if err != nil {
-		return nil, jerr.Get("error getting distinct pk hashes", err)
-	}
-	var pkHashes [][]byte
-	for rows.Next() {
-		var pkHash []byte
-		err := rows.Scan(&pkHash)
-		if err != nil {
-			return nil, jerr.Get("error scanning row with pkHash", err)
-		}
-		pkHashes = append(pkHashes, pkHash)
-	}
-	return pkHashes, nil
-}

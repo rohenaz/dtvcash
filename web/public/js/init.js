@@ -62,10 +62,12 @@ var MemoApp = {
         LoadKey: "key/load",
         LoginSubmit: "login-submit",
         SignupSubmit: "signup-submit",
+        MemoPost: "memo/post",
         MemoNewSubmit: "memo/new-submit",
         MemoFollowSubmit: "memo/follow-submit",
         MemoUnfollowSubmit: "memo/unfollow-submit",
         MemoSetNameSubmit: "memo/set-name-submit",
+        MemoLikeSubmit: "memo/like-submit",
         KeyChangePasswordSubmit: "key/change-password-submit"
     };
 })();

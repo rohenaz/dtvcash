@@ -1,0 +1,34 @@
+<div class="post">
+    <p>
+        <b>User:</b>
+        <a href="profile/{{ .Post.Memo.GetAddressString }}">
+        {{ $len := len .Post.Name }}
+        {{ if gt $len 0 }}
+            {{ .Post.Name }}
+        {{ else }}
+            {{ .Post.Memo.GetAddressString }}
+        {{ end }}
+        </a>
+    </p>
+    <p>
+        <b>Time:</b> <a href="memo/post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.Memo.GetTimeString }}</a>
+    </p>
+    <p>
+    {{ .Post.Memo.GetMessage }}
+    </p>
+    <p>
+        <i>
+        {{ len .Post.Likes }} likes
+        </i>
+    </p>
+{{ if not .Compress }}
+    <p>
+    {{ if not .Post.IsSelf }}
+        <a class="btn" href="memo/like/{{ .Post.Memo.GetTransactionHashString }}">Like Memo</a>
+    {{ end }}
+        <a class="btn btn-leave" target="_blank"
+           href="https://blockchair.com/bitcoin-cash/transaction/{{ .Post.Memo.GetTransactionHashString }}">
+            View Memo on Blockchair</a>
+    </p>
+{{ end }}
+</div>

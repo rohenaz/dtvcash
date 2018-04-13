@@ -7,6 +7,7 @@ import (
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/btcsuite/btcutil"
+	"github.com/cpacia/btcd/chaincfg/chainhash"
 	"github.com/cpacia/btcd/txscript"
 	"github.com/jchavannes/jgo/jerr"
 	"html"
@@ -163,6 +164,38 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 		if err != nil {
 			return jerr.Get("error saving memo_follow", err)
 		}
+	case memo.CodeLike:
+		txHash, err := chainhash.NewHash(out.PkScript[5:])
+		if err != nil {
+			return jerr.Get("error parsing transaction hash", err)
+		}
+		var tipPkHash []byte
+		var tipAmount int64
+		for _, txOut := range txn.TxOut {
+			if len(txOut.KeyPkHash) == 0 || bytes.Equal(txOut.KeyPkHash, inputAddress.ScriptAddress()) {
+				continue
+			}
+			if len(tipPkHash) != 0 {
+				return jerr.New("error found multiple tip outputs, unable to process")
+			}
+			tipAmount += txOut.Value
+			tipPkHash = txOut.KeyPkHash
+		}
+		var memoLike = db.MemoLike{
+			TxHash:     txn.Hash,
+			PkHash:     inputAddress.ScriptAddress(),
+			PkScript:   out.PkScript,
+			ParentHash: parentHash,
+			Address:    inputAddress.EncodeAddress(),
+			LikeTxHash: txHash.CloneBytes(),
+			BlockId:    blockId,
+			TipPkHash:  tipPkHash,
+			TipAmount:  tipAmount,
+		}
+		err = memoLike.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_like", err)
+		}
 	}
 	return nil
 }
@@ -202,6 +235,36 @@ func updateMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) er
 		err = memoSetName.Save()
 		if err != nil {
 			return jerr.Get("error saving memo_set_name", err)
+		}
+	case memo.CodeFollow:
+		memoFollow, err := db.GetMemoFollow(txn.Hash)
+		if err != nil {
+			return jerr.Get("error getting memo_follow", err)
+		}
+		memoFollow.BlockId = block.Id
+		err = memoFollow.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_follow", err)
+		}
+	case memo.CodeUnfollow:
+		memoFollow, err := db.GetMemoFollow(txn.Hash)
+		if err != nil {
+			return jerr.Get("error getting memo_follow", err)
+		}
+		memoFollow.BlockId = block.Id
+		err = memoFollow.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_follow", err)
+		}
+	case memo.CodeLike:
+		memoLike, err := db.GetMemoLike(txn.Hash)
+		if err != nil {
+			return jerr.Get("error getting memo_like", err)
+		}
+		memoLike.BlockId = block.Id
+		err = memoLike.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_like", err)
 		}
 	}
 	return nil

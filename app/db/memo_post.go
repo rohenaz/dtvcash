@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"git.jasonc.me/main/bitcoin/bitcoin/script"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
-	"github.com/btcsuite/btcutil"
 	"github.com/cpacia/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 	"html"
@@ -44,12 +43,11 @@ func (m MemoPost) GetTransactionHashString() string {
 }
 
 func (m MemoPost) GetAddressString() string {
-	pkHash, err := btcutil.NewAddressPubKeyHash(m.PkHash, &wallet.MainNetParamsOld)
-	if err != nil {
-		jerr.Get("error getting pubkeyhash from memo post", err).Print()
-		return ""
-	}
-	return pkHash.EncodeAddress()
+	return m.GetAddress().GetEncoded()
+}
+
+func (m MemoPost) GetAddress() wallet.Address {
+	return wallet.GetAddressFromPkHash(m.PkHash)
 }
 
 func (m MemoPost) GetScriptString() string {
@@ -69,7 +67,9 @@ func (m MemoPost) GetTimeString() string {
 
 func GetMemoPost(txHash []byte) (*MemoPost, error) {
 	var memoPost MemoPost
-	err := find(&memoPost, MemoPost{
+	err := findPreloadColumns([]string{
+		BlockTable,
+	}, &memoPost, MemoPost{
 		TxHash: txHash,
 	})
 	if err != nil {
