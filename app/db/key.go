@@ -94,6 +94,7 @@ func createKey(name string, privateKey wallet.PrivateKey, key []byte, userId uin
 		UserId:    userId,
 		Value:     encryptedSecret,
 		PublicKey: privateKey.GetPublicKey().GetSerialized(),
+		PkHash:    privateKey.GetPublicKey().GetAddress().GetScriptAddress(),
 	}
 	result := save(dbPrivateKey)
 	if result.Error != nil {
