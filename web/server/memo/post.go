@@ -13,7 +13,6 @@ import (
 
 var postRoute = web.Route{
 	Pattern:    res.UrlMemoPost + "/" + urlTxHash.UrlPart(),
-	NeedsLogin: true,
 	Handler: func(r *web.Response) {
 		txHashString := r.Request.GetUrlNamedQueryVariable(urlTxHash.Id)
 		txHash, err := chainhash.NewHashFromStr(txHashString)
@@ -21,17 +20,21 @@ var postRoute = web.Route{
 			r.Error(jerr.Get("error getting transaction hash", err), http.StatusInternalServerError)
 			return
 		}
-		user, err := auth.GetSessionUser(r.Session.CookieId)
-		if err != nil {
-			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
-			return
+		var pkHash []byte
+		if auth.IsLoggedIn(r.Session.CookieId) {
+			user, err := auth.GetSessionUser(r.Session.CookieId)
+			if err != nil {
+				r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
+				return
+			}
+			key, err := db.GetKeyForUser(user.Id)
+			if err != nil {
+				r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
+				return
+			}
+			pkHash = key.PkHash
 		}
-		key, err := db.GetKeyForUser(user.Id)
-		if err != nil {
-			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
-			return
-		}
-		post, err := profile.GetPostByTxHash(txHash.CloneBytes(), key.PkHash)
+		post, err := profile.GetPostByTxHash(txHash.CloneBytes(), pkHash)
 		if err != nil {
 			r.Error(jerr.Get("error getting post", err), http.StatusInternalServerError)
 			return
