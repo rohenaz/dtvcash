@@ -4,12 +4,6 @@
 
 {{ template "snippets/profile.html" .Profile }}
 
-{{ if not .Profile.HasBalance }}
-<p>
-    Send yourself some BCH to start posting.
-</p>
-{{ end }}
-
 <p>
     <a class="btn" href="memo/new">New Memo</a>
     <a class="btn" href="memo/set-name">Set Name</a>
@@ -17,5 +11,11 @@
 </p>
 
 {{ template "snippets/posts.html" .Posts }}
+
+{{ if not .Profile.HasBalance }}
+<p>
+    Send yourself some BCH to start posting.
+</p>
+{{ end }}
 
 {{ template "snippets/footer.html" . }}

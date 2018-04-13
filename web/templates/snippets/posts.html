@@ -1,4 +1,8 @@
+{{ if not . }}
+<h3>No Posts Yet</h3>
+{{ else }}
 <h3>Posts</h3>
+{{ end }}
 
 {{ range . }}
 <div class="post">
@@ -12,7 +16,8 @@
     {{ .GetMessage }}
     </p>
     <p>
-        <a class="btn btn-leave" target="_blank" href="https://blockchair.com/bitcoin-cash/transaction/{{ .GetTransactionHashString }}">
+        <a class="btn btn-leave" target="_blank"
+           href="https://blockchair.com/bitcoin-cash/transaction/{{ .GetTransactionHashString }}">
             View on Blockchair</a>
     </p>
 </div>

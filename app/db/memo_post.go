@@ -102,6 +102,9 @@ func (txns memoPostSortByDate) Less(i, j int) bool {
 }
 
 func GetPostsForPkHash(pkHash []byte) ([]*MemoPost, error) {
+	if len(pkHash) == 0 {
+		return nil, nil
+	}
 	var memoPosts []*MemoPost
 	err := findPreloadColumns([]string{
 		BlockTable,
