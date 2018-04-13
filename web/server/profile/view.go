@@ -17,15 +17,19 @@ var viewRoute = web.Route{
 		addressString := r.Request.GetUrlNamedQueryVariable(urlAddress.Id)
 		address := wallet.GetAddressFromString(addressString)
 		pkHash := address.GetScriptAddress()
-		user, err := auth.GetSessionUser(r.Session.CookieId)
-		if err != nil {
-			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
-			return
-		}
-		key, err := db.GetKeyForUser(user.Id)
-		if err != nil {
-			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
-			return
+		var userPkHash []byte
+		if auth.IsLoggedIn(r.Session.CookieId) {
+			user, err := auth.GetSessionUser(r.Session.CookieId)
+			if err != nil {
+				r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
+				return
+			}
+			key, err := db.GetKeyForUser(user.Id)
+			if err != nil {
+				r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
+				return
+			}
+			userPkHash = key.PkHash
 		}
 
 		posts, err := profile.GetPostsForHash(pkHash)
@@ -35,7 +39,7 @@ var viewRoute = web.Route{
 		}
 		r.Helper["Posts"] = posts
 
-		pf, err := profile.GetProfileAndSetFollowers(pkHash, key.PkHash)
+		pf, err := profile.GetProfileAndSetFollowers(pkHash, userPkHash)
 		if err != nil {
 			r.Error(jerr.Get("error getting profile for hash", err), http.StatusInternalServerError)
 			return
