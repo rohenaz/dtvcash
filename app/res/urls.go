@@ -11,6 +11,7 @@ const (
 	UrlLogout       = "/logout"
 	UrlTests        = "/tests"
 	UrlProtocol     = "/protocol"
+	UrlDisclaimer   = "/disclaimer"
 )
 
 const (

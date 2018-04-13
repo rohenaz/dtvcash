@@ -26,6 +26,12 @@
         <input id="private-key" type="password" name="private-key"/>
     </p>
     <p>
+        <input id="accept" name="accept" type="checkbox"/>
+        <label for="accept" style="max-width:500px;font-size:12px;">
+            Disclaimer: {{ template "snippets/disclaimer.html" }}
+        </label>
+    </p>
+    <p>
         <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign up"/>
     </p>
 </form>

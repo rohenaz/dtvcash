@@ -18,6 +18,10 @@
             e.preventDefault();
             var username = $form.find("[name=username]").val();
             var password = $form.find("[name=password]").val();
+            if (!$form.find("[name=accept]").is(':checked')) {
+                alert("Please accept the disclaimer");
+                return;
+            }
 
             if (username.length === 0) {
                 alert("Must enter a username.");
