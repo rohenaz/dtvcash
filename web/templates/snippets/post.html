@@ -19,6 +19,10 @@
     <p>
         <i>
         {{ len .Post.Likes }} likes
+        {{ if .Post.Likes }}
+        (tip: {{ formatBigInt .Post.GetTotalTip }} satoshis)
+        {{ else }}
+        {{ end }}
         </i>
     </p>
 {{ if not .Compress }}

@@ -9,12 +9,20 @@ import (
 type Post struct {
 	Name  string
 	Memo  *db.MemoPost
-	Likes []*db.MemoLike
+	Likes []*Like
 	Self  bool
 }
 
 func (p Post) IsSelf() bool {
 	return p.Self
+}
+
+func (p Post) GetTotalTip() int64 {
+	var totalTip int64
+	for _, like := range p.Likes {
+		totalTip += like.Amount
+	}
+	return totalTip
 }
 
 func GetPostsForHashes(pkHashes [][]byte, selfPkHash []byte) ([]*Post, error) {
@@ -90,15 +98,4 @@ func GetPostByTxHash(txHash []byte, selfPkHash []byte) (*Post, error) {
 		post.Self = true
 	}
 	return post, nil
-}
-
-func AttachLikesToPosts(posts []*Post) error {
-	for _, post := range posts {
-		memoLikes, err := db.GetLikesForTxnHash(post.Memo.TxHash)
-		if err != nil {
-			return jerr.Get("error getting likes for post", err)
-		}
-		post.Likes = memoLikes
-	}
-	return nil
 }

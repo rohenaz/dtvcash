@@ -4,4 +4,19 @@
 
 {{ template "snippets/post.html" dict "Post" .Post "Compress" false }}
 
+{{ if .Post.Likes }}
+<h3>Likes</h3>
+
+<ul>
+{{ range .Post.Likes }}
+<li>
+    <a href="profile/{{ .GetAddressString }}">{{ .Name }} - {{ formatBigInt .Amount }} satoshis</a>
+    ({{ .Timestamp.Format "2006-01-02 15:04" }})
+    <a target="_blank"
+       href="https://blockchair.com/bitcoin-cash/transaction/{{ .GetTransactionHashString }}">View on Blockchair</a>
+</li>
+{{ end }}
+</ul>
+{{ end }}
+
 {{ template "snippets/footer.html" . }}
