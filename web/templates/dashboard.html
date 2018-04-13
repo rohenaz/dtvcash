@@ -12,7 +12,7 @@
 
 {{ template "snippets/posts.html" .Posts }}
 
-{{ if not .Profile.HasBalance }}
+{{ if eq .Profile.Balance 0 }}
 <p>
     Send yourself some BCH to start posting.
 </p>
