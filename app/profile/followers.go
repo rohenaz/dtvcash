@@ -67,7 +67,7 @@ func GetFollowers(pkHash []byte) ([]*Follower, error) {
 MemoFollow:
 	for _, memoFollow := range memoFollows {
 		var name = "Unknown"
-		memoSetName, err := db.GetNameForPkHash(memoFollow.FollowPkHash)
+		memoSetName, err := db.GetNameForPkHash(memoFollow.PkHash)
 		if err != nil && ! db.IsRecordNotFoundError(err) {
 			return nil, jerr.Get("error getting name for pk hash", err)
 		}
