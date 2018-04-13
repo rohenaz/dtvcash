@@ -7,14 +7,21 @@ import (
 )
 
 type Post struct {
-	Name  string
-	Memo  *db.MemoPost
-	Likes []*Like
-	Self  bool
+	Name       string
+	Memo       *db.MemoPost
+	Likes      []*Like
+	SelfPkHash []byte
 }
 
 func (p Post) IsSelf() bool {
-	return p.Self
+	if len(p.SelfPkHash) == 0 {
+		return false
+	}
+	return bytes.Equal(p.SelfPkHash, p.Memo.PkHash)
+}
+
+func (p Post) IsLikable() bool {
+	return len(p.SelfPkHash) > 0
 }
 
 func (p Post) GetTotalTip() int64 {
@@ -44,10 +51,8 @@ func GetPostsForHashes(pkHashes [][]byte, selfPkHash []byte) ([]*Post, error) {
 	var posts []*Post
 	for _, dbPost := range dbPosts {
 		post := &Post{
-			Memo: dbPost,
-		}
-		if bytes.Equal(dbPost.PkHash, selfPkHash) {
-			post.Self = true
+			Memo:       dbPost,
+			SelfPkHash: selfPkHash,
 		}
 		name, ok := names[string(dbPost.PkHash)]
 		if ok {
@@ -70,11 +75,9 @@ func GetPostsForHash(pkHash []byte, selfPkHash []byte) ([]*Post, error) {
 	var posts []*Post
 	for _, dbPost := range dbPosts {
 		post := &Post{
-			Name: setName.Name,
-			Memo: dbPost,
-		}
-		if bytes.Equal(dbPost.PkHash, selfPkHash) {
-			post.Self = true
+			Name:       setName.Name,
+			Memo:       dbPost,
+			SelfPkHash: selfPkHash,
 		}
 		posts = append(posts, post)
 	}
@@ -91,11 +94,9 @@ func GetPostByTxHash(txHash []byte, selfPkHash []byte) (*Post, error) {
 		return nil, jerr.Get("error getting name for hash", err)
 	}
 	post := &Post{
-		Name: setName.Name,
-		Memo: memoPost,
-	}
-	if bytes.Equal(post.Memo.PkHash, selfPkHash) {
-		post.Self = true
+		Name:       setName.Name,
+		Memo:       memoPost,
+		SelfPkHash: selfPkHash,
 	}
 	return post, nil
 }
