@@ -5,8 +5,8 @@
 {{ template "snippets/profile.html" .Profile }}
 
 <p>
-{{ if gt .Profile.Balance 0 }}
     <a class="btn" href="profile/{{ .Profile.GetAddressString }}">View Your Profile</a>
+{{ if gt .Profile.Balance 0 }}
     <a class="btn" href="memo/new">New Memo</a>
     <a class="btn" href="memo/set-name">Set Name</a>
 {{ end }}
