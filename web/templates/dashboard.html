@@ -14,6 +14,8 @@
 
 {{ template "snippets/following.html" .Profile.Following }}
 
+{{ template "snippets/followers.html" .Profile.Followers }}
+
 {{ template "snippets/posts.html" .Posts }}
 
 {{ if eq .Profile.Balance 0 }}

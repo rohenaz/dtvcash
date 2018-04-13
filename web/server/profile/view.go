@@ -45,6 +45,11 @@ var viewRoute = web.Route{
 			r.Error(jerr.Get("error getting profile for hash", err), http.StatusInternalServerError)
 			return
 		}
+		err = pf.SetFollowing()
+		if err != nil {
+			r.Error(jerr.Get("error setting following for profile", err), http.StatusInternalServerError)
+			return
+		}
 		r.Helper["Profile"] = pf
 
 		r.RenderTemplate(res.UrlProfileView)

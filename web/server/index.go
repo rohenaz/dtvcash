@@ -39,6 +39,11 @@ var indexRoute = web.Route{
 			r.Error(jerr.Get("error setting following for profile", err), http.StatusInternalServerError)
 			return
 		}
+		err = pf.SetFollowers()
+		if err != nil {
+			r.Error(jerr.Get("error setting followers for profile", err), http.StatusInternalServerError)
+			return
+		}
 		r.Helper["Profile"] = pf
 
 		var pkHashes [][]byte
