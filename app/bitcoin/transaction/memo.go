@@ -2,6 +2,7 @@ package transaction
 
 import (
 	"bytes"
+	"fmt"
 	"git.jasonc.me/main/bitcoin/bitcoin/memo"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/db"
@@ -71,6 +72,7 @@ func getInputPkHash(txn *db.Transaction) (*btcutil.AddressPubKeyHash, error) {
 }
 
 func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error {
+	fmt.Printf("Saving new memo (txn: %s)\n", txn.GetChainHash().String())
 	inputAddress, err := getInputPkHash(txn)
 	if err != nil {
 		return jerr.Get("error getting pk hash from input", err)
@@ -129,6 +131,7 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 }
 
 func updateMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error {
+	fmt.Printf("Updating existing memo (txn: %s)\n", txn.GetChainHash().String())
 	memoTest, err := db.GetMemoTest(txn.Hash)
 	if err != nil {
 		return jerr.Get("error getting memo_test", err)

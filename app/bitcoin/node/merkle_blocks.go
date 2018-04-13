@@ -16,9 +16,9 @@ func onMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
 	var err error
 	block, ok := n.QueuedMerkleBlocks[hash]
 	if !ok {
-		block, err = db.GetBlockByHash(msg.Header.PrevBlock)
+		block, err = db.GetBlockByHash(msg.Header.BlockHash())
 		if err != nil {
-			jerr.Get("error matching prevHash to a db block", err).Print()
+			jerr.Get("error getting block from db", err).Print()
 			return
 		}
 	} else {
@@ -63,6 +63,7 @@ func onMerkleBlock(n *Node, msg *wire.MsgMerkleBlock) {
 }
 
 func queueMerkleBlocks(n *Node, startingBlockHeight uint, endingBlockHeight uint) uint {
+	//fmt.Printf("Queueing more merkle blocks (start: %d, end %d)\n", startingBlockHeight, endingBlockHeight)
 	blocks, err := db.GetBlocksInHeightRange(startingBlockHeight, endingBlockHeight)
 	if err != nil {
 		jerr.Get("error getting blocks in height range", err).Print()

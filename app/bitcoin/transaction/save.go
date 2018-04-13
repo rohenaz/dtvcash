@@ -15,6 +15,10 @@ func SaveTransaction(msg *wire.MsgTx, block *db.Block) error {
 		return jerr.Get("error getting transaction from db", err)
 	}
 	if txn != nil {
+		if block == nil || txn.BlockId != 0 {
+			// Nothing to update
+			return nil
+		}
 		err = updateTxn(txn, block)
 		if err != nil {
 			return jerr.Get("error updating transaction", err)
@@ -43,11 +47,7 @@ func SaveTransaction(msg *wire.MsgTx, block *db.Block) error {
 }
 
 func updateTxn(txn *db.Transaction, block *db.Block) error {
-	if block == nil {
-		// Nothing to update
-		return nil
-	}
-	txn.BlockId = block.Id
+	fmt.Printf("Updating existing txn: %s, block id: %d\n", txn.GetChainHash().String(), block.Id)
 	err := txn.Save()
 	if err != nil {
 		return jerr.Get("error saving updated transaction", err)

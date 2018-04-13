@@ -236,7 +236,7 @@ func GetTransactionByHash(hash []byte) (*Transaction, error) {
 	var txn = Transaction{
 		Hash: hash,
 	}
-	err := find(&txn, txn)
+	err := findPreloadColumns(transactionColumns, &txn, txn)
 	if err != nil {
 		return nil, jerr.Get("error finding transaction", err)
 	}
