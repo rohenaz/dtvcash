@@ -95,4 +95,36 @@
             });
         });
     };
+    /**
+     * @param {jQuery} $form
+     */
+    MemoApp.Form.Unfollow = function ($form) {
+        $form.submit(function (e) {
+            e.preventDefault();
+            var address = $form.find("[name=address]").val();
+            if (address.length === 0) {
+                alert("Form error, address not set.");
+                return;
+            }
+
+            var password = $form.find("[name=password]").val();
+            if (password.length === 0) {
+                alert("Must enter a password.");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoUnfollowSubmit,
+                data: {
+                    address: address,
+                    password: password
+                },
+                success: function () {
+                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.Profile + "/" + address
+                },
+                error: MemoApp.Form.ErrorHandler
+            });
+        });
+    };
 })();

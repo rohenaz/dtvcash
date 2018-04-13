@@ -29,12 +29,16 @@ var indexRoute = web.Route{
 		}
 		r.Helper["Key"] = key
 
-		pf, err := profile.GetProfileAndSetBalances(key.PkHash)
+		pf, err := profile.GetProfileAndSetBalances(key.PkHash, key.PkHash)
 		if err != nil {
 			r.Error(jerr.Get("error getting profile for hash", err), http.StatusInternalServerError)
 			return
 		}
-		pf.Self = true
+		err = pf.SetFollowing()
+		if err != nil {
+			r.Error(jerr.Get("error setting following for profile", err), http.StatusInternalServerError)
+			return
+		}
 		r.Helper["Profile"] = pf
 
 		posts, err := db.GetPostsForPkHash(key.PkHash)
@@ -43,13 +47,6 @@ var indexRoute = web.Route{
 			return
 		}
 		r.Helper["Posts"] = posts
-
-		following, err := profile.GetFollowing(key.PkHash)
-		if err != nil {
-			r.Error(jerr.Get("error getting following for hash", err), http.StatusInternalServerError)
-			return
-		}
-		r.Helper["Following"] = following
 
 		r.RenderTemplate("dashboard")
 	},

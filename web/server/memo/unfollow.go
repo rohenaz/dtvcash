@@ -16,8 +16,8 @@ import (
 	"net/http"
 )
 
-var followRoute = web.Route{
-	Pattern:    res.UrlMemoFollow + "/" + urlAddress.UrlPart(),
+var unfollowRoute = web.Route{
+	Pattern:    res.UrlMemoUnfollow + "/" + urlAddress.UrlPart(),
 	NeedsLogin: true,
 	Handler: func(r *web.Response) {
 		addressString := r.Request.GetUrlNamedQueryVariable(urlAddress.Id)
@@ -43,17 +43,17 @@ var followRoute = web.Route{
 			r.Error(jerr.Get("error getting profile for hash", err), http.StatusInternalServerError)
 			return
 		}
-		if ! pf.CanFollow() {
-			r.Error(jerr.New("unable to follow user"), http.StatusUnprocessableEntity)
+		if ! pf.CanUnFollow() {
+			r.Error(jerr.New("unable to unfollow user"), http.StatusUnprocessableEntity)
 			return
 		}
 		r.Helper["Profile"] = pf
-		r.RenderTemplate(res.UrlMemoFollow)
+		r.RenderTemplate(res.UrlMemoUnfollow)
 	},
 }
 
-var followSubmitRoute = web.Route{
-	Pattern:     res.UrlMemoFollowSubmit,
+var unfollowSubmitRoute = web.Route{
+	Pattern:     res.UrlMemoUnfollowSubmit,
 	NeedsLogin:  true,
 	CsrfProtect: true,
 	Handler: func(r *web.Response) {
@@ -102,7 +102,7 @@ var followSubmitRoute = web.Route{
 			Address: address,
 			Amount:  txOut.Value - fee,
 		}, {
-			Type: transaction.SpendOutputTypeMemoFollow,
+			Type: transaction.SpendOutputTypeMemoUnfollow,
 			Data: followAddress.GetScriptAddress(),
 		}})
 		if err != nil {

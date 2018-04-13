@@ -63,8 +63,8 @@ var MemoApp = {
         LoginSubmit: "login-submit",
         SignupSubmit: "signup-submit",
         MemoNewSubmit: "memo/new-submit",
-        MemoFollow: "memo/follow",
         MemoFollowSubmit: "memo/follow-submit",
+        MemoUnfollowSubmit: "memo/unfollow-submit",
         MemoSetNameSubmit: "memo/set-name-submit"
     };
 })();

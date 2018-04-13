@@ -15,5 +15,7 @@ func GetRoutes() []web.Route {
 		setNameSubmitRoute,
 		followRoute,
 		followSubmitRoute,
+		unfollowRoute,
+		unfollowSubmitRoute,
 	}
 }

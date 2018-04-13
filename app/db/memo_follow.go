@@ -22,6 +22,7 @@ type MemoFollow struct {
 	FollowPkHash []byte
 	BlockId      uint
 	Block        *Block
+	Unfollow     bool
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }
@@ -80,21 +81,21 @@ func (txns memoFollowSortByDate) Len() int      { return len(txns) }
 func (txns memoFollowSortByDate) Swap(i, j int) { txns[i], txns[j] = txns[j], txns[i] }
 func (txns memoFollowSortByDate) Less(i, j int) bool {
 	if bytes.Equal(txns[i].ParentHash, txns[j].TxHash) {
-		return true
+		return false
 	}
 	if bytes.Equal(txns[i].TxHash, txns[j].ParentHash) {
-		return false
+		return true
 	}
 	if txns[i].Block == nil && txns[j].Block == nil {
 		return false
 	}
 	if txns[i].Block == nil {
-		return true
-	}
-	if txns[j].Block == nil {
 		return false
 	}
-	return txns[i].Block.Height > txns[j].Block.Height
+	if txns[j].Block == nil {
+		return true
+	}
+	return txns[i].Block.Height < txns[j].Block.Height
 }
 
 func GetFollowsForPkHash(pkHash []byte) ([]*MemoFollow, error) {
@@ -103,6 +104,20 @@ func GetFollowsForPkHash(pkHash []byte) ([]*MemoFollow, error) {
 		BlockTable,
 	}, &memoFollows, &MemoFollow{
 		PkHash: pkHash,
+	})
+	if err != nil {
+		return nil, jerr.Get("error getting memo follows", err)
+	}
+	sort.Sort(memoFollowSortByDate(memoFollows))
+	return memoFollows, nil
+}
+
+func GetFollowsForFollowPkHash(followPkHash []byte) ([]*MemoFollow, error) {
+	var memoFollows []*MemoFollow
+	err := findPreloadColumns([]string{
+		BlockTable,
+	}, &memoFollows, &MemoFollow{
+		FollowPkHash: followPkHash,
 	})
 	if err != nil {
 		return nil, jerr.Get("error getting memo follows", err)

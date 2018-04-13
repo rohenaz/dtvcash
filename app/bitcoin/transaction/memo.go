@@ -144,6 +144,25 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 		if err != nil {
 			return jerr.Get("error saving memo_follow", err)
 		}
+	case memo.CodeUnfollow:
+		address := wallet.GetAddressFromPkHash(out.PkScript[5:])
+		if ! bytes.Equal(address.GetScriptAddress(), out.PkScript[5:]) {
+			return jerr.New("unable to parse follow address")
+		}
+		var memoFollow = db.MemoFollow{
+			TxHash:       txn.Hash,
+			PkHash:       inputAddress.ScriptAddress(),
+			PkScript:     out.PkScript,
+			ParentHash:   parentHash,
+			Address:      inputAddress.EncodeAddress(),
+			FollowPkHash: address.GetScriptAddress(),
+			BlockId:      blockId,
+			Unfollow:     true,
+		}
+		err := memoFollow.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_follow", err)
+		}
 	}
 	return nil
 }

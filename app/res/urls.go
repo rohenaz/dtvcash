@@ -20,12 +20,14 @@ const (
 )
 
 const (
-	UrlMemoNew           = "/memo/new"
-	UrlMemoNewSubmit     = "/memo/new-submit"
-	UrlMemoSetName       = "/memo/set-name"
-	UrlMemoSetNameSubmit = "/memo/set-name-submit"
-	UrlMemoFollow        = "/memo/follow"
-	UrlMemoFollowSumbit  = "/memo/follow-submit"
+	UrlMemoNew            = "/memo/new"
+	UrlMemoNewSubmit      = "/memo/new-submit"
+	UrlMemoSetName        = "/memo/set-name"
+	UrlMemoSetNameSubmit  = "/memo/set-name-submit"
+	UrlMemoFollow         = "/memo/follow"
+	UrlMemoFollowSubmit   = "/memo/follow-submit"
+	UrlMemoUnfollow       = "/memo/unfollow"
+	UrlMemoUnfollowSubmit = "/memo/unfollow-submit"
 )
 
 const (

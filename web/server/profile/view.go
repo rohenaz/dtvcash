@@ -40,7 +40,7 @@ var viewRoute = web.Route{
 		}
 		r.Helper["Posts"] = posts
 
-		pf, err := profile.GetProfile(pkHash)
+		pf, err := profile.GetProfileAndSetFollowers(pkHash, key.PkHash)
 		if err != nil {
 			r.Error(jerr.Get("error getting profile for hash", err), http.StatusInternalServerError)
 			return
