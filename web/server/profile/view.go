@@ -1,7 +1,6 @@
 package profile
 
 import (
-	"bytes"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/db"
@@ -26,10 +25,6 @@ var viewRoute = web.Route{
 		key, err := db.GetKeyForUser(user.Id)
 		if err != nil {
 			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
-			return
-		}
-		if bytes.Equal(key.PkHash, pkHash) {
-			r.SetRedirect(res.GetUrlWithBaseUrl(res.UrlIndex, r))
 			return
 		}
 

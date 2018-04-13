@@ -8,6 +8,12 @@
 
 {{ template "snippets/followers.html" .Profile.Followers }}
 
+{{ if not .Posts }}
+<h3>No Posts Yet</h3>
+{{ else }}
+<h3>Posts</h3>
+{{ end }}
+
 {{ template "snippets/posts.html" .Posts }}
 
 {{ template "snippets/footer.html" . }}

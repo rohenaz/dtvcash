@@ -6,6 +6,7 @@
 
 <p>
 {{ if gt .Profile.Balance 0 }}
+    <a class="btn" href="profile/{{ .Profile.GetAddressString }}">View Your Profile</a>
     <a class="btn" href="memo/new">New Memo</a>
     <a class="btn" href="memo/set-name">Set Name</a>
 {{ end }}
@@ -16,6 +17,13 @@
 {{ template "snippets/following.html" .Profile.Following }}
 
 {{ template "snippets/followers.html" .Profile.Followers }}
+
+{{ if not .Posts }}
+<h3>Feed Empty</h3>
+<p>Start following others to see their posts here</p>
+{{ else }}
+<h3>Feed</h3>
+{{ end }}
 
 {{ template "snippets/posts.html" .Posts }}
 
