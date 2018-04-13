@@ -12,21 +12,21 @@ import (
 	"time"
 )
 
-type MemoSetName struct {
-	Id         uint   `gorm:"primary_key"`
-	TxHash     []byte `gorm:"unique;size:50"`
-	ParentHash []byte
-	PkHash     []byte
-	PkScript   []byte
-	Address    string
-	Name    string
-	BlockId    uint
-	Block      *Block
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+type MemoFollow struct {
+	Id           uint   `gorm:"primary_key"`
+	TxHash       []byte `gorm:"unique;size:50"`
+	ParentHash   []byte
+	PkHash       []byte
+	PkScript     []byte
+	Address      string
+	FollowPkHash []byte
+	BlockId      uint
+	Block        *Block
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
-func (m MemoSetName) Save() error {
+func (m MemoFollow) Save() error {
 	result := save(&m)
 	if result.Error != nil {
 		return jerr.Get("error saving memo test", result.Error)
@@ -34,7 +34,7 @@ func (m MemoSetName) Save() error {
 	return nil
 }
 
-func (m MemoSetName) GetTransactionHashString() string {
+func (m MemoFollow) GetTransactionHashString() string {
 	hash, err := chainhash.NewHash(m.TxHash)
 	if err != nil {
 		jerr.Get("error getting chainhash from memo post", err).Print()
@@ -43,7 +43,7 @@ func (m MemoSetName) GetTransactionHashString() string {
 	return hash.String()
 }
 
-func (m MemoSetName) GetAddressString() string {
+func (m MemoFollow) GetAddressString() string {
 	pkHash, err := btcutil.NewAddressPubKeyHash(m.PkHash, &wallet.MainNetParamsOld)
 	if err != nil {
 		jerr.Get("error getting pubkeyhash from memo post", err).Print()
@@ -52,40 +52,40 @@ func (m MemoSetName) GetAddressString() string {
 	return pkHash.EncodeAddress()
 }
 
-func (m MemoSetName) GetScriptString() string {
+func (m MemoFollow) GetScriptString() string {
 	return html.EscapeString(script.GetScriptString(m.PkScript))
 }
 
-func (m MemoSetName) GetTimeString() string {
+func (m MemoFollow) GetTimeString() string {
 	if m.BlockId != 0 {
 		return m.Block.Timestamp.Format("2006-01-02 15:04:05")
 	}
 	return "Unconfirmed"
 }
 
-func GetMemoSetName(txHash []byte) (*MemoSetName, error) {
-	var memoSetName MemoSetName
-	err := find(&memoSetName, MemoSetName{
+func GetMemoFollow(txHash []byte) (*MemoFollow, error) {
+	var memoFollow MemoFollow
+	err := find(&memoFollow, MemoFollow{
 		TxHash: txHash,
 	})
 	if err != nil {
 		return nil, jerr.Get("error getting memo post", err)
 	}
-	return &memoSetName, nil
+	return &memoFollow, nil
 }
 
-type memoSetNameSortByDate []*MemoSetName
+type memoFollowSortByDate []*MemoFollow
 
-func (txns memoSetNameSortByDate) Len() int                      { return len(txns) }
-func (txns memoSetNameSortByDate) Swap(i, j int)      { txns[i], txns[j] = txns[j], txns[i] }
-func (txns memoSetNameSortByDate) Less(i, j int) bool {
+func (txns memoFollowSortByDate) Len() int      { return len(txns) }
+func (txns memoFollowSortByDate) Swap(i, j int) { txns[i], txns[j] = txns[j], txns[i] }
+func (txns memoFollowSortByDate) Less(i, j int) bool {
 	if bytes.Equal(txns[i].ParentHash, txns[j].TxHash) {
 		return true
 	}
 	if bytes.Equal(txns[i].TxHash, txns[j].ParentHash) {
 		return false
 	}
-	if txns[i].Block == nil && txns[j].Block == nil{
+	if txns[i].Block == nil && txns[j].Block == nil {
 		return false
 	}
 	if txns[i].Block == nil {
@@ -97,37 +97,26 @@ func (txns memoSetNameSortByDate) Less(i, j int) bool {
 	return txns[i].Block.Height > txns[j].Block.Height
 }
 
-func GetNameForPkHash(pkHash []byte) (*MemoSetName, error) {
-	names, err := GetSetNamesForPkHash(pkHash)
-	if err != nil {
-		return nil, jerr.Get("error getting set names for pk hash", err)
-	}
-	if len(names) == 0 {
-		return nil, nil
-	}
-	return names[0], nil
-}
-
-func GetSetNamesForPkHash(pkHash []byte) ([]*MemoSetName, error) {
-	var memoSetNames []*MemoSetName
+func GetFollowsForPkHash(pkHash []byte) ([]*MemoFollow, error) {
+	var memoFollows []*MemoFollow
 	err := findPreloadColumns([]string{
 		BlockTable,
-	}, &memoSetNames, &MemoSetName{
+	}, &memoFollows, &MemoFollow{
 		PkHash: pkHash,
 	})
 	if err != nil {
-		return nil, jerr.Get("error getting memo names", err)
+		return nil, jerr.Get("error getting memo follows", err)
 	}
-	sort.Sort(memoSetNameSortByDate(memoSetNames))
-	return memoSetNames, nil
+	sort.Sort(memoFollowSortByDate(memoFollows))
+	return memoFollows, nil
 }
 
-func GetUniqueMemoNamePkHashes() ([][]byte, error) {
+func GetUniqueMemoFollowPkHashes() ([][]byte, error) {
 	db, err := getDb()
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
 	}
-	rows, err := db.Table("memo_posts").Select("DISTINCT(pk_hash)").Rows()
+	rows, err := db.Table("memo_follows").Select("DISTINCT(pk_hash)").Rows()
 	if err != nil {
 		return nil, jerr.Get("error getting distinct pk hashes", err)
 	}

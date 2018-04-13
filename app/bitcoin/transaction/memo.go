@@ -72,7 +72,7 @@ func getInputPkHash(txn *db.Transaction) (*btcutil.AddressPubKeyHash, error) {
 }
 
 func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error {
-	fmt.Printf("Saving new memo (txn: %s)\n", txn.GetChainHash().String())
+	fmt.Printf("Found new memo (txn: %s)\n", txn.GetChainHash().String())
 	inputAddress, err := getInputPkHash(txn)
 	if err != nil {
 		return jerr.Get("error getting pk hash from input", err)
@@ -125,6 +125,24 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 		err := memoSetName.Save()
 		if err != nil {
 			return jerr.Get("error saving memo_set_name", err)
+		}
+	case memo.CodeFollow:
+		address := wallet.GetAddressFromPkHash(out.PkScript[5:])
+		if ! bytes.Equal(address.GetScriptAddress(), out.PkScript[5:]) {
+			return jerr.New("unable to parse follow address")
+		}
+		var memoFollow = db.MemoFollow{
+			TxHash:       txn.Hash,
+			PkHash:       inputAddress.ScriptAddress(),
+			PkScript:     out.PkScript,
+			ParentHash:   parentHash,
+			Address:      inputAddress.EncodeAddress(),
+			FollowPkHash: address.GetScriptAddress(),
+			BlockId:      blockId,
+		}
+		err := memoFollow.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_follow", err)
 		}
 	}
 	return nil

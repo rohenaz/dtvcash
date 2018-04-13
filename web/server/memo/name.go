@@ -67,7 +67,7 @@ var setNameSubmitRoute = web.Route{
 			Amount:  txOut.Value - fee,
 		}, {
 			Type: transaction.SpendOutputTypeMemoSetName,
-			Data: name,
+			Data: []byte(name),
 		}})
 		if err != nil {
 			r.Error(jerr.Get("error creating tx", err), http.StatusInternalServerError)

@@ -12,6 +12,8 @@
     <a class="btn" href="key/export">Export Key</a>
 </p>
 
+{{ template "snippets/following.html" .Following }}
+
 {{ template "snippets/posts.html" .Posts }}
 
 {{ if eq .Profile.Balance 0 }}

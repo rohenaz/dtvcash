@@ -58,10 +58,13 @@ var MemoApp = {
 
     MemoApp.URL = {
         Index: "",
+        Profile: "profile",
         LoadKey: "key/load",
         LoginSubmit: "login-submit",
         SignupSubmit: "signup-submit",
         MemoNewSubmit: "memo/new-submit",
+        MemoFollow: "memo/follow",
+        MemoFollowSubmit: "memo/follow-submit",
         MemoSetNameSubmit: "memo/set-name-submit"
     };
 })();

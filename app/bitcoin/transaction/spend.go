@@ -15,7 +15,7 @@ type SpendOutput struct {
 	Amount    int64
 	Type      SpendOutputType
 	ReplyHash []byte
-	Data      string
+	Data      []byte
 }
 
 func Spend(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutputs []SpendOutput, peerIds []uint) error {

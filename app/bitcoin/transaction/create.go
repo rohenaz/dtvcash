@@ -21,6 +21,7 @@ const (
 	SpendOutputTypeReturn
 	SpendOutputTypeMemoMessage
 	SpendOutputTypeMemoSetName
+	SpendOutputTypeMemoFollow
 	SpendOutputTypeMemoReply
 )
 
@@ -44,7 +45,7 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 		case SpendOutputTypeReturn:
 			pkScript, err := txscript.NewScriptBuilder().
 				AddOp(txscript.OP_RETURN).
-				AddData([]byte(spendOutput.Data)).
+				AddData(spendOutput.Data).
 				Script()
 			if err != nil {
 				return nil, jerr.Get("error creating op return output", err)
@@ -52,17 +53,16 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(0, pkScript))
 		case SpendOutputTypeMemoMessage:
-			msgBytes := []byte(spendOutput.Data)
-			if len(msgBytes) > memo.MaxPostSize {
+			if len(spendOutput.Data) > memo.MaxPostSize {
 				return nil, jerr.New("message size too large")
 			}
-			if len(msgBytes) == 0 {
+			if len(spendOutput.Data) == 0 {
 				return nil, jerr.New("empty message")
 			}
 			pkScript, err := txscript.NewScriptBuilder().
 				AddOp(txscript.OP_RETURN).
 				AddData([]byte{memo.CodePrefix, memo.CodePost}).
-				AddData(msgBytes).
+				AddData(spendOutput.Data).
 				Script()
 			if err != nil {
 				return nil, jerr.Get("error creating memo message output", err)
@@ -70,20 +70,36 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
 		case SpendOutputTypeMemoSetName:
-			nameBytes := []byte(spendOutput.Data)
-			if len(nameBytes) > memo.MaxPostSize {
+			if len(spendOutput.Data) > memo.MaxPostSize {
 				return nil, jerr.New("name too large")
 			}
-			if len(nameBytes) == 0 {
+			if len(spendOutput.Data) == 0 {
 				return nil, jerr.New("empty name")
 			}
 			pkScript, err := txscript.NewScriptBuilder().
 				AddOp(txscript.OP_RETURN).
 				AddData([]byte{memo.CodePrefix, memo.CodeSetName}).
-				AddData(nameBytes).
+				AddData(spendOutput.Data).
 				Script()
 			if err != nil {
 				return nil, jerr.Get("error creating memo set name output", err)
+			}
+			fmt.Printf("pkScript: %x\n", pkScript)
+			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
+		case SpendOutputTypeMemoFollow:
+			if len(spendOutput.Data) > memo.MaxPostSize {
+				return nil, jerr.New("data too large")
+			}
+			if len(spendOutput.Data) == 0 {
+				return nil, jerr.New("empty data")
+			}
+			pkScript, err := txscript.NewScriptBuilder().
+				AddOp(txscript.OP_RETURN).
+				AddData([]byte{memo.CodePrefix, memo.CodeFollow}).
+				AddData(spendOutput.Data).
+				Script()
+			if err != nil {
+				return nil, jerr.Get("error creating memo follow output", err)
 			}
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
@@ -92,7 +108,7 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 				AddOp(txscript.OP_RETURN).
 				AddData([]byte{0x6d, 0x00}).
 				AddData(spendOutput.ReplyHash).
-				AddData([]byte(spendOutput.Data)).
+				AddData(spendOutput.Data).
 				Script()
 			if err != nil {
 				return nil, jerr.Get("error creating memo message output", err)

@@ -1,7 +1,9 @@
 package profile
 
 import (
+	"bytes"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/profile"
 	"git.jasonc.me/main/memo/app/res"
@@ -16,6 +18,20 @@ var viewRoute = web.Route{
 		addressString := r.Request.GetUrlNamedQueryVariable(urlAddress.Id)
 		address := wallet.GetAddressFromString(addressString)
 		pkHash := address.GetScriptAddress()
+		user, err := auth.GetSessionUser(r.Session.CookieId)
+		if err != nil {
+			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
+			return
+		}
+		key, err := db.GetKeyForUser(user.Id)
+		if err != nil {
+			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
+			return
+		}
+		if bytes.Equal(key.PkHash, pkHash) {
+			r.SetRedirect(res.GetUrlWithBaseUrl(res.UrlIndex, r))
+			return
+		}
 
 		posts, err := db.GetPostsForPkHash(pkHash)
 		if err != nil {

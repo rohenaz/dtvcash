@@ -4,30 +4,61 @@ import (
 	"bytes"
 	"fmt"
 	"git.jasonc.me/main/bitcoin/bitcoin/memo"
+	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/bitcoin/transaction"
 	"git.jasonc.me/main/memo/app/db"
+	"git.jasonc.me/main/memo/app/profile"
 	"git.jasonc.me/main/memo/app/res"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"net/http"
 )
 
-var newRoute = web.Route{
-	Pattern:    res.UrlMemoNew,
+var followRoute = web.Route{
+	Pattern:    res.UrlMemoFollow + "/" + urlAddress.UrlPart(),
 	NeedsLogin: true,
 	Handler: func(r *web.Response) {
-		r.Render()
+		addressString := r.Request.GetUrlNamedQueryVariable(urlAddress.Id)
+		address := wallet.GetAddressFromString(addressString)
+		pkHash := address.GetScriptAddress()
+		user, err := auth.GetSessionUser(r.Session.CookieId)
+		if err != nil {
+			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
+			return
+		}
+		key, err := db.GetKeyForUser(user.Id)
+		if err != nil {
+			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
+			return
+		}
+		if bytes.Equal(key.PkHash, pkHash) {
+			r.SetRedirect(res.GetUrlWithBaseUrl(res.UrlIndex, r))
+			return
+		}
+
+		pf, err := profile.GetProfile(pkHash)
+		if err != nil {
+			r.Error(jerr.Get("error getting profile for hash", err), http.StatusInternalServerError)
+			return
+		}
+		r.Helper["Profile"] = pf
+		r.RenderTemplate(res.UrlMemoFollow)
 	},
 }
 
-var newSubmitRoute = web.Route{
-	Pattern:     res.UrlMemoNewSubmit,
+var followSubmitRoute = web.Route{
+	Pattern:     res.UrlMemoFollowSumbit,
 	NeedsLogin:  true,
 	CsrfProtect: true,
 	Handler: func(r *web.Response) {
-		message := r.Request.GetFormValue("message")
+		addressString := r.Request.GetFormValue("address")
+		followAddress := wallet.GetAddressFromString(addressString)
+		if followAddress.GetEncoded() != addressString {
+			r.Error(jerr.New("error parsing address"), http.StatusUnprocessableEntity)
+			return
+		}
 		password := r.Request.GetFormValue("password")
 		user, err := auth.GetSessionUser(r.Session.CookieId)
 		if err != nil {
@@ -39,6 +70,7 @@ var newSubmitRoute = web.Route{
 			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
 			return
 		}
+
 		transactions, err := db.GetTransactionsForPkHash(key.PkHash)
 		var txOut *db.TransactionOut
 		for _, txn := range transactions {
@@ -60,14 +92,14 @@ var newSubmitRoute = web.Route{
 		}
 
 		address := key.GetAddress()
-		var fee = int64(283 - memo.MaxPostSize + len([]byte(message)))
+		var fee = int64(283 - memo.MaxPostSize + len(address.GetScriptAddress()))
 		tx, err := transaction.Create(txOut, privateKey, []transaction.SpendOutput{{
 			Type:    transaction.SpendOutputTypeP2PK,
 			Address: address,
 			Amount:  txOut.Value - fee,
 		}, {
-			Type: transaction.SpendOutputTypeMemoMessage,
-			Data: []byte(message),
+			Type: transaction.SpendOutputTypeMemoFollow,
+			Data: followAddress.GetScriptAddress(),
 		}})
 		if err != nil {
 			r.Error(jerr.Get("error creating tx", err), http.StatusInternalServerError)

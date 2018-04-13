@@ -43,6 +43,14 @@ var indexRoute = web.Route{
 			return
 		}
 		r.Helper["Posts"] = posts
+
+		following, err := profile.GetFollowing(key.PkHash)
+		if err != nil {
+			r.Error(jerr.Get("error getting following for hash", err), http.StatusInternalServerError)
+			return
+		}
+		r.Helper["Following"] = following
+
 		r.RenderTemplate("dashboard")
 	},
 }

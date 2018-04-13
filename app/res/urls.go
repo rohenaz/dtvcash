@@ -24,6 +24,8 @@ const (
 	UrlMemoNewSubmit     = "/memo/new-submit"
 	UrlMemoSetName       = "/memo/set-name"
 	UrlMemoSetNameSubmit = "/memo/set-name-submit"
+	UrlMemoFollow        = "/memo/follow"
+	UrlMemoFollowSumbit  = "/memo/follow-submit"
 )
 
 const (
