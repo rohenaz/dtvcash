@@ -18,10 +18,9 @@
     </p>
     <p>
         <i>
-        {{ len .Post.Likes }} likes
+            <a href="memo/post/{{ .Post.Memo.GetTransactionHashString }}">{{ len .Post.Likes }} likes</a>
         {{ if .Post.Likes }}
-        (tip: {{ formatBigInt .Post.GetTotalTip }} satoshis)
-        {{ else }}
+            (tip: {{ formatBigInt .Post.GetTotalTip }} satoshis)
         {{ end }}
         </i>
     </p>
