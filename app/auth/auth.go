@@ -20,6 +20,9 @@ func IsLoggedIn(cookieId string) bool {
 func GetSessionUser(cookieId string) (*db.User, error) {
 	session, err := db.GetSession(cookieId)
 	if err != nil || session.UserId == 0 || session.HasLoggedOut {
+		if err == nil {
+			return nil, jerr.New("Unable to get session user")
+		}
 		return nil, jerr.Get("Error getting session", err)
 	}
 	user, err := db.GetUserById(session.UserId)
