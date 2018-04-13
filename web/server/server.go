@@ -24,6 +24,7 @@ func isLoggedIn(r *web.Response) bool {
 }
 
 func preHandler(r *web.Response) {
+	r.Helper["Title"] = "Memo"
 	r.Helper["BaseUrl"] = res.GetBaseUrl(r)
 	if auth.IsLoggedIn(r.Session.CookieId) {
 		user, err := auth.GetSessionUser(r.Session.CookieId)
@@ -59,6 +60,7 @@ func Run(sessionCookieInsecure bool) {
 		Routes: web.Routes(
 			[]web.Route{
 				indexRoute,
+				protocolRoute,
 				testsRoute,
 			},
 			key.GetRoutes(),

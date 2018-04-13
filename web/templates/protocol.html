@@ -1,0 +1,119 @@
+{{ template "snippets/header.html" . }}
+
+<h2>Protocol</h2>
+
+<p>
+    Protocol uses P2PKH addresses.
+    Actions are saved using <b>OP_RETURN</b>.
+</p>
+
+<p>
+    Messages are hex encoded, e.g.:
+    <span style="font-family:monospace">OP_RETURN 6d01 6d656d6f</span>
+    (this action would set your name to "memo").
+</p>
+
+<h3>Action Codes</h3>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Action</th>
+        <th>Prefix</th>
+        <th>Values</th>
+        <th>Status</th>
+        <th>Example</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Set name</td>
+        <td>0x6d01</td>
+        <td>name(76)</td>
+        <td>Implemented</td>
+        <td>
+            <a class="btn btn-leave" target="_blank"
+               href="https://blockchair.com/bitcoin-cash/transaction/753e29e81cdea12dc5fa30ca89049ca7d538d4062c4bb1b19ecf2a209a3ac8d9">
+                Blockchair
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>Post memo</td>
+        <td>0x6d02</td>
+        <td>message(76)</td>
+        <td>Implemented</td>
+        <td>
+            <a class="btn btn-leave" target="_blank"
+               href="https://blockchair.com/bitcoin-cash/transaction/c7e91099923a28cf86685c9683c74c8c029c8965a5039f84ad79886b42720f9b">
+                Blockchair
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>Reply to memo</td>
+        <td>0x6d03</td>
+        <td>txhash(10), message(63)</td>
+        <td>Planned</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Like / tip memo</td>
+        <td>0x6d04</td>
+        <td>txhash(10)</td>
+        <td>Planned</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Set profile text</td>
+        <td>0x6d05</td>
+        <td>message(76)</td>
+        <td>Planned</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Like / tip user</td>
+        <td>0x6d06</td>
+        <td>address(35)</td>
+        <td>V2</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Set image base url</td>
+        <td>0x6d08</td>
+        <td>url(76)</td>
+        <td>V2</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Attach picture</td>
+        <td>0x6d09</td>
+        <td>txhash(10), imghash(16), url(35)</td>
+        <td>V2</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Set profile picture</td>
+        <td>0x6d10</td>
+        <td>imghash(16), url(61)</td>
+        <td>V2</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Repost memo</td>
+        <td>0x6d11</td>
+        <td>txhash(10), message(63)</td>
+        <td>V3</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Testing</td>
+        <td>0x6d00</td>
+        <td>data(76)</td>
+        <td></td>
+        <td></td>
+    </tr>
+    </tbody>
+</table>
+
+{{ template "snippets/footer.html" . }}

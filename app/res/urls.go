@@ -10,6 +10,7 @@ const (
 	UrlLoginSubmit  = "/login-submit"
 	UrlLogout       = "/logout"
 	UrlTests        = "/tests"
+	UrlProtocol     = "/protocol"
 )
 
 const (
