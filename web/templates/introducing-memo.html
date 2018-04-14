@@ -1,0 +1,44 @@
+{{ template "snippets/header.html" . }}
+
+<h2>Introducing Memo</h2>
+
+<p>
+    We're announcing the launch of Memo, an on-chain social network built on Bitcoin Cash.
+</p>
+
+<p>
+    What is Memo?
+    Why was it built?
+    How does it work?
+    This post should answer these questions.
+</p>
+
+<p>
+    Memo is both a protocol and a front-end application.
+    The protocol works by writing OP_RETURN transactions to the Bitcoin Cash blockchain.
+    Client applications read these transactions to see the activity on the network.
+</p>
+
+<p>
+    With current social networks users do not control their data and can have their accounts removed without reason.
+    The blockchain is more than an uncensorable way to send money, it's an uncensorable way to store data.
+    Memo is an experiment leveraging the blockchain's data storing capabilities.
+</p>
+
+<p>
+    Each action is stored on the blockchain in a transaction -
+    whether it's posting a memo, following someone or liking a post.
+    You can also include a tip (it is on-chain after all).
+    There are <a href="protocol">additional actions</a> that are intended to be added later.
+</p>
+
+<p>
+    The Memo website is a front-end application built on top of this protocol.
+    There currently is not an open-source client, but one is planned to be released later.
+</p>
+
+<p>
+    <a href="/">Sign up</a> for an account and check it out.
+</p>
+
+{{ template "snippets/footer.html" . }}

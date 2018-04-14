@@ -62,6 +62,7 @@ func Run(sessionCookieInsecure bool) {
 				indexRoute,
 				protocolRoute,
 				disclaimerRoute,
+				introducingMemoRoute,
 				//testsRoute,
 			},
 			key.GetRoutes(),

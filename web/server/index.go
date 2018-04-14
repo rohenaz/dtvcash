@@ -81,3 +81,11 @@ var disclaimerRoute = web.Route{
 		r.Render()
 	},
 }
+
+var introducingMemoRoute = web.Route{
+	Pattern: res.UrlIntroducing,
+	Handler: func(r *web.Response) {
+		r.Helper["Title"] = "Memo - Introducing Memo"
+		r.Render()
+	},
+}
