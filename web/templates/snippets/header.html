@@ -2,6 +2,13 @@
 <head>
     <title>{{ .Title }}</title>
     <base href="{{ .BaseUrl }}"/>
+
+    <meta name="og:type" content="summary" />
+    <meta name="og:title" content="Memo" />
+    <meta name="og:description" content="Decentralized on-chain social network built on Bitcoin Cash" />
+    <meta name="og:image" content="https://memo.cash/logo.png" />
+    <meta name="twitter:site" content="@memobch" />
+
     <link rel="shortcut icon" type="image/png" href="/logo.png"/>
 {{ range $file := .cssFiles -}}
     <link rel="stylesheet" type="text/css" href="{{ $file }}"/>
