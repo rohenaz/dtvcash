@@ -26,6 +26,13 @@ func isLoggedIn(r *web.Response) bool {
 func preHandler(r *web.Response) {
 	r.Helper["Title"] = "Memo"
 	r.Helper["BaseUrl"] = res.GetBaseUrl(r)
+	if r.Request.HttpRequest.Host != "memo.cash" {
+		r.Helper["Dev"] = true
+		r.Helper["GoogleId"] = "UA-23518512-10"
+	} else {
+		r.Helper["Dev"] = false
+		r.Helper["GoogleId"] = "UA-23518512-9"
+	}
 	if auth.IsLoggedIn(r.Session.CookieId) {
 		user, err := auth.GetSessionUser(r.Session.CookieId)
 		if err != nil {
