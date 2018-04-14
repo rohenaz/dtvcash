@@ -82,19 +82,19 @@ func (txns memoLikeSortByDate) Len() int      { return len(txns) }
 func (txns memoLikeSortByDate) Swap(i, j int) { txns[i], txns[j] = txns[j], txns[i] }
 func (txns memoLikeSortByDate) Less(i, j int) bool {
 	if bytes.Equal(txns[i].ParentHash, txns[j].TxHash) {
-		return false
+		return true
 	}
 	if bytes.Equal(txns[i].TxHash, txns[j].ParentHash) {
-		return true
+		return false
 	}
 	if txns[i].Block == nil && txns[j].Block == nil {
 		return false
 	}
 	if txns[i].Block == nil {
-		return false
+		return true
 	}
 	if txns[j].Block == nil {
-		return true
+		return false
 	}
 	return txns[i].Block.Height < txns[j].Block.Height
 }
