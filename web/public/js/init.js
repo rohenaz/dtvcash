@@ -62,7 +62,7 @@ var MemoApp = {
         LoadKey: "key/load",
         LoginSubmit: "login-submit",
         SignupSubmit: "signup-submit",
-        MemoPost: "memo/post",
+        MemoPost: "post",
         MemoNewSubmit: "memo/new-submit",
         MemoFollowSubmit: "memo/follow-submit",
         MemoUnfollowSubmit: "memo/unfollow-submit",

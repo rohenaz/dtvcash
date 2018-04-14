@@ -56,6 +56,8 @@ var viewRoute = web.Route{
 		}
 		r.Helper["Profile"] = pf
 
+		memoLikes, err := profile.GetLikesForPkHash(pkHash)
+		r.Helper["Likes"] = memoLikes
 		r.RenderTemplate(res.UrlProfileView)
 	},
 }

@@ -99,12 +99,29 @@ func (txns memoLikeSortByDate) Less(i, j int) bool {
 	return txns[i].Block.Height < txns[j].Block.Height
 }
 
-func GetLikesForTxnHash(txHash []byte) ([]*MemoLike, error) {
+func GetMemoLikesForTxnHash(txHash []byte) ([]*MemoLike, error) {
 	var memoLikes []*MemoLike
 	err := findPreloadColumns([]string{
 		BlockTable,
 	}, &memoLikes, &MemoLike{
 		LikeTxHash: txHash,
+	})
+	if err != nil {
+		return nil, jerr.Get("error getting memo likes", err)
+	}
+	sort.Sort(memoLikeSortByDate(memoLikes))
+	return memoLikes, nil
+}
+
+func GetMemoLikesForPkHash(pkHash []byte) ([]*MemoLike, error) {
+	if len(pkHash) == 0 {
+		return nil, nil
+	}
+	var memoLikes []*MemoLike
+	err := findPreloadColumns([]string{
+		BlockTable,
+	}, &memoLikes, &MemoLike{
+		PkHash: pkHash,
 	})
 	if err != nil {
 		return nil, jerr.Get("error getting memo likes", err)

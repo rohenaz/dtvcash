@@ -45,6 +45,6 @@ var postRoute = web.Route{
 			return
 		}
 		r.Helper["Post"] = post
-		r.RenderTemplate(res.UrlMemoPost)
+		r.RenderTemplate(res.TmplMemoPost)
 	},
 }

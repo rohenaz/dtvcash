@@ -32,9 +32,11 @@ const (
 	UrlMemoFollowSubmit   = "/memo/follow-submit"
 	UrlMemoUnfollow       = "/memo/unfollow"
 	UrlMemoUnfollowSubmit = "/memo/unfollow-submit"
-	UrlMemoPost           = "/memo/post"
+	UrlMemoPost           = "/post"
 	UrlMemoLike           = "/memo/like"
 	UrlMemoLikeSubmit     = "/memo/like-submit"
+
+	TmplMemoPost = "/memo/post"
 )
 
 const (

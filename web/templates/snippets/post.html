@@ -11,14 +11,14 @@
         </a>
     </p>
     <p>
-        <b>Time:</b> <a href="memo/post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.Memo.GetTimeString }}</a>
+        <b>Time:</b> <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.Memo.GetTimeString }}</a>
     </p>
     <p>
     {{ .Post.Memo.GetMessage }}
     </p>
     <p>
         <i>
-            <a href="memo/post/{{ .Post.Memo.GetTransactionHashString }}">{{ len .Post.Likes }} likes</a>
+            <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ len .Post.Likes }} likes</a>
         {{ if .Post.Likes }}
             (tip: {{ formatBigInt .Post.GetTotalTip }} satoshis)
         {{ end }}
