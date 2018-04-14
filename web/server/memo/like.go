@@ -36,6 +36,15 @@ var likeRoute = web.Route{
 			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
 			return
 		}
+		hasSpendableTxOut, err := db.HasSpendable(key.PkHash)
+		if err != nil {
+			r.Error(jerr.Get("error getting spendable tx out", err), http.StatusInternalServerError)
+			return
+		}
+		if ! hasSpendableTxOut {
+			r.SetRedirect(res.UrlNeedFunds)
+			return
+		}
 		post, err := profile.GetPostByTxHash(txHash.CloneBytes(), key.PkHash)
 		if err != nil {
 			r.Error(jerr.Get("error getting post", err), http.StatusInternalServerError)

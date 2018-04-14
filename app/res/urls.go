@@ -13,6 +13,7 @@ const (
 	UrlProtocol     = "/protocol"
 	UrlDisclaimer   = "/disclaimer"
 	UrlIntroducing  = "/introducing-memo"
+	UrlNeedFunds    = "/need-funds"
 )
 
 const (

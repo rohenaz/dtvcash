@@ -37,6 +37,15 @@ var unfollowRoute = web.Route{
 			r.SetRedirect(res.GetUrlWithBaseUrl(res.UrlIndex, r))
 			return
 		}
+		hasSpendableTxOut, err := db.HasSpendable(key.PkHash)
+		if err != nil {
+			r.Error(jerr.Get("error getting spendable tx out", err), http.StatusInternalServerError)
+			return
+		}
+		if ! hasSpendableTxOut {
+			r.SetRedirect(res.UrlNeedFunds)
+			return
+		}
 
 		pf, err := profile.GetProfileAndSetFollowers(pkHash, key.PkHash)
 		if err != nil {

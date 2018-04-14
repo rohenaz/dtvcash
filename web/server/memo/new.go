@@ -18,6 +18,25 @@ var newRoute = web.Route{
 	Pattern:    res.UrlMemoNew,
 	NeedsLogin: true,
 	Handler: func(r *web.Response) {
+		user, err := auth.GetSessionUser(r.Session.CookieId)
+		if err != nil {
+			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
+			return
+		}
+		key, err := db.GetKeyForUser(user.Id)
+		if err != nil {
+			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
+			return
+		}
+		hasSpendableTxOut, err := db.HasSpendable(key.PkHash)
+		if err != nil {
+			r.Error(jerr.Get("error getting spendable tx out", err), http.StatusInternalServerError)
+			return
+		}
+		if ! hasSpendableTxOut {
+			r.SetRedirect(res.UrlNeedFunds)
+			return
+		}
 		r.Render()
 	},
 }

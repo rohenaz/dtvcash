@@ -60,7 +60,11 @@ func (m MemoPost) GetMessage() string {
 
 func (m MemoPost) GetTimeString() string {
 	if m.BlockId != 0 {
-		return m.Block.Timestamp.Format("2006-01-02 15:04:05")
+		if m.Block != nil {
+			return m.Block.Timestamp.Format("2006-01-02 15:04:05")
+		} else {
+			return "Unknown"
+		}
 	}
 	return "Unconfirmed"
 }

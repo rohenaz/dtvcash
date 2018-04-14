@@ -85,7 +85,26 @@ var disclaimerRoute = web.Route{
 var introducingMemoRoute = web.Route{
 	Pattern: res.UrlIntroducing,
 	Handler: func(r *web.Response) {
-		r.Helper["Title"] = "Memo - Introducing Memo"
+		r.Helper["Title"] = "Introducing Memo"
+		r.Render()
+	},
+}
+
+var needFundsRoute = web.Route{
+	Pattern:    res.UrlNeedFunds,
+	NeedsLogin: true,
+	Handler: func(r *web.Response) {
+		user, err := auth.GetSessionUser(r.Session.CookieId)
+		if err != nil {
+			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
+			return
+		}
+		key, err := db.GetKeyForUser(user.Id)
+		if err != nil {
+			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
+			return
+		}
+		r.Helper["Key"] = key
 		r.Render()
 	},
 }

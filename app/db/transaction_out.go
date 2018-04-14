@@ -158,3 +158,22 @@ func GetSpendableTxOut(pkHash []byte) (*TransactionOut, error) {
 	}
 	return txOut, nil
 }
+
+func HasSpendable(pkHash []byte) (bool, error) {
+	transactions, err := GetTransactionsForPkHash(pkHash)
+	if err != nil {
+		return false, jerr.Get("error getting transactions", err)
+	}
+	var txOut *TransactionOut
+	for _, txn := range transactions {
+		for _, out := range txn.TxOut {
+			if out.TxnIn == nil && out.Value > 1000 && bytes.Equal(out.KeyPkHash, pkHash) {
+				txOut = out
+			}
+		}
+	}
+	if txOut == nil {
+		return false, nil
+	}
+	return true, nil
+}
