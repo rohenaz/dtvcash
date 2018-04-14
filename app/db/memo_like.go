@@ -82,10 +82,10 @@ func (txns memoLikeSortByDate) Len() int      { return len(txns) }
 func (txns memoLikeSortByDate) Swap(i, j int) { txns[i], txns[j] = txns[j], txns[i] }
 func (txns memoLikeSortByDate) Less(i, j int) bool {
 	if bytes.Equal(txns[i].ParentHash, txns[j].TxHash) {
-		return true
+		return false
 	}
 	if bytes.Equal(txns[i].TxHash, txns[j].ParentHash) {
-		return false
+		return true
 	}
 	if txns[i].Block == nil && txns[j].Block == nil {
 		return false
@@ -109,7 +109,7 @@ func GetMemoLikesForTxnHash(txHash []byte) ([]*MemoLike, error) {
 	if err != nil {
 		return nil, jerr.Get("error getting memo likes", err)
 	}
-	sort.Sort(memoLikeSortByDate(memoLikes))
+	sortReverse(memoLikeSortByDate(memoLikes))
 	return memoLikes, nil
 }
 
@@ -126,6 +126,13 @@ func GetMemoLikesForPkHash(pkHash []byte) ([]*MemoLike, error) {
 	if err != nil {
 		return nil, jerr.Get("error getting memo likes", err)
 	}
-	sort.Sort(memoLikeSortByDate(memoLikes))
+	sortReverse(memoLikeSortByDate(memoLikes))
 	return memoLikes, nil
+}
+
+func sortReverse(memoLikes []*MemoLike) {
+	sort.Sort(memoLikeSortByDate(memoLikes))
+	for i, j := 0, len(memoLikes)-1; i < j; i, j = i+1, j-1 {
+		memoLikes[i], memoLikes[j] = memoLikes[j], memoLikes[i]
+	}
 }
