@@ -55,9 +55,16 @@ var signupSubmitRoute = web.Route{
 			return
 		}
 		if wif == "" {
-			_, err = db.GenerateKey(username+"-generated", password, user.Id)
+			key, err := db.GenerateKey(username+"-generated", password, user.Id)
 			if err != nil {
 				r.Error(jerr.Get("error creating new private key", err), http.StatusInternalServerError)
+			}
+			recentBlock, err := db.GetRecentBlock()
+			// No need to check back for a new key
+			key.MaxCheck = recentBlock.Height
+			err = key.Save()
+			if err != nil {
+				r.Error(jerr.Get("error saving key", err), http.StatusInternalServerError)
 			}
 		} else {
 			_, err = db.ImportKey(username+"-imported", password, wif, user.Id)
