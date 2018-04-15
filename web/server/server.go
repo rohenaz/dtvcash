@@ -8,6 +8,7 @@ import (
 	"git.jasonc.me/main/memo/web/server/key"
 	"git.jasonc.me/main/memo/web/server/memo"
 	"git.jasonc.me/main/memo/web/server/profile"
+	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"log"
 	"net/http"
@@ -23,7 +24,17 @@ func isLoggedIn(r *web.Response) bool {
 	return true
 }
 
+var blockedIps = []string{
+	"91.130.64.132",
+}
+
 func preHandler(r *web.Response) {
+	for _, blockedIp := range blockedIps {
+		if r.Request.GetSourceIP() == blockedIp {
+			r.Error(jerr.Newf("blocked ip: %s\n", blockedIp), http.StatusUnauthorized)
+			return
+		}
+	}
 	r.Helper["Title"] = "Memo"
 	r.Helper["BaseUrl"] = res.GetBaseUrl(r)
 	if r.Request.HttpRequest.Host != "memo.cash" {
