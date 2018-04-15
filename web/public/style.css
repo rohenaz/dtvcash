@@ -114,9 +114,22 @@ a.btn-leave {
 .post {
     border: 2px solid rgba(0,0,0,0.3);
     box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-    padding: 2px 5px;
+    padding: 1px 10px;
     max-width: 600px;
     margin: 12px 0;
     border-radius: 15px;
     background: rgba(84,141,29,0.2);
+}
+.post .name {
+    margin: 10px 0;
+}
+.post .message {
+    margin: 12px 0;
+    font-size: 32px;
+}
+.post .likes {
+    margin: 10px 0;
+}
+.post .actions {
+    margin: 10px 0;
 }

@@ -1,22 +1,17 @@
 <div class="post">
-    <p>
-        <b>User:</b>
-        <a href="profile/{{ .Post.Memo.GetAddressString }}">
-        {{ $len := len .Post.Name }}
-        {{ if gt $len 0 }}
+    <p class="name">
+        <a href="profile/{{ .Post.Memo.GetAddressString }}">{{ $len := len .Post.Name }}{{ if gt $len 0 -}}
             {{ .Post.Name }}
-        {{ else }}
+        {{- else -}}
             {{ .Post.Memo.GetAddressString }}
-        {{ end }}
-        </a>
+        {{- end }}</a>
+        posted at
+        <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.Memo.GetTimeString }}</a>
     </p>
-    <p>
-        <b>Time:</b> <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.Memo.GetTimeString }}</a>
-    </p>
-    <p>
+    <p class="message">
     {{ .Post.Memo.GetMessage }}
     </p>
-    <p>
+    <p class="likes">
         <i>
             <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ len .Post.Likes }} likes</a>
         {{ if .Post.Likes }}
@@ -25,7 +20,7 @@
         </i>
     </p>
 {{ if not .Compress }}
-    <p>
+    <p class="actions">
     {{ if .Post.IsLikable }}
         <a class="btn" href="memo/like/{{ .Post.Memo.GetTransactionHashString }}">Like Memo</a>
     {{ end }}
