@@ -97,8 +97,12 @@ func GetPostByTxHash(txHash []byte, selfPkHash []byte) (*Post, error) {
 	if err != nil {
 		return nil, jerr.Get("error getting name for hash", err)
 	}
+	var name = ""
+	if setName != nil {
+		name = setName.Name
+	}
 	post := &Post{
-		Name:       setName.Name,
+		Name:       name,
 		Memo:       memoPost,
 		SelfPkHash: selfPkHash,
 	}
