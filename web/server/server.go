@@ -26,6 +26,7 @@ func isLoggedIn(r *web.Response) bool {
 
 var blockedIps = []string{
 	"91.130.64.132",
+	"49.195.117.8",
 }
 
 func preHandler(r *web.Response) {
