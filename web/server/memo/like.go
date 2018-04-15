@@ -103,11 +103,6 @@ var likeSubmitRoute = web.Route{
 		userAddress := key.GetAddress()
 		postAddress := memoPost.GetAddress()
 
-		if userAddress.GetEncoded() == postAddress.GetEncoded() {
-			r.Error(jerr.New("cannot like your own post"), http.StatusUnprocessableEntity)
-			return
-		}
-
 		var tx *wire.MsgTx
 
 		var fee = int64(283 - memo.MaxPostSize + len(txHash.CloneBytes()))
