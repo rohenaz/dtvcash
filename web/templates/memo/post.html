@@ -10,7 +10,11 @@
 <ul>
 {{ range .Post.Likes }}
 <li>
-    Liked by <a href="profile/{{ .GetAddressString }}">{{ .Name }}</a> - {{ formatBigInt .Amount }} satoshis
+    Liked by <a href="profile/{{ .GetAddressString }}">{{ $len := len .Name }}{{ if gt $len 0 -}}
+            {{ .Name }}
+        {{- else -}}
+            {{ .GetAddressString }}
+        {{- end }}</a> - {{ formatBigInt .Amount }} satoshis
     ({{ .GetTimeString }})
     <a target="_blank"
        href="https://blockchair.com/bitcoin-cash/transaction/{{ .GetTransactionHashString }}">View on Blockchair</a>
