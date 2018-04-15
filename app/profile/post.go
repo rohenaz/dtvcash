@@ -64,9 +64,13 @@ func GetPostsForHashes(pkHashes [][]byte, selfPkHash []byte) ([]*Post, error) {
 }
 
 func GetPostsForHash(pkHash []byte, selfPkHash []byte) ([]*Post, error) {
+	var name = ""
 	setName, err := db.GetNameForPkHash(pkHash)
 	if err != nil {
 		return nil, jerr.Get("error getting name for hash", err)
+	}
+	if setName != nil {
+		name = setName.Name
 	}
 	dbPosts, err := db.GetPostsForPkHash(pkHash)
 	if err != nil {
@@ -75,7 +79,7 @@ func GetPostsForHash(pkHash []byte, selfPkHash []byte) ([]*Post, error) {
 	var posts []*Post
 	for _, dbPost := range dbPosts {
 		post := &Post{
-			Name:       setName.Name,
+			Name:       name,
 			Memo:       dbPost,
 			SelfPkHash: selfPkHash,
 		}
