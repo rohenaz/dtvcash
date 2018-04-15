@@ -99,12 +99,14 @@ func GetLikesForPkHash(pkHash []byte) ([]*Like, error) {
 		if memoLike.Block != nil {
 			like.Timestamp = memoLike.Block.Timestamp
 		}
-		setName, err := db.GetNameForPkHash(memoPost.PkHash)
-		if err != nil && ! db.IsRecordNotFoundError(err) {
-			return nil, jerr.Get("error getting memo name", err)
-		}
-		if setName != nil {
-			like.Name = setName.Name
+		if memoPost != nil {
+			setName, err := db.GetNameForPkHash(memoPost.PkHash)
+			if err != nil && ! db.IsRecordNotFoundError(err) {
+				return nil, jerr.Get("error getting memo name", err)
+			}
+			if setName != nil {
+				like.Name = setName.Name
+			}
 		}
 		likes = append(likes, &like)
 	}
