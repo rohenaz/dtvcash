@@ -39,7 +39,7 @@ func GetPostsForHashes(pkHashes [][]byte, selfPkHash []byte) ([]*Post, error) {
 		if err != nil && ! db.IsRecordNotFoundError(err) {
 			return nil, jerr.Get("error getting name for hash", err)
 		}
-		if db.IsRecordNotFoundError(err) {
+		if setName == nil {
 			continue
 		}
 		names[string(pkHash)] = setName.Name
