@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
+	"regexp"
 )
 
 type Post struct {
@@ -30,6 +31,13 @@ func (p Post) GetTotalTip() int64 {
 		totalTip += like.Amount
 	}
 	return totalTip
+}
+
+func (p Post) GetMessage() string {
+	msg := p.Memo.Message
+	var re = regexp.MustCompile(`(http[s]://[^ ]*)`)
+	s := re.ReplaceAllString(msg, `<a href="$1" target="_blank">$1</a>`)
+	return s
 }
 
 func GetPostsForHashes(pkHashes [][]byte, selfPkHash []byte) ([]*Post, error) {
