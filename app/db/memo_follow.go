@@ -126,7 +126,7 @@ func GetFollowingForPkHash(followPkHash []byte) ([]*MemoFollow, error) {
 	return memoFollows, nil
 }
 
-func GetFollowerCountForPkHash(pkHash []byte) (uint, error) {
+func GetFollowingCountForPkHash(pkHash []byte) (uint, error) {
 	cnt, err := count(&MemoFollow{
 		PkHash: pkHash,
 	})
@@ -136,7 +136,7 @@ func GetFollowerCountForPkHash(pkHash []byte) (uint, error) {
 	return cnt, nil
 }
 
-func GetFollowingCountForPkHash(followPkHash []byte) (uint, error) {
+func GetFollowerCountForPkHash(followPkHash []byte) (uint, error) {
 	cnt, err := count(&MemoFollow{
 		FollowPkHash: followPkHash,
 	})
