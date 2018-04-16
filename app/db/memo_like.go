@@ -16,10 +16,10 @@ type MemoLike struct {
 	Id         uint   `gorm:"primary_key"`
 	TxHash     []byte `gorm:"unique;size:50"`
 	ParentHash []byte
-	PkHash     []byte
+	PkHash     []byte `gorm:"index:pk_hash"`
 	PkScript   []byte
 	Address    string
-	LikeTxHash []byte
+	LikeTxHash []byte `gorm:"index:like_tx_hash"`
 	TipAmount  int64
 	TipPkHash  []byte
 	BlockId    uint

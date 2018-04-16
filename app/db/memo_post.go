@@ -15,7 +15,7 @@ type MemoPost struct {
 	Id         uint   `gorm:"primary_key"`
 	TxHash     []byte `gorm:"unique;size:50"`
 	ParentHash []byte
-	PkHash     []byte
+	PkHash     []byte `gorm:"index:pk_hash"`
 	PkScript   []byte
 	Address    string
 	Message    string
