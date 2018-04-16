@@ -44,14 +44,19 @@ var viewRoute = web.Route{
 		}
 		r.Helper["Posts"] = posts
 
-		pf, err := profile.GetProfileAndSetFollowers(pkHash, userPkHash)
+		pf, err := profile.GetProfile(pkHash, userPkHash)
 		if err != nil {
 			r.Error(jerr.Get("error getting profile for hash", err), http.StatusInternalServerError)
 			return
 		}
-		err = pf.SetFollowing()
+		err = pf.SetFollowingCount()
 		if err != nil {
-			r.Error(jerr.Get("error setting following for profile", err), http.StatusInternalServerError)
+			r.Error(jerr.Get("error setting following count for profile", err), http.StatusInternalServerError)
+			return
+		}
+		err = pf.SetFollowerCount()
+		if err != nil {
+			r.Error(jerr.Get("error setting follower count for profile", err), http.StatusInternalServerError)
 			return
 		}
 		r.Helper["Profile"] = pf

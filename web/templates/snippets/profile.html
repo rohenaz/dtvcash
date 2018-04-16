@@ -7,6 +7,22 @@
         <th>Address</th>
         <td>{{ .GetAddressString }}</td>
     </tr>
+    <tr>
+        <th>Followers</th>
+        <td>
+            <a href="profile/followers/{{ .GetAddressString }}">
+            {{ .FollowerCount }}
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <th>Following</th>
+        <td>
+            <a href="profile/following/{{ .GetAddressString }}">
+            {{ .FollowingCount }}
+            </a>
+        </td>
+    </tr>
 {{ if .HasBalance }}
     <tr>
         <th>Balance</th>

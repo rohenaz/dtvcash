@@ -166,13 +166,13 @@ func remove(value interface{}) *gorm.DB {
 	return result
 }
 
-func count(value interface{}) (uint, error) {
+func count(where interface{}) (uint, error) {
 	db, err := getDb()
 	if err != nil {
 		return 0, jerr.Get("error getting db", err)
 	}
 	var totalCount uint
-	result := db.Model(value).Where(value).Count(&totalCount)
+	result := db.Model(where).Where(where).Count(&totalCount)
 	if result.Error != nil {
 		return 0, jerr.Get("error running query", result.Error)
 	}

@@ -98,7 +98,7 @@ func (txns memoFollowSortByDate) Less(i, j int) bool {
 	return txns[i].Block.Height < txns[j].Block.Height
 }
 
-func GetFollowsForPkHash(pkHash []byte) ([]*MemoFollow, error) {
+func GetFollowersForPkHash(pkHash []byte) ([]*MemoFollow, error) {
 	var memoFollows []*MemoFollow
 	err := findPreloadColumns([]string{
 		BlockTable,
@@ -112,7 +112,7 @@ func GetFollowsForPkHash(pkHash []byte) ([]*MemoFollow, error) {
 	return memoFollows, nil
 }
 
-func GetFollowsForFollowPkHash(followPkHash []byte) ([]*MemoFollow, error) {
+func GetFollowingForPkHash(followPkHash []byte) ([]*MemoFollow, error) {
 	var memoFollows []*MemoFollow
 	err := findPreloadColumns([]string{
 		BlockTable,
@@ -124,4 +124,24 @@ func GetFollowsForFollowPkHash(followPkHash []byte) ([]*MemoFollow, error) {
 	}
 	sort.Sort(memoFollowSortByDate(memoFollows))
 	return memoFollows, nil
+}
+
+func GetFollowerCountForPkHash(pkHash []byte) (uint, error) {
+	cnt, err := count(&MemoFollow{
+		PkHash: pkHash,
+	})
+	if err != nil {
+		return 0, jerr.Get("error getting follower count", err)
+	}
+	return cnt, nil
+}
+
+func GetFollowingCountForPkHash(followPkHash []byte) (uint, error) {
+	cnt, err := count(&MemoFollow{
+		FollowPkHash: followPkHash,
+	})
+	if err != nil {
+		return 0, jerr.Get("error getting follower count", err)
+	}
+	return cnt, nil
 }

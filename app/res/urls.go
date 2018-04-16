@@ -40,8 +40,10 @@ const (
 )
 
 const (
-	UrlProfiles    = "/profiles"
-	UrlProfileView = "/profile"
+	UrlProfiles         = "/profiles"
+	UrlProfileView      = "/profile"
+	UrlProfileFollowers = "/profile/followers"
+	UrlProfileFollowing = "/profile/following"
 
 	TmplProfiles = "/profile/all"
 )

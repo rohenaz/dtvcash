@@ -22,7 +22,7 @@ func (f *Follower) GetAddressString() string {
 }
 
 func GetFollowing(pkHash []byte) ([]*Follower, error) {
-	memoFollows, err := db.GetFollowsForPkHash(pkHash)
+	memoFollows, err := db.GetFollowersForPkHash(pkHash)
 	if err != nil && ! db.IsRecordNotFoundError(err) {
 		return nil, jerr.Get("error getting memo follows for hash", err)
 	}
@@ -58,7 +58,7 @@ MemoFollow:
 }
 
 func GetFollowers(pkHash []byte) ([]*Follower, error) {
-	memoFollows, err := db.GetFollowsForFollowPkHash(pkHash)
+	memoFollows, err := db.GetFollowingForPkHash(pkHash)
 	if err != nil && ! db.IsRecordNotFoundError(err) {
 		return nil, jerr.Get("error getting memo follows for hash", err)
 	}

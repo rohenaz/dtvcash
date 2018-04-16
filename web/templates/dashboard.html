@@ -12,10 +12,6 @@
     <a class="btn" href="key/change-password">Change Password</a>
 </p>
 
-{{ template "snippets/following.html" .Profile.Following }}
-
-{{ template "snippets/followers.html" .Profile.Followers }}
-
 {{ if not .Posts }}
 <h3>Feed Empty</h3>
 <p>Start following others to see their posts here</p>

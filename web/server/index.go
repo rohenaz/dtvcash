@@ -34,17 +34,23 @@ var indexRoute = web.Route{
 			r.Error(jerr.Get("error getting profile for hash", err), http.StatusInternalServerError)
 			return
 		}
+		err = pf.SetFollowingCount()
+		if err != nil {
+			r.Error(jerr.Get("error setting following count for profile", err), http.StatusInternalServerError)
+			return
+		}
+		err = pf.SetFollowerCount()
+		if err != nil {
+			r.Error(jerr.Get("error setting follower count for profile", err), http.StatusInternalServerError)
+			return
+		}
+		r.Helper["Profile"] = pf
+
 		err = pf.SetFollowing()
 		if err != nil {
 			r.Error(jerr.Get("error setting following for profile", err), http.StatusInternalServerError)
 			return
 		}
-		err = pf.SetFollowers()
-		if err != nil {
-			r.Error(jerr.Get("error setting followers for profile", err), http.StatusInternalServerError)
-			return
-		}
-		r.Helper["Profile"] = pf
 
 		var pkHashes [][]byte
 		for _, following := range pf.Following {

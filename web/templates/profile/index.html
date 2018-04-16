@@ -4,10 +4,6 @@
 
 {{ template "snippets/profile.html" .Profile }}
 
-{{ template "snippets/following.html" .Profile.Following }}
-
-{{ template "snippets/followers.html" .Profile.Followers }}
-
 {{ if not .Posts }}
 <h3>No Posts Yet</h3>
 {{ else }}

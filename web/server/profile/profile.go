@@ -11,6 +11,8 @@ func GetRoutes() []web.Route {
 	return []web.Route{
 		allRoute,
 		viewRoute,
+		followersRoute,
+		followingRoute,
 	}
 }
 

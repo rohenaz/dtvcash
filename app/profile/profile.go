@@ -11,16 +11,18 @@ import (
 )
 
 type Profile struct {
-	Name       string
-	PkHash     []byte
-	NameTx     []byte
-	Self       bool
-	SelfPkHash []byte
-	Balance    int64
-	BalanceBCH float64
-	hasBalance bool
-	Followers  []*Follower
-	Following  []*Follower
+	Name           string
+	PkHash         []byte
+	NameTx         []byte
+	Self           bool
+	SelfPkHash     []byte
+	Balance        int64
+	BalanceBCH     float64
+	hasBalance     bool
+	FollowerCount  uint
+	FollowingCount uint
+	Followers      []*Follower
+	Following      []*Follower
 }
 
 func (p Profile) IsSelf() bool {
@@ -31,7 +33,7 @@ func (p Profile) CanFollow() bool {
 	if p.IsSelf() || len(p.SelfPkHash) == 0 {
 		return false
 	}
-	for	_, follower := range p.Followers {
+	for _, follower := range p.Followers {
 		if bytes.Equal(follower.PkHash, p.SelfPkHash) {
 			return false
 		}
@@ -43,7 +45,7 @@ func (p Profile) CanUnFollow() bool {
 	if p.IsSelf() || len(p.SelfPkHash) == 0 {
 		return false
 	}
-	for	_, follower := range p.Followers {
+	for _, follower := range p.Followers {
 		if bytes.Equal(follower.PkHash, p.SelfPkHash) {
 			return true
 		}
@@ -111,6 +113,24 @@ func (p *Profile) SetFollowing() error {
 		return jerr.Get("error getting following for hash", err)
 	}
 	p.Following = following
+	return nil
+}
+
+func (p *Profile) SetFollowerCount() error {
+	cnt, err := db.GetFollowerCountForPkHash(p.PkHash)
+	if err != nil {
+		return jerr.Get("error getting follower count for hash", err)
+	}
+	p.FollowerCount = cnt
+	return nil
+}
+
+func (p *Profile) SetFollowingCount() error {
+	cnt, err := db.GetFollowingCountForPkHash(p.PkHash)
+	if err != nil {
+		return jerr.Get("error getting following count for hash", err)
+	}
+	p.FollowingCount = cnt
 	return nil
 }
 
