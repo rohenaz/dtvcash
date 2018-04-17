@@ -114,7 +114,7 @@ func GetPostsForPkHashes(pkHashes [][]byte) ([]*MemoPost, error) {
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
 	}
-	result := db.Preload(BlockTable).Where("pk_hash in (?)", pkHashes).Find(&memoPosts)
+	result := db.Preload(BlockTable).Where("pk_hash in (?)", pkHashes).Where("block_id > 0").Find(&memoPosts)
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
 	}
