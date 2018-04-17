@@ -116,3 +116,28 @@ func GetPostByTxHash(txHash []byte, selfPkHash []byte) (*Post, error) {
 	}
 	return post, nil
 }
+
+func GetRecentPosts(selfPkHash []byte, offset uint) ([]*Post, error) {
+	dbPosts, err := db.GetRecentPosts(offset)
+	if err != nil {
+		return nil, jerr.Get("error getting posts for hash", err)
+	}
+	var posts []*Post
+	for _, dbPost := range dbPosts {
+		var name string
+		setName, err := db.GetNameForPkHash(dbPost.PkHash)
+		if err != nil && ! db.IsRecordNotFoundError(err) {
+			return nil, jerr.Get("error getting name for hash", err)
+		}
+		if setName != nil {
+			name = setName.Name
+		}
+		post := &Post{
+			Name:       name,
+			Memo:       dbPost,
+			SelfPkHash: selfPkHash,
+		}
+		posts = append(posts, post)
+	}
+	return posts, nil
+}

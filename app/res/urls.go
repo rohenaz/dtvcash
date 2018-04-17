@@ -14,6 +14,7 @@ const (
 	UrlDisclaimer   = "/disclaimer"
 	UrlIntroducing  = "/introducing-memo"
 	UrlNeedFunds    = "/need-funds"
+	UrlNewPosts     = "/new-posts"
 )
 
 const (
