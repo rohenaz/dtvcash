@@ -167,7 +167,7 @@ func GetRecentPosts(offset uint) ([]*MemoPost, error) {
 	}
 	db = db.Preload(BlockTable)
 	var memoPosts []*MemoPost
-	result := db.Limit(25).Offset(offset).Order("id DESC").Find(&memoPosts)
+	result := db.Limit(25).Offset(offset).Order("id DESC").Where("block_id > 0").Find(&memoPosts)
 	if result.Error != nil {
 		return nil, jerr.Get("error running query", result.Error)
 	}
