@@ -53,7 +53,7 @@ func getDb() (*gorm.DB, error) {
 	if conn == nil {
 		conf := config.GetMysqlConfig()
 		var err error
-		connectionString := conf.Username + ":" + conf.Password + "@tcp(" + conf.Host + ")/" + conf.Database + "?parseTime=true"
+		connectionString := conf.Username + ":" + conf.Password + "@tcp(" + conf.Host + ")/" + conf.Database + "?parseTime=true&loc=Local"
 		conn, err = gorm.Open("mysql", connectionString)
 		conn.LogMode(false)
 		if err != nil {
