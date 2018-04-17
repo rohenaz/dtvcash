@@ -34,8 +34,8 @@ var newPostsRoute = web.Route{
 			return
 		}
 		var prevOffset int
-		if offset < 25 {
-			prevOffset = 0
+		if offset > 25 {
+			prevOffset = offset - 25
 		}
 		r.Helper["PrevOffset"] = prevOffset
 		r.Helper["NextOffset"] = offset + 25
