@@ -14,17 +14,21 @@ var newPostsRoute = web.Route{
 	Pattern: res.UrlNewPosts,
 	Handler: func(r *web.Response) {
 		offset := r.Request.GetUrlParameterInt("offset")
-		user, err := auth.GetSessionUser(r.Session.CookieId)
-		if err != nil {
-			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
-			return
+		var userPkHash []byte
+		if auth.IsLoggedIn(r.Session.CookieId) {
+			user, err := auth.GetSessionUser(r.Session.CookieId)
+			if err != nil {
+				r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
+				return
+			}
+			key, err := db.GetKeyForUser(user.Id)
+			if err != nil {
+				r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
+				return
+			}
+			userPkHash = key.PkHash
 		}
-		key, err := db.GetKeyForUser(user.Id)
-		if err != nil {
-			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
-			return
-		}
-		posts, err := profile.GetRecentPosts(key.PkHash, uint(offset))
+		posts, err := profile.GetRecentPosts(userPkHash, uint(offset))
 		if err != nil {
 			r.Error(jerr.Get("error getting recent posts", err), http.StatusInternalServerError)
 			return
