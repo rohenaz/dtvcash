@@ -1,6 +1,7 @@
 package profile
 
 import (
+    "bchutil"
 	"bytes"
 	"fmt"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
@@ -75,6 +76,19 @@ func (p Profile) GetAddressString() string {
 		return ""
 	}
 	return addr.String()
+}
+
+func (p Profile) GetCashAddressString() string {
+
+	addr, err := btcutil.NewAddressPubKeyHash(p.PkHash, &wallet.MainNetParamsOld)
+	if err != nil {
+		return ""
+	}
+	cashAddr, err := bchutil.NewCashAddressPubKeyHash(addr.ScriptAddress(), &wallet.MainNetParamsOld)
+	if err != nil {
+		return ""
+	}
+	return cashAddr.String()
 }
 
 func (p *Profile) SetBalances() error {
