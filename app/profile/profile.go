@@ -6,6 +6,7 @@ import (
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/btcsuite/btcutil"
+	"github.com/cpacia/bchutil"
 	"github.com/cpacia/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 )
@@ -75,6 +76,19 @@ func (p Profile) GetAddressString() string {
 		return ""
 	}
 	return addr.String()
+}
+
+func (p Profile) GetCashAddressString() string {
+
+	addr, err := btcutil.NewAddressPubKeyHash(p.PkHash, &wallet.MainNetParamsOld)
+	if err != nil {
+		return ""
+	}
+	cashAddr, err := bchutil.NewCashAddressPubKeyHash(addr.ScriptAddress(), &wallet.MainNetParamsOld)
+	if err != nil {
+		return ""
+	}
+	return cashAddr.String()
 }
 
 func (p *Profile) SetBalances() error {
