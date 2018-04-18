@@ -1,12 +1,12 @@
 package profile
 
 import (
-    "bchutil"
 	"bytes"
 	"fmt"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/btcsuite/btcutil"
+	"github.com/cpacia/bchutil"
 	"github.com/cpacia/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 )

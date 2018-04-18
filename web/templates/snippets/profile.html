@@ -5,7 +5,14 @@
     </tr>
     <tr>
         <th>Address</th>
-        <td>{{ .GetCashAddressString }} <br><img src="https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl={{ .GetCashAddressString }}&choe=UTF-8"></td>
+        <td>
+            <a href="#" id="qr-code-link">{{ .GetCashAddressString }}</a>
+            <div id="qr-code">
+                <img src="https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl={{ .GetCashAddressString }}&choe=UTF-8"/>
+                <br/>
+            {{ .GetAddressString }}
+            </div>
+        </td>
     </tr>
     <tr>
         <th>Followers</th>
@@ -51,3 +58,16 @@
         </td>
     </tr>
 </table>
+
+<style type="text/css">
+    #qr-code {
+        display: none;
+    }
+</style>
+
+<script type="text/javascript">
+    $("#qr-code-link").click(function (e) {
+        e.preventDefault();
+        $("#qr-code").toggle();
+    });
+</script>
