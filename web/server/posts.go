@@ -33,6 +33,11 @@ var newPostsRoute = web.Route{
 			r.Error(jerr.Get("error getting recent posts", err), http.StatusInternalServerError)
 			return
 		}
+		err = profile.AttachLikesToPosts(posts)
+		if err != nil {
+			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
+			return
+		}
 		var prevOffset int
 		if offset > 25 {
 			prevOffset = offset - 25
