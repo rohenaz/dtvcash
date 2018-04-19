@@ -17,7 +17,7 @@
         {{- end }}</a> - {{ formatBigInt .Amount }} satoshis
     ({{ .GetTimeString }})
     <a target="_blank"
-       href="https://blockchair.com/bitcoin-cash/transaction/{{ .GetTransactionHashString }}">View on Blockchair</a>
+       href="https://explorer.bitcoin.com/bch/tx/{{ .GetTransactionHashString }}">View on Block Explorer</a>
 </li>
 {{ end }}
 </ul>
