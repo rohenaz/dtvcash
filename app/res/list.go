@@ -16,7 +16,7 @@ var JsFiles = []string{
 
 var CssFiles = []string{
 	"lib/jquery-ui.min.css",
-	"style-4.css",
+	"style-5.css",
 }
 
 var MinJsFile = "res/js/min.js"

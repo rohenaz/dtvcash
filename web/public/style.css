@@ -2,6 +2,8 @@ body {
     overflow-y: scroll;
     text-size-adjust: 250%;
     -webkit-text-size-adjust: 250%;
+    /* Fix for text-size-adjust being ignored: https://bugs.webkit.org/show_bug.cgi?id=FontBoosting */
+    max-height: 1000000px;
 }
 html {
     font-family: sans-serif;
