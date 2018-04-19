@@ -119,13 +119,13 @@ var unfollowSubmitRoute = web.Route{
 			return
 		}
 
-		fmt.Println(transaction.GetTxInfo(tx))
-		node.BitcoinNode.Peer.QueueMessage(tx, nil)
-
 		err = transaction.SaveTransaction(tx, nil)
 		if err != nil {
 			r.Error(jerr.Get("error saving transaction", err), http.StatusUnprocessableEntity)
 			return
 		}
+
+		fmt.Println(transaction.GetTxInfo(tx))
+		node.BitcoinNode.Peer.QueueMessage(tx, nil)
 	},
 }
