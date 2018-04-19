@@ -23,14 +23,14 @@ var transactionOutColumns = []string{
 
 type TransactionOut struct {
 	Id              uint           `gorm:"primary_key"`
-	Index           uint32
+	Index           uint32         `gorm:"unique_index:transaction_out_index;"`
 	HashString      string
-	TransactionHash []byte         `gorm:"unique_index:transaction_out_script;"`
+	TransactionHash []byte         `gorm:"unique_index:transaction_out_index;"`
 	Transaction     *Transaction   `gorm:"foreignkey:TransactionHash"`
 	KeyPkHash       []byte
 	Key             *Key           `gorm:"foreignkey:KeyPkHash"`
 	Value           int64
-	PkScript        []byte         `gorm:"unique_index:transaction_out_script;"`
+	PkScript        []byte
 	LockString      string
 	RequiredSigs    uint
 	ScriptClass     uint
