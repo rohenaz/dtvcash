@@ -31,11 +31,11 @@ var statsRoute = web.Route{
 			r.Error(jerr.Get("error getting memo set name count", err), http.StatusInternalServerError)
 			return
 		}
-		r.Helper["MemoFollowCount"] = memoFollowCount
-		r.Helper["MemoLikeCount"] = memoLikeCount
-		r.Helper["MemoPostCount"] = memoPostCount
-		r.Helper["MemoSetNameCount"] = memoSetNameCount
-		r.Helper["MemoTotalActionCount"] = memoFollowCount + memoLikeCount + memoPostCount + memoSetNameCount
+		r.Helper["MemoFollowCount"] = int64(memoFollowCount)
+		r.Helper["MemoLikeCount"] = int64(memoLikeCount)
+		r.Helper["MemoPostCount"] = int64(memoPostCount)
+		r.Helper["MemoSetNameCount"] = int64(memoSetNameCount)
+		r.Helper["MemoTotalActionCount"] = int64(memoFollowCount + memoLikeCount + memoPostCount + memoSetNameCount)
 
 		r.Render()
 	},

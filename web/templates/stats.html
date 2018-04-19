@@ -5,23 +5,23 @@
 <table class="table left">
     <tr>
         <th>Follows</th>
-        <td>{{ .MemoFollowCount }}</td>
+        <td>{{ formatBigInt .MemoFollowCount }}</td>
     </tr>
     <tr>
         <th>Likes</th>
-        <td>{{ .MemoLikeCount }}</td>
+        <td>{{ formatBigInt .MemoLikeCount }}</td>
     </tr>
     <tr>
         <th>Posts</th>
-        <td>{{ .MemoPostCount }}</td>
+        <td>{{ formatBigInt .MemoPostCount }}</td>
     </tr>
     <tr>
         <th>Names Set</th>
-        <td>{{ .MemoSetNameCount }}</td>
+        <td>{{ formatBigInt .MemoSetNameCount }}</td>
     </tr>
     <tr>
         <th>Total On-chain Actions</th>
-        <th>{{ .MemoTotalActionCount }}</th>
+        <th>{{ formatBigInt .MemoTotalActionCount }}</th>
     </tr>
 </table>
 
