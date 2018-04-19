@@ -136,3 +136,11 @@ func sortReverse(memoLikes []*MemoLike) {
 		memoLikes[i], memoLikes[j] = memoLikes[j], memoLikes[i]
 	}
 }
+
+func GetCountMemoLikes() (uint, error) {
+	cnt, err := count(&MemoLike{})
+	if err != nil {
+		return 0, jerr.Get("error getting total count", err)
+	}
+	return cnt, nil
+}

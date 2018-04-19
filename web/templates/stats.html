@@ -1,0 +1,29 @@
+{{ template "snippets/header.html" . }}
+
+<h2>Stats</h2>
+
+<table class="table left">
+    <tr>
+        <th>Follows</th>
+        <td>{{ .MemoFollowCount }}</td>
+    </tr>
+    <tr>
+        <th>Likes</th>
+        <td>{{ .MemoLikeCount }}</td>
+    </tr>
+    <tr>
+        <th>Posts</th>
+        <td>{{ .MemoPostCount }}</td>
+    </tr>
+    <tr>
+        <th>Names Set</th>
+        <td>{{ .MemoSetNameCount }}</td>
+    </tr>
+    <tr>
+        <th>Total On-chain Actions</th>
+        <th>{{ .MemoTotalActionCount }}</th>
+    </tr>
+</table>
+
+{{ template "snippets/footer.html" . }}
+

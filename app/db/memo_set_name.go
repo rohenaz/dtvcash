@@ -121,3 +121,11 @@ func GetSetNamesForPkHash(pkHash []byte) ([]*MemoSetName, error) {
 	sort.Sort(memoSetNameSortByDate(memoSetNames))
 	return memoSetNames, nil
 }
+
+func GetCountMemoSetName() (uint, error) {
+	cnt, err := count(&MemoSetName{})
+	if err != nil {
+		return 0, jerr.Get("error getting total count", err)
+	}
+	return cnt, nil
+}

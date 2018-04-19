@@ -174,3 +174,11 @@ func GetRecentPosts(offset uint) ([]*MemoPost, error) {
 	sort.Sort(memoPostSortByDate(memoPosts))
 	return memoPosts, nil
 }
+
+func GetCountMemoPosts() (uint, error) {
+	cnt, err := count(&MemoPost{})
+	if err != nil {
+		return 0, jerr.Get("error getting total count", err)
+	}
+	return cnt, nil
+}

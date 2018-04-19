@@ -145,3 +145,11 @@ func GetFollowerCountForPkHash(followPkHash []byte) (uint, error) {
 	}
 	return cnt, nil
 }
+
+func GetCountMemoFollows() (uint, error) {
+	cnt, err := count(&MemoFollow{})
+	if err != nil {
+		return 0, jerr.Get("error getting total count", err)
+	}
+	return cnt, nil
+}

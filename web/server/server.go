@@ -84,6 +84,7 @@ func Run(sessionCookieInsecure bool) {
 				introducingMemoRoute,
 				needFundsRoute,
 				newPostsRoute,
+				statsRoute,
 				//testsRoute,
 			},
 			key.GetRoutes(),
