@@ -19,15 +19,15 @@ var transactionInColumns = []string{
 
 type TransactionIn struct {
 	Id                    uint            `gorm:"primary_key"`
-	Index                 uint
+	Index                 uint            `gorm:"unique_index:transaction_in_index;"`
 	HashString            string
-	TransactionHash       []byte          `gorm:"unique_index:transaction_in_script;"`
+	TransactionHash       []byte          `gorm:"unique_index:transaction_in_index;"`
 	Transaction           *Transaction    `gorm:"foreignkey:TransactionHash"`
 	KeyPkHash             []byte
 	Key                   *Key            `gorm:"foreignkey:KeyPkHash"`
 	PreviousOutPointHash  []byte
 	PreviousOutPointIndex uint32
-	SignatureScript       []byte          `gorm:"unique_index:transaction_in_script;"`
+	SignatureScript       []byte
 	UnlockString          string
 	Sequence              uint32
 	TxnOutHashString      string
