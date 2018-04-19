@@ -35,7 +35,7 @@ func (p Post) GetTotalTip() int64 {
 
 func (p Post) GetMessage() string {
 	msg := p.Memo.Message
-	var re = regexp.MustCompile(`(http[s]*://[^ ]*)`)
+	var re = regexp.MustCompile(`(http[s]?://[^ ]*)`)
 	s := re.ReplaceAllString(msg, `<a href="$1" target="_blank">$1</a>`)
 	return s
 }
