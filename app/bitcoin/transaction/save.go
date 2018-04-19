@@ -30,6 +30,7 @@ func SaveTransaction(msg *wire.MsgTx, block *db.Block) error {
 		}
 		err = newTxn(txn, block)
 		if err != nil {
+			fmt.Println(GetTxInfo(msg))
 			return jerr.Get("error saving new transaction", err)
 		}
 	}
