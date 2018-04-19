@@ -5,11 +5,11 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="og:type" content="summary" />
-    <meta name="og:title" content="Memo" />
-    <meta name="og:description" content="Decentralized on-chain social network built on Bitcoin Cash" />
-    <meta name="og:image" content="https://memo.cash/logo.png" />
-    <meta name="twitter:site" content="@memobch" />
+    <meta name="og:type" content="summary"/>
+    <meta name="og:title" content="Memo"/>
+    <meta name="og:description" content="Decentralized on-chain social network built on Bitcoin Cash"/>
+    <meta name="og:image" content="https://memo.cash/logo.png"/>
+    <meta name="twitter:site" content="@memobch"/>
 
     <link rel="shortcut icon" type="image/png" href="/logo.png"/>
 {{ range $file := .cssFiles -}}
@@ -28,12 +28,29 @@
 </head>
 <body>
 
-<h1>
-    <a href="">
-        <img src="/logo.png"/>
-        Memo
-    </a>
-</h1>
+<div class="header">
+    <h1>
+        <a href="">
+            <img src="/logo.png"/>
+            Memo
+        </a>
+    </h1>
+
+    <div class="nav">
+    {{ with .Username }}
+        <a class="btn" href="">Dashboard</a>
+    {{ else }}
+        <a class="btn" href="">Home</a>
+    {{ end }}
+        <a class="btn" href="profiles">View Profiles</a>
+        <a class="btn" href="new-posts">New Posts</a>
+        <a class="btn" href="protocol">Protocol</a>
+        <a class="btn" href="disclaimer">Disclaimer</a>
+    {{ with .Username }}
+        <a class="btn" href="logout">Logout <b>{{ . }}</b></a>
+    {{ end }}
+    </div>
+</div>
 
 <hr/>
 

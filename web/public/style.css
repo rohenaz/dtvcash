@@ -111,6 +111,16 @@ a.btn-leave {
     background: rgba(0,0,0,0.2);
 }
 
+.header h1 {
+    display: inline-block;
+    vertical-align: bottom;
+    margin: 0;
+}
+.header .nav {
+    margin-left: 10px;
+    display: inline-block;
+}
+
 .post {
     border: 2px solid rgba(0,0,0,0.3);
     box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
