@@ -34,8 +34,11 @@ var loginSubmitRoute = web.Route{
 
 		err := auth.Login(r.Session.CookieId, username, password)
 		if err != nil {
-			r.Error(err, http.StatusUnauthorized)
-			r.Write(err.GetDisplayMessage())
+			if auth.IsBadUsernamePasswordError(err) {
+				r.Error(err, http.StatusUnauthorized)
+			} else {
+				r.Error(err, http.StatusInternalServerError)
+			}
 		}
 	},
 }

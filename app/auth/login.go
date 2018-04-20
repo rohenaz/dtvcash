@@ -7,35 +7,36 @@ import (
 	"strings"
 )
 
-func Login(cookieId string, username string, password string) *jerr.JError {
+const (
+	MsgUsernameNotFound = "username not found"
+	MsgPasswordMismatch = "password hash mismatch"
+)
+
+func IsBadUsernamePasswordError(err error) bool {
+	return jerr.HasError(err, MsgUsernameNotFound) || jerr.HasError(err, MsgPasswordMismatch)
+}
+
+func Login(cookieId string, username string, password string) error {
 	username = strings.ToLower(username)
 	user, err := db.GetUserByUsername(username)
 	if err != nil {
-		jerror := jerr.Get("username not found", err)
-		jerror.SetDisplayMessage("Incorrect username or password")
-		return &jerror
+		return jerr.Get(MsgUsernameNotFound, err)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
 	if err != nil {
-		jerror := jerr.Get("password hash mismatch", err)
-		jerror.SetDisplayMessage("Incorrect username or password")
-		return &jerror
+		return jerr.Get(MsgPasswordMismatch, err)
 	}
 
 	session, err := db.GetSession(cookieId)
 	if err != nil {
-		jerror := jerr.Get("session not found", err)
-		jerror.SetDisplayMessage("There was a server side issue and the event has been logged.")
-		return &jerror
+		return jerr.Get("session not found", err)
 	}
 
 	session.UserId = user.Id
 	err = session.Save()
 	if err != nil {
-		jerror := jerr.Get("session save failed", err)
-		jerror.SetDisplayMessage("There was a server side issue and the event has been logged.")
-		return &jerror
+		return jerr.Get("session save failed", err)
 	}
 
 	return nil

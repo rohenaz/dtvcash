@@ -32,6 +32,10 @@
                  * @param {XMLHttpRequest} xhr
                  */
                 error: function (xhr) {
+                    if (xhr.status === 401) {
+                        alert("Invalid username or password, please try again.");
+                        return
+                    }
                     var errorMessage =
                         "Error logging in:\n" + xhr.responseText + "\n" +
                         "If this problem persists, try refreshing the page.";
