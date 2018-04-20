@@ -1,0 +1,32 @@
+{{ template "snippets/header.html" . }}
+
+<h2>Reply to Memo</h2>
+
+{{ template "snippets/post.html" dict "Post" .Post "Compress" false }}
+
+<form id="form-new-memo" method="post">
+    <p>
+        <input id="tx-hash" type="hidden" name="tx-hash" value="{{ .Post.Memo.GetTransactionHashString }}"/>
+    </p>
+    <p>
+        <label for="message">Message</label>
+        <textarea id="message" type="text" name="message" class="form-control" placeholder="Message" autocomplete="on"
+                  required autofocus maxlength="51"></textarea>
+    </p>
+    <p>
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" class="form-control" placeholder="Password"
+               autocomplete="on" required>
+    </p>
+    <p>
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Post Reply">
+    </p>
+</form>
+
+<script type="text/javascript">
+    $(function () {
+        MemoApp.Form.ReplyMemo($("#form-new-memo"));
+    });
+</script>
+
+{{ template "snippets/footer.html" . }}

@@ -64,6 +64,7 @@ var MemoApp = {
         SignupSubmit: "signup-submit",
         MemoPost: "post",
         MemoNewSubmit: "memo/new-submit",
+        MemoReplySubmit: "memo/reply-submit",
         MemoFollowSubmit: "memo/follow-submit",
         MemoUnfollowSubmit: "memo/unfollow-submit",
         MemoSetNameSubmit: "memo/set-name-submit",

@@ -21,6 +21,7 @@
     </p>
 {{ if not .Compress }}
     <p class="actions">
+        <a class="btn" href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">Reply</a>
     {{ if .Post.IsLikable }}
         <a class="btn" href="memo/like/{{ .Post.Memo.GetTransactionHashString }}">Like Memo</a>
     {{ end }}

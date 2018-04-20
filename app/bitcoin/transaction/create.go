@@ -140,14 +140,20 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
 		case SpendOutputTypeMemoReply:
+			if len(spendOutput.Data) > memo.MaxReplySize {
+				return nil, jerr.New("data too large")
+			}
+			if len(spendOutput.Data) == 0 {
+				return nil, jerr.New("empty data")
+			}
 			pkScript, err := txscript.NewScriptBuilder().
 				AddOp(txscript.OP_RETURN).
-				AddData([]byte{0x6d, 0x00}).
+				AddData([]byte{memo.CodePrefix, memo.CodeReply}).
 				AddData(spendOutput.ReplyHash).
 				AddData(spendOutput.Data).
 				Script()
 			if err != nil {
-				return nil, jerr.Get("error creating memo message output", err)
+				return nil, jerr.Get("error creating memo reply output", err)
 			}
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))

@@ -165,7 +165,7 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 			return jerr.Get("error saving memo_follow", err)
 		}
 	case memo.CodeLike:
-		txHash, err := chainhash.NewHash(out.PkScript[5:])
+		txHash, err := chainhash.NewHash(out.PkScript[5:25])
 		if err != nil {
 			return jerr.Get("error parsing transaction hash", err)
 		}
@@ -195,6 +195,25 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 		err = memoLike.Save()
 		if err != nil {
 			return jerr.Get("error saving memo_like", err)
+		}
+	case memo.CodeReply:
+		txHash, err := chainhash.NewHash(out.PkScript[5:25])
+		if err != nil {
+			return jerr.Get("error parsing transaction hash", err)
+		}
+		var memoReply = db.MemoReply{
+			TxHash:      txn.Hash,
+			PkHash:      inputAddress.ScriptAddress(),
+			PkScript:    out.PkScript,
+			ParentHash:  parentHash,
+			Address:     inputAddress.EncodeAddress(),
+			ReplyTxHash: txHash.CloneBytes(),
+			Message:     html.EscapeString(string(out.PkScript[5:])),
+			BlockId:     blockId,
+		}
+		err = memoReply.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_reply", err)
 		}
 	}
 	return nil
@@ -265,6 +284,16 @@ func updateMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) er
 		err = memoLike.Save()
 		if err != nil {
 			return jerr.Get("error saving memo_like", err)
+		}
+	case memo.CodeReply:
+		memoReply, err := db.GetMemoReply(txn.Hash)
+		if err != nil {
+			return jerr.Get("error getting memo_reply", err)
+		}
+		memoReply.BlockId = block.Id
+		err = memoReply.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_reply", err)
 		}
 	}
 	return nil
