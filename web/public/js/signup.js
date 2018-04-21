@@ -68,6 +68,15 @@
                  * @param {XMLHttpRequest} xhr
                  */
                 error: function (xhr) {
+                    switch(xhr.status) {
+                        case 422:
+                            alert("Could not parse the WIF. Please check the WIF and try again.");
+                            return
+                        case 401:
+                        case 500:
+                            alert("Server side issue while creating the account. Please try again.");
+                            return
+                    }
                     var errorMessage =
                         "Error creating account:\n" + xhr.responseText + "\n" +
                         "If this problem persists, try refreshing the page.";
