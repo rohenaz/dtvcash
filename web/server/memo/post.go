@@ -47,6 +47,9 @@ var postRoute = web.Route{
 		}
 		r.Helper["Post"] = post
 		r.Helper["Title"] = fmt.Sprintf("Memo - Post by %s", post.Name)
+		if post.Name == "" {
+			r.Helper["Title"] = fmt.Sprintf("Memo - Post by %.6s", post.Memo.GetAddressString())
+		}
 		r.Helper["Description"] = post.Memo.Message
 		r.RenderTemplate(res.TmplMemoPost)
 	},
