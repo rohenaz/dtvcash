@@ -16,6 +16,7 @@ const (
 	UrlNeedFunds    = "/need-funds"
 	UrlNewPosts     = "/new-posts"
 	UrlStats        = "/stats"
+	UrlFeed         = "/feed"
 )
 
 const (

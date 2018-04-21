@@ -58,34 +58,11 @@ var indexRoute = web.Route{
 		for _, following := range pf.Following {
 			pkHashes = append(pkHashes, following.PkHash)
 		}
-		offset := r.Request.GetUrlParameterInt("offset")
-		posts, err := profile.GetPostsForHashes(pkHashes, key.PkHash, uint(offset))
+		err = setFeed(r, pkHashes, key.PkHash)
 		if err != nil {
-			r.Error(jerr.Get("error getting posts for hashes", err), http.StatusInternalServerError)
+			r.Error(jerr.Get("error setting feed", err), http.StatusInternalServerError)
 			return
 		}
-		err = profile.AttachLikesToPosts(posts)
-		if err != nil {
-			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
-			return
-		}
-		r.Helper["PostCount"] = len(posts)
-		for i := 0; i < len(posts); i++ {
-			post := posts[i]
-			if strings.ToLower(post.Name) == "memo" && ! bytes.Equal(post.Memo.PkHash, []byte{0x9a, 0x60, 0xa8, 0x54, 0x27, 0xc, 0x2f, 0xc2, 0xdd, 0x4d, 0xd4, 0xd3, 0xba, 0x0, 0xf2, 0x6, 0x8f, 0xd, 0x75, 0xd6}) {
-				posts = append(posts[:i], posts[i+1:]...)
-				i--
-			}
-		}
-		r.Helper["Posts"] = posts
-		r.Helper["Offset"] = offset
-
-		var prevOffset int
-		if offset > 25 {
-			prevOffset = offset - 25
-		}
-		r.Helper["PrevOffset"] = prevOffset
-		r.Helper["NextOffset"] = offset + 25
 
 		r.RenderTemplate("dashboard")
 	},
@@ -113,6 +90,70 @@ var introducingMemoRoute = web.Route{
 		r.Helper["Title"] = "Introducing Memo"
 		r.Render()
 	},
+}
+
+var feedRoute = web.Route{
+	Pattern: res.UrlFeed,
+	Handler: func(r *web.Response) {
+		user, err := auth.GetSessionUser(r.Session.CookieId)
+		if err != nil {
+			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
+			return
+		}
+		key, err := db.GetKeyForUser(user.Id)
+		if err != nil {
+			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
+			return
+		}
+		r.Helper["Key"] = key
+
+		pf, err := profile.GetProfileAndSetBalances(key.PkHash, key.PkHash)
+		if err != nil {
+			r.Error(jerr.Get("error getting profile for hash", err), http.StatusInternalServerError)
+			return
+		}
+		err = pf.SetFollowing()
+		if err != nil {
+			r.Error(jerr.Get("error setting following count for profile", err), http.StatusInternalServerError)
+			return
+		}
+		var pkHashes [][]byte
+		for _, following := range pf.Following {
+			pkHashes = append(pkHashes, following.PkHash)
+		}
+		setFeed(r, pkHashes, key.PkHash)
+		r.Render()
+	},
+}
+
+func setFeed(r *web.Response, pkHashes [][]byte, selfPkHash []byte) error {
+	offset := r.Request.GetUrlParameterInt("offset")
+	posts, err := profile.GetPostsForHashes(pkHashes, selfPkHash, uint(offset))
+	if err != nil {
+		return jerr.Get("error getting posts for hashes", err)
+	}
+	err = profile.AttachLikesToPosts(posts)
+	if err != nil {
+		return jerr.Get("error attaching likes to posts", err)
+	}
+	r.Helper["PostCount"] = len(posts)
+	for i := 0; i < len(posts); i++ {
+		post := posts[i]
+		if strings.ToLower(post.Name) == "memo" && ! bytes.Equal(post.Memo.PkHash, []byte{0x9a, 0x60, 0xa8, 0x54, 0x27, 0xc, 0x2f, 0xc2, 0xdd, 0x4d, 0xd4, 0xd3, 0xba, 0x0, 0xf2, 0x6, 0x8f, 0xd, 0x75, 0xd6}) {
+			posts = append(posts[:i], posts[i+1:]...)
+			i--
+		}
+	}
+	r.Helper["Posts"] = posts
+	r.Helper["Offset"] = offset
+
+	var prevOffset int
+	if offset > 25 {
+		prevOffset = offset - 25
+	}
+	r.Helper["PrevOffset"] = prevOffset
+	r.Helper["NextOffset"] = offset + 25
+	return nil
 }
 
 var needFundsRoute = web.Route{
