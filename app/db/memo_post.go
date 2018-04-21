@@ -94,7 +94,7 @@ func (txns memoPostSortByDate) Less(i, j int) bool {
 		return false
 	}
 	if txns[i].Block == nil && txns[j].Block == nil {
-		return false
+		return txns[i].Id > txns[j].Id
 	}
 	if txns[i].Block == nil {
 		return true
