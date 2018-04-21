@@ -2,6 +2,7 @@ package auth
 
 import (
 	"git.jasonc.me/main/memo/app/auth"
+	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"
 	"github.com/jchavannes/jgo/web"
 	"net/http"
@@ -28,7 +29,9 @@ var loginSubmitRoute = web.Route{
 			return
 		}
 		// Protects against some session hi-jacking attacks
+		oldCookieId := r.Session.CookieId
 		r.ResetOrCreateSession()
+		db.UpdateCsrfTokenSession(oldCookieId, r.Session.CookieId)
 		username := r.Request.GetFormValue("username")
 		password := r.Request.GetFormValue("password")
 
