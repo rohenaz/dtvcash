@@ -58,7 +58,8 @@ var indexRoute = web.Route{
 		for _, following := range pf.Following {
 			pkHashes = append(pkHashes, following.PkHash)
 		}
-		posts, err := profile.GetPostsForHashes(pkHashes, key.PkHash)
+		offset := r.Request.GetUrlParameterInt("offset")
+		posts, err := profile.GetPostsForHashes(pkHashes, key.PkHash, uint(offset))
 		if err != nil {
 			r.Error(jerr.Get("error getting posts for hashes", err), http.StatusInternalServerError)
 			return
@@ -68,14 +69,23 @@ var indexRoute = web.Route{
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
 		}
+		r.Helper["PostCount"] = len(posts)
 		for i := 0; i < len(posts); i++ {
 			post := posts[i]
-			if strings.ToLower(post.Name) == "memo" && ! bytes.Equal(post.Memo.PkHash, []byte{0xfe, 0x68, 0x6b, 0x9b, 0x2a, 0xb5, 0x89, 0xa3, 0xcb, 0x33, 0x68, 0xd0, 0x22, 0x11, 0xca, 0x1a, 0x9b, 0x88, 0xaa, 0x42}) {
+			if strings.ToLower(post.Name) == "memo" && ! bytes.Equal(post.Memo.PkHash, []byte{0x9a, 0x60, 0xa8, 0x54, 0x27, 0xc, 0x2f, 0xc2, 0xdd, 0x4d, 0xd4, 0xd3, 0xba, 0x0, 0xf2, 0x6, 0x8f, 0xd, 0x75, 0xd6}) {
 				posts = append(posts[:i], posts[i+1:]...)
 				i--
 			}
 		}
 		r.Helper["Posts"] = posts
+		r.Helper["Offset"] = offset
+
+		var prevOffset int
+		if offset > 25 {
+			prevOffset = offset - 25
+		}
+		r.Helper["PrevOffset"] = prevOffset
+		r.Helper["NextOffset"] = offset + 25
 
 		r.RenderTemplate("dashboard")
 	},

@@ -19,7 +19,25 @@
 <h3>Feed</h3>
 {{ end }}
 
+<p>
+{{ if not (eq .Offset 0) }}
+    <a class="btn" href="?offset={{ .PrevOffset }}">Prev</a>
+{{ end }}
+{{ if eq .PostCount 25 }}
+    <a class="btn" href="?offset={{ .NextOffset }}">Next</a>
+{{ end }}
+</p>
+
 {{ template "snippets/posts.html" .Posts }}
+
+<p>
+{{ if not (eq .Offset 0) }}
+    <a class="btn" href="?offset={{ .PrevOffset }}">Prev</a>
+{{ end }}
+{{ if eq .PostCount 25 }}
+    <a class="btn" href="?offset={{ .NextOffset }}">Next</a>
+{{ end }}
+</p>
 
 {{ if eq .Profile.Balance 0 }}
 <p>

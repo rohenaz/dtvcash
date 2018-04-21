@@ -105,7 +105,7 @@ func (txns memoPostSortByDate) Less(i, j int) bool {
 	return txns[i].Block.Height > txns[j].Block.Height
 }
 
-func GetPostsForPkHashes(pkHashes [][]byte) ([]*MemoPost, error) {
+func GetPostsForPkHashes(pkHashes [][]byte, offset uint) ([]*MemoPost, error) {
 	if len(pkHashes) == 0 {
 		return nil, nil
 	}
@@ -114,7 +114,14 @@ func GetPostsForPkHashes(pkHashes [][]byte) ([]*MemoPost, error) {
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
 	}
-	result := db.Preload(BlockTable).Where("pk_hash in (?)", pkHashes).Where("block_id > 0").Find(&memoPosts)
+	result := db.
+		Limit(25).
+		Offset(offset).
+		Preload(BlockTable).
+		Where("pk_hash in (?)", pkHashes).
+		Where("block_id > 0").
+		Order("block_id DESC").
+		Find(&memoPosts)
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
 	}
