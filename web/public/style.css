@@ -1,6 +1,7 @@
 body {
     overflow-y: scroll;
     text-size-adjust: 250%;
+    -webkit-text-size-adjust: 250%;
 }
 html {
     font-family: sans-serif;
