@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bytes"
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/profile"
@@ -8,6 +9,7 @@ import (
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"net/http"
+	"strings"
 )
 
 var newPostsRoute = web.Route{
@@ -32,6 +34,13 @@ var newPostsRoute = web.Route{
 		if err != nil {
 			r.Error(jerr.Get("error getting recent posts", err), http.StatusInternalServerError)
 			return
+		}
+		for i := 0; i < len(posts); i++ {
+			post := posts[i]
+			if strings.ToLower(post.Name) == "memo" && ! bytes.Equal(post.Memo.PkHash, []byte{0xfe, 0x68, 0x6b, 0x9b, 0x2a, 0xb5, 0x89, 0xa3, 0xcb, 0x33, 0x68, 0xd0, 0x22, 0x11, 0xca, 0x1a, 0x9b, 0x88, 0xaa, 0x42}) {
+				posts = append(posts[:i], posts[i+1:]...)
+				i--
+			}
 		}
 		err = profile.AttachLikesToPosts(posts)
 		if err != nil {

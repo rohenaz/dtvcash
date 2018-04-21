@@ -36,6 +36,7 @@ var alreadyExistsError = errors.New(alreadyExistsErrorMessage)
 var dbInterfaces = []interface{}{
 	User{},
 	Session{},
+	CsrfToken{},
 	Key{},
 	Block{},
 	Transaction{},
