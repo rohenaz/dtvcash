@@ -47,6 +47,7 @@ func preHandler(r *web.Response) {
 		}
 	}
 	r.Helper["Title"] = "Memo"
+	r.Helper["Description"] = "Decentralized on-chain social network built on Bitcoin Cash"
 	r.Helper["BaseUrl"] = res.GetBaseUrl(r)
 	if r.Request.HttpRequest.Host != "memo.cash" {
 		r.Helper["Dev"] = true

@@ -1,6 +1,7 @@
 package memo
 
 import (
+	"fmt"
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/profile"
@@ -45,6 +46,8 @@ var postRoute = web.Route{
 			return
 		}
 		r.Helper["Post"] = post
+		r.Helper["Title"] = fmt.Sprintf("Memo - Post by %s", post.Name)
+		r.Helper["Description"] = post.Memo.Message
 		r.RenderTemplate(res.TmplMemoPost)
 	},
 }
