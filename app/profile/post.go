@@ -12,6 +12,7 @@ type Post struct {
 	Memo       *db.MemoPost
 	Likes      []*Like
 	SelfPkHash []byte
+	ReplyCount uint
 }
 
 func (p Post) IsSelf() bool {

@@ -12,17 +12,20 @@ import (
 )
 
 type MemoPost struct {
-	Id         uint   `gorm:"primary_key"`
-	TxHash     []byte `gorm:"unique;size:50"`
-	ParentHash []byte
-	PkHash     []byte `gorm:"index:pk_hash"`
-	PkScript   []byte
-	Address    string
-	Message    string
-	BlockId    uint
-	Block      *Block
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	Id           uint        `gorm:"primary_key"`
+	TxHash       []byte      `gorm:"unique;size:50"`
+	ParentHash   []byte
+	PkHash       []byte      `gorm:"index:pk_hash"`
+	PkScript     []byte
+	Address      string
+	ParentTxHash []byte      `gorm:"index:parent_tx_hash"`
+	Parent       *MemoPost
+	Replies      []*MemoPost `gorm:"foreignkey:ParentTxHash"`
+	Message      string
+	BlockId      uint
+	Block        *Block
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 func (m MemoPost) Save() error {
