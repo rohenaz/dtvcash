@@ -3,6 +3,7 @@ package server
 import (
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/bitcoin/node"
+	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"
 	auth2 "git.jasonc.me/main/memo/web/server/auth"
 	"git.jasonc.me/main/memo/web/server/key"
@@ -22,6 +23,15 @@ func isLoggedIn(r *web.Response) bool {
 		return false
 	}
 	return true
+}
+
+func getCsrfToken(cookieId string) string {
+	token, err := db.GetCsrfTokenString(cookieId)
+	if err != nil {
+		jerr.Get("error getting csrf token", err).Print()
+		return ""
+	}
+	return token
 }
 
 var blockedIps = []string{
@@ -76,6 +86,7 @@ func Run(sessionCookieInsecure bool) {
 		IsLoggedIn:     isLoggedIn,
 		Port:           8261,
 		PreHandler:     preHandler,
+		GetCsrfToken:   getCsrfToken,
 		Routes: web.Routes(
 			[]web.Route{
 				indexRoute,

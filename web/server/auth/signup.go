@@ -31,7 +31,9 @@ var signupSubmitRoute = web.Route{
 			return
 		}
 		// Protects against some session hi-jacking attacks
+		oldCookieId := r.Session.CookieId
 		r.ResetOrCreateSession()
+		db.UpdateCsrfTokenSession(oldCookieId, r.Session.CookieId)
 		username := r.Request.GetFormValue("username")
 		password := r.Request.GetFormValue("password")
 		wif := r.Request.GetFormValue("wif")
