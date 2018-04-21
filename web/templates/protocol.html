@@ -8,10 +8,10 @@
 </p>
 
 <p>
-    Messages are hex encoded, e.g.:
-    <span style="font-family:monospace">OP_RETURN 6d01 6d656d6f</span>
-    (this action would set your name to "memo").
+    Message data is UTF-8 encoded. For example, this action would set your name to "memo":
 </p>
+
+<pre style="font-family:monospace">OP_RETURN 6d01 6d656d6f</pre>
 
 <h3>Action Codes</h3>
 
@@ -54,7 +54,7 @@
         <td>Reply to memo</td>
         <td>0x6d03</td>
         <td>txhash(20), message(53)</td>
-        <td>V2</td>
+        <td>Planned</td>
         <td></td>
     </tr>
     <tr>
@@ -73,7 +73,7 @@
         <td>Set profile text</td>
         <td>0x6d05</td>
         <td>message(76)</td>
-        <td>V2</td>
+        <td>Planned</td>
         <td></td>
     </tr>
     <tr>
@@ -104,28 +104,28 @@
         <td>Set image base url</td>
         <td>0x6d08</td>
         <td>url(76)</td>
-        <td>V2</td>
+        <td>Planned</td>
         <td></td>
     </tr>
     <tr>
         <td>Attach picture</td>
         <td>0x6d09</td>
         <td>txhash(20), imghash(20), url(34)</td>
-        <td>V2</td>
+        <td>Planned</td>
         <td></td>
     </tr>
     <tr>
         <td>Set profile picture</td>
         <td>0x6d10</td>
         <td>imghash(16), url(61)</td>
-        <td>V2</td>
+        <td>Planned</td>
         <td></td>
     </tr>
     <tr>
         <td>Repost memo</td>
         <td>0x6d11</td>
         <td>txhash(20), message(63)</td>
-        <td>V2</td>
+        <td>Planned</td>
         <td></td>
     </tr>
     <!--
@@ -141,7 +141,18 @@
 </table>
 
 <p>
-    Additional actions being considered: <i>tagging users in posts</i>, <i>voting</i>.
+    Additional actions being considered:
+</p>
+
+<ul>
+    <li>Tagging users in posts</li>
+    <li>Voting</li>
+    <li>Issue and revoke delegated addresses</li>
+    <li>Dislike and/or flag posts/users</li>
+</ul>
+
+<p>
+    <b>Note:</b> Actions that have not been implemented are subject to change.
 </p>
 
 {{ template "snippets/footer.html" . }}
