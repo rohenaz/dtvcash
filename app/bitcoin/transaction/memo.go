@@ -165,7 +165,7 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 			return jerr.Get("error saving memo_follow", err)
 		}
 	case memo.CodeLike:
-		txHash, err := chainhash.NewHash(out.PkScript[5:25])
+		txHash, err := chainhash.NewHash(out.PkScript[5:37])
 		if err != nil {
 			return jerr.Get("error parsing transaction hash", err)
 		}
@@ -197,7 +197,7 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 			return jerr.Get("error saving memo_like", err)
 		}
 	case memo.CodeReply:
-		txHash, err := chainhash.NewHash(out.PkScript[5:25])
+		txHash, err := chainhash.NewHash(out.PkScript[5:37])
 		if err != nil {
 			return jerr.Get("error parsing transaction hash", err)
 		}
@@ -208,7 +208,7 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 			ParentHash:  parentHash,
 			Address:     inputAddress.EncodeAddress(),
 			ReplyTxHash: txHash.CloneBytes(),
-			Message:     html.EscapeString(string(out.PkScript[5:])),
+			Message:     html.EscapeString(string(out.PkScript[37:])),
 			BlockId:     blockId,
 		}
 		err = memoReply.Save()

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"git.jasonc.me/main/bitcoin/bitcoin/memo"
 	"git.jasonc.me/main/memo/app/auth"
+	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/bitcoin/transaction"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/profile"
@@ -124,22 +125,22 @@ var replySubmitRoute = web.Route{
 			Address: address,
 			Amount:  txOut.Value - fee,
 		}, {
-			Type: transaction.SpendOutputTypeMemoReply,
+			Type:      transaction.SpendOutputTypeMemoReply,
 			ReplyHash: txHash.CloneBytes(),
-			Data: []byte(message),
+			Data:      []byte(message),
 		}})
 		if err != nil {
 			r.Error(jerr.Get("error creating tx", err), http.StatusInternalServerError)
 			return
 		}
 
-		/*err = transaction.SaveTransaction(tx, nil)
+		err = transaction.SaveTransaction(tx, nil)
 		if err != nil {
 			r.Error(jerr.Get("error saving transaction", err), http.StatusUnprocessableEntity)
 			return
-		}*/
+		}
 
 		fmt.Println(transaction.GetTxInfo(tx))
-		//node.BitcoinNode.Peer.QueueMessage(tx, nil)
+		node.BitcoinNode.Peer.QueueMessage(tx, nil)
 	},
 }
