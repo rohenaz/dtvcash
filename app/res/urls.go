@@ -9,7 +9,6 @@ const (
 	UrlLogin        = "/login"
 	UrlLoginSubmit  = "/login-submit"
 	UrlLogout       = "/logout"
-	UrlTests        = "/tests"
 	UrlProtocol     = "/protocol"
 	UrlDisclaimer   = "/disclaimer"
 	UrlIntroducing  = "/introducing-memo"
