@@ -61,7 +61,7 @@ var newSubmitRoute = web.Route{
 		var txOut *db.TransactionOut
 		for _, txn := range transactions {
 			for _, out := range txn.TxOut {
-				if out.TxnIn == nil && out.Value > 1000 && bytes.Equal(out.KeyPkHash, key.PkHash) {
+				if out.TxnInHashString == "" && out.Value > 1000 && bytes.Equal(out.KeyPkHash, key.PkHash) {
 					txOut = out
 				}
 			}
