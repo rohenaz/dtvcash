@@ -11,7 +11,9 @@ import (
 func ConditionallySaveTransaction(msg *wire.MsgTx, dbBlock *db.Block) (bool, bool, error) {
 	dbTxn, err := db.ConvertMsgToTransaction(msg)
 	if err != nil {
-		return false, false, jerr.Get("error converting msg to db transaction", err)
+		// Don't log, lots of mal-formed txns
+		// jerr.Get("error converting msg to db transaction", err)
+		return false, false, nil
 	}
 	memoOutput, err := GetMemoOutputIfExists(dbTxn)
 	if err != nil {

@@ -39,6 +39,9 @@ func onHeaders(n *Node, msg *wire.MsgHeaders) {
 		if err != nil {
 			jerr.Get("error saving block", err).Print()
 		}
+		if block.Height % 10000 == 0 {
+			fmt.Printf("Header scan at height: %d\n", block.Height)
+		}
 		lastBlock = block
 	}
 	if len(msg.Headers) == 0 {
