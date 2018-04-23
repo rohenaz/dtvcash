@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"git.jasonc.me/main/memo/app/bitcoin/main-node"
+	"git.jasonc.me/main/memo/app/bitcoin/scanner"
 	"git.jasonc.me/main/memo/web/server"
 	"github.com/jchavannes/jgo/jlog"
 	"github.com/spf13/cobra"
@@ -32,8 +33,8 @@ var webCmd = &cobra.Command{
 	},
 }
 
-var newNodeCmd = &cobra.Command{
-	Use:   "new-node",
+var mainNodeCmd = &cobra.Command{
+	Use:   "main-node",
 	Short: "",
 	RunE: func(c *cobra.Command, args []string) error {
 		main_node.Start()
@@ -43,9 +44,21 @@ var newNodeCmd = &cobra.Command{
 	},
 }
 
+var scannerCmd = &cobra.Command{
+	Use:   "scanner",
+	Short: "",
+	RunE: func(c *cobra.Command, args []string) error {
+		scanner.Node.Start()
+		scanner.Node.Peer.WaitForDisconnect()
+		fmt.Println("Disconnected.")
+		return nil
+	},
+}
+
 func Execute() {
 	memoCmd.AddCommand(webCmd)
-	memoCmd.AddCommand(newNodeCmd)
+	memoCmd.AddCommand(mainNodeCmd)
+	memoCmd.AddCommand(scannerCmd)
 	memoCmd.Execute()
 }
 

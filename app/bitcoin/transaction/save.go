@@ -11,7 +11,7 @@ import (
 func ConditionallySaveTransaction(msg *wire.MsgTx, dbBlock *db.Block) (bool, bool, error) {
 	dbTxn, err := db.ConvertMsgToTransaction(msg)
 	if err != nil {
-		return false, false, jerr.Get("error converting msg to db tranasction", err)
+		return false, false, jerr.Get("error converting msg to db transaction", err)
 	}
 	memoOutput, err := GetMemoOutputIfExists(dbTxn)
 	if err != nil {
@@ -19,8 +19,8 @@ func ConditionallySaveTransaction(msg *wire.MsgTx, dbBlock *db.Block) (bool, boo
 	}
 	var savingMemo bool
 	if memoOutput == nil {
-		addresses := GetAddressesFromTxn(msg)
-		watched, err := db.AnyAddressesWatched(addresses)
+		pkHashes := GetPkHashesFromTxn(dbTxn)
+		watched, err := db.ContainsWatchedPkHash(pkHashes)
 		if err != nil && ! db.IsRecordNotFoundError(err) {
 			return false, false, jerr.Get("error checking db for watched addresses", err)
 		}

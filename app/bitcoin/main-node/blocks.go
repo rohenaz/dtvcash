@@ -66,9 +66,11 @@ func queueBlocks(n *Node) {
 		return
 	}
 	if len(blocks) == 0 {
-		n.BlocksSyncComplete = true
-		fmt.Println("Block sync complete")
-		queueMempool(n)
+		if ! n.BlocksSyncComplete {
+			n.BlocksSyncComplete = true
+			fmt.Println("Block sync complete")
+			queueMempool(n)
+		}
 		return
 	}
 	msgGetData := wire.NewMsgGetData()

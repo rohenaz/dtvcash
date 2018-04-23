@@ -6,7 +6,6 @@ import (
 	"git.jasonc.me/main/bitcoin/bitcoin/memo"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/auth"
-	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/bitcoin/transaction"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/profile"
@@ -119,13 +118,11 @@ var followSubmitRoute = web.Route{
 			return
 		}
 
-		err = transaction.SaveTransaction(tx, nil)
+		fmt.Println(transaction.GetTxInfo(tx))
+		err = transaction.QueueAndWaitForTx(tx)
 		if err != nil {
-			r.Error(jerr.Get("error saving transaction", err), http.StatusUnprocessableEntity)
+			r.Error(jerr.Get("error waiting for transaction", err), http.StatusInternalServerError)
 			return
 		}
-
-		fmt.Println(transaction.GetTxInfo(tx))
-		node.BitcoinNode.Peer.QueueMessage(tx, nil)
 	},
 }

@@ -178,18 +178,14 @@ func GetAllKeys() ([]*Key, error) {
 	return privateKeys, nil
 }
 
-func AnyAddressesWatched(addresses []*wallet.PublicKey) (bool, error) {
-	var publicKeys [][]byte
-	for _, address := range addresses {
-		publicKeys = append(publicKeys, address.GetSerialized())
-	}
+func ContainsWatchedPkHash(pkHashes [][]byte) (bool, error) {
 	db, err := getDb()
 	if err != nil {
 		return false, jerr.Get("error getting db", err)
 	}
 	var keys []*Key
 	result := db.
-		Where("public_key in (?)", publicKeys).
+		Where("pk_hash in (?)", pkHashes).
 		Find(&keys)
 	if result.Error != nil {
 		return false, jerr.Get("error running query", err)

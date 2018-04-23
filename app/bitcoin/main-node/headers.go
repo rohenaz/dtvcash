@@ -49,5 +49,9 @@ func onHeaders(n *Node, msg *wire.MsgHeaders) {
 		queueBlocks(n)
 		return
 	}
+	if lastBlock == nil {
+		jerr.New("Unexpected nil lastBlock").Print()
+		return
+	}
 	sendGetHeaders(n, lastBlock.GetChainhash())
 }
