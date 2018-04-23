@@ -13,7 +13,9 @@ const waitTime = 500 * time.Millisecond
 
 
 func QueueAndWaitForTx(tx *wire.MsgTx) error {
-	queuer.Node.Peer.QueueMessage(tx, nil)
+	doneChan := make(chan struct{}, 1)
+	queuer.Node.Peer.QueueMessage(tx, doneChan)
+	<-doneChan
 	txHash := tx.TxHash()
 	for i := 0; i < 30; i++ {
 		_, err := db.GetTransactionByHash(txHash.CloneBytes())
@@ -26,7 +28,8 @@ func QueueAndWaitForTx(tx *wire.MsgTx) error {
 		time.Sleep(waitTime)
 		if i % 5 == 0 {
 			fmt.Println("Trying to queue again...")
-			queuer.Node.Peer.QueueMessage(tx, nil)
+			queuer.Node.Peer.QueueMessage(tx, doneChan)
+			<-doneChan
 		}
 	}
 	return jerr.New("unable to find transaction")
