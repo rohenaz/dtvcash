@@ -7,7 +7,7 @@ import (
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/btcsuite/btcutil"
 	"github.com/cpacia/bchutil"
-	"github.com/cpacia/btcd/chaincfg/chainhash"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 )
 

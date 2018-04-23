@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"git.jasonc.me/main/memo/app/db"
+	"fmt"
+	"git.jasonc.me/main/memo/app/bitcoin/main-node"
 	"git.jasonc.me/main/memo/web/server"
-	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/jlog"
 	"github.com/spf13/cobra"
 )
@@ -32,28 +32,20 @@ var webCmd = &cobra.Command{
 	},
 }
 
-var randomTaskCmd = &cobra.Command{
-	Use:   "random-task",
+var newNodeCmd = &cobra.Command{
+	Use:   "new-node",
 	Short: "",
 	RunE: func(c *cobra.Command, args []string) error {
-		keys, err := db.GetAllKeys()
-		if err != nil {
-			return jerr.Get("error getting keys from db", err)
-		}
-		for _, key := range keys {
-			key.PkHash = key.GetAddress().GetScriptAddress()
-			err = key.Save()
-			if err != nil {
-				return jerr.Get("error saving key", err)
-			}
-		}
+		main_node.Start()
+		main_node.WaitForDisconnect()
+		fmt.Println("Disconnected.")
 		return nil
 	},
 }
 
 func Execute() {
 	memoCmd.AddCommand(webCmd)
-	memoCmd.AddCommand(randomTaskCmd)
+	memoCmd.AddCommand(newNodeCmd)
 	memoCmd.Execute()
 }
 

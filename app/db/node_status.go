@@ -6,15 +6,11 @@ import (
 	"time"
 )
 
-const (
-	StartScanBlock = 525000
-)
-
 type NodeStatus struct {
-	Id        uint `gorm:"primary_key"`
-	LastBlock uint
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Id            uint `gorm:"primary_key"`
+	HeightChecked uint
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 func (s *NodeStatus) Save() error {
@@ -33,7 +29,6 @@ func GetNodeStatus() (*NodeStatus, error) {
 	if ! db.IsRecordNotFoundError(err) {
 		return nil, jerr.Get("error getting status", err)
 	}
-	status.LastBlock = StartScanBlock
 	err = create(status)
 	if err != nil {
 		return nil, jerr.Get("error creating status", err)

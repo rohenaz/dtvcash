@@ -3,20 +3,23 @@ package main_node
 import (
 	"fmt"
 	"git.jasonc.me/main/memo/app/bitcoin/transaction"
-	"git.jasonc.me/main/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/cpacia/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
 )
 
 func onTx(n *Node, msg *wire.MsgTx) {
-	block := findHashBlock([]map[string]*db.Block{n.BlockHashes, n.PrevBlockHashes}, msg.TxHash())
-	err := transaction.SaveTransaction(msg, block)
-	n.CheckedTxns++
+	savedTxn, memoTxn, err := transaction.ConditionallySaveTransaction(msg, nil)
 	if err != nil {
-		fmt.Println(jerr.Get("error saving transaction", err))
+		jerr.Get("error conditionally saving transaction", err).Print()
 	}
-	//fmt.Println(transaction.GetTxInfo(msg))
+	if savedTxn {
+		if memoTxn {
+			fmt.Println("Saved unconfirmed memo txn")
+		} else {
+			fmt.Println("Saved unconfirmed txn")
+		}
+	}
 }
 
 func getTransaction(n *Node, txId chainhash.Hash) {

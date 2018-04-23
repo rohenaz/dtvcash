@@ -7,7 +7,7 @@ import (
 	"git.jasonc.me/main/bitcoin/bitcoin/script"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"github.com/btcsuite/btcutil"
-	"github.com/cpacia/btcd/chaincfg/chainhash"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/cpacia/btcd/txscript"
 	"github.com/jchavannes/jgo/jerr"
 	"html"

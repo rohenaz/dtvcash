@@ -1,7 +1,6 @@
 package main_node
 
 import (
-	"bytes"
 	"fmt"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
@@ -18,38 +17,37 @@ func sendGetHeaders(n *Node, startingBlock *chainhash.Hash) {
 }
 
 func onHeaders(n *Node, msg *wire.MsgHeaders) {
-	var blocksToSave []*db.Block
+	var lastBlock *db.Block
 	for _, header := range msg.Headers {
 		block := db.ConvertMessageHeaderToBlock(header)
-		if bytes.Equal(block.Hash, n.LastBlock.Hash) {
-			// Skipping block since we already have it
+		dbBlock, err := db.GetBlockByHash(*block.GetChainhash())
+		if err != nil && ! db.IsRecordNotFoundError(err) {
+			jerr.Get("error finding existing block", err).Print()
+			return
+		}
+		if dbBlock != nil {
+			// Block already exists
 			continue
 		}
-		if ! bytes.Equal(block.PrevBlock, n.LastBlock.Hash) {
-			fmt.Println(jerr.New("block prev hash does not match!"))
-			fromDb, err := db.GetBlockByHash(*block.GetChainhash())
-			if err != nil {
-				fmt.Println(jerr.Get("error finding parent block in db", err))
-				return
-			}
-			n.LastBlock = fromDb
+		parentBlock, err := db.GetBlockByHash(header.PrevBlock)
+		if err != nil {
+			jerr.Getf(err, "error finding parent block in db (%s)", header.PrevBlock.String()).Print()
+			return
 		}
-		block.Height = n.LastBlock.Height + 1
-		blocksToSave = append(blocksToSave, block)
-		n.LastBlock = block
+		block.Height = parentBlock.Height + 1
+		err = block.Save()
+		if err != nil {
+			jerr.Get("error saving block", err).Print()
+		}
+		lastBlock = block
 	}
-	if len(blocksToSave) == 0 {
-		fmt.Printf("Current block height: %d, Block time: %s\n",
-			n.LastBlock.Height, n.LastBlock.Timestamp.Format("2006-01-02 15:04:05"))
-		if ! n.SyncComplete {
-			n.SyncComplete = true
+	if len(msg.Headers) == 0 {
+		if ! n.HeaderSyncComplete {
+			fmt.Println("Header sync complete")
+			n.HeaderSyncComplete = true
 		}
+		queueBlocks(n)
 		return
 	}
-	err := db.SaveBlocks(blocksToSave)
-	if err != nil {
-		fmt.Println(jerr.Get("error saving blocks", err))
-		return
-	}
-	sendGetHeaders(n, n.LastBlock.GetChainhash())
+	sendGetHeaders(n, lastBlock.GetChainhash())
 }

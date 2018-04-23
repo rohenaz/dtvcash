@@ -5,135 +5,89 @@ import (
 	"git.jasonc.me/main/memo/app/bitcoin/transaction"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
+	"github.com/cpacia/bchutil"
 	"github.com/cpacia/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
 )
 
-const MinCheckHeight = 520000
+const MinCheckHeight = 525000
 
 func onBlock(n *Node, msg *wire.MsgBlock) {
-	block, err := db.GetBlockByHash(msg.Header.BlockHash())
+	block := bchutil.NewBlock(msg)
+	dbBlock, err := db.GetBlockByHash(*block.Hash())
 	if err != nil {
-		jerr.Get("error getting block from db", err).Print()
+		jerr.Getf(err, "error getting dbBlock (%s)", block.Hash().String()).Print()
 		return
 	}
-
-	if block.Height == n.NodeStatus.LastBlock+1 {
-		n.NodeStatus.LastBlock = block.Height
-	} else if block.Height == n.NodeStatus.LastBlock-1 {
-		n.NodeStatus.LastBlock = block.Height
-	} else {
-		fmt.Printf("Got block out of order (block.Height: %d, n.NodeStatus.LastBlock: %d)\n",
-			block.Height, n.NodeStatus.LastBlock)
-	}
-
-	transactionHashes := transaction.GetTransactionsFromMerkleBlock(msg)
-	for _, transactionHash := range transactionHashes {
-		n.BlockHashes[transactionHash.GetTxId().String()] = block
-	}
-
-	if len(n.QueuedMerkleBlocks) == 0 {
-		saveKeys(n)
-		recentBlock, err := db.GetRecentBlock()
+	var memosSaved int
+	var txnsSaved int
+	for _, txn := range block.Transactions() {
+		savedTxn, savedMemo, err := transaction.ConditionallySaveTransaction(txn.MsgTx(), dbBlock)
 		if err != nil {
-			jerr.Get("error getting recent block", err).Print()
-			return
+			jerr.Get("error conditionally saving transaction", err).Print()
+			continue
 		}
-		if block.Height == 0 || block.Height == recentBlock.Height {
-			return
+		if savedTxn {
+			txnsSaved++
 		}
-		if n.NeedsSetKeys {
-			n.NeedsSetKeys = false
-			n.SetKeys()
-		} else {
-			queueMoreBlocks(n)
+		if savedMemo {
+			memosSaved++
 		}
+	}
+	fmt.Printf("Block - height: %5d, found: %5d, saved: %5d, memos: %5d (%s)\n",
+		dbBlock.Height,
+		len(block.Transactions()),
+		txnsSaved,
+		memosSaved,
+		dbBlock.Timestamp.String(),
+	)
+	n.NodeStatus.HeightChecked = dbBlock.Height
+	err = n.NodeStatus.Save()
+	if err != nil {
+		jerr.Get("error saving node status", err).Print()
+		return
+	}
+	n.BlocksQueued--
+	if n.BlocksQueued == 0 {
+		queueBlocks(n)
 	}
 }
 
-func queueBlocks(n *Node, startingBlockHeight uint, endingBlockHeight uint) uint {
-	//fmt.Printf("Queueing more merkle blocks (start: %d, end %d)\n", startingBlockHeight, endingBlockHeight)
-	blocks, err := db.GetBlocksInHeightRange(startingBlockHeight, endingBlockHeight)
+func queueBlocks(n *Node) {
+	if n.BlocksQueued != 0 {
+		return
+	}
+	if n.NodeStatus.HeightChecked < MinCheckHeight {
+		n.NodeStatus.HeightChecked = MinCheckHeight
+	}
+	blocks, err := db.GetBlocksInHeightRange(n.NodeStatus.HeightChecked+1, n.NodeStatus.HeightChecked+2000)
 	if err != nil {
 		jerr.Get("error getting blocks in height range", err).Print()
-		return 0
+		return
+	}
+	if len(blocks) == 0 {
+		n.BlocksSyncComplete = true
+		fmt.Println("Block sync complete")
+		queueMempool(n)
+		return
 	}
 	msgGetData := wire.NewMsgGetData()
 	for _, block := range blocks {
-		n.QueuedMerkleBlocks[block.GetChainhash().String()] = block
 		err := msgGetData.AddInvVect(&wire.InvVect{
-			Type: wire.InvTypeFilteredBlock,
+			Type: wire.InvTypeBlock,
 			Hash: *block.GetChainhash(),
 		})
 		if err != nil {
-			jerr.Get("error adding invVect: %s\n", err).Print()
-			return 0
+			jerr.Get("error adding inventory vector: %s\n", err).Print()
+			return
 		}
 	}
-	n.PrevBlockHashes = n.BlockHashes
-	n.BlockHashes = make(map[string]*db.Block)
 	n.Peer.QueueMessage(msgGetData, nil)
-	return uint(len(blocks))
+	n.BlocksQueued += len(msgGetData.InvList)
+	fmt.Printf("Blocks queued: %d\n", n.BlocksQueued)
 }
 
-func queueMoreBlocks(n *Node) {
-	if ! n.SyncComplete {
-		return
-	}
-	var minHeightChecked uint
-	for _, key := range n.Keys {
-		if key.MinCheck == 0 {
-			break
-		}
-		if key.MinCheck > minHeightChecked {
-			minHeightChecked = key.MinCheck
-		}
-	}
-	var maxHeightChecked uint
-	for _, key := range n.Keys {
-		if key.MaxCheck == 0 {
-			break
-		}
-		if maxHeightChecked == 0 || key.MaxCheck < maxHeightChecked {
-			maxHeightChecked = key.MaxCheck
-		}
-	}
-	recentBlock, err := db.GetRecentBlock()
-	if err != nil {
-		jerr.Get("error getting recent block", err).Print()
-		return
-	}
-
-	var numQueued uint
-	// Initially start at the top
-	if maxHeightChecked == 0 {
-		numQueued += queueBlocks(n, recentBlock.Height, recentBlock.Height-2000)
-	}
-	// See if any new blocks need to be checked (usually after restarting)
-	if numQueued < 2000 && recentBlock.Height > maxHeightChecked {
-		var endQueue = maxHeightChecked + 2000 - numQueued
-		if endQueue > recentBlock.Height {
-			endQueue = recentBlock.Height
-		}
-		numQueued += queueBlocks(n, maxHeightChecked+1, endQueue)
-	}
-	// Work way back to genesis
-	if numQueued < 2000 && minHeightChecked > 1 {
-		var endQueue = minHeightChecked - 2000 + numQueued
-		if endQueue < 0 || endQueue > minHeightChecked {
-			endQueue = 0
-		}
-		numQueued += queueBlocks(n, minHeightChecked, endQueue)
-	}
-}
-
-func findHashBlock(blockHashes []map[string]*db.Block, hash chainhash.Hash) *db.Block {
-	for _, hashMap := range blockHashes {
-		for hashString, block := range hashMap {
-			if hashString == hash.String() {
-				return block
-			}
-		}
-	}
-	return nil
+func getBlock(n *Node, hash chainhash.Hash) {
+	getBlocks := wire.NewMsgGetBlocks(&hash)
+	n.Peer.QueueMessage(getBlocks, nil)
 }

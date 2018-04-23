@@ -253,7 +253,7 @@ func ConvertMsgToTransaction(msg *wire.MsgTx) (*Transaction, error) {
 	for index, in := range msg.TxIn {
 		unlockScript, err := txscript.DisasmString(in.SignatureScript)
 		if err != nil {
-			return nil, jerr.Get("error disassembling unlockScript: %s\n", err)
+			return nil, jerr.Getf(err, "error disassembling unlockScript: %s", unlockScript)
 		}
 		var transactionIn = TransactionIn{
 			Index:                 uint(index),
@@ -293,16 +293,4 @@ func ConvertMsgToTransaction(msg *wire.MsgTx) (*Transaction, error) {
 		txn.TxOut = append(txn.TxOut, &transactionOut)
 	}
 	return &txn, nil
-}
-
-func GetPubKeyInInput(in *TransactionIn) wallet.PublicKey {
-	return wallet.GetPublicKey(in.SignatureScript)
-}
-
-func GetPubKeyInOutput(out *TransactionOut) wallet.PublicKey {
-	_, addresses, _, _ := txscript.ExtractPkScriptAddrs(out.PkScript, &wallet.MainNetParamsOld)
-	if len(addresses) != 1 {
-		return wallet.PublicKey{}
-	}
-	return wallet.GetPublicKey(addresses[0].ScriptAddress())
 }

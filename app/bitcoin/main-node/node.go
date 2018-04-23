@@ -15,13 +15,19 @@ const BitcoinPeerAddress = "dev1.jasonc.me:8333"
 var BitcoinNode Node
 
 type Node struct {
-	Peer            *peer.Peer
-	NetAddress      string
-	LastBlock       *db.Block
-	NodeStatus      *db.NodeStatus
-	SyncComplete    bool
-	BlockHashes     map[string]*db.Block
-	PrevBlockHashes map[string]*db.Block
+	Peer               *peer.Peer
+	NodeStatus         *db.NodeStatus
+	BlocksQueued       int
+	HeaderSyncComplete bool
+	BlocksSyncComplete bool
+}
+
+func Start() {
+	BitcoinNode.Start()
+}
+
+func WaitForDisconnect() {
+	BitcoinNode.Peer.WaitForDisconnect()
 }
 
 func (n *Node) Start() {
@@ -34,22 +40,22 @@ func (n *Node) Start() {
 		UserAgentName:    "bch-lite-node",
 		UserAgentVersion: "0.1.0",
 		ChainParams:      &wallet.MainNetParams,
-		DisableRelayTx:   true,
 		Listeners: peer.MessageListeners{
-			OnVerAck:      n.OnVerAck,
-			OnHeaders:     n.OnHeaders,
-			OnInv:         n.OnInv,
-			OnMerkleBlock: n.OnMerkleBlock,
-			OnTx:          n.OnTx,
-			OnReject:      n.OnReject,
+			OnVerAck:  n.OnVerAck,
+			OnHeaders: n.OnHeaders,
+			OnInv:     n.OnInv,
+			OnBlock:   n.OnBlock,
+			OnTx:      n.OnTx,
+			OnReject:  n.OnReject,
+			OnPing:    n.OnPing,
 		},
-	}, n.NetAddress)
+	}, BitcoinPeerAddress)
 	if err != nil {
 		log.Fatal(err)
 	}
 	n.Peer = p
-	fmt.Printf("Starting bitcoin node: %s\n", n.NetAddress)
-	conn, err := net.Dial("tcp", n.NetAddress)
+	fmt.Printf("Starting bitcoin node: %s\n", BitcoinPeerAddress)
+	conn, err := net.Dial("tcp", BitcoinPeerAddress)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -72,7 +78,7 @@ func (n *Node) OnTx(p *peer.Peer, msg *wire.MsgTx) {
 	onTx(n, msg)
 }
 
-func (n *Node) OnMerkleBlock(p *peer.Peer, msg *wire.MsgMerkleBlock) {
+func (n *Node) OnBlock(p *peer.Peer, msg *wire.MsgBlock, buf []byte) {
 	onBlock(n, msg)
 }
 
@@ -80,6 +86,7 @@ func (n *Node) OnReject(p *peer.Peer, msg *wire.MsgReject) {
 	onReject(n, msg)
 }
 
-func (n *Node) QueueMore() {
-	queueMoreBlocks(n)
+func (n *Node) OnPing(p *peer.Peer, msg *wire.MsgPing) {
+	fmt.Printf("Received ping: %d\n", msg.Nonce)
+	n.Peer.QueueMessage(wire.NewMsgPong(msg.Nonce), nil)
 }
