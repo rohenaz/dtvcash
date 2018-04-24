@@ -16,6 +16,11 @@ func IsBadUsernamePasswordError(err error) bool {
 	return jerr.HasError(err, MsgUsernameNotFound) || jerr.HasError(err, MsgPasswordMismatch)
 }
 
+// Reasonable assumption here but error creating user might not mean already exists in edge cases.
+func UserAlreadyExists(err error) bool {
+	return jerr.HasError(err, MsgErrorCreatingUser)
+}
+
 func Login(cookieId string, username string, password string) error {
 	username = strings.ToLower(username)
 	user, err := db.GetUserByUsername(username)

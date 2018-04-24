@@ -56,7 +56,9 @@ var signupSubmitRoute = web.Route{
 		}
 
 		err := auth.Signup(r.Session.CookieId, username, password)
-		if err != nil {
+		if auth.UserAlreadyExists(err) {
+			r.Error(err, http.StatusForbidden)
+		} else if err != nil {
 			r.Error(err, http.StatusUnauthorized)
 		}
 		user, err := auth.GetSessionUser(r.Session.CookieId)
