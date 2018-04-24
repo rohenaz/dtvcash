@@ -214,6 +214,7 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.ReplyMemo = function ($form) {
+        CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
             var txHash = $form.find("[name=tx-hash]").val();
@@ -233,6 +234,7 @@
                 alert("Must enter a password.");
                 return;
             }
+            CheckSavePassword($form);
 
             $.ajax({
                 type: "POST",
@@ -242,8 +244,12 @@
                     message: message,
                     password: password
                 },
-                success: function () {
-                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.Index
+                success: function (txHash) {
+                    if (!txHash || txHash.length === 0) {
+                        alert("Server error. Please try refreshing the page.");
+                        return
+                    }
+                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
                 error: MemoApp.Form.ErrorHandler
             });
