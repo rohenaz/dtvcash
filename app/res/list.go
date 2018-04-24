@@ -2,7 +2,6 @@ package res
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 )
 
@@ -23,7 +22,7 @@ var CssFiles = []string{
 
 var MinJsFile = "res/js/min.js"
 
-var appendNumber = 6
+var appendNumber = 0
 
 func SetAppendNumber(num int) {
 	appendNumber = num
@@ -35,9 +34,7 @@ func GetResJsFiles() []string {
 		if strings.HasPrefix(file, "http") {
 			continue
 		}
-		re := regexp.MustCompile(`(.*)(\.js)`)
-		file = re.ReplaceAllString(file, fmt.Sprintf("$1-%d$2", appendNumber))
-		fileList = append(fileList, file)
+		fileList = append(fileList, fmt.Sprintf("%s?ver=%d", file, appendNumber))
 	}
 	return fileList
 }
@@ -48,9 +45,7 @@ func GetMinJsFiles() []string {
 		if ! strings.HasPrefix(file, "http") {
 			continue
 		}
-		re := regexp.MustCompile(`(.*)(\.css)`)
-		file = re.ReplaceAllString(file, fmt.Sprintf("$1-%d$2", appendNumber))
-		fileList = append(fileList, file)
+		fileList = append(fileList, fmt.Sprintf("%s?ver=%d", file, appendNumber))
 	}
 	fileList = append(fileList, MinJsFile)
 	return fileList

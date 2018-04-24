@@ -8,6 +8,7 @@ import (
 	"git.jasonc.me/main/memo/web/server"
 	"github.com/jchavannes/jgo/jlog"
 	"github.com/spf13/cobra"
+	"math/rand"
 )
 
 const (
@@ -28,9 +29,10 @@ var webCmd = &cobra.Command{
 		sessionCookieInsecure, _ := c.Flags().GetBool(FlagInsecure)
 		debugMode, _ := c.Flags().GetBool(FlagDebugMode)
 		appendNum, _ := c.Flags().GetInt(FlagAppendNum)
-		if appendNum != 0 {
-			res.SetAppendNumber(appendNum)
+		if appendNum == 0 {
+			appendNum = rand.Intn(1e5)
 		}
+		res.SetAppendNumber(appendNum)
 		if debugMode {
 			jlog.SetLogLevel(jlog.DEBUG)
 		}
