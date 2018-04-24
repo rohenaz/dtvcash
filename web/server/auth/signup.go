@@ -10,6 +10,16 @@ import (
 	"net/http"
 )
 
+const (
+	MsgErrorParsingWif         = "error parsing wif"
+	MsgErrorGettingSessionUser = "error getting session user"
+	MsgErrorCreatingNewPrivKey = "error creating new private key"
+	MsgErrorSavingKey          = "error saving key"
+	MsgErrorImportingKey       = "error importing key"
+	MsgErrorUserAlreadyExists  = "user already exists"
+	MsgErrorSigningUp          = "error signing up"
+)
+
 var signupRoute = web.Route{
 	Pattern: res.UrlSignup,
 	Handler: func(r *web.Response) {
@@ -41,36 +51,43 @@ var signupSubmitRoute = web.Route{
 		if wif != "" {
 			_, err := wallet.ImportPrivateKey(wif)
 			if err != nil {
-				r.Error(jerr.Get("error parsing WIF", err), http.StatusUnprocessableEntity)
+				r.Error(jerr.Get(MsgErrorParsingWif, err), http.StatusUnprocessableEntity)
 				return
 			}
 		}
 
 		err := auth.Signup(r.Session.CookieId, username, password)
-		if err != nil {
-			r.Error(err, http.StatusUnauthorized)
+		if auth.UserAlreadyExists(err) {
+			r.Error(jerr.Get(MsgErrorUserAlreadyExists, err), http.StatusForbidden)
+			return
+		} else if err != nil {
+			r.Error(jerr.Get(MsgErrorSigningUp, err), http.StatusUnauthorized)
+			return
 		}
 		user, err := auth.GetSessionUser(r.Session.CookieId)
 		if err != nil {
-			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
+			r.Error(jerr.Get(MsgErrorGettingSessionUser, err), http.StatusInternalServerError)
 			return
 		}
 		if wif == "" {
 			key, err := db.GenerateKey(username+"-generated", password, user.Id)
 			if err != nil {
-				r.Error(jerr.Get("error creating new private key", err), http.StatusInternalServerError)
+				r.Error(jerr.Get(MsgErrorCreatingNewPrivKey, err), http.StatusInternalServerError)
+				return
 			}
 			recentBlock, err := db.GetRecentBlock()
 			// No need to check back for a new key
 			key.MaxCheck = recentBlock.Height
 			err = key.Save()
 			if err != nil {
-				r.Error(jerr.Get("error saving key", err), http.StatusInternalServerError)
+				r.Error(jerr.Get(MsgErrorSavingKey, err), http.StatusInternalServerError)
+				return
 			}
 		} else {
 			_, err = db.ImportKey(username+"-imported", password, wif, user.Id)
 			if err != nil {
-				r.Error(jerr.Get("error importing key", err), http.StatusInternalServerError)
+				r.Error(jerr.Get(MsgErrorImportingKey, err), http.StatusInternalServerError)
+				return
 			}
 		}
 	},

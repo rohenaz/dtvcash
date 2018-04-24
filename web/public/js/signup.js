@@ -68,10 +68,24 @@
                  * @param {XMLHttpRequest} xhr
                  */
                 error: function (xhr) {
-                    var errorMessage =
-                        "Error creating account:\n" + xhr.responseText + "\n" +
-                        "If this problem persists, try refreshing the page.";
-                    alert(errorMessage);
+                    switch(xhr.status) {
+                        case 422:
+                            alert("Could not parse the WIF. Please check the WIF and try again.");
+                            return;
+                        case 403:
+                            alert("Username is not available. Please try a different username.");
+                            return;
+                        case 401:
+                        case 500:
+                            alert(
+                                "Server side issue while creating the account. " +
+                                "Please try again. " +
+                                "If the issue persists please try refreshing the page.");
+                            return;
+                    }
+                    alert("Oops! There was an issue creating your account (code: " + xhr.status + "). " +
+                        "Try again? " +
+                        "If the issue persists please try refreshing the page.");
                 }
             });
         });
