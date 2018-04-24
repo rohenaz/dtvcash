@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"git.jasonc.me/main/memo/app/bitcoin/main-node"
 	"git.jasonc.me/main/memo/app/bitcoin/scanner"
+	"git.jasonc.me/main/memo/app/res"
 	"git.jasonc.me/main/memo/web/server"
 	"github.com/jchavannes/jgo/jlog"
 	"github.com/spf13/cobra"
@@ -12,6 +13,7 @@ import (
 const (
 	FlagInsecure  = "insecure"
 	FlagDebugMode = "debug"
+	FlagAppendNum = "append-num"
 )
 
 var memoCmd = &cobra.Command{
@@ -25,6 +27,10 @@ var webCmd = &cobra.Command{
 	RunE: func(c *cobra.Command, args []string) error {
 		sessionCookieInsecure, _ := c.Flags().GetBool(FlagInsecure)
 		debugMode, _ := c.Flags().GetBool(FlagDebugMode)
+		appendNum, _ := c.Flags().GetInt(FlagAppendNum)
+		if appendNum != 0 {
+			res.SetAppendNumber(appendNum)
+		}
 		if debugMode {
 			jlog.SetLogLevel(jlog.DEBUG)
 		}
@@ -65,4 +71,5 @@ func Execute() {
 func init() {
 	webCmd.Flags().Bool(FlagInsecure, false, "Allow session cookie over unencrypted HTTP")
 	webCmd.Flags().Bool(FlagDebugMode, false, "Debug mode")
+	webCmd.Flags().Int(FlagAppendNum, 0, "Number appended to js and css files")
 }

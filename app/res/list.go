@@ -23,7 +23,11 @@ var CssFiles = []string{
 
 var MinJsFile = "res/js/min.js"
 
-const AppendNumber = 6
+var appendNumber = 6
+
+func SetAppendNumber(num int) {
+	appendNumber = num
+}
 
 func GetResJsFiles() []string {
 	var fileList []string
@@ -32,7 +36,7 @@ func GetResJsFiles() []string {
 			continue
 		}
 		re := regexp.MustCompile(`(.*)(\.js)`)
-		file = re.ReplaceAllString(file, fmt.Sprintf("$1-%d$2", AppendNumber))
+		file = re.ReplaceAllString(file, fmt.Sprintf("$1-%d$2", appendNumber))
 		fileList = append(fileList, file)
 	}
 	return fileList
@@ -45,7 +49,7 @@ func GetMinJsFiles() []string {
 			continue
 		}
 		re := regexp.MustCompile(`(.*)(\.css)`)
-		file = re.ReplaceAllString(file, fmt.Sprintf("$1-%d$2", AppendNumber))
+		file = re.ReplaceAllString(file, fmt.Sprintf("$1-%d$2", appendNumber))
 		fileList = append(fileList, file)
 	}
 	fileList = append(fileList, MinJsFile)
