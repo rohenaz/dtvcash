@@ -24,8 +24,12 @@
                     message: message,
                     password: password
                 },
-                success: function () {
-                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.Index
+                success: function (txHash) {
+                    if (txHash === undefined || txHash.length === 0) {
+                        alert("Server error. Please try refreshing the page.");
+                        return
+                    }
+                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
                 error: MemoApp.Form.ErrorHandler
             });
@@ -56,8 +60,12 @@
                     name: name,
                     password: password
                 },
-                success: function () {
-                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.Index
+                success: function (txHash) {
+                    if (txHash === undefined || txHash.length === 0) {
+                        alert("Server error. Please try refreshing the page.");
+                        return
+                    }
+                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
                 error: MemoApp.Form.ErrorHandler
             });
@@ -88,8 +96,12 @@
                     address: address,
                     password: password
                 },
-                success: function () {
-                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.Profile + "/" + address
+                success: function (txHash) {
+                    if (txHash === undefined || txHash.length === 0) {
+                        alert("Server error. Please try refreshing the page.");
+                        return
+                    }
+                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
                 error: MemoApp.Form.ErrorHandler
             });
@@ -120,8 +132,12 @@
                     address: address,
                     password: password
                 },
-                success: function () {
-                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.Profile + "/" + address
+                success: function (txHash) {
+                    if (txHash === undefined || txHash.length === 0) {
+                        alert("Server error. Please try refreshing the page.");
+                        return
+                    }
+                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
                 error: MemoApp.Form.ErrorHandler
             });
@@ -159,11 +175,45 @@
                     tip: tip,
                     password: password
                 },
-                success: function () {
-                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoPost + "/" + txHash
+                success: function (txHash) {
+                    if (txHash === undefined || txHash.length === 0) {
+                        alert("Server error. Please try refreshing the page.");
+                        return
+                    }
+                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
                 error: MemoApp.Form.ErrorHandler
             });
         });
+    };
+    /**
+     * @param {jQuery} $form
+     */
+    MemoApp.Form.Wait = function ($form) {
+        $form.submit(function (e) {
+            e.preventDefault();
+            var txHash = $form.find("[name=tx-hash]").val();
+            if (txHash.length === 0) {
+                alert("Form error, tx hash not set.");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoWaitSubmit,
+                data: {
+                    txHash: txHash
+                },
+                success: function (url) {
+                    if (url === undefined || url.length === 0) {
+                        alert("Error with broadcast. Please try again.");
+                        return
+                    }
+                    window.location = MemoApp.GetBaseUrl() + url
+                },
+                error: MemoApp.Form.ErrorHandler
+            });
+        });
+        $form.submit();
     };
 })();

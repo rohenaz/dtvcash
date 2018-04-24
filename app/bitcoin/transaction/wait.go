@@ -1,9 +1,9 @@
 package transaction
 
 import (
-	"fmt"
 	"git.jasonc.me/main/memo/app/bitcoin/queuer"
 	"git.jasonc.me/main/memo/app/db"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/cpacia/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
 	"time"
@@ -11,13 +11,21 @@ import (
 
 const waitTime = 500 * time.Millisecond
 
-
 func QueueAndWaitForTx(tx *wire.MsgTx) error {
+	QueueTx(tx)
+	txHash := tx.TxHash()
+	return WaitForTx(&txHash)
+}
+
+func QueueTx(tx *wire.MsgTx) {
 	doneChan := make(chan struct{}, 1)
 	queuer.Node.Peer.QueueMessage(tx, doneChan)
 	<-doneChan
-	txHash := tx.TxHash()
-	for i := 0; i < 30; i++ {
+}
+
+func WaitForTx(txHash *chainhash.Hash) error {
+	// wait up to 30 seconds
+	for i := 0; i < 60; i++ {
 		_, err := db.GetTransactionByHash(txHash.CloneBytes())
 		if err == nil {
 			return nil
@@ -26,11 +34,6 @@ func QueueAndWaitForTx(tx *wire.MsgTx) error {
 			return jerr.Get("error looking for transaction", err)
 		}
 		time.Sleep(waitTime)
-		if i % 5 == 0 {
-			fmt.Println("Trying to queue again...")
-			queuer.Node.Peer.QueueMessage(tx, doneChan)
-			<-doneChan
-		}
 	}
 	return jerr.New("unable to find transaction")
 }

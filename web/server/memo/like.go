@@ -145,10 +145,7 @@ var likeSubmitRoute = web.Route{
 		}
 
 		fmt.Println(transaction.GetTxInfo(tx))
-		err = transaction.QueueAndWaitForTx(tx)
-		if err != nil {
-			r.Error(jerr.Get("error waiting for transaction", err), http.StatusInternalServerError)
-			return
-		}
+		transaction.QueueTx(tx)
+		r.Write(tx.TxHash().String())
 	},
 }
