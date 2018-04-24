@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-const waitTime = 500 * time.Millisecond
+const waitTime = 200 * time.Millisecond
 
 func QueueAndWaitForTx(tx *wire.MsgTx) error {
 	QueueTx(tx)
@@ -25,7 +25,7 @@ func QueueTx(tx *wire.MsgTx) {
 
 func WaitForTx(txHash *chainhash.Hash) error {
 	// wait up to 30 seconds
-	for i := 0; i < 60; i++ {
+	for i := 0; i < 150; i++ {
 		_, err := db.GetTransactionByHash(txHash.CloneBytes())
 		if err == nil {
 			return nil
