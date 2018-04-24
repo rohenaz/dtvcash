@@ -1,4 +1,4 @@
-package node
+package main_node
 
 import (
 	"fmt"

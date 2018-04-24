@@ -8,12 +8,44 @@ import (
 	"github.com/jchavannes/jgo/jerr"
 )
 
+func ConditionallySaveTransaction(msg *wire.MsgTx, dbBlock *db.Block) (bool, bool, error) {
+	dbTxn, err := db.ConvertMsgToTransaction(msg)
+	if err != nil {
+		// Don't log, lots of mal-formed txns
+		// jerr.Get("error converting msg to db transaction", err)
+		return false, false, nil
+	}
+	memoOutput, err := GetMemoOutputIfExists(dbTxn)
+	if err != nil {
+		return false, false, jerr.Get("error getting memo output", err)
+	}
+	var savingMemo bool
+	if memoOutput == nil {
+		pkHashes := GetPkHashesFromTxn(dbTxn)
+		watched, err := db.ContainsWatchedPkHash(pkHashes)
+		if err != nil && ! db.IsRecordNotFoundError(err) {
+			return false, false, jerr.Get("error checking db for watched addresses", err)
+		}
+		if ! watched {
+			return false, false, nil
+		}
+	} else {
+		savingMemo = true
+	}
+	err = SaveTransaction(msg, dbBlock)
+	if err != nil {
+		return false, false, jerr.Get("error saving transaction", err)
+	}
+	return true, savingMemo, nil
+}
+
 func SaveTransaction(msg *wire.MsgTx, block *db.Block) error {
 	hash := msg.TxHash()
 	txn, err := db.GetTransactionByHash(hash.CloneBytes())
 	if err != nil && ! db.IsRecordNotFoundError(err) {
 		return jerr.Get("error getting transaction from db", err)
 	}
+
 	if txn != nil {
 		if block == nil || txn.BlockId != 0 {
 			// Nothing to update
@@ -48,7 +80,7 @@ func SaveTransaction(msg *wire.MsgTx, block *db.Block) error {
 }
 
 func updateTxn(txn *db.Transaction, block *db.Block) error {
-	fmt.Printf("Updating existing txn: %s, block id: %d\n", txn.GetChainHash().String(), block.Id)
+	//fmt.Printf("Updating existing txn: %s, block id: %d\n", txn.GetChainHash().String(), block.Id)
 	err := txn.Save()
 	if err != nil {
 		return jerr.Get("error saving updated transaction", err)
@@ -62,7 +94,7 @@ func newTxn(txn *db.Transaction, block *db.Block) error {
 		blockId = block.Id
 	}
 	txn.BlockId = blockId
-	fmt.Printf("Found new txn: %s, block id: %d\n", txn.GetChainHash().String(), blockId)
+	//fmt.Printf("Found new txn: %s, block id: %d\n", txn.GetChainHash().String(), blockId)
 	for _, in := range txn.TxIn {
 		err := updateExistingOutputs(in)
 		if err != nil {

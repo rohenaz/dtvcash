@@ -6,7 +6,6 @@ import (
 	"git.jasonc.me/main/bitcoin/bitcoin/memo"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/auth"
-	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/bitcoin/transaction"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/profile"
@@ -84,11 +83,21 @@ var unfollowSubmitRoute = web.Route{
 			return
 		}
 
+		privateKey, err := key.GetPrivateKey(password)
+		if err != nil {
+			r.Error(jerr.Get("error getting private key", err), http.StatusUnauthorized)
+			return
+		}
+
+		address := key.GetAddress()
+		var fee = int64(283 - memo.MaxPostSize + len(address.GetScriptAddress()))
+		var minInput = fee + transaction.DustMinimumOutput
+
 		transactions, err := db.GetTransactionsForPkHash(key.PkHash)
 		var txOut *db.TransactionOut
 		for _, txn := range transactions {
 			for _, out := range txn.TxOut {
-				if out.TxnIn == nil && out.Value > 1000 && bytes.Equal(out.KeyPkHash, key.PkHash) {
+				if out.TxnIn == nil && out.Value > minInput && bytes.Equal(out.KeyPkHash, key.PkHash) {
 					txOut = out
 				}
 			}
@@ -98,14 +107,6 @@ var unfollowSubmitRoute = web.Route{
 			return
 		}
 
-		privateKey, err := key.GetPrivateKey(password)
-		if err != nil {
-			r.Error(jerr.Get("error getting private key", err), http.StatusUnauthorized)
-			return
-		}
-
-		address := key.GetAddress()
-		var fee = int64(283 - memo.MaxPostSize + len(address.GetScriptAddress()))
 		tx, err := transaction.Create(txOut, privateKey, []transaction.SpendOutput{{
 			Type:    transaction.SpendOutputTypeP2PK,
 			Address: address,
@@ -119,13 +120,8 @@ var unfollowSubmitRoute = web.Route{
 			return
 		}
 
-		err = transaction.SaveTransaction(tx, nil)
-		if err != nil {
-			r.Error(jerr.Get("error saving transaction", err), http.StatusUnprocessableEntity)
-			return
-		}
-
 		fmt.Println(transaction.GetTxInfo(tx))
-		node.BitcoinNode.Peer.QueueMessage(tx, nil)
+		transaction.QueueTx(tx)
+		r.Write(tx.TxHash().String())
 	},
 }
