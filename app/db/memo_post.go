@@ -119,8 +119,7 @@ func GetPostsForPkHashes(pkHashes [][]byte, offset uint) ([]*MemoPost, error) {
 		Offset(offset).
 		Preload(BlockTable).
 		Where("pk_hash in (?)", pkHashes).
-		Where("block_id > 0").
-		Order("block_id DESC").
+		Order("id DESC").
 		Find(&memoPosts)
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
