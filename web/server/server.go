@@ -2,7 +2,7 @@ package server
 
 import (
 	"git.jasonc.me/main/memo/app/auth"
-	"git.jasonc.me/main/memo/app/bitcoin/node"
+	"git.jasonc.me/main/memo/app/bitcoin/queuer"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"
 	auth2 "git.jasonc.me/main/memo/web/server/auth"
@@ -69,15 +69,12 @@ func preHandler(r *web.Response) {
 	} else {
 		r.Helper["jsFiles"] = res.GetResJsFiles()
 	}
-	r.Helper["cssFiles"] = res.CssFiles
+	r.Helper["cssFiles"] = res.GetResCssFiles()
 }
 
 func Run(sessionCookieInsecure bool) {
 	go func() {
-		// Start bitcoin node
-		node.BitcoinNode.NetAddress = node.BitcoinPeerAddress
-		node.BitcoinNode.SetKeys()
-		node.BitcoinNode.Start()
+		queuer.StartAndKeepAlive()
 	}()
 
 	// Start web server

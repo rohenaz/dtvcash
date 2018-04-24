@@ -9,7 +9,6 @@ const (
 	UrlLogin        = "/login"
 	UrlLoginSubmit  = "/login-submit"
 	UrlLogout       = "/logout"
-	UrlTests        = "/tests"
 	UrlProtocol     = "/protocol"
 	UrlDisclaimer   = "/disclaimer"
 	UrlIntroducing  = "/introducing-memo"
@@ -38,6 +37,8 @@ const (
 	UrlMemoPost           = "/post"
 	UrlMemoLike           = "/memo/like"
 	UrlMemoLikeSubmit     = "/memo/like-submit"
+	UrlMemoWait           = "/memo/wait"
+	UrlMemoWaitSubmit     = "/memo/wait-submit"
 
 	TmplMemoPost = "/memo/post"
 )

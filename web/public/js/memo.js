@@ -1,8 +1,17 @@
 (function () {
     /**
+     * @param {jQuery} $ele
+     */
+    MemoApp.Form.LogoutButton = function ($ele) {
+        $ele.click(function() {
+            delete(localStorage.WalletPassword);
+        });
+    };
+    /**
      * @param {jQuery} $form
      */
     MemoApp.Form.NewMemo = function ($form) {
+        CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
             var message = $form.find("[name=message]").val();
@@ -17,6 +26,8 @@
                 return;
             }
 
+            CheckSavePassword($form);
+
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoNewSubmit,
@@ -24,8 +35,12 @@
                     message: message,
                     password: password
                 },
-                success: function () {
-                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.Index
+                success: function (txHash) {
+                    if (!txHash || txHash.length === 0) {
+                        alert("Server error. Please try refreshing the page.");
+                        return
+                    }
+                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
                 error: MemoApp.Form.ErrorHandler
             });
@@ -35,6 +50,7 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.SetName = function ($form) {
+        CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
             var name = $form.find("[name=name]").val();
@@ -49,6 +65,8 @@
                 return;
             }
 
+            CheckSavePassword($form);
+
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoSetNameSubmit,
@@ -56,8 +74,12 @@
                     name: name,
                     password: password
                 },
-                success: function () {
-                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.Index
+                success: function (txHash) {
+                    if (!txHash || txHash.length === 0) {
+                        alert("Server error. Please try refreshing the page.");
+                        return
+                    }
+                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
                 error: MemoApp.Form.ErrorHandler
             });
@@ -67,6 +89,7 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.Follow = function ($form) {
+        CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
             var address = $form.find("[name=address]").val();
@@ -80,6 +103,8 @@
                 alert("Must enter a password.");
                 return;
             }
+
+            CheckSavePassword($form);
 
             $.ajax({
                 type: "POST",
@@ -88,17 +113,23 @@
                     address: address,
                     password: password
                 },
-                success: function () {
-                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.Profile + "/" + address
+                success: function (txHash) {
+                    if (!txHash || txHash.length === 0) {
+                        alert("Server error. Please try refreshing the page.");
+                        return
+                    }
+                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
                 error: MemoApp.Form.ErrorHandler
             });
         });
     };
+
     /**
      * @param {jQuery} $form
      */
     MemoApp.Form.Unfollow = function ($form) {
+        CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
             var address = $form.find("[name=address]").val();
@@ -113,6 +144,8 @@
                 return;
             }
 
+            CheckSavePassword($form);
+
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoUnfollowSubmit,
@@ -120,8 +153,12 @@
                     address: address,
                     password: password
                 },
-                success: function () {
-                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.Profile + "/" + address
+                success: function (txHash) {
+                    if (txHash === undefined || txHash.length === 0) {
+                        alert("Server error. Please try refreshing the page.");
+                        return
+                    }
+                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
                 error: MemoApp.Form.ErrorHandler
             });
@@ -131,6 +168,7 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.Like = function ($form) {
+        CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
             var txHash = $form.find("[name=tx-hash]").val();
@@ -151,6 +189,8 @@
                 return;
             }
 
+            CheckSavePassword($form);
+
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoLikeSubmit,
@@ -159,11 +199,90 @@
                     tip: tip,
                     password: password
                 },
-                success: function () {
-                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoPost + "/" + txHash
+                success: function (txHash) {
+                    if (!txHash || txHash.length === 0) {
+                        alert("Server error. Please try refreshing the page.");
+                        return
+                    }
+                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
                 error: MemoApp.Form.ErrorHandler
             });
         });
+    };
+    /**
+     * @param {jQuery} $form
+     */
+    function CheckLoadPassword($form) {
+        if (!localStorage.WalletPassword) {
+            return;
+        }
+        $form.find("[name=password]").val(localStorage.WalletPassword);
+        $form.find("[name=save-password]").prop("checked", true);
+    }
+
+    /**
+     * @param {jQuery} $form
+     */
+    function CheckSavePassword($form) {
+        if (!$form.find("[name=save-password]").is(':checked')) {
+            delete(localStorage.WalletPassword);
+            return;
+        }
+
+        var password = $form.find("[name=password]").val();
+        if (password.length === 0) {
+            return;
+        }
+
+        localStorage.WalletPassword = password;
+    }
+    /**
+     * @param {jQuery} $form
+     * @param {jQuery} $notify
+     * @param {jQuery} $title
+     */
+    MemoApp.Form.Wait = function ($form, $notify, $title) {
+        var text = "Broadcasting transaction";
+        var dots = 1;
+        setInterval(function() {
+            $title.html(text + Array(dots).join("."));
+            dots++;
+            if (dots > 5) {
+                dots = 1;
+            }
+        }, 750);
+        $form.submit(function (e) {
+            e.preventDefault();
+            var txHash = $form.find("[name=tx-hash]").val();
+            if (txHash.length === 0) {
+                alert("Form error, tx hash not set.");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoWaitSubmit,
+                data: {
+                    txHash: txHash
+                },
+                success: function (url) {
+                    if (!url || url.length === 0) {
+                        alert("Error with broadcast. Please try again.");
+                        return
+                    }
+                    window.location = MemoApp.GetBaseUrl() + url
+                },
+                error: function () {
+                    $notify.html(
+                        "Transaction propagation taking longer than normal. " +
+                        "You can continue waiting or try again. " +
+                        "This page will automatically redirect when transaction has propagated."
+                    );
+                    $form.submit();
+                }
+            });
+        });
+        $form.submit();
     };
 })();

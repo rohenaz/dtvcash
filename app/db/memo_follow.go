@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"git.jasonc.me/main/bitcoin/bitcoin/script"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
-	"github.com/cpacia/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 	"html"
 	"sort"
@@ -38,7 +38,7 @@ func (m MemoFollow) Save() error {
 func (m MemoFollow) GetTransactionHashString() string {
 	hash, err := chainhash.NewHash(m.TxHash)
 	if err != nil {
-		jerr.Get("error getting chainhash from memo post", err).Print()
+		jerr.Get("error getting chainhash from memo follow", err).Print()
 		return ""
 	}
 	return hash.String()
@@ -47,7 +47,16 @@ func (m MemoFollow) GetTransactionHashString() string {
 func (m MemoFollow) GetAddressString() string {
 	pkHash, err := btcutil.NewAddressPubKeyHash(m.PkHash, &wallet.MainNetParamsOld)
 	if err != nil {
-		jerr.Get("error getting pubkeyhash from memo post", err).Print()
+		jerr.Get("error getting pubkeyhash from memo follow", err).Print()
+		return ""
+	}
+	return pkHash.EncodeAddress()
+}
+
+func (m MemoFollow) GetFollowAddressString() string {
+	pkHash, err := btcutil.NewAddressPubKeyHash(m.FollowPkHash, &wallet.MainNetParamsOld)
+	if err != nil {
+		jerr.Get("error getting pubkeyhash from memo follow", err).Print()
 		return ""
 	}
 	return pkHash.EncodeAddress()
