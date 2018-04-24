@@ -1,8 +1,17 @@
 (function () {
     /**
+     * @param {jQuery} $ele
+     */
+    MemoApp.Form.LogoutButton = function ($ele) {
+        $ele.click(function() {
+            delete(localStorage.WalletPassword);
+        });
+    };
+    /**
      * @param {jQuery} $form
      */
     MemoApp.Form.NewMemo = function ($form) {
+        CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
             var message = $form.find("[name=message]").val();
@@ -17,6 +26,8 @@
                 return;
             }
 
+            CheckSavePassword($form);
+
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoNewSubmit,
@@ -25,7 +36,7 @@
                     password: password
                 },
                 success: function (txHash) {
-                    if (txHash === undefined || txHash.length === 0) {
+                    if (!txHash || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
@@ -39,6 +50,7 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.SetName = function ($form) {
+        CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
             var name = $form.find("[name=name]").val();
@@ -53,6 +65,8 @@
                 return;
             }
 
+            CheckSavePassword($form);
+
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoSetNameSubmit,
@@ -61,7 +75,7 @@
                     password: password
                 },
                 success: function (txHash) {
-                    if (txHash === undefined || txHash.length === 0) {
+                    if (!txHash || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
@@ -75,6 +89,7 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.Follow = function ($form) {
+        CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
             var address = $form.find("[name=address]").val();
@@ -88,6 +103,8 @@
                 alert("Must enter a password.");
                 return;
             }
+
+            CheckSavePassword($form);
 
             $.ajax({
                 type: "POST",
@@ -97,7 +114,7 @@
                     password: password
                 },
                 success: function (txHash) {
-                    if (txHash === undefined || txHash.length === 0) {
+                    if (!txHash || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
@@ -107,10 +124,12 @@
             });
         });
     };
+
     /**
      * @param {jQuery} $form
      */
     MemoApp.Form.Unfollow = function ($form) {
+        CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
             var address = $form.find("[name=address]").val();
@@ -124,6 +143,8 @@
                 alert("Must enter a password.");
                 return;
             }
+
+            CheckSavePassword($form);
 
             $.ajax({
                 type: "POST",
@@ -147,6 +168,7 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.Like = function ($form) {
+        CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
             var txHash = $form.find("[name=tx-hash]").val();
@@ -167,6 +189,8 @@
                 return;
             }
 
+            CheckSavePassword($form);
+
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoLikeSubmit,
@@ -176,7 +200,7 @@
                     password: password
                 },
                 success: function (txHash) {
-                    if (txHash === undefined || txHash.length === 0) {
+                    if (!txHash || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
@@ -186,6 +210,33 @@
             });
         });
     };
+    /**
+     * @param {jQuery} $form
+     */
+    function CheckLoadPassword($form) {
+        if (!localStorage.WalletPassword) {
+            return;
+        }
+        $form.find("[name=password]").val(localStorage.WalletPassword);
+        $form.find("[name=save-password]").prop("checked", true);
+    }
+
+    /**
+     * @param {jQuery} $form
+     */
+    function CheckSavePassword($form) {
+        if (!$form.find("[name=save-password]").is(':checked')) {
+            delete(localStorage.WalletPassword);
+            return;
+        }
+
+        var password = $form.find("[name=password]").val();
+        if (password.length === 0) {
+            return;
+        }
+
+        localStorage.WalletPassword = password;
+    }
     /**
      * @param {jQuery} $form
      */
@@ -205,7 +256,7 @@
                     txHash: txHash
                 },
                 success: function (url) {
-                    if (url === undefined || url.length === 0) {
+                    if (!url || url.length === 0) {
                         alert("Error with broadcast. Please try again.");
                         return
                     }

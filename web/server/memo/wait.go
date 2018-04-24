@@ -72,6 +72,13 @@ var waitSubmitRoute = web.Route{
 				return
 			}
 			r.Write(strings.TrimLeft(res.UrlMemoPost + "/" + post.GetTransactionHashString(), "/"))
+		case memo.CodeSetName:
+			setName, err := db.GetMemoSetName(txHash.CloneBytes())
+			if err != nil {
+				r.Error(jerr.Get("error getting set name from db", err), http.StatusInternalServerError)
+				return
+			}
+			r.Write(strings.TrimLeft(res.UrlProfileView + "/" + setName.GetAddressString(), "/"))
 		}
 	},
 }
