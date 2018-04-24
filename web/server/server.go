@@ -69,7 +69,7 @@ func preHandler(r *web.Response) {
 	} else {
 		r.Helper["jsFiles"] = res.GetResJsFiles()
 	}
-	r.Helper["cssFiles"] = res.CssFiles
+	r.Helper["cssFiles"] = res.GetResCssFiles()
 }
 
 func Run(sessionCookieInsecure bool) {

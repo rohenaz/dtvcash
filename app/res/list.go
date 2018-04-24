@@ -28,6 +28,17 @@ func SetAppendNumber(num int) {
 	appendNumber = num
 }
 
+func GetResCssFiles() []string {
+	var fileList []string
+	for _, file := range CssFiles {
+		if strings.HasPrefix(file, "http") {
+			continue
+		}
+		fileList = append(fileList, fmt.Sprintf("%s?ver=%d", file, appendNumber))
+	}
+	return fileList
+}
+
 func GetResJsFiles() []string {
 	var fileList []string
 	for _, file := range JsFiles {
