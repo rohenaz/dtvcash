@@ -8,7 +8,6 @@ import (
 	"net/http"
 )
 
-
 var loginRoute = web.Route{
 	Pattern: res.UrlLogin,
 	Handler: func(r *web.Response) {

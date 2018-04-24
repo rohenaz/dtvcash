@@ -8,9 +8,9 @@ import (
 )
 
 const (
-	MsgErrorCreatingUser = "error creating user"
+	MsgErrorCreatingUser   = "error creating user"
 	MsgErrorGettingSession = "error getting session"
-	MsgErrorSavingSession = "error saving session"
+	MsgErrorSavingSession  = "error saving session"
 )
 
 func Signup(cookieId string, username string, password string) error {

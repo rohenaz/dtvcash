@@ -11,11 +11,13 @@ import (
 )
 
 const (
-	MsgErrorParsingWif = "error parsing wif"
+	MsgErrorParsingWif         = "error parsing wif"
 	MsgErrorGettingSessionUser = "error getting session user"
 	MsgErrorCreatingNewPrivKey = "error creating new private key"
-	MsgErrorSavingKey = "error saving key"
-	MsgErrorImportingKey = "error importing key"
+	MsgErrorSavingKey          = "error saving key"
+	MsgErrorImportingKey       = "error importing key"
+	MsgErrorUserAlreadyExists  = "user already exists"
+	MsgErrorSigningUp          = "error signing up"
 )
 
 var signupRoute = web.Route{
@@ -56,9 +58,11 @@ var signupSubmitRoute = web.Route{
 
 		err := auth.Signup(r.Session.CookieId, username, password)
 		if auth.UserAlreadyExists(err) {
-			r.Error(err, http.StatusForbidden)
+			r.Error(jerr.Get(MsgErrorUserAlreadyExists, err), http.StatusForbidden)
+			return
 		} else if err != nil {
-			r.Error(err, http.StatusUnauthorized)
+			r.Error(jerr.Get(MsgErrorSigningUp, err), http.StatusUnauthorized)
+			return
 		}
 		user, err := auth.GetSessionUser(r.Session.CookieId)
 		if err != nil {
@@ -69,6 +73,7 @@ var signupSubmitRoute = web.Route{
 			key, err := db.GenerateKey(username+"-generated", password, user.Id)
 			if err != nil {
 				r.Error(jerr.Get(MsgErrorCreatingNewPrivKey, err), http.StatusInternalServerError)
+				return
 			}
 			recentBlock, err := db.GetRecentBlock()
 			// No need to check back for a new key
@@ -76,11 +81,13 @@ var signupSubmitRoute = web.Route{
 			err = key.Save()
 			if err != nil {
 				r.Error(jerr.Get(MsgErrorSavingKey, err), http.StatusInternalServerError)
+				return
 			}
 		} else {
 			_, err = db.ImportKey(username+"-imported", password, wif, user.Id)
 			if err != nil {
 				r.Error(jerr.Get(MsgErrorImportingKey, err), http.StatusInternalServerError)
+				return
 			}
 		}
 	},
