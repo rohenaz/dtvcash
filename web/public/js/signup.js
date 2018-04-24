@@ -80,7 +80,7 @@
                             alert("Server side issue while creating the account. Please try again.");
                             return
                     }
-                    alert("Oops! There was an issue creating account. Try again? (" + xhr.status + ")");
+                    alert("Oops! There was an issue creating your account. Try again? (" + xhr.status + ")");
                 }
             });
         });
