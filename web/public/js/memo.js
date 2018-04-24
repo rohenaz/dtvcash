@@ -239,8 +239,19 @@
     }
     /**
      * @param {jQuery} $form
+     * @param {jQuery} $notify
+     * @param {jQuery} $title
      */
-    MemoApp.Form.Wait = function ($form) {
+    MemoApp.Form.Wait = function ($form, $notify, $title) {
+        var text = "Broadcasting transaction";
+        var dots = 1;
+        setInterval(function() {
+            $title.html(text + Array(dots).join("."));
+            dots++;
+            if (dots > 5) {
+                dots = 1;
+            }
+        }, 750);
         $form.submit(function (e) {
             e.preventDefault();
             var txHash = $form.find("[name=tx-hash]").val();
@@ -262,7 +273,14 @@
                     }
                     window.location = MemoApp.GetBaseUrl() + url
                 },
-                error: MemoApp.Form.ErrorHandler
+                error: function () {
+                    $notify.html(
+                        "Transaction propagation taking longer than normal. " +
+                        "You can continue waiting or try again. " +
+                        "This page will automatically redirect when transaction has propagated."
+                    );
+                    $form.submit();
+                }
             });
         });
         $form.submit();
