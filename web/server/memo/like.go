@@ -87,11 +87,6 @@ var likeSubmitRoute = web.Route{
 			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
 			return
 		}
-		txOut, err := db.GetSpendableTxOut(key.PkHash)
-		if err != nil {
-			r.Error(jerr.Get("error getting spendable tx out", err), http.StatusInternalServerError)
-			return
-		}
 
 		privateKey, err := key.GetPrivateKey(password)
 		if err != nil {
@@ -105,13 +100,21 @@ var likeSubmitRoute = web.Route{
 		var tx *wire.MsgTx
 
 		var fee = int64(283 - memo.MaxPostSize + len(txHash.CloneBytes()))
+		tip := int64(r.Request.GetFormValueInt("tip"))
+		var minInput = fee + transaction.DustMinimumOutput + tip
+
 		transactions := []transaction.SpendOutput{{
 			Type: transaction.SpendOutputTypeMemoLike,
 			Data: txHash.CloneBytes(),
 		}}
+
+		txOut, err := db.GetSpendableTxOut(key.PkHash, minInput)
+		if err != nil {
+			r.Error(jerr.Get("error getting spendable tx out", err), http.StatusInternalServerError)
+			return
+		}
 		remaining := txOut.Value
 
-		tip := int64(r.Request.GetFormValueInt("tip"))
 		if tip != 0 {
 			if tip < transaction.DustMinimumOutput {
 				r.Error(jerr.Get("error tip not above dust limit", err), http.StatusUnprocessableEntity)

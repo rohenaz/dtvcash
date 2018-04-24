@@ -57,19 +57,6 @@ var newSubmitRoute = web.Route{
 			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
 			return
 		}
-		transactions, err := db.GetTransactionsForPkHash(key.PkHash)
-		var txOut *db.TransactionOut
-		for _, txn := range transactions {
-			for _, out := range txn.TxOut {
-				if out.TxnInHashString == "" && out.Value > 1000 && bytes.Equal(out.KeyPkHash, key.PkHash) {
-					txOut = out
-				}
-			}
-		}
-		if txOut == nil {
-			r.Error(jerr.New("unable to find an output to spend"), http.StatusUnprocessableEntity)
-			return
-		}
 
 		privateKey, err := key.GetPrivateKey(password)
 		if err != nil {
@@ -79,6 +66,22 @@ var newSubmitRoute = web.Route{
 
 		address := key.GetAddress()
 		var fee = int64(283 - memo.MaxPostSize + len([]byte(message)))
+		var minInput = fee + transaction.DustMinimumOutput
+
+		transactions, err := db.GetTransactionsForPkHash(key.PkHash)
+		var txOut *db.TransactionOut
+		for _, txn := range transactions {
+			for _, out := range txn.TxOut {
+				if out.TxnInHashString == "" && out.Value > minInput && bytes.Equal(out.KeyPkHash, key.PkHash) {
+					txOut = out
+				}
+			}
+		}
+		if txOut == nil {
+			r.Error(jerr.New("unable to find an output to spend"), http.StatusUnprocessableEntity)
+			return
+		}
+
 		tx, err := transaction.Create(txOut, privateKey, []transaction.SpendOutput{{
 			Type:    transaction.SpendOutputTypeP2PK,
 			Address: address,

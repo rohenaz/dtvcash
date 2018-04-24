@@ -83,11 +83,21 @@ var unfollowSubmitRoute = web.Route{
 			return
 		}
 
+		privateKey, err := key.GetPrivateKey(password)
+		if err != nil {
+			r.Error(jerr.Get("error getting private key", err), http.StatusUnauthorized)
+			return
+		}
+
+		address := key.GetAddress()
+		var fee = int64(283 - memo.MaxPostSize + len(address.GetScriptAddress()))
+		var minInput = fee + transaction.DustMinimumOutput
+
 		transactions, err := db.GetTransactionsForPkHash(key.PkHash)
 		var txOut *db.TransactionOut
 		for _, txn := range transactions {
 			for _, out := range txn.TxOut {
-				if out.TxnIn == nil && out.Value > 1000 && bytes.Equal(out.KeyPkHash, key.PkHash) {
+				if out.TxnIn == nil && out.Value > minInput && bytes.Equal(out.KeyPkHash, key.PkHash) {
 					txOut = out
 				}
 			}
@@ -97,14 +107,6 @@ var unfollowSubmitRoute = web.Route{
 			return
 		}
 
-		privateKey, err := key.GetPrivateKey(password)
-		if err != nil {
-			r.Error(jerr.Get("error getting private key", err), http.StatusUnauthorized)
-			return
-		}
-
-		address := key.GetAddress()
-		var fee = int64(283 - memo.MaxPostSize + len(address.GetScriptAddress()))
 		tx, err := transaction.Create(txOut, privateKey, []transaction.SpendOutput{{
 			Type:    transaction.SpendOutputTypeP2PK,
 			Address: address,

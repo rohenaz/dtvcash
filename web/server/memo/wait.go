@@ -50,14 +50,13 @@ var waitSubmitRoute = web.Route{
 			return
 		}
 		switch out.PkScript[3] {
-		case memo.CodeFollow:
-		case memo.CodeUnfollow:
+		case memo.CodeFollow, memo.CodeUnfollow:
 			follow, err := db.GetMemoFollow(txHash.CloneBytes())
 			if err != nil {
 				r.Error(jerr.Get("error getting follow from db", err), http.StatusInternalServerError)
 				return
 			}
-			r.Write(strings.TrimLeft(res.UrlProfileView + "/" + follow.Address, "/"))
+			r.Write(strings.TrimLeft(res.UrlProfileView + "/" + follow.GetFollowAddressString(), "/"))
 		case memo.CodeLike:
 			like, err := db.GetMemoLike(txHash.CloneBytes())
 			if err != nil {
