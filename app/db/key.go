@@ -177,3 +177,18 @@ func GetAllKeys() ([]*Key, error) {
 	}
 	return privateKeys, nil
 }
+
+func ContainsWatchedPkHash(pkHashes [][]byte) (bool, error) {
+	db, err := getDb()
+	if err != nil {
+		return false, jerr.Get("error getting db", err)
+	}
+	var keys []*Key
+	result := db.
+		Where("pk_hash in (?)", pkHashes).
+		Find(&keys)
+	if result.Error != nil {
+		return false, jerr.Get("error running query", err)
+	}
+	return len(keys) != 0, nil
+}

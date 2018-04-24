@@ -36,14 +36,27 @@ func (p Post) GetTotalTip() int64 {
 
 func (p Post) GetMessage() string {
 	msg := p.Memo.Message
-	var re = regexp.MustCompile(`(http[s]?://[^ ]*)`)
+	var re = regexp.MustCompile(`(http[s]?://[^\s]*)`)
 	s := re.ReplaceAllString(msg, `<a href="$1" target="_blank">$1</a>`)
 	return s
 }
 
-func GetPostsForHashes(pkHashes [][]byte, selfPkHash []byte) ([]*Post, error) {
+func GetPostsForHashes(pkHashes [][]byte, selfPkHash []byte, offset uint) ([]*Post, error) {
+	dbPosts, err := db.GetPostsForPkHashes(pkHashes, offset)
+	if err != nil {
+		return nil, jerr.Get("error getting posts for hash", err)
+	}
+	var foundPkHashes [][]byte
+	for _, dbPost := range dbPosts {
+		for _, foundPkHash := range foundPkHashes {
+			if bytes.Equal(foundPkHash, dbPost.PkHash) {
+				continue
+			}
+		}
+		foundPkHashes = append(foundPkHashes, dbPost.PkHash)
+	}
 	names := make(map[string]string)
-	for _, pkHash := range pkHashes {
+	for _, pkHash := range foundPkHashes {
 		setName, err := db.GetNameForPkHash(pkHash)
 		if err != nil && ! db.IsRecordNotFoundError(err) {
 			return nil, jerr.Get("error getting name for hash", err)
@@ -52,10 +65,6 @@ func GetPostsForHashes(pkHashes [][]byte, selfPkHash []byte) ([]*Post, error) {
 			continue
 		}
 		names[string(pkHash)] = setName.Name
-	}
-	dbPosts, err := db.GetPostsForPkHashes(pkHashes)
-	if err != nil {
-		return nil, jerr.Get("error getting posts for hash", err)
 	}
 	var posts []*Post
 	for _, dbPost := range dbPosts {

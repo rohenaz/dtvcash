@@ -1,0 +1,22 @@
+{{ template "snippets/header.html" . }}
+
+<p id="notify"></p>
+
+<h2 id="broadcasting-transaction">Broadcasting transaction...</h2>
+
+<p>
+    Waiting until transaction is propagated.
+    If you leave this page it will continue in the background.
+</p>
+
+<form id="form-wait" method="post">
+    <input id="tx-hash" type="hidden" name="tx-hash" value="{{ .TxHash }}"/>
+</form>
+
+<script type="text/javascript">
+    $(function () {
+        MemoApp.Form.Wait($("#form-wait"), $("#notify"), $("#broadcasting-transaction"));
+    });
+</script>
+
+{{ template "snippets/footer.html" . }}

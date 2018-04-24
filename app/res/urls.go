@@ -9,13 +9,13 @@ const (
 	UrlLogin        = "/login"
 	UrlLoginSubmit  = "/login-submit"
 	UrlLogout       = "/logout"
-	UrlTests        = "/tests"
 	UrlProtocol     = "/protocol"
 	UrlDisclaimer   = "/disclaimer"
 	UrlIntroducing  = "/introducing-memo"
 	UrlNeedFunds    = "/need-funds"
 	UrlNewPosts     = "/new-posts"
 	UrlStats        = "/stats"
+	UrlFeed         = "/feed"
 )
 
 const (
@@ -39,6 +39,8 @@ const (
 	UrlMemoLikeSubmit     = "/memo/like-submit"
 	UrlMemoReply          = "/memo/reply"
 	UrlMemoReplySubmit    = "/memo/reply-submit"
+	UrlMemoWait           = "/memo/wait"
+	UrlMemoWaitSubmit     = "/memo/wait-submit"
 
 	TmplMemoPost = "/memo/post"
 )

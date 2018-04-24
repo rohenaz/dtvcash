@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"git.jasonc.me/main/bitcoin/bitcoin/memo"
 	"git.jasonc.me/main/memo/app/auth"
-	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/bitcoin/transaction"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/profile"
@@ -141,6 +140,7 @@ var replySubmitRoute = web.Route{
 		}
 
 		fmt.Println(transaction.GetTxInfo(tx))
-		node.BitcoinNode.Peer.QueueMessage(tx, nil)
+		transaction.QueueTx(tx)
+		r.Write(tx.TxHash().String())
 	},
 }

@@ -2,7 +2,6 @@ package key
 
 import (
 	"git.jasonc.me/main/memo/app/auth"
-	"git.jasonc.me/main/memo/app/bitcoin/node"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"
 	"github.com/jchavannes/jgo/jerr"
@@ -37,7 +36,6 @@ var changePasswordSubmitRoute = web.Route{
 			r.Error(jerr.Get("error getting key", err), http.StatusInternalServerError)
 			return
 		}
-		key = node.BitcoinNode.GetKey(key.Id)
 		err = key.UpdatePassword(oldPassword, newPassword)
 		if err != nil {
 			r.Error(jerr.Get("error updating key password", err), http.StatusUnauthorized)

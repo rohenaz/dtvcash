@@ -2,7 +2,7 @@ package server
 
 import (
 	"git.jasonc.me/main/memo/app/auth"
-	"git.jasonc.me/main/memo/app/bitcoin/node"
+	"git.jasonc.me/main/memo/app/bitcoin/queuer"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"
 	auth2 "git.jasonc.me/main/memo/web/server/auth"
@@ -47,6 +47,7 @@ func preHandler(r *web.Response) {
 		}
 	}
 	r.Helper["Title"] = "Memo"
+	r.Helper["Description"] = "Decentralized on-chain social network built on Bitcoin Cash"
 	r.Helper["BaseUrl"] = res.GetBaseUrl(r)
 	if r.Request.HttpRequest.Host != "memo.cash" {
 		r.Helper["Dev"] = true
@@ -73,10 +74,7 @@ func preHandler(r *web.Response) {
 
 func Run(sessionCookieInsecure bool) {
 	go func() {
-		// Start bitcoin node
-		node.BitcoinNode.NetAddress = node.BitcoinPeerAddress
-		node.BitcoinNode.SetKeys()
-		node.BitcoinNode.Start()
+		queuer.StartAndKeepAlive()
 	}()
 
 	// Start web server
@@ -96,6 +94,7 @@ func Run(sessionCookieInsecure bool) {
 				needFundsRoute,
 				newPostsRoute,
 				statsRoute,
+				feedRoute,
 				//testsRoute,
 			},
 			key.GetRoutes(),

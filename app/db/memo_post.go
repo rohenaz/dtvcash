@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"git.jasonc.me/main/bitcoin/bitcoin/script"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
-	"github.com/cpacia/btcd/chaincfg/chainhash"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 	"html"
 	"sort"
@@ -97,7 +97,7 @@ func (txns memoPostSortByDate) Less(i, j int) bool {
 		return false
 	}
 	if txns[i].Block == nil && txns[j].Block == nil {
-		return false
+		return txns[i].Id > txns[j].Id
 	}
 	if txns[i].Block == nil {
 		return true
@@ -108,7 +108,7 @@ func (txns memoPostSortByDate) Less(i, j int) bool {
 	return txns[i].Block.Height > txns[j].Block.Height
 }
 
-func GetPostsForPkHashes(pkHashes [][]byte) ([]*MemoPost, error) {
+func GetPostsForPkHashes(pkHashes [][]byte, offset uint) ([]*MemoPost, error) {
 	if len(pkHashes) == 0 {
 		return nil, nil
 	}
@@ -117,7 +117,13 @@ func GetPostsForPkHashes(pkHashes [][]byte) ([]*MemoPost, error) {
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
 	}
-	result := db.Preload(BlockTable).Where("pk_hash in (?)", pkHashes).Where("block_id > 0").Find(&memoPosts)
+	result := db.
+		Limit(25).
+		Offset(offset).
+		Preload(BlockTable).
+		Where("pk_hash in (?)", pkHashes).
+		Order("id DESC").
+		Find(&memoPosts)
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
 	}

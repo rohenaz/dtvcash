@@ -1,13 +1,14 @@
 <html>
 <head>
     <title>{{ .Title }}</title>
+    <meta name="description" content="{{ .Description }}"/>
     <base href="{{ .BaseUrl }}"/>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="og:type" content="summary"/>
-    <meta name="og:title" content="Memo"/>
-    <meta name="og:description" content="Decentralized on-chain social network built on Bitcoin Cash"/>
+    <meta name="og:title" content="{{ .Title }}"/>
+    <meta name="og:description" content="{{ .Description }}"/>
     <meta name="og:image" content="https://memo.cash/logo.png"/>
     <meta name="twitter:site" content="@memobch"/>
 
@@ -23,6 +24,7 @@
         $(function () {
             MemoApp.InitCsrf("{{ .CsrfToken }}");
             MemoApp.SetBaseUrl("{{ .BaseUrl }}");
+            MemoApp.Form.LogoutButton($("#header-logout"));
         });
     </script>
 </head>
@@ -42,12 +44,11 @@
     {{ else }}
         <a class="btn" href="">Home</a>
     {{ end }}
-        <a class="btn" href="profiles">View Profiles</a>
-        <a class="btn" href="new-posts">New Posts</a>
-        <a class="btn" href="protocol">Protocol</a>
+        <a class="btn" href="profiles">Profiles</a>
+        <a class="btn" href="new-posts">Posts</a>
         <a class="btn" href="disclaimer">Disclaimer</a>
     {{ with .Username }}
-        <a class="btn" href="logout">Logout <b>{{ . }}</b></a>
+        <a id="header-logout" class="btn" href="logout">Logout <b>{{ . }}</b></a>
     {{ end }}
     </div>
 </div>

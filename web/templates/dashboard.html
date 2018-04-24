@@ -17,14 +17,7 @@
 <p>Start following others to see their posts here</p>
 {{ else }}
 <h3>Feed</h3>
-{{ end }}
-
-{{ template "snippets/posts.html" .Posts }}
-
-{{ if eq .Profile.Balance 0 }}
-<p>
-    Send yourself some BCH to start posting.
-</p>
+{{ template "snippets/feed.html" . }}
 {{ end }}
 
 {{ template "snippets/footer.html" . }}
