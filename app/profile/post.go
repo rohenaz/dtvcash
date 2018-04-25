@@ -70,9 +70,14 @@ func GetPostsForHashes(pkHashes [][]byte, selfPkHash []byte, offset uint) ([]*Po
 	}
 	var posts []*Post
 	for _, dbPost := range dbPosts {
+		cnt, err := db.GetPostReplyCount(dbPost.TxHash)
+		if err != nil {
+			return nil, jerr.Get("error getting post reply count", err)
+		}
 		post := &Post{
 			Memo:       dbPost,
 			SelfPkHash: selfPkHash,
+			ReplyCount: cnt,
 		}
 		name, ok := names[string(dbPost.PkHash)]
 		if ok {
