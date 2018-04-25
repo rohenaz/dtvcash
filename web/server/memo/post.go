@@ -40,7 +40,7 @@ var postRoute = web.Route{
 			r.Error(jerr.Get("error getting post", err), http.StatusInternalServerError)
 			return
 		}
-		err = profile.AttachLikesToPosts([]*profile.Post{post})
+		err = profile.AttachLikesToPosts(append(post.Replies, post))
 		if err != nil {
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
