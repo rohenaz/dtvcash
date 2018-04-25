@@ -6,6 +6,10 @@
 
 {{ if .Post.Likes }}
 
+<p>
+{{ len .Post.Likes }} likes - <a href="#" id="show-hide-likes">Show</a>
+</p>
+
 <div id="likes" style="display:none">
     <h3>Likes</h3>
 
@@ -24,10 +28,6 @@
     {{ end }}
     </ul>
 </div>
-
-<p>
-    {{ len .Post.Likes }} likes - <a href="#" id="show-hide-likes">Show</a>
-</p>
 
 <script type="text/javascript">
     $(function () {
