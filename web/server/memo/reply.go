@@ -133,12 +133,6 @@ var replySubmitRoute = web.Route{
 			return
 		}
 
-		err = transaction.SaveTransaction(tx, nil)
-		if err != nil {
-			r.Error(jerr.Get("error saving transaction", err), http.StatusUnprocessableEntity)
-			return
-		}
-
 		fmt.Println(transaction.GetTxInfo(tx))
 		transaction.QueueTx(tx)
 		r.Write(tx.TxHash().String())
