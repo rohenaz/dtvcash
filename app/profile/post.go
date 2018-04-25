@@ -197,10 +197,15 @@ func GetRecentPosts(selfPkHash []byte, offset uint) ([]*Post, error) {
 		if setName != nil {
 			name = setName.Name
 		}
+		cnt, err := db.GetPostReplyCount(dbPost.TxHash)
+		if err != nil {
+			return nil, jerr.Get("error getting post reply count", err)
+		}
 		post := &Post{
 			Name:       name,
 			Memo:       dbPost,
 			SelfPkHash: selfPkHash,
+			ReplyCount: cnt,
 		}
 		posts = append(posts, post)
 	}
