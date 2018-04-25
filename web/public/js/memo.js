@@ -327,4 +327,21 @@
         });
         $form.submit();
     };
+
+    /**
+     * @param {jQuery} $likesButton
+     * @param {jQuery} $likes
+     */
+    MemoApp.Form.LikesToggle = function($likesButton, $likes) {
+        $likesButton.click(function (e) {
+            e.preventDefault();
+            if ($likes.is(":visible")) {
+                $likes.hide();
+                $likesButton.html("Show");
+            } else {
+                $likes.show();
+                $likesButton.html("Hide");
+            }
+        });
+    };
 })();
