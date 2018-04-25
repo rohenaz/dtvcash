@@ -23,4 +23,13 @@
 </ul>
 {{ end }}
 
+
+{{ if .Post.Replies }}
+
+<h3>Replies</h3>
+
+{{ template "snippets/posts.html" .Post.Replies }}
+
+{{ end }}
+
 {{ template "snippets/footer.html" . }}

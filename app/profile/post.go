@@ -10,9 +10,11 @@ import (
 type Post struct {
 	Name       string
 	Memo       *db.MemoPost
+	Parent     *Post
 	Likes      []*Like
 	SelfPkHash []byte
 	ReplyCount uint
+	Replies    []*Post
 }
 
 func (p Post) IsSelf() bool {
@@ -96,10 +98,15 @@ func GetPostsForHash(pkHash []byte, selfPkHash []byte) ([]*Post, error) {
 	}
 	var posts []*Post
 	for _, dbPost := range dbPosts {
+		cnt, err := db.GetPostReplyCount(dbPost.TxHash)
+		if err != nil {
+			return nil, jerr.Get("error getting post reply count", err)
+		}
 		post := &Post{
 			Name:       name,
 			Memo:       dbPost,
 			SelfPkHash: selfPkHash,
+			ReplyCount: cnt,
 		}
 		posts = append(posts, post)
 	}
@@ -109,7 +116,52 @@ func GetPostsForHash(pkHash []byte, selfPkHash []byte) ([]*Post, error) {
 func GetPostByTxHash(txHash []byte, selfPkHash []byte) (*Post, error) {
 	memoPost, err := db.GetMemoPost(txHash)
 	if err != nil {
-		return nil, jerr.Get("error getting post", err)
+		return nil, jerr.Get("error getting memo post", err)
+	}
+	var parent *Post
+	if len(memoPost.ParentTxHash) > 0 {
+		parentPost, err := db.GetMemoPost(memoPost.ParentTxHash)
+		if err != nil {
+			return nil, jerr.Get("error getting memo post parent", err)
+		}
+		setName, err := db.GetNameForPkHash(parentPost.PkHash)
+		if err != nil {
+			return nil, jerr.Get("error getting name for reply hash", err)
+		}
+		var name = ""
+		if setName != nil {
+			name = setName.Name
+		}
+		parent = &Post{
+			Name:       name,
+			Memo:       parentPost,
+			SelfPkHash: selfPkHash,
+		}
+	}
+	replies, err := db.GetPostReplies(txHash)
+	if err != nil {
+		return nil, jerr.Get("error getting post replies", err)
+	}
+	var replyPosts []*Post
+	for _, reply := range replies {
+		setName, err := db.GetNameForPkHash(reply.PkHash)
+		if err != nil {
+			return nil, jerr.Get("error getting name for reply hash", err)
+		}
+		var name = ""
+		if setName != nil {
+			name = setName.Name
+		}
+		cnt, err := db.GetPostReplyCount(reply.TxHash)
+		if err != nil {
+			return nil, jerr.Get("error getting post reply count", err)
+		}
+		replyPosts = append(replyPosts, &Post{
+			Name:       name,
+			Memo:       reply,
+			SelfPkHash: selfPkHash,
+			ReplyCount: cnt,
+		})
 	}
 	setName, err := db.GetNameForPkHash(memoPost.PkHash)
 	if err != nil {
@@ -122,7 +174,10 @@ func GetPostByTxHash(txHash []byte, selfPkHash []byte) (*Post, error) {
 	post := &Post{
 		Name:       name,
 		Memo:       memoPost,
+		Parent:     parent,
 		SelfPkHash: selfPkHash,
+		Replies:    replyPosts,
+		ReplyCount: uint(len(replies)),
 	}
 	return post, nil
 }
