@@ -27,7 +27,7 @@ type TransactionOut struct {
 	HashString      string
 	TransactionHash []byte         `gorm:"unique_index:transaction_out_index;"`
 	Transaction     *Transaction   `gorm:"foreignkey:TransactionHash"`
-	KeyPkHash       []byte
+	KeyPkHash       []byte         `gorm:"index:pk_hash"`
 	Key             *Key           `gorm:"foreignkey:KeyPkHash"`
 	Value           int64
 	PkScript        []byte
