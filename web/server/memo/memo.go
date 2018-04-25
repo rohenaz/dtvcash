@@ -25,6 +25,8 @@ func GetRoutes() []web.Route {
 		postRoute,
 		likeRoute,
 		likeSubmitRoute,
+		replyRoute,
+		replySubmitRoute,
 		waitRoute,
 		waitSubmitRoute,
 	}

@@ -213,6 +213,48 @@
     /**
      * @param {jQuery} $form
      */
+    MemoApp.Form.ReplyMemo = function ($form) {
+        CheckLoadPassword($form);
+        $form.submit(function (e) {
+            e.preventDefault();
+            var txHash = $form.find("[name=tx-hash]").val();
+            if (txHash.length === 0) {
+                alert("Form error, tx hash not set.");
+                return;
+            }
+
+            var message = $form.find("[name=message]").val();
+            if (message.length === 0) {
+                alert("Must enter a message.");
+                return;
+            }
+
+            var password = $form.find("[name=password]").val();
+            if (password.length === 0) {
+                alert("Must enter a password.");
+                return;
+            }
+            CheckSavePassword($form);
+
+            $.ajax({
+                type: "POST",
+                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoReplySubmit,
+                data: {
+                    txHash: txHash,
+                    message: message,
+                    password: password
+                },
+                success: function (txHash) {
+                    if (!txHash || txHash.length === 0) {
+                        alert("Server error. Please try refreshing the page.");
+                        return
+                    }
+                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
+                },
+                error: MemoApp.Form.ErrorHandler
+            });
+        });
+    };
     function CheckLoadPassword($form) {
         if (!localStorage.WalletPassword) {
             return;
@@ -284,5 +326,22 @@
             });
         });
         $form.submit();
+    };
+
+    /**
+     * @param {jQuery} $likesButton
+     * @param {jQuery} $likes
+     */
+    MemoApp.Form.LikesToggle = function($likesButton, $likes) {
+        $likesButton.click(function (e) {
+            e.preventDefault();
+            if ($likes.is(":visible")) {
+                $likes.hide();
+                $likesButton.html("Show");
+            } else {
+                $likes.show();
+                $likesButton.html("Hide");
+            }
+        });
     };
 })();

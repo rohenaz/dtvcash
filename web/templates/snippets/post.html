@@ -1,4 +1,9 @@
 <div class="post">
+    {{ if .Post.Parent }}
+    <p>
+        Replying to <a href="post/{{ .Post.Parent.Memo.GetTransactionHashString }}">{{ .Post.Parent.Name }}'s post</a>
+    </p>
+    {{ end }}
     <p class="name">
         <a href="profile/{{ .Post.Memo.GetAddressString }}">{{ $len := len .Post.Name }}{{ if gt $len 0 -}}
             {{ .Post.Name }}
@@ -14,13 +19,15 @@
     <p class="likes">
         <i>
             <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ len .Post.Likes }} likes</a>
-        {{ if .Post.Likes }}
+        {{- if .Post.Likes }}
             (tip: {{ formatBigInt .Post.GetTotalTip }} satoshis)
-        {{ end }}
+        {{- end }},
+            <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.ReplyCount }} replies</a>
         </i>
     </p>
 {{ if not .Compress }}
     <p class="actions">
+        <a class="btn" href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">Reply</a>
     {{ if .Post.IsLikable }}
         <a class="btn" href="memo/like/{{ .Post.Memo.GetTransactionHashString }}">Like Memo</a>
     {{ end }}
@@ -29,4 +36,7 @@
             View Memo on Block Explorer</a>
     </p>
 {{ end }}
+<p>
+
+</p>
 </div>

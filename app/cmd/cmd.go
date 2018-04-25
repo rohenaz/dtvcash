@@ -9,6 +9,7 @@ import (
 	"github.com/jchavannes/jgo/jlog"
 	"github.com/spf13/cobra"
 	"math/rand"
+	"os"
 )
 
 const (
@@ -48,6 +49,7 @@ var mainNodeCmd = &cobra.Command{
 		main_node.Start()
 		main_node.WaitForDisconnect()
 		fmt.Println("Disconnected.")
+		os.Exit(1)
 		return nil
 	},
 }

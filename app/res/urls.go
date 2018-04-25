@@ -37,6 +37,8 @@ const (
 	UrlMemoPost           = "/post"
 	UrlMemoLike           = "/memo/like"
 	UrlMemoLikeSubmit     = "/memo/like-submit"
+	UrlMemoReply          = "/memo/reply"
+	UrlMemoReplySubmit    = "/memo/reply-submit"
 	UrlMemoWait           = "/memo/wait"
 	UrlMemoWaitSubmit     = "/memo/wait-submit"
 

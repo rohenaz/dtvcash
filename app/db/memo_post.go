@@ -11,18 +11,25 @@ import (
 	"time"
 )
 
+const (
+	PreloadMemoPostParent = "Parent"
+)
+
 type MemoPost struct {
-	Id         uint   `gorm:"primary_key"`
-	TxHash     []byte `gorm:"unique;size:50"`
-	ParentHash []byte
-	PkHash     []byte `gorm:"index:pk_hash"`
-	PkScript   []byte
-	Address    string
-	Message    string
-	BlockId    uint
-	Block      *Block
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	Id           uint        `gorm:"primary_key"`
+	TxHash       []byte      `gorm:"unique;size:50"`
+	ParentHash   []byte
+	PkHash       []byte      `gorm:"index:pk_hash"`
+	PkScript     []byte
+	Address      string
+	ParentTxHash []byte      `gorm:"index:parent_tx_hash"`
+	Parent       *MemoPost
+	Replies      []*MemoPost `gorm:"foreignkey:ParentTxHash"`
+	Message      string
+	BlockId      uint
+	Block        *Block
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 func (m MemoPost) Save() error {
@@ -35,6 +42,15 @@ func (m MemoPost) Save() error {
 
 func (m MemoPost) GetTransactionHashString() string {
 	hash, err := chainhash.NewHash(m.TxHash)
+	if err != nil {
+		jerr.Get("error getting chainhash from memo post", err).Print()
+		return ""
+	}
+	return hash.String()
+}
+
+func (m MemoPost) GetParentTransactionHashString() string {
+	hash, err := chainhash.NewHash(m.ParentTxHash)
 	if err != nil {
 		jerr.Get("error getting chainhash from memo post", err).Print()
 		return ""
@@ -80,6 +96,29 @@ func GetMemoPost(txHash []byte) (*MemoPost, error) {
 		return nil, jerr.Get("error getting memo post", err)
 	}
 	return &memoPost, nil
+}
+
+func GetPostReplyCount(txHash []byte) (uint, error) {
+	cnt, err := count(MemoPost{
+		ParentTxHash: txHash,
+	})
+	if err != nil {
+		return 0, jerr.Get("error running count query", err)
+	}
+	return cnt, nil
+}
+
+func GetPostReplies(txHash []byte) ([]*MemoPost, error) {
+	var posts []*MemoPost
+	err := findPreloadColumns([]string{
+		BlockTable,
+	}, &posts, MemoPost{
+		ParentTxHash: txHash,
+	})
+	if err != nil {
+		return nil, jerr.Get("error finding post replies", err)
+	}
+	return posts, nil
 }
 
 type memoPostSortByDate []*MemoPost

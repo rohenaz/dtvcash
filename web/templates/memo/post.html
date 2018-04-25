@@ -5,22 +5,45 @@
 {{ template "snippets/post.html" dict "Post" .Post "Compress" false }}
 
 {{ if .Post.Likes }}
-<h3>Likes</h3>
 
-<ul>
-{{ range .Post.Likes }}
-<li>
-    Liked by <a href="profile/{{ .GetAddressString }}">{{ $len := len .Name }}{{ if gt $len 0 -}}
+<p>
+{{ len .Post.Likes }} likes - <a href="#" id="show-hide-likes">Show</a>
+</p>
+
+<div id="likes" style="display:none">
+    <h3>Likes</h3>
+
+    <ul>
+    {{ range .Post.Likes }}
+        <li>
+            Liked by <a href="profile/{{ .GetAddressString }}">{{ $len := len .Name }}{{ if gt $len 0 -}}
             {{ .Name }}
         {{- else -}}
             {{ .GetAddressString }}
         {{- end }}</a> - {{ formatBigInt .Amount }} satoshis
-    ({{ .GetTimeString }})
-    <a target="_blank"
-       href="https://explorer.bitcoin.com/bch/tx/{{ .GetTransactionHashString }}">View on Block Explorer</a>
-</li>
+            ({{ .GetTimeString }})
+            <a target="_blank"
+               href="https://explorer.bitcoin.com/bch/tx/{{ .GetTransactionHashString }}">View on Block Explorer</a>
+        </li>
+    {{ end }}
+    </ul>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        MemoApp.Form.LikesToggle($("#show-hide-likes"), $("#likes"));
+    });
+</script>
+
 {{ end }}
-</ul>
+
+
+{{ if .Post.Replies }}
+
+<h3>Replies</h3>
+
+{{ template "snippets/posts.html" .Post.Replies }}
+
 {{ end }}
 
 {{ template "snippets/footer.html" . }}

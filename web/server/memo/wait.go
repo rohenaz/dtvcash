@@ -78,6 +78,13 @@ var waitSubmitRoute = web.Route{
 				return
 			}
 			r.Write(strings.TrimLeft(res.UrlProfileView + "/" + setName.GetAddressString(), "/"))
+		case memo.CodeReply:
+			post, err := db.GetMemoPost(txHash.CloneBytes())
+			if err != nil {
+				r.Error(jerr.Get("error getting post from db", err), http.StatusInternalServerError)
+				return
+			}
+			r.Write(strings.TrimLeft(res.UrlMemoPost + "/" + post.GetTransactionHashString(), "/"))
 		}
 	},
 }
