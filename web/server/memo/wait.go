@@ -40,7 +40,7 @@ var waitSubmitRoute = web.Route{
 		}
 		err = transaction.WaitForTx(txHash)
 		if err != nil {
-			r.Error(jerr.Get("error waiting for transaction", err), http.StatusInternalServerError)
+			r.Error(jerr.Getf(err, "error waiting for transaction (%s)", txHashString), http.StatusInternalServerError)
 			return
 		}
 		txn, err := db.GetTransactionByHash(txHash.CloneBytes())
