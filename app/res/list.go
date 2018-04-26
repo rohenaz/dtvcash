@@ -8,6 +8,8 @@ import (
 var JsFiles = []string{
 	"lib/jquery.min.js",
 	"lib/jquery-ui.min.js",
+	"lib/pnglib.js",
+	"lib/identicon.js",
 	"js/init.js",
 	"js/login.js",
 	"js/signup.js",
