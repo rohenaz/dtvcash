@@ -1,0 +1,54 @@
+{{ template "snippets/header.html" . }}
+
+<h2>About</h2>
+
+<p>
+    Memo team profiles:
+    <a href="/profile/1F5GrRezwGokQhxmF4fYaBbbNrPPaeBqMm">@memo</a>
+    (<a href="/profile/1QCBiyfwdjXDsHghBEr5U2KxUpM2BmmJVt">@jason</a>),
+    <a href="/profile/13MuoY8fLzES35bNsMveiQR7eR93LtxBmy">@eric</a>
+</p>
+
+<p>
+    For information about what Memo is, how it works, and why we're building it,
+    visit the <a href="/introducing-memo">Introducing Memo</a> announcement.
+</p>
+
+<h3>FAQ</h3>
+
+<p>
+    <b>Why does the UI look like it's from the 90's?</b><br/>
+    One of our philosophies is to keep things clean and simple.
+    Right now we're probably in more of the Craiglist camp as far as design goes,
+    but our goal is to be more along the lines of Google.
+    We're working on it.
+</p>
+
+<p>
+    <b>Where can I report a bug or feature request?</b><br/>
+    Post a memo about it!
+    You can also send me a message on Reddit (/u/arnold2040)
+    or Telegram (@arnold2040).
+</p>
+
+<p>
+    <b>Does Memo have access to user's private keys?</b><br/>
+    Private keys are stored encrypted with the user's password.
+    The key needs to be unencrypted to sign transactions,
+    which is why it is required each time an action is performed.
+    We do not have access to private keys.
+    User's should make sure they backup their keys in case they forget their password.
+</p>
+
+<p>
+    <b>Is there a Memo mobile app?</b><br/>
+    We currently do not have a mobile app, but we plan to create one soon.
+</p>
+
+<p>
+    <b>Is there an open source client for Memo?</b><br/>
+    Our plan is to create an open source client eventually.
+    Right now we're focused on improving the site and then building a mobile app.
+</p>
+
+{{ template "snippets/footer.html" . }}

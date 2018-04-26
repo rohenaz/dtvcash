@@ -92,6 +92,14 @@ var introducingMemoRoute = web.Route{
 	},
 }
 
+var aboutRoute = web.Route{
+	Pattern: res.UrlAbout,
+	Handler: func(r *web.Response) {
+		r.Helper["Title"] = "Memo - About"
+		r.Render()
+	},
+}
+
 var feedRoute = web.Route{
 	Pattern: res.UrlFeed,
 	Handler: func(r *web.Response) {

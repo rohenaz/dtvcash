@@ -16,6 +16,7 @@ const (
 	UrlNewPosts     = "/new-posts"
 	UrlStats        = "/stats"
 	UrlFeed         = "/feed"
+	UrlAbout        = "/about"
 )
 
 const (
