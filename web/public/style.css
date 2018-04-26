@@ -110,6 +110,7 @@ a.btn, input[type=submit].btn {
     background: rgba(84,141,29,0.2);
     box-shadow: 1px 1px 0px rgba(0,0,0,0.3);
     border-radius: 11px;
+    border: none;
     margin: 5px 0;
 }
 a.btn-leave {
