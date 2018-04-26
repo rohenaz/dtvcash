@@ -103,13 +103,13 @@ table.left th {
 
 a.btn, input[type=submit].btn {
     display: inline-block;
-    padding: 5px 7px;
+    padding: 5px 9px;
     font-size: 14px;
-    font-weight: bold;
-    color: #fff;
+    color: #000;
     text-decoration: none;
-    background: rgba(150,180,90,1);
-    border-radius: 12px;
+    background: rgba(84,141,29,0.2);
+    box-shadow: 1px 1px 0px rgba(0,0,0,0.3);
+    border-radius: 11px;
     margin: 5px 0;
 }
 a.btn-leave {
@@ -121,22 +121,38 @@ a.btn-leave {
     vertical-align: bottom;
     margin: 0 10px 0 0;
 }
-.header .nav {
+.nav {
+    margin-top: 5px;
     display: inline-block;
+}
+.nav a {
+    color: #333;
+    text-decoration: none;
+    display: inline-block;
+    margin: 5px 10px 5px 0;
 }
 
 .post {
-    border: 2px solid rgba(0,0,0,0.3);
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    border: 1px solid rgba(0,0,0,0.3);
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
     padding: 1px 10px;
     max-width: 600px;
     margin: 12px 0;
-    border-radius: 15px;
-    background: rgba(84,141,29,0.2);
+    border-radius: 11px;
+    background: #dde8d4;
     word-wrap: break-word;
 }
+.post .post-header {
+    background: #e4efdb;
+    margin: 0 -10px 0 -10px;
+    padding: 1px 10px 1px 10px;
+    border-radius: 11px 11px 0 0;
+}
+.post .reply-header {
+    margin: 5px 0 10px;
+}
 .post .name {
-    margin: 10px 0;
+    margin: 5px 0;
     line-height: 22px;
     word-break: break-all;
 }
@@ -154,13 +170,12 @@ a.btn-leave {
     color: red;
     font-style: italic;
 }
-.post .identicon {
+img.identicon {
+    border: none;
     vertical-align: top;
     width: 18px;
     height: 18px;
-}
-img.identicon {
-    border: none;
+    margin-right: 3px;
 }
 .profile .address {
     word-break: break-all;

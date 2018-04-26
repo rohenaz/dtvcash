@@ -1,7 +1,12 @@
 <table class="table left profile">
     <tr>
         <th>Name</th>
-        <td>{{ .Name }}</td>
+        <td>
+            <span class="identicon-{{ .GetAddressString }}">
+                <img class="identicon" />
+            </span>
+        {{ .Name }}
+        </td>
     </tr>
     <tr>
         <th>Address</th>
@@ -70,4 +75,11 @@
         e.preventDefault();
         $("#qr-code").toggle();
     });
+    var data = new Identicon('{{ .GetAddressString }}', {
+        foreground: [255, 255, 255, 0],
+        background: [0, 0, 0, 255],
+        size: 18,
+        margin: 0
+    }).toString();
+    $(".identicon-{{ .GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
 </script>
