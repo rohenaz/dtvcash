@@ -44,11 +44,15 @@
     {{ else }}
         <a class="btn" href="">Home</a>
     {{ end }}
+    {{ with .Username }}
+        <a class="btn" href="memo/new">New Memo</a>
+    {{ end }}
         <a class="btn" href="profiles">Profiles</a>
         <a class="btn" href="new-posts">Posts</a>
-        <a class="btn" href="disclaimer">Disclaimer</a>
     {{ with .Username }}
         <a id="header-logout" class="btn" href="logout">Logout <b>{{ . }}</b></a>
+    {{ else }}
+        <a class="btn" href="login">Login</a>
     {{ end }}
     </div>
 </div>
