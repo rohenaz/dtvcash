@@ -1,11 +1,11 @@
-<table class="table left">
+<table class="table left profile">
     <tr>
         <th>Name</th>
         <td>{{ .Name }}</td>
     </tr>
     <tr>
         <th>Address</th>
-        <td>
+        <td class="address">
             <a href="#" id="qr-code-link">{{ .GetCashAddressString }}</a>
             <div id="qr-code">
                 <img src="https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl={{ .GetCashAddressString }}&choe=UTF-8"/>
