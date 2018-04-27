@@ -17,13 +17,13 @@
     MemoApp.Form.NewMemo = function ($form) {
         var $message = $form.find("[name=message]");
         $message.on("input", function(e){
-            $form.find("#message-byte-count").html(maxPostBytes - MemoApp.utf8ByteLength($(e.currentTarget).val()));
+            $form.find("#message-byte-count").html(maxPostBytes - MemoApp.utf8ByteLength($message.val()));
         });
         CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
 
-            if(maxPostBytes - MemoApp.utf8ByteLength($('#message').val()) < 0) {
+            if(maxPostBytes - MemoApp.utf8ByteLength($message.val()) < 0) {
                 alert("Maximum post message is " + maxPostBytes + " bytes. Note that some characters are more than 1 byte. Emojis are usually 4 bytes, for example.");
                 return;
             }
