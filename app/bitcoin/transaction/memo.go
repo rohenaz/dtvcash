@@ -5,11 +5,11 @@ import (
 	"git.jasonc.me/main/bitcoin/bitcoin/memo"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/db"
+	"git.jasonc.me/main/memo/app/html-parser"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
 	"github.com/cpacia/btcd/txscript"
 	"github.com/jchavannes/jgo/jerr"
-	"html"
 )
 
 func GetMemoOutputIfExists(txn *db.Transaction) (*db.TransactionOut, error) {
@@ -105,7 +105,7 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 			PkScript:   out.PkScript,
 			ParentHash: parentHash,
 			Address:    inputAddress.EncodeAddress(),
-			Message:    html.EscapeString(string(out.PkScript[5:])),
+			Message:    html_parser.EscapeWithEmojis(string(out.PkScript[5:])),
 			BlockId:    blockId,
 		}
 		err := memoPost.Save()
@@ -119,7 +119,7 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 			PkScript:   out.PkScript,
 			ParentHash: parentHash,
 			Address:    inputAddress.EncodeAddress(),
-			Name:       html.EscapeString(string(out.PkScript[5:])),
+			Name:       html_parser.EscapeWithEmojis(string(out.PkScript[5:])),
 			BlockId:    blockId,
 		}
 		err := memoSetName.Save()
@@ -210,7 +210,7 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 			ParentHash:   parentHash,
 			Address:      inputAddress.EncodeAddress(),
 			ParentTxHash: txHash.CloneBytes(),
-			Message:      html.EscapeString(string(out.PkScript[38:])),
+			Message:      html_parser.EscapeWithEmojis(string(out.PkScript[38:])),
 			BlockId:      blockId,
 		}
 		err = memoPost.Save()
