@@ -22,13 +22,13 @@
         CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
-
-            if(maxPostBytes - MemoApp.utf8ByteLength($message.val()) < 0) {
-                alert("Maximum post message is " + maxPostBytes + " bytes. Note that some characters are more than 1 byte. Emojis are usually 4 bytes, for example.");
+            var message = $message.val();
+            if(maxPostBytes - MemoApp.utf8ByteLength(message) < 0) {
+                alert("Maximum post message is " + maxPostBytes + " bytes. Note that some characters are more than 1 byte." +
+                    " Emojis are usually 4 bytes, for example.");
                 return;
             }
 
-            $message.find("[name=message]");
             if (message.length === 0) {
                 alert("Must enter a message.");
                 return;
@@ -242,8 +242,15 @@
         $form.submit(function (e) {
             e.preventDefault();
 
-            if(maxReplyBytes - MemoApp.utf8ByteLength($message.val()) < 0) {
-                alert("Maximum reply message is " + maxReplyBytes + " bytes. Note that some characters are more than 1 byte. Emojis are usually 4 bytes, for example.");
+            var message = $message.val();
+            if(maxReplyBytes - MemoApp.utf8ByteLength(message) < 0) {
+                alert("Maximum reply message is " + maxReplyBytes + " bytes. Note that some characters are more than 1 byte. " +
+                    "Emojis are usually 4 bytes, for example.");
+                return;
+            }
+
+            if (message.length === 0) {
+                alert("Must enter a message.");
                 return;
             }
 
