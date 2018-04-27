@@ -135,12 +135,78 @@ var fixNameEmojisCmd = &cobra.Command{
 	},
 }
 
+var scanPostsCmd = &cobra.Command{
+	Use:   "scan-posts",
+	Short: "",
+	RunE: func(c *cobra.Command, args []string) error {
+		var foundCount int
+		for i := 1; i < 10000; i++ {
+			memoPost, err := db.GetMemoPostById(uint(i))
+			if err != nil {
+				if db.IsRecordNotFoundError(err) {
+					fmt.Printf("all done\n")
+					break
+				}
+				log.Fatal(err)
+			}
+			if len(memoPost.PkScript) > 80 {
+				fmt.Printf("PkScript len: %d, Msglen: %d, Message: %s\n", len(memoPost.PkScript), len(memoPost.Message), memoPost.Message)
+				foundCount++
+			}
+			if i%500 == 0 {
+				fmt.Printf("Checked %d posts, found %d\n", i, foundCount)
+			}
+		}
+		return nil
+	},
+}
+
+var fixLeadingCharsCmd = &cobra.Command{
+	Use:   "fix-leading-chars",
+	Short: "",
+	RunE: func(c *cobra.Command, args []string) error {
+		var diffCount int
+		var checked int
+		for i := 1; i < 10000; i++ {
+			memoPost, err := db.GetMemoPostById(uint(i))
+			if err != nil {
+				if db.IsRecordNotFoundError(err) {
+					continue
+				}
+				log.Fatal(err)
+			}
+			checked++
+			if len(memoPost.PkScript) <= 80 {
+				continue
+			}
+			var newMessage string
+			if len(memoPost.ParentTxHash) > 0 {
+				newMessage = html_parser.EscapeWithEmojis(string(memoPost.PkScript[39:]))
+			} else {
+				newMessage = html_parser.EscapeWithEmojis(string(memoPost.PkScript[6:]))
+			}
+			if newMessage != memoPost.Message {
+				diffCount++
+				memoPost.Message = newMessage
+				err = memoPost.Save()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}
+		}
+		fmt.Printf("Checked %d posts, updated %d\n", checked, diffCount)
+		return nil
+	},
+}
+
 func Execute() {
 	memoCmd.AddCommand(webCmd)
 	memoCmd.AddCommand(mainNodeCmd)
 	memoCmd.AddCommand(scannerCmd)
 	memoCmd.AddCommand(fixPostEmojisCmd)
 	memoCmd.AddCommand(fixNameEmojisCmd)
+	memoCmd.AddCommand(scanPostsCmd)
+	memoCmd.AddCommand(fixLeadingCharsCmd)
 	memoCmd.Execute()
 }
 
