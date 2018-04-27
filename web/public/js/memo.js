@@ -261,12 +261,6 @@
                 return;
             }
 
-            var message = $form.find("[name=message]").val();
-            if (message.length === 0) {
-                alert("Must enter a message.");
-                return;
-            }
-
             var password = $form.find("[name=password]").val();
             if (password.length === 0) {
                 alert("Must enter a password.");
