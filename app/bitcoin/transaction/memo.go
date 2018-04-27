@@ -99,13 +99,19 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 	}
 	switch out.PkScript[3] {
 	case memo.CodePost:
+		var message string
+		if len(out.PkScript) > 80 {
+			message = string(out.PkScript[6:])
+		} else {
+			message = string(out.PkScript[5:])
+		}
 		var memoPost = db.MemoPost{
 			TxHash:     txn.Hash,
 			PkHash:     inputAddress.ScriptAddress(),
 			PkScript:   out.PkScript,
 			ParentHash: parentHash,
 			Address:    inputAddress.EncodeAddress(),
-			Message:    html_parser.EscapeWithEmojis(string(out.PkScript[5:])),
+			Message:    html_parser.EscapeWithEmojis(message),
 			BlockId:    blockId,
 		}
 		err := memoPost.Save()
@@ -113,13 +119,19 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 			return jerr.Get("error saving memo_post", err)
 		}
 	case memo.CodeSetName:
+		var name string
+		if len(out.PkScript) > 80 {
+			name = string(out.PkScript[6:])
+		} else {
+			name = string(out.PkScript[5:])
+		}
 		var memoSetName = db.MemoSetName{
 			TxHash:     txn.Hash,
 			PkHash:     inputAddress.ScriptAddress(),
 			PkScript:   out.PkScript,
 			ParentHash: parentHash,
 			Address:    inputAddress.EncodeAddress(),
-			Name:       html_parser.EscapeWithEmojis(string(out.PkScript[5:])),
+			Name:       html_parser.EscapeWithEmojis(name),
 			BlockId:    blockId,
 		}
 		err := memoSetName.Save()
@@ -203,6 +215,12 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 		if err != nil {
 			return jerr.Get("error parsing transaction hash", err)
 		}
+		var message string
+		if len(out.PkScript) > 80 {
+			message = string(out.PkScript[39:])
+		} else {
+			message = string(out.PkScript[38:])
+		}
 		var memoPost = db.MemoPost{
 			TxHash:       txn.Hash,
 			PkHash:       inputAddress.ScriptAddress(),
@@ -210,7 +228,7 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 			ParentHash:   parentHash,
 			Address:      inputAddress.EncodeAddress(),
 			ParentTxHash: txHash.CloneBytes(),
-			Message:      html_parser.EscapeWithEmojis(string(out.PkScript[38:])),
+			Message:      html_parser.EscapeWithEmojis(message),
 			BlockId:      blockId,
 		}
 		err = memoPost.Save()
