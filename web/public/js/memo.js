@@ -357,3 +357,15 @@
         return parseInt(s);
     }
 })();
+
+$(document).ready(function() {
+
+    $("#message").on("keyup", function(e){
+        $("#message-byte-count").html(75 - MemoApp.utf8ByteLength($(e.currentTarget).val()));
+    })
+
+    $("#message-reply").on("keyup", function(e){
+        $("#message-byte-count").html(39 - MemoApp.utf8ByteLength($(e.currentTarget).val()));
+    })
+
+})
