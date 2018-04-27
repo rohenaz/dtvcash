@@ -53,6 +53,12 @@
                 return;
             }
 
+            var txHash = $form.find("[name=tx-hash]").val();
+            if (txHash.length === 0) {
+                alert("Form error, tx hash not set.");
+                return;
+            }
+
             CheckSavePassword($form);
 
             $.ajax({
@@ -272,12 +278,6 @@
 
             if (message.length === 0) {
                 alert("Must enter a message.");
-                return;
-            }
-
-            var txHash = $form.find("[name=tx-hash]").val();
-            if (txHash.length === 0) {
-                alert("Form error, tx hash not set.");
                 return;
             }
 
