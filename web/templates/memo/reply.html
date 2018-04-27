@@ -4,8 +4,6 @@
 
 {{ template "snippets/post.html" dict "Post" .Post "Compress" false }}
 
-<script type="text/javascript" src="js/reply.js"></script>
-
 <form id="form-new-memo" method="post">
     <p>
         <input id="tx-hash" type="hidden" name="tx-hash" value="{{ .Post.Memo.GetTransactionHashString }}"/>
