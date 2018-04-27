@@ -98,7 +98,7 @@ var replySubmitRoute = web.Route{
 			return
 		}
 		address := key.GetAddress()
-		var fee = int64(283 - memo.MaxReplySize + len([]byte(message)))
+		var fee = int64(284 - memo.MaxReplySize + len([]byte(message)))
 		var minInput = fee + transaction.DustMinimumOutput
 
 		transactions, err := db.GetTransactionsForPkHash(key.PkHash)
