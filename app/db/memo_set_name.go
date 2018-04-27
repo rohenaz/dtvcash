@@ -63,6 +63,17 @@ func (m MemoSetName) GetTimeString() string {
 	return "Unconfirmed"
 }
 
+func GetMemoSetNameById(id uint) (*MemoSetName, error) {
+	var memoSetName MemoSetName
+	err := find(&memoSetName, MemoSetName{
+		Id: id,
+	})
+	if err != nil {
+		return nil, jerr.Get("error getting memo set name", err)
+	}
+	return &memoSetName, nil
+}
+
 func GetMemoSetName(txHash []byte) (*MemoSetName, error) {
 	var memoSetName MemoSetName
 	err := find(&memoSetName, MemoSetName{
