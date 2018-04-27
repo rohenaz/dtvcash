@@ -2,11 +2,14 @@
 
 <h2>New Memo</h2>
 
+<script type="text/javascript" src="js/post.js"></script>
+
 <form id="form-new-memo" method="post">
     <p>
-        <label for="message">Message</label>
+        <label for="message">Message [<span id="count">75</span>]</label>
         <textarea id="message" type="text" name="message" class="form-control" placeholder="Message" autocomplete="on"
                   required autofocus maxlength="75"></textarea>
+
     </p>
     <p>
         <label for="password">Password</label>

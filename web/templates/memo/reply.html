@@ -4,12 +4,14 @@
 
 {{ template "snippets/post.html" dict "Post" .Post "Compress" false }}
 
+<script type="text/javascript" src="js/reply.js"></script>
+
 <form id="form-new-memo" method="post">
     <p>
         <input id="tx-hash" type="hidden" name="tx-hash" value="{{ .Post.Memo.GetTransactionHashString }}"/>
     </p>
     <p>
-        <label for="message">Message</label>
+        <label for="message">Message [<span id="count">39</span>]</label>
         <textarea id="message" type="text" name="message" class="form-control" placeholder="Message" autocomplete="on"
                   required autofocus maxlength="39"></textarea>
     </p>
