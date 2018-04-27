@@ -11,11 +11,13 @@
     <tr>
         <th>Address</th>
         <td class="address">
-            <a href="#" id="qr-code-link">{{ .GetCashAddressString }}</a>
+            <span class="click-for-qr">Click for QR code & legacy address</span> <br>
+             <a href="#" id="qr-code-link">{{ .GetCashAddressString }}</a>
             <div id="qr-code">
-                <img src="https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl={{ .GetCashAddressString }}&choe=UTF-8"/>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ .GetCashAddressString }}">
                 <br/>
-            {{ .GetAddressString }}
+                <span class="click-for-qr">Legacy Address</span> <br>
+                {{ .GetAddressString }}
             </div>
         </td>
     </tr>
