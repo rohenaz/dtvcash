@@ -23,7 +23,7 @@ type TransactionIn struct {
 	HashString            string
 	TransactionHash       []byte          `gorm:"unique_index:transaction_in_index;"`
 	Transaction           *Transaction    `gorm:"foreignkey:TransactionHash"`
-	KeyPkHash             []byte
+	KeyPkHash             []byte          `gorm:"index:pk_hash"`
 	Key                   *Key            `gorm:"foreignkey:KeyPkHash"`
 	PreviousOutPointHash  []byte
 	PreviousOutPointIndex uint32
