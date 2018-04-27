@@ -21,7 +21,11 @@
             {{ .Post.Memo.GetAddressString }}
         {{- end -}}
             </a>
+        {{ if .Post.Memo.ParentTxHash }}
+            replied to <a href="post/{{ .Post.Memo.GetParentTransactionHashString }}">post</a> at
+        {{ else }}
             posted at
+        {{ end }}
             <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.Memo.GetTimeString }}</a>
         </p>
     </div>

@@ -15,6 +15,10 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.NewMemo = function ($form) {
+        var $message = $form.find("[name=message]");
+        $message.on("input", function(e){
+            $form.find("#message-byte-count").html(maxPostBytes - MemoApp.utf8ByteLength($(e.currentTarget).val()));
+        });
         CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
@@ -24,9 +28,14 @@
                 return;
             }
 
-            var message = $form.find("[name=message]").val();
+            $message.find("[name=message]");
             if (message.length === 0) {
                 alert("Must enter a message.");
+                return;
+            }
+
+            if (MemoApp.utf8ByteLength(message) > 75) {
+                alert("Message too long. Maximum 75 bytes.");
                 return;
             }
 
@@ -225,6 +234,10 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.ReplyMemo = function ($form) {
+        var $message = $form.find("[name=message]");
+        $message.on("input", function(e){
+            $form.find("#message-byte-count").html(maxReplyBytes - MemoApp.utf8ByteLength($(e.currentTarget).val()));
+        });
         CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
@@ -249,6 +262,11 @@
             var message = $form.find("[name=message]").val();
             if (message.length === 0) {
                 alert("Must enter a message.");
+                return;
+            }
+
+            if (MemoApp.utf8ByteLength(message) > 39) {
+                alert("Message too long. Maximum 39 bytes.");
                 return;
             }
 
@@ -380,15 +398,3 @@
         return parseInt(s);
     }
 })();
-
-$(document).ready(function() {
-
-    $("#message").on("keyup", function(e){
-        $("#message-byte-count").html(maxPostBytes - MemoApp.utf8ByteLength($(e.currentTarget).val()));
-    })
-
-    $("#message-reply").on("keyup", function(e){
-        $("#message-byte-count").html(maxReplyBytes - MemoApp.utf8ByteLength($(e.currentTarget).val()));
-    })
-
-})
