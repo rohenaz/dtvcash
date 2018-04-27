@@ -1,11 +1,16 @@
-<table class="table left">
+<table class="table left profile">
     <tr>
         <th>Name</th>
-        <td>{{ .Name }}</td>
+        <td>
+            <span class="identicon-{{ .GetAddressString }}">
+                <img class="identicon" />
+            </span>
+        {{ .Name }}
+        </td>
     </tr>
     <tr>
         <th>Address</th>
-        <td>
+        <td class="address">
             <a href="#" id="qr-code-link">{{ .GetCashAddressString }}</a>
             <div id="qr-code">
                 <img src="https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl={{ .GetCashAddressString }}&choe=UTF-8"/>
@@ -70,4 +75,11 @@
         e.preventDefault();
         $("#qr-code").toggle();
     });
+    var data = new Identicon('{{ .GetAddressString }}', {
+        foreground: [255, 255, 255, 0],
+        background: [0, 0, 0, 255],
+        size: 18,
+        margin: 0
+    }).toString();
+    $(".identicon-{{ .GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
 </script>
