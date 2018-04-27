@@ -1,4 +1,8 @@
 (function () {
+
+    maxPostBytes = 75;
+    maxReplyBytes = 41;
+
     /**
      * @param {jQuery} $ele
      */
@@ -14,6 +18,12 @@
         CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
+
+            if(maxPostBytes - MemoApp.utf8ByteLength($('#message').val()) < 0) {
+                alert("Maximum post message is " + maxPostBytes + " bytes. Note that some characters are more than 1 byte. Emojis are usually 4 bytes, for example.");
+                return;
+            }
+
             var message = $form.find("[name=message]").val();
             if (message.length === 0) {
                 alert("Must enter a message.");
@@ -132,6 +142,7 @@
         CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
+
             var address = $form.find("[name=address]").val();
             if (address.length === 0) {
                 alert("Form error, address not set.");
@@ -217,6 +228,18 @@
         CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
+
+            if(maxReplyBytes - MemoApp.utf8ByteLength($('#message-reply').val()) < 0) {
+                alert("Maximum reply message is " + maxReplyBytes + " bytes. Note that some characters are more than 1 byte. Emojis are usually 4 bytes, for example.");
+                return;
+            }
+
+            var txHash = $form.find("[name=tx-hash]").val();
+            if (txHash.length === 0) {
+                alert("Form error, tx hash not set.");
+                return;
+            }
+
             var txHash = $form.find("[name=tx-hash]").val();
             if (txHash.length === 0) {
                 alert("Form error, tx hash not set.");
@@ -361,11 +384,11 @@
 $(document).ready(function() {
 
     $("#message").on("keyup", function(e){
-        $("#message-byte-count").html(75 - MemoApp.utf8ByteLength($(e.currentTarget).val()));
+        $("#message-byte-count").html(maxPostBytes - MemoApp.utf8ByteLength($(e.currentTarget).val()));
     })
 
     $("#message-reply").on("keyup", function(e){
-        $("#message-byte-count").html(39 - MemoApp.utf8ByteLength($(e.currentTarget).val()));
+        $("#message-byte-count").html(maxReplyBytes - MemoApp.utf8ByteLength($(e.currentTarget).val()));
     })
 
 })
