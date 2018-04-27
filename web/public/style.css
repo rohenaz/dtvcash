@@ -178,6 +178,9 @@ img.identicon {
     height: 18px;
     margin-right: 3px;
 }
+.profile .name {
+    word-break: break-all;
+}
 .profile .address {
     word-break: break-all;
 }
