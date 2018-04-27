@@ -1,9 +1,13 @@
 (function () {
+
+    var maxPostBytes = 77;
+    var maxReplyBytes = 45;
+
     /**
      * @param {jQuery} $ele
      */
     MemoApp.Form.LogoutButton = function ($ele) {
-        $ele.click(function() {
+        $ele.click(function () {
             delete(localStorage.WalletPassword);
         });
     };
@@ -12,20 +16,34 @@
      */
     MemoApp.Form.NewMemo = function ($form) {
         var $message = $form.find("[name=message]");
-        $message.on("input", function(e){
-            $form.find("#message-byte-count").html(75 - MemoApp.utf8ByteLength($message.val()));
+        var $msgByteCount = $form.find(".message-byte-count");
+        $message.on("input", function () {
+            setMsgByteCount();
         });
+
+        function setMsgByteCount() {
+            var cnt = maxPostBytes - MemoApp.utf8ByteLength($message.val());
+            $msgByteCount.html("[" + cnt + "]");
+            if (cnt < 0) {
+                $msgByteCount.addClass("red");
+            } else {
+                $msgByteCount.removeClass("red");
+            }
+        }
+
+        setMsgByteCount();
         CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
             var message = $message.val();
-            if (message.length === 0) {
-                alert("Must enter a message.");
+            if (maxPostBytes - MemoApp.utf8ByteLength(message) < 0) {
+                alert("Maximum post message is " + maxPostBytes + " bytes. Note that some characters are more than 1 byte." +
+                    " Emojis are usually 4 bytes, for example.");
                 return;
             }
 
-            if (MemoApp.utf8ByteLength(message) > 75) {
-                alert("Message too long. Maximum 75 bytes.");
+            if (message.length === 0) {
+                alert("Must enter a message.");
                 return;
             }
 
@@ -141,6 +159,7 @@
         CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
+
             var address = $form.find("[name=address]").val();
             if (address.length === 0) {
                 alert("Form error, address not set.");
@@ -224,26 +243,41 @@
      */
     MemoApp.Form.ReplyMemo = function ($form) {
         var $message = $form.find("[name=message]");
-        $message.on("input", function(e){
-            $form.find("#message-byte-count").html(39 - MemoApp.utf8ByteLength($(e.currentTarget).val()));
+        var $msgByteCount = $form.find(".message-byte-count");
+        $message.on("input", function () {
+            setMsgByteCount();
         });
+
+        function setMsgByteCount() {
+            var cnt = maxReplyBytes - MemoApp.utf8ByteLength($message.val());
+            $msgByteCount.html("[" + cnt + "]");
+            if (cnt < 0) {
+                $msgByteCount.addClass("red");
+            } else {
+                $msgByteCount.removeClass("red");
+            }
+        }
+
+        setMsgByteCount();
         CheckLoadPassword($form);
         $form.submit(function (e) {
             e.preventDefault();
-            var txHash = $form.find("[name=tx-hash]").val();
-            if (txHash.length === 0) {
-                alert("Form error, tx hash not set.");
+
+            var message = $message.val();
+            if (maxReplyBytes - MemoApp.utf8ByteLength(message) < 0) {
+                alert("Maximum reply message is " + maxReplyBytes + " bytes. Note that some characters are more than 1 byte. " +
+                    "Emojis are usually 4 bytes, for example.");
                 return;
             }
 
-            var message = $form.find("[name=message]").val();
             if (message.length === 0) {
                 alert("Must enter a message.");
                 return;
             }
 
-            if (MemoApp.utf8ByteLength(message) > 39) {
-                alert("Message too long. Maximum 39 bytes.");
+            var txHash = $form.find("[name=tx-hash]").val();
+            if (txHash.length === 0) {
+                alert("Form error, tx hash not set.");
                 return;
             }
 
@@ -273,6 +307,7 @@
             });
         });
     };
+
     function CheckLoadPassword($form) {
         if (!localStorage.WalletPassword) {
             return;
@@ -297,6 +332,7 @@
 
         localStorage.WalletPassword = password;
     }
+
     /**
      * @param {jQuery} $form
      * @param {jQuery} $notify
@@ -305,7 +341,7 @@
     MemoApp.Form.Wait = function ($form, $notify, $title) {
         var text = "Broadcasting transaction";
         var dots = 1;
-        setInterval(function() {
+        setInterval(function () {
             $title.html(text + Array(dots).join("."));
             dots++;
             if (dots > 5) {
@@ -350,7 +386,7 @@
      * @param {jQuery} $likesButton
      * @param {jQuery} $likes
      */
-    MemoApp.Form.LikesToggle = function($likesButton, $likes) {
+    MemoApp.Form.LikesToggle = function ($likesButton, $likes) {
         $likesButton.click(function (e) {
             e.preventDefault();
             if ($likes.is(":visible")) {
@@ -363,13 +399,13 @@
         });
     };
 
-    MemoApp.utf8ByteLength = function(str) {
+    MemoApp.utf8ByteLength = function (str) {
         // returns the byte length of an utf8 string
         var s = str.length;
-        for (var i=str.length-1; i>=0; i--) {
+        for (var i = str.length - 1; i >= 0; i--) {
             var code = str.charCodeAt(i);
             if (code > 0x7f && code <= 0x7ff) s++;
-            else if (code > 0x7ff && code <= 0xffff) s+=2;
+            else if (code > 0x7ff && code <= 0xffff) s += 2;
             if (code >= 0xDC00 && code <= 0xDFFF) i--; //trail surrogate
         }
         return parseInt(s);

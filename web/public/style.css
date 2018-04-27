@@ -187,3 +187,6 @@ img.identicon {
 .profile .address {
     word-break: break-all;
 }
+.message-byte-count.red {
+    color: red;
+}
