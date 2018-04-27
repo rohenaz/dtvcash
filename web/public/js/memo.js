@@ -34,11 +34,6 @@
                 return;
             }
 
-            if (MemoApp.utf8ByteLength(message) > 75) {
-                alert("Message too long. Maximum 75 bytes.");
-                return;
-            }
-
             var password = $form.find("[name=password]").val();
             if (password.length === 0) {
                 alert("Must enter a password.");
@@ -269,11 +264,6 @@
             var message = $form.find("[name=message]").val();
             if (message.length === 0) {
                 alert("Must enter a message.");
-                return;
-            }
-
-            if (MemoApp.utf8ByteLength(message) > 39) {
-                alert("Message too long. Maximum 39 bytes.");
                 return;
             }
 
