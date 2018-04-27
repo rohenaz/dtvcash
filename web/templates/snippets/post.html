@@ -14,11 +14,13 @@
         <span class="identicon-{{ .Post.Memo.GetAddressString }}">
             <img class="identicon"/>
         </span>
-            <a href="profile/{{ .Post.Memo.GetAddressString }}">{{ $len := len .Post.Name }}{{ if gt $len 0 -}}
+            <a href="profile/{{ .Post.Memo.GetAddressString }}">{{ $len := len .Post.Name }}
+        {{- if gt $len 0 -}}
             {{ .Post.Name }}
         {{- else -}}
             {{ .Post.Memo.GetAddressString }}
-        {{- end }}</a>
+        {{- end -}}
+            </a>
             posted at
             <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.Memo.GetTimeString }}</a>
         </p>

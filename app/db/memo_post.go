@@ -98,6 +98,17 @@ func GetMemoPost(txHash []byte) (*MemoPost, error) {
 	return &memoPost, nil
 }
 
+func GetMemoPostById(id uint) (*MemoPost, error) {
+	var memoPost MemoPost
+	err := find(&memoPost, MemoPost{
+		Id: id,
+	})
+	if err != nil {
+		return nil, jerr.Get("error getting memo post", err)
+	}
+	return &memoPost, nil
+}
+
 func GetPostReplyCount(txHash []byte) (uint, error) {
 	cnt, err := count(MemoPost{
 		ParentTxHash: txHash,
