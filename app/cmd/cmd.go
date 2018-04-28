@@ -8,6 +8,7 @@ import (
 	"git.jasonc.me/main/memo/app/html-parser"
 	"git.jasonc.me/main/memo/app/res"
 	"git.jasonc.me/main/memo/web/server"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jlog"
 	"github.com/spf13/cobra"
 	"log"
@@ -161,6 +162,23 @@ var scanPostsCmd = &cobra.Command{
 	},
 }
 
+var viewPostCmd = &cobra.Command{
+	Use:   "view-post",
+	Short: "",
+	RunE: func(c *cobra.Command, args []string) error {
+		hash, err := chainhash.NewHashFromStr("41b531d1821d13c48b2b879c0d44b2e02e858e625d6ba7312497b5cd33b95044")
+		if err != nil {
+			log.Fatal(err)
+		}
+		memoPost, err := db.GetMemoPost(hash.CloneBytes())
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("PkScript len: %d, Msglen: %d, Message: %s\n", len(memoPost.PkScript), len(memoPost.Message), memoPost.Message)
+		return nil
+	},
+}
+
 var fixLeadingCharsCmd = &cobra.Command{
 	Use:   "fix-leading-chars",
 	Short: "",
@@ -176,14 +194,15 @@ var fixLeadingCharsCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 			checked++
-			if len(memoPost.PkScript) <= 80 {
-				continue
-			}
 			var newMessage string
 			if len(memoPost.ParentTxHash) > 0 {
-				newMessage = html_parser.EscapeWithEmojis(string(memoPost.PkScript[39:]))
+				newMessage = html_parser.EscapeWithEmojis(string(memoPost.PkScript[38:]))
 			} else {
-				newMessage = html_parser.EscapeWithEmojis(string(memoPost.PkScript[6:]))
+				if len(memoPost.PkScript) > 81 {
+					newMessage = html_parser.EscapeWithEmojis(string(memoPost.PkScript[6:]))
+				} else {
+					newMessage = html_parser.EscapeWithEmojis(string(memoPost.PkScript[5:]))
+				}
 			}
 			if newMessage != memoPost.Message {
 				diffCount++
@@ -206,6 +225,7 @@ func Execute() {
 	memoCmd.AddCommand(fixPostEmojisCmd)
 	memoCmd.AddCommand(fixNameEmojisCmd)
 	memoCmd.AddCommand(scanPostsCmd)
+	memoCmd.AddCommand(viewPostCmd)
 	memoCmd.AddCommand(fixLeadingCharsCmd)
 	memoCmd.Execute()
 }

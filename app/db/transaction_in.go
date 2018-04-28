@@ -23,7 +23,7 @@ type TransactionIn struct {
 	HashString            string
 	TransactionHash       []byte          `gorm:"unique_index:transaction_in_index;"`
 	Transaction           *Transaction    `gorm:"foreignkey:TransactionHash"`
-	KeyPkHash             []byte
+	KeyPkHash             []byte          `gorm:"index:pk_hash"`
 	Key                   *Key            `gorm:"foreignkey:KeyPkHash"`
 	PreviousOutPointHash  []byte
 	PreviousOutPointIndex uint32
@@ -129,7 +129,7 @@ func GetTransactionInputByHashString(hashString string) (*TransactionIn, error) 
 
 func GetTransactionInputsForPkHash(pkHash []byte) ([]*TransactionIn, error) {
 	var transactionIns []*TransactionIn
-	err := findPreloadColumns(transactionInColumns, &transactionIns, TransactionIn{
+	err := find(&transactionIns, TransactionIn{
 		KeyPkHash: pkHash,
 	})
 	if err != nil {

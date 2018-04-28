@@ -100,7 +100,7 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 	switch out.PkScript[3] {
 	case memo.CodePost:
 		var message string
-		if len(out.PkScript) > 80 {
+		if len(out.PkScript) > 81 {
 			message = string(out.PkScript[6:])
 		} else {
 			message = string(out.PkScript[5:])
@@ -120,7 +120,7 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 		}
 	case memo.CodeSetName:
 		var name string
-		if len(out.PkScript) > 80 {
+		if len(out.PkScript) > 81 {
 			name = string(out.PkScript[6:])
 		} else {
 			name = string(out.PkScript[5:])
@@ -215,12 +215,6 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 		if err != nil {
 			return jerr.Get("error parsing transaction hash", err)
 		}
-		var message string
-		if len(out.PkScript) > 80 {
-			message = string(out.PkScript[39:])
-		} else {
-			message = string(out.PkScript[38:])
-		}
 		var memoPost = db.MemoPost{
 			TxHash:       txn.Hash,
 			PkHash:       inputAddress.ScriptAddress(),
@@ -228,7 +222,7 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 			ParentHash:   parentHash,
 			Address:      inputAddress.EncodeAddress(),
 			ParentTxHash: txHash.CloneBytes(),
-			Message:      html_parser.EscapeWithEmojis(message),
+			Message:      html_parser.EscapeWithEmojis(string(out.PkScript[38:])),
 			BlockId:      blockId,
 		}
 		err = memoPost.Save()

@@ -187,11 +187,14 @@ img.identicon {
 .profile .address {
     word-break: break-all;
 }
-
 .profile #qr-code {
     margin-top: 5px;
 }
 
 .profile .click-for-qr {
     font-size: 12px;
+}
+
+.message-byte-count.red {
+    color: red;
 }

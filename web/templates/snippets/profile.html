@@ -11,8 +11,8 @@
     <tr>
         <th>Address</th>
         <td class="address">
-            <span class="click-for-qr">Click for QR code & legacy address</span> <br>
-             <a href="#" id="qr-code-link">{{ .GetCashAddressString }}</a>
+             {{ .GetCashAddressString }}<br>
+            <span class="click-for-qr"><a href="#" id="qr-code-link">Show QR code &amp; legacy address</a></span>
             <div id="qr-code">
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ .GetCashAddressString }}">
                 <br/>
