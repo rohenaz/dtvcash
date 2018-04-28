@@ -36,6 +36,7 @@ var postRoute = web.Route{
 			pkHash = key.PkHash
 		}
 		post, err := profile.GetPostByTxHash(txHash.CloneBytes(), pkHash)
+		post.Memo.TimeZone = r.Request.GetCookie("memo_time_zone")
 		if err != nil {
 			r.Error(jerr.Get("error getting post", err), http.StatusInternalServerError)
 			return
