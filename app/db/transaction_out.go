@@ -131,7 +131,7 @@ func GetTransactionOutputById(id uint) (*TransactionOut, error) {
 
 func GetTransactionOutputsForPkHash(pkHash []byte) ([]*TransactionOut, error) {
 	var transactionOuts []*TransactionOut
-	err := findPreloadColumns(transactionOutColumns, &transactionOuts, TransactionOut{
+	err := findPreloadColumns([]string{TransactionTable}, &transactionOuts, TransactionOut{
 		KeyPkHash: pkHash,
 	})
 	if err != nil {
@@ -148,7 +148,7 @@ func GetSpendableTxOut(pkHash []byte, fee int64) (*TransactionOut, error) {
 	var txOut *TransactionOut
 	for _, txn := range transactions {
 		for _, out := range txn.TxOut {
-			if out.TxnIn == nil && out.Value > fee && bytes.Equal(out.KeyPkHash, pkHash) {
+			if out.TxnInHashString == "" && out.Value > fee && bytes.Equal(out.KeyPkHash, pkHash) {
 				txOut = out
 			}
 		}
@@ -167,7 +167,7 @@ func HasSpendable(pkHash []byte) (bool, error) {
 	var txOut *TransactionOut
 	for _, txn := range transactions {
 		for _, out := range txn.TxOut {
-			if out.TxnIn == nil && out.Value > 1000 && bytes.Equal(out.KeyPkHash, pkHash) {
+			if out.TxnInHashString == "" && out.Value > 1000 && bytes.Equal(out.KeyPkHash, pkHash) {
 				txOut = out
 			}
 		}

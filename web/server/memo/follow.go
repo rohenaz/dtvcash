@@ -94,17 +94,9 @@ var followSubmitRoute = web.Route{
 		var fee = int64(283 - memo.MaxPostSize + len(address.GetScriptAddress()))
 		var minInput = fee + transaction.DustMinimumOutput
 
-		transactions, err := db.GetTransactionsForPkHash(key.PkHash)
-		var txOut *db.TransactionOut
-		for _, txn := range transactions {
-			for _, out := range txn.TxOut {
-				if out.TxnIn == nil && out.Value > minInput && bytes.Equal(out.KeyPkHash, key.PkHash) {
-					txOut = out
-				}
-			}
-		}
-		if txOut == nil {
-			r.Error(jerr.New("unable to find an output to spend"), http.StatusUnprocessableEntity)
+		txOut, err := db.GetSpendableTxOut(key.PkHash, minInput)
+		if err != nil {
+			r.Error(jerr.Get("error getting spendable tx out", err), http.StatusInternalServerError)
 			return
 		}
 

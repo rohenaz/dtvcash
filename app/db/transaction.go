@@ -220,9 +220,7 @@ func GetTransactionsForPkHash(pkHash []byte) ([]*Transaction, error) {
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
 	}
-	for _, column := range transactionColumns {
-		query = query.Preload(column)
-	}
+	query = query.Preload(TxOutTable)
 	var transactions []*Transaction
 	result := query.Where("hash in (?)", hashes).Find(&transactions)
 
