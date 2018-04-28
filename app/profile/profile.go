@@ -92,10 +92,6 @@ func (p Profile) GetCashAddressString() string {
 }
 
 func (p *Profile) SetBalances() error {
-	ins, err := db.GetTransactionInputsForPkHash(p.PkHash)
-	if err != nil {
-		return jerr.Get("error getting ins", err)
-	}
 	outs, err := db.GetTransactionOutputsForPkHash(p.PkHash)
 	if err != nil {
 		return jerr.Get("error getting outs", err)
@@ -103,12 +99,9 @@ func (p *Profile) SetBalances() error {
 	var balance int64
 	var balanceBCH float64
 
-	OutputLoop:
 	for _, out := range outs {
-		for _, in := range ins {
-			if out.TxnInHashString == in.HashString {
-				continue OutputLoop
-			}
+		if out.TxnInHashString != "" {
+			continue
 		}
 		balance += out.Value
 		balanceBCH += out.ValueInBCH()
