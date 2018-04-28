@@ -129,7 +129,7 @@ func GetTransactionInputByHashString(hashString string) (*TransactionIn, error) 
 
 func GetTransactionInputsForPkHash(pkHash []byte) ([]*TransactionIn, error) {
 	var transactionIns []*TransactionIn
-	err := findPreloadColumns(transactionInColumns, &transactionIns, TransactionIn{
+	err := find(&transactionIns, TransactionIn{
 		KeyPkHash: pkHash,
 	})
 	if err != nil {
