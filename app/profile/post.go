@@ -198,13 +198,17 @@ func GetPostByTxHash(txHash []byte, selfPkHash []byte, offset uint) (*Post, erro
 	if setName != nil {
 		name = setName.Name
 	}
+	cnt, err := db.GetPostReplyCount(txHash)
+	if err != nil {
+		return nil, jerr.Get("error getting post reply count", err)
+	}
 	post := &Post{
 		Name:       name,
 		Memo:       memoPost,
 		Parent:     parent,
 		SelfPkHash: selfPkHash,
 		Replies:    replyPosts,
-		ReplyCount: uint(len(replies)),
+		ReplyCount: cnt,
 	}
 	return post, nil
 }
