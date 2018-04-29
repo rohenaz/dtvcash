@@ -140,7 +140,7 @@ func GetPostsForHash(pkHash []byte, selfPkHash []byte) ([]*Post, error) {
 	return posts, nil
 }
 
-func GetPostByTxHash(txHash []byte, selfPkHash []byte) (*Post, error) {
+func GetPostByTxHash(txHash []byte, selfPkHash []byte, offset uint) (*Post, error) {
 	memoPost, err := db.GetMemoPost(txHash)
 	if err != nil {
 		return nil, jerr.Get("error getting memo post", err)
@@ -165,7 +165,7 @@ func GetPostByTxHash(txHash []byte, selfPkHash []byte) (*Post, error) {
 			SelfPkHash: selfPkHash,
 		}
 	}
-	replies, err := db.GetPostReplies(txHash)
+	replies, err := db.GetPostReplies(txHash, offset)
 	if err != nil {
 		return nil, jerr.Get("error getting post replies", err)
 	}

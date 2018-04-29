@@ -66,18 +66,11 @@ var archiveRoute = web.Route{
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
 		}
-		var prevOffset int
-		if offset > 25 {
-			prevOffset = offset - 25
-		}
-		page := offset / 25 + 1
+		res.SetPageAndOffset(r, offset)
 		r.Helper["OffsetLink"] = fmt.Sprintf("%s?day=%s", strings.TrimLeft(res.UrlPostsArchive, "/"), day)
-		r.Helper["PrevOffset"] = prevOffset
-		r.Helper["NextOffset"] = offset + 25
 		r.Helper["PrevDay"] = timeStart.Add(-24 * time.Hour).Format("2006-01-02")
 		r.Helper["NextDay"] = timeStart.Add(24 * time.Hour).Format("2006-01-02")
 		r.Helper["Posts"] = posts
-		r.Helper["Page"] = page
 		r.Helper["Day"] = day
 		r.Render()
 	},
