@@ -2,7 +2,7 @@
 
 {{ template "posts/header.html" dict "Page" "top" }}
 
-<div style="margin-bottom: 10px">
+<div class="bottom10">
     <a class="btn {{ if eq .Range "1h" }}sel{{ end }}" href="posts/top?range=1h">Last hour</a>
     <a class="btn {{ if eq .Range "24h" }}sel{{ end }}" href="posts/top?range=24h">Last 24 hours</a>
     <a class="btn {{ if eq .Range "7d" }}sel{{ end }}" href="posts/top?range=7d">Last 7 days</a>
