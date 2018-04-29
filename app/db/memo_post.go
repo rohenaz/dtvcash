@@ -192,18 +192,25 @@ func GetPostsForPkHashes(pkHashes [][]byte, offset uint) ([]*MemoPost, error) {
 	return memoPosts, nil
 }
 
-func GetPostsForPkHash(pkHash []byte) ([]*MemoPost, error) {
+func GetPostsForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 	if len(pkHash) == 0 {
 		return nil, nil
 	}
 	var memoPosts []*MemoPost
-	err := findPreloadColumns([]string{
-		BlockTable,
-	}, &memoPosts, &MemoPost{
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	query := db.
+		Preload(BlockTable).
+		Order("id DESC").
+		Limit(25).
+		Offset(offset)
+	result := query.Find(&memoPosts, &MemoPost{
 		PkHash: pkHash,
 	})
-	if err != nil {
-		return nil, jerr.Get("error getting memo posts", err)
+	if result.Error != nil {
+		return nil, jerr.Get("error getting memo posts", result.Error)
 	}
 	sort.Sort(memoPostSortByDate(memoPosts))
 	return memoPosts, nil

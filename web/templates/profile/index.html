@@ -41,6 +41,22 @@
 <h3>Posts</h3>
 {{ end }}
 
+{{ if and (eq .NextOffset 25) (lt (len .Posts) 25) }}{{ else }}
+<div class="bottom10">
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .PrevOffset }}">&lt; Prev</a>
+    <span class="page">Page {{ .Page }}</span>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .NextOffset }}">Next &gt;</a>
+</div>
+{{ end }}
+
 {{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
+
+{{ if and (eq .NextOffset 25) (lt (len .Posts) 25) }}{{ else }}
+<div class="bottom10">
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .PrevOffset }}">&lt; Prev</a>
+    <span class="page">Page {{ .Page }}</span>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .NextOffset }}">Next &gt;</a>
+</div>
+{{ end }}
 
 {{ template "snippets/footer.html" . }}

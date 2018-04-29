@@ -110,7 +110,7 @@ func GetPostsForHashes(pkHashes [][]byte, selfPkHash []byte, offset uint) ([]*Po
 	return posts, nil
 }
 
-func GetPostsForHash(pkHash []byte, selfPkHash []byte) ([]*Post, error) {
+func GetPostsForHash(pkHash []byte, selfPkHash []byte, offset uint) ([]*Post, error) {
 	var name = ""
 	setName, err := db.GetNameForPkHash(pkHash)
 	if err != nil {
@@ -119,7 +119,7 @@ func GetPostsForHash(pkHash []byte, selfPkHash []byte) ([]*Post, error) {
 	if setName != nil {
 		name = setName.Name
 	}
-	dbPosts, err := db.GetPostsForPkHash(pkHash)
+	dbPosts, err := db.GetPostsForPkHash(pkHash, offset)
 	if err != nil {
 		return nil, jerr.Get("error getting posts for hash", err)
 	}
