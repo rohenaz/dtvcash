@@ -154,7 +154,7 @@ func GetCountMemoLikes() (uint, error) {
 	return cnt, nil
 }
 
-func GetRecentTopLikedTxHashes(offset uint) ([][]byte, error) {
+func GetRecentTopLikedTxHashes(offset uint, timeRange time.Time) ([][]byte, error) {
 	db, err := getDb()
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
@@ -163,7 +163,7 @@ func GetRecentTopLikedTxHashes(offset uint) ([][]byte, error) {
 		Table("memo_likes").
 		Select("like_tx_hash, COUNT(DISTINCT pk_hash) AS count").
 		Joins("JOIN blocks ON (memo_likes.block_id = blocks.id)").
-		Where("timestamp > ?", time.Now().Add(-24 * time.Hour)).
+		Where("timestamp > ?", timeRange).
 		Group("like_tx_hash").
 		Order("count DESC").
 		Limit(25).

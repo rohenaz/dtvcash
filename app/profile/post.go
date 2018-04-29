@@ -5,6 +5,7 @@ import (
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
 	"regexp"
+	"time"
 )
 
 type Post struct {
@@ -217,8 +218,19 @@ func GetRecentPosts(selfPkHash []byte, offset uint) ([]*Post, error) {
 	return posts, nil
 }
 
-func GetTopPosts(selfPkHash []byte, offset uint) ([]*Post, error) {
-	dbPosts, err := db.GetTopPosts(offset)
+func GetTopPosts(selfPkHash []byte, offset uint, timeRange string) ([]*Post, error) {
+	var timeStart time.Time
+	switch timeRange {
+	case TimeRange1Hour:
+		timeStart = time.Now().Add(-1 * time.Hour)
+	case TimeRange24Hours:
+		timeStart = time.Now().Add(-24 * time.Hour)
+	case TimeRange7Days:
+		timeStart = time.Now().Add(-24 * 7 * time.Hour)
+	case TimeRangeAll:
+		timeStart = time.Now().Add(-24 * 365 * 10 * time.Hour)
+	}
+	dbPosts, err := db.GetTopPosts(offset, timeStart)
 	if err != nil {
 		return nil, jerr.Get("error getting posts for hash", err)
 	}

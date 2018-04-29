@@ -2,6 +2,7 @@ package server
 
 import (
 	"bytes"
+	"fmt"
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/profile"
@@ -62,6 +63,13 @@ var topPostsRoute = web.Route{
 	Pattern: res.UrlTopPosts,
 	Handler: func(r *web.Response) {
 		offset := r.Request.GetUrlParameterInt("offset")
+		timeRange := r.Request.GetUrlParameter("range")
+		if timeRange == "" {
+			timeRange = profile.TimeRange24Hours
+		} else if ! profile.StringIsTimeRange(timeRange) {
+			r.Error(jerr.New("range not valid time range"), http.StatusUnprocessableEntity)
+			return
+		}
 		var userPkHash []byte
 		if auth.IsLoggedIn(r.Session.CookieId) {
 			user, err := auth.GetSessionUser(r.Session.CookieId)
@@ -76,7 +84,7 @@ var topPostsRoute = web.Route{
 			}
 			userPkHash = key.PkHash
 		}
-		posts, err := profile.GetTopPosts(userPkHash, uint(offset))
+		posts, err := profile.GetTopPosts(userPkHash, uint(offset), timeRange)
 		if err != nil {
 			r.Error(jerr.Get("error getting recent posts", err), http.StatusInternalServerError)
 			return
@@ -97,6 +105,7 @@ var topPostsRoute = web.Route{
 		if offset > 25 {
 			prevOffset = offset - 25
 		}
+		r.Helper["OffsetLink"] = fmt.Sprintf("%s?range=%s", strings.TrimLeft(res.UrlTopPosts, "/"), timeRange)
 		r.Helper["PrevOffset"] = prevOffset
 		r.Helper["NextOffset"] = offset + 25
 		r.Helper["Posts"] = posts

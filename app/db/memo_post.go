@@ -231,8 +231,8 @@ func GetRecentPosts(offset uint) ([]*MemoPost, error) {
 	return memoPosts, nil
 }
 
-func GetTopPosts(offset uint) ([]*MemoPost, error) {
-	topLikeTxHashes, err := GetRecentTopLikedTxHashes(offset)
+func GetTopPosts(offset uint, timeRange time.Time) ([]*MemoPost, error) {
+	topLikeTxHashes, err := GetRecentTopLikedTxHashes(offset, timeRange)
 	if err != nil {
 		return nil, jerr.Get("error getting top liked tx hashes", err)
 	}
