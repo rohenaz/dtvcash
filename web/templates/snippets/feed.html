@@ -1,6 +1,7 @@
 <p>
 
     <a class="{{ if (eq .Offset 0) }}disabled{{ end }}" href="feed?offset={{ .PrevOffset }}">< Prev</a>
+    <span class="page">Page {{ .Page }}</span>
     <a class="{{ if lt (len .Posts) 25 }}disabled{{end}}" href="feed?offset={{ .NextOffset }}">Next ></a>
 </p>
 
@@ -8,6 +9,7 @@
 
 <p>
     <a class="{{ if (eq .Offset 0) }}disabled{{ end }}" href="feed?offset={{ .PrevOffset }}">< Prev</a>
+    <span class="page">Page {{ .Page }}</span>
     <a class="{{ if lt (len .Posts) 25 }}disabled{{end}}" href="feed?offset={{ .NextOffset }}">Next ></a>
 </p>
 
