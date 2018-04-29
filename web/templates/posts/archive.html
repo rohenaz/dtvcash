@@ -10,7 +10,7 @@
 <div class="bottom10">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; Prev</a>
     <span class="page">Page {{ .Page }}</span>
-    <a class="" href="{{ .OffsetLink }}&offset={{ .NextOffset }}">Next &gt;</a>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .NextOffset }}">Next &gt;</a>
 </div>
 
 {{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
@@ -18,7 +18,7 @@
 <p>
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; Prev</a>
     <span class="page">Page {{ .Page }}</span>
-    <a class="" href="{{ .OffsetLink }}&offset={{ .NextOffset }}">Next &gt;</a>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .NextOffset }}">Next &gt;</a>
 </p>
 
 {{ template "snippets/footer.html" . }}
