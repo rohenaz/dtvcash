@@ -126,6 +126,12 @@ a.btn.disabled {
     cursor: default;
 }
 
+a.disabled {
+    pointer-events:none;
+    color:gray;
+    text-decoration: none;
+}
+
 .header h1 {
     display: inline-block;
     vertical-align: bottom;
@@ -220,4 +226,8 @@ img.identicon {
 span.page {
     display: inline-block;
     margin: 0 10px;
+}
+
+.bottom10 {
+    margin-bottom: 10px;
 }

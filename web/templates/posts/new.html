@@ -2,12 +2,10 @@
 
 {{ template "posts/header.html" dict "Page" "new" }}
 
-<h2 style="margin-bottom:10px;">New Posts</h2>
-
 <p style="margin:0">
-    <a class="btn {{ if eq .NextOffset 25 }}disabled{{ end }}" href="posts/new?offset={{ .PrevOffset }}">&lt; Prev Page</a>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="posts/new?offset={{ .PrevOffset }}">&lt; Prev Page</a>
     <span class="page">Page {{ .Page }}</span>
-    <a class="btn" href="posts/new?offset={{ .NextOffset }}">Next Page &gt;</a>
+    <a class="" href="posts/new?offset={{ .NextOffset }}">Next Page &gt;</a>
 </p>
 
 {{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}

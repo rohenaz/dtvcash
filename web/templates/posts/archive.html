@@ -2,17 +2,16 @@
 
 {{ template "posts/header.html" dict "Page" "archive" }}
 
-<h2 style="margin-bottom:10px;">Top Posts Archive</h2>
-
-<p>
+<div class="bottom10">
     <a class="btn" href="posts/archive?day={{ .PrevDay }}">Prev Day</a>
     <span class="page">{{ .Day }}</span>
     <a class="btn {{ if .Today }}disabled{{ end }}" href="posts/archive?day={{ .NextDay }}">Next Day</a>
-    <br/>
-    <a class="btn {{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; Prev Page</a>
+</div>
+<div class="bottom10">
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; Prev Page</a>
     <span class="page">Page {{ .Page }}</span>
-    <a class="btn" href="{{ .OffsetLink }}&offset={{ .NextOffset }}">Next Page &gt;</a>
-</p>
+    <a class="" href="{{ .OffsetLink }}&offset={{ .NextOffset }}">Next Page &gt;</a>
+</div>
 
 {{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
 
