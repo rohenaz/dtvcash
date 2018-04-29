@@ -1,3 +1,4 @@
+{{ $tz := .TimeZone }}
 {{ template "snippets/header.html" . }}
 
 <h2>Profile</h2>
@@ -17,7 +18,7 @@
         <li>
             Liked <a href="post/{{ .GetPostTransactionHashString }}">{{ .Name }}'s post</a>
             - {{ formatBigInt .Amount }} satoshis
-            ({{ .GetTimeString }})
+            ({{ .GetTimeString $tz }})
             <a target="_blank"
                href="https://explorer.bitcoin.com/bch/tx/{{ .GetTransactionHashString }}">View on Block Explorer</a>
         </li>
@@ -40,6 +41,6 @@
 <h3>Posts</h3>
 {{ end }}
 
-{{ template "snippets/posts.html" .Posts }}
+{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
 
 {{ template "snippets/footer.html" . }}

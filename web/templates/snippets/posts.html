@@ -1,3 +1,4 @@
-{{ range . }}
-{{ template "snippets/post.html" dict "Post" . "Compress" false }}
+{{ $tz := .TimeZone }}
+{{ range .Posts }}
+{{ template "snippets/post.html" dict "Post" . "Compress" false "TimeZone" $tz }}
 {{ end }}

@@ -44,6 +44,27 @@ func (p Post) GetMessage() string {
 	return s
 }
 
+func (p Post) GetTimeString(timezone string) string {
+	if p.Memo.BlockId != 0 {
+		if p.Memo.Block != nil {
+			timeLayout := "2006-01-02 15:04:05 MST"
+			if len(timezone) > 0 {
+				displayLocation, err := time.LoadLocation(timezone)
+				if err != nil {
+					jerr.Get("error finding location", err).Print()
+					return p.Memo.Block.Timestamp.Format(timeLayout)
+				}
+				return p.Memo.Block.Timestamp.In(displayLocation).Format(timeLayout)
+			} else {
+				return p.Memo.Block.Timestamp.Format(timeLayout)
+			}
+		} else {
+			return "Unknown"
+		}
+	}
+	return "Unconfirmed"
+}
+
 func GetPostsForHashes(pkHashes [][]byte, selfPkHash []byte, offset uint) ([]*Post, error) {
 	dbPosts, err := db.GetPostsForPkHashes(pkHashes, offset)
 	if err != nil {

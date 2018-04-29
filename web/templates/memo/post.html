@@ -1,8 +1,9 @@
+{{ $tz := .TimeZone }}
 {{ template "snippets/header.html" . }}
 
 <h2>Memo</h2>
 
-{{ template "snippets/post.html" dict "Post" .Post "Compress" false }}
+{{ template "snippets/post.html" dict "Post" .Post "Compress" false "TimeZone" .TimeZone }}
 
 {{ if .Post.Likes }}
 
@@ -21,7 +22,7 @@
         {{- else -}}
             {{ .GetAddressString }}
         {{- end }}</a> - {{ formatBigInt .Amount }} satoshis
-            ({{ .GetTimeString }})
+            ({{ .GetTimeString $tz }})
             <a target="_blank"
                href="https://explorer.bitcoin.com/bch/tx/{{ .GetTransactionHashString }}">View on Block Explorer</a>
         </li>
@@ -42,7 +43,7 @@
 
 <h3>Replies</h3>
 
-{{ template "snippets/posts.html" .Post.Replies }}
+{{ template "snippets/posts.html" dict "Posts" .Post.Replies "TimeZone" .TimeZone }}
 
 {{ end }}
 
