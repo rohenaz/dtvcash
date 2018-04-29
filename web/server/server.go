@@ -8,6 +8,7 @@ import (
 	auth2 "git.jasonc.me/main/memo/web/server/auth"
 	"git.jasonc.me/main/memo/web/server/key"
 	"git.jasonc.me/main/memo/web/server/memo"
+	"git.jasonc.me/main/memo/web/server/posts"
 	"git.jasonc.me/main/memo/web/server/profile"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
@@ -95,11 +96,11 @@ func Run(sessionCookieInsecure bool) {
 				aboutRoute,
 				needFundsRoute,
 				newPostsRoute,
-				topPostsRoute,
 				statsRoute,
 				feedRoute,
 				//testsRoute,
 			},
+			posts.GetRoutes(),
 			key.GetRoutes(),
 			auth2.GetRoutes(),
 			memo.GetRoutes(),

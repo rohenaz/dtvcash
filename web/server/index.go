@@ -182,3 +182,10 @@ var needFundsRoute = web.Route{
 		r.Render()
 	},
 }
+
+var newPostsRoute = web.Route{
+	Pattern: res.UrlNewPosts,
+	Handler: func(r *web.Response) {
+		r.SetRedirect(res.UrlPostsNew)
+	},
+}
