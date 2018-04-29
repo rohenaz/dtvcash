@@ -7,7 +7,7 @@
 {{ end }}
 </p>
 
-{{ template "snippets/posts.html" .Posts }}
+{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
 
 <p>
 {{ if not (eq .Offset 0) }}

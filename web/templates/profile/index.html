@@ -40,6 +40,6 @@
 <h3>Posts</h3>
 {{ end }}
 
-{{ template "snippets/posts.html" .Posts }}
+{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
 
 {{ template "snippets/footer.html" . }}

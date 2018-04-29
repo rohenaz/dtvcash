@@ -38,11 +38,18 @@ func (l *Like) GetPostTransactionHashString() string {
 	return hash.String()
 }
 
-func (l *Like) GetTimeString() string {
+func (l *Like) GetTimeString(timezone string) string {
 	if ! l.Timestamp.IsZero() {
-		return l.Timestamp.Format("2006-01-02 15:04:05")
+		timeLayout := "2006-01-02 15:04:05 MST"
+		if(len(timezone) > 0) {
+			displayLocation,_ := time.LoadLocation(timezone)
+			return l.Timestamp.In(displayLocation).Format(timeLayout)
+		} else {
+			return l.Timestamp.Format(timeLayout)
+		}
+	} else {
+		return "Unconfirmed"
 	}
-	return "Unconfirmed"
 }
 
 func AttachLikesToPosts(posts []*Post) error {
