@@ -4,6 +4,9 @@ body {
     -webkit-text-size-adjust: 100%;
     /* Fix for text-size-adjust being ignored: https://bugs.webkit.org/show_bug.cgi?id=FontBoosting */
     max-height: 1000000px;
+    padding: 0;
+    margin: 0;
+    background: rgba(0,0,0,0.03);
 }
 html {
     font-family: sans-serif;
@@ -52,6 +55,10 @@ label {
     min-width: 175px;
     vertical-align: top;
     cursor: pointer;
+}
+
+hr.no-margin {
+    margin: 0;
 }
 
 span.inline {
@@ -117,14 +124,35 @@ a.btn-leave {
     background: rgba(0,0,0,0.3);
 }
 
+.wrapper {
+    background: #fff;
+    padding: 1px 0;
+}
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.header {
+    padding: 1px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+.header .header-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 5px 0;
+}
 .header h1 {
     display: inline-block;
     vertical-align: bottom;
-    margin: 0 10px 0 0;
+    margin: 0 15px 0 0;
+}
+.header .nav {
+    display: inline-block;
+    vertical-align: bottom;
 }
 .nav {
     margin-top: 5px;
-    display: inline-block;
 }
 .nav a {
     color: #333;
@@ -132,12 +160,21 @@ a.btn-leave {
     display: inline-block;
     margin: 5px 10px 5px 0;
 }
+.footer {
+    padding: 1px 0;
+    border-top: 1px solid rgba(0,0,0,0.2);
+}
+.footer .nav {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 10px 0;
+}
 
 .post {
     border: 1px solid rgba(0,0,0,0.3);
     box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
     padding: 1px 10px;
-    max-width: 600px;
+    max-width: 775px;
     margin: 12px 0;
     border-radius: 11px;
     background: #dde8d4;
