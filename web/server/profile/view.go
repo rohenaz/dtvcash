@@ -33,7 +33,8 @@ var viewRoute = web.Route{
 			userPkHash = key.PkHash
 		}
 
-		posts, err := profile.GetPostsForHash(pkHash, userPkHash)
+		offset := r.Request.GetUrlParameterInt("offset")
+		posts, err := profile.GetPostsForHash(pkHash, userPkHash, uint(offset))
 		if err != nil {
 			r.Error(jerr.Get("error getting posts for hash", err), http.StatusInternalServerError)
 			return
@@ -70,6 +71,7 @@ var viewRoute = web.Route{
 		memoLikes, err := profile.GetLikesForPkHash(pkHash)
 		r.Helper["Likes"] = memoLikes
 		r.Helper["Title"] = fmt.Sprintf("Memo - %s's Profile", pf.Name)
+		res.SetPageAndOffset(r, offset)
 		r.RenderTemplate(res.UrlProfileView)
 	},
 }

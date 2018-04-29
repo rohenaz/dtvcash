@@ -1,7 +1,8 @@
-package server
+package posts
 
 import (
 	"bytes"
+	"fmt"
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/profile"
@@ -10,12 +11,18 @@ import (
 	"github.com/jchavannes/jgo/web"
 	"net/http"
 	"strings"
+	"time"
 )
 
-var newPostsRoute = web.Route{
-	Pattern: res.UrlNewPosts,
+var archiveRoute = web.Route{
+	Pattern: res.UrlPostsArchive,
 	Handler: func(r *web.Response) {
 		offset := r.Request.GetUrlParameterInt("offset")
+		day := r.Request.GetUrlParameter("day")
+		today := time.Now().Format("2006-01-02")
+		if day == "" {
+			day = today
+		}
 		var userPkHash []byte
 		if auth.IsLoggedIn(r.Session.CookieId) {
 			user, err := auth.GetSessionUser(r.Session.CookieId)
@@ -30,7 +37,19 @@ var newPostsRoute = web.Route{
 			}
 			userPkHash = key.PkHash
 		}
-		posts, err := profile.GetRecentPosts(userPkHash, uint(offset))
+		timeStart, err := time.Parse("2006-01-02", day)
+		if err != nil {
+			r.Error(jerr.Get("error parsing time", err), http.StatusUnprocessableEntity)
+			return
+		}
+		timeEnd := timeStart.Add(24 * time.Hour)
+		if day == today {
+			timeEnd = time.Time{}
+			r.Helper["Today"] = true
+		} else {
+			r.Helper["Today"] = false
+		}
+		posts, err := profile.GetTopPosts(userPkHash, uint(offset), timeStart, timeEnd)
 		if err != nil {
 			r.Error(jerr.Get("error getting recent posts", err), http.StatusInternalServerError)
 			return
@@ -47,13 +66,12 @@ var newPostsRoute = web.Route{
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
 		}
-		var prevOffset int
-		if offset > 25 {
-			prevOffset = offset - 25
-		}
-		r.Helper["PrevOffset"] = prevOffset
-		r.Helper["NextOffset"] = offset + 25
+		res.SetPageAndOffset(r, offset)
+		r.Helper["OffsetLink"] = fmt.Sprintf("%s?day=%s", strings.TrimLeft(res.UrlPostsArchive, "/"), day)
+		r.Helper["PrevDay"] = timeStart.Add(-24 * time.Hour).Format("2006-01-02")
+		r.Helper["NextDay"] = timeStart.Add(24 * time.Hour).Format("2006-01-02")
 		r.Helper["Posts"] = posts
+		r.Helper["Day"] = day
 		r.Render()
 	},
 }

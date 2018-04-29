@@ -114,7 +114,22 @@ a.btn, input[type=submit].btn {
     margin: 5px 0;
 }
 a.btn-leave {
+    color: #888;
+    background: rgba(84,141,29,0.085);
+}
+a.btn.sel {
+    border: 1px solid rgba(0,0,0,0.5);
+}
+a.btn.disabled {
     background: rgba(0,0,0,0.3);
+    pointer-events: none;
+    cursor: default;
+}
+
+a.disabled {
+    pointer-events:none;
+    color:#888;
+    text-decoration: none;
 }
 
 .header h1 {
@@ -197,4 +212,22 @@ img.identicon {
 
 .message-byte-count.red {
     color: red;
+}
+.posts-nav a {
+    text-decoration: none;
+    color: #000;
+    display: inline-block;
+    margin-right: 10px;
+}
+.posts-nav a:hover,
+.posts-nav a.sel {
+    text-decoration: underline;
+}
+span.page {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.bottom10 {
+    margin-bottom: 10px;
 }

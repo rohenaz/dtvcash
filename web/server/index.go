@@ -159,6 +159,8 @@ func setFeed(r *web.Response, pkHashes [][]byte, selfPkHash []byte) error {
 	if offset > 25 {
 		prevOffset = offset - 25
 	}
+	page := offset / 25 + 1
+	r.Helper["Page"] = page
 	r.Helper["PrevOffset"] = prevOffset
 	r.Helper["NextOffset"] = offset + 25
 	return nil
@@ -180,5 +182,12 @@ var needFundsRoute = web.Route{
 		}
 		r.Helper["Key"] = key
 		r.Render()
+	},
+}
+
+var newPostsRoute = web.Route{
+	Pattern: res.UrlNewPosts,
+	Handler: func(r *web.Response) {
+		r.SetRedirect(res.UrlPostsNew)
 	},
 }

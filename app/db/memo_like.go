@@ -153,3 +153,38 @@ func GetCountMemoLikes() (uint, error) {
 	}
 	return cnt, nil
 }
+
+func GetRecentTopLikedTxHashes(offset uint, timeStart time.Time, timeEnd time.Time) ([][]byte, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	query := db.
+		Table("memo_likes").
+		Select("like_tx_hash, COUNT(DISTINCT pk_hash) AS count").
+		Joins("LEFT OUTER JOIN blocks ON (memo_likes.block_id = blocks.id)").
+		Group("like_tx_hash").
+		Order("count DESC, memo_likes.id DESC").
+		Limit(25).
+		Offset(offset)
+	if timeEnd.IsZero() {
+		query = query.Where("timestamp >= ? OR timestamp IS NULL", timeStart)
+	} else {
+		query = query.Where("timestamp >= ?", timeStart).Where("timestamp < ?", timeEnd)
+	}
+	rows, err := query.Rows()
+	if err != nil {
+		return nil, jerr.Get("error running query", err)
+	}
+	var txHashes [][]byte
+	for rows.Next() {
+		var likeTxHash []byte
+		var count uint
+		err := rows.Scan(&likeTxHash, &count)
+		if err != nil {
+			return nil, jerr.Get("error scanning rows", err)
+		}
+		txHashes = append(txHashes, likeTxHash)
+	}
+	return txHashes, nil
+}

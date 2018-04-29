@@ -38,7 +38,7 @@ var replyRoute = web.Route{
 			}
 			pkHash = key.PkHash
 		}
-		post, err := profile.GetPostByTxHash(txHash.CloneBytes(), pkHash)
+		post, err := profile.GetPostByTxHash(txHash.CloneBytes(), pkHash, 0)
 		if err != nil {
 			r.Error(jerr.Get("error getting post", err), http.StatusInternalServerError)
 			return

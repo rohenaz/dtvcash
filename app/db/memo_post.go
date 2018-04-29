@@ -119,15 +119,29 @@ func GetPostReplyCount(txHash []byte) (uint, error) {
 	return cnt, nil
 }
 
-func GetPostReplies(txHash []byte) ([]*MemoPost, error) {
+func GetPostReplies(txHash []byte, offset uint) ([]*MemoPost, error) {
 	var posts []*MemoPost
-	err := findPreloadColumns([]string{
-		BlockTable,
-	}, &posts, MemoPost{
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+
+	query := db.
+		Table("memo_posts").
+		Preload(BlockTable).
+		Select("memo_posts.*, COUNT(DISTINCT memo_likes.pk_hash) AS count").
+		Joins("LEFT OUTER JOIN blocks ON (memo_posts.block_id = blocks.id)").
+		Joins("LEFT OUTER JOIN memo_likes ON (memo_posts.tx_hash = memo_likes.like_tx_hash)").
+		Group("memo_posts.id").
+		Order("count DESC, memo_posts.id DESC").
+		Limit(25).
+		Offset(offset)
+
+	result := query.Find(&posts, MemoPost{
 		ParentTxHash: txHash,
 	})
-	if err != nil {
-		return nil, jerr.Get("error finding post replies", err)
+	if result.Error != nil {
+		return nil, jerr.Get("error finding post replies", result.Error)
 	}
 	return posts, nil
 }
@@ -178,18 +192,25 @@ func GetPostsForPkHashes(pkHashes [][]byte, offset uint) ([]*MemoPost, error) {
 	return memoPosts, nil
 }
 
-func GetPostsForPkHash(pkHash []byte) ([]*MemoPost, error) {
+func GetPostsForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 	if len(pkHash) == 0 {
 		return nil, nil
 	}
 	var memoPosts []*MemoPost
-	err := findPreloadColumns([]string{
-		BlockTable,
-	}, &memoPosts, &MemoPost{
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	query := db.
+		Preload(BlockTable).
+		Order("id DESC").
+		Limit(25).
+		Offset(offset)
+	result := query.Find(&memoPosts, &MemoPost{
 		PkHash: pkHash,
 	})
-	if err != nil {
-		return nil, jerr.Get("error getting memo posts", err)
+	if result.Error != nil {
+		return nil, jerr.Get("error getting memo posts", result.Error)
 	}
 	sort.Sort(memoPostSortByDate(memoPosts))
 	return memoPosts, nil
@@ -234,6 +255,32 @@ func GetRecentPosts(offset uint) ([]*MemoPost, error) {
 	}
 	sort.Sort(memoPostSortByDate(memoPosts))
 	return memoPosts, nil
+}
+
+func GetTopPosts(offset uint, timeStart time.Time, timeEnd time.Time) ([]*MemoPost, error) {
+	topLikeTxHashes, err := GetRecentTopLikedTxHashes(offset, timeStart, timeEnd)
+	if err != nil {
+		return nil, jerr.Get("error getting top liked tx hashes", err)
+	}
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	db = db.Preload(BlockTable)
+	var memoPosts []*MemoPost
+	result := db.Where("tx_hash IN (?)", topLikeTxHashes).Find(&memoPosts)
+	if result.Error != nil {
+		return nil, jerr.Get("error running query", result.Error)
+	}
+	var sortedPosts []*MemoPost
+	for _, txHash := range topLikeTxHashes {
+		for _, memoPost := range memoPosts {
+			if bytes.Equal(memoPost.TxHash, txHash) {
+				sortedPosts = append(sortedPosts, memoPost)
+			}
+		}
+	}
+	return sortedPosts, nil
 }
 
 func GetCountMemoPosts() (uint, error) {

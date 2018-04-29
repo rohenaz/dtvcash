@@ -1,21 +1,16 @@
 <p>
-{{ if not (eq .Offset 0) }}
-    <a class="btn" href="feed?offset={{ .PrevOffset }}">Prev</a>
-{{ end }}
-{{ if eq .PostCount 25 }}
-    <a class="btn" href="feed?offset={{ .NextOffset }}">Next</a>
-{{ end }}
+
+    <a class="{{ if (eq .Offset 0) }}disabled{{ end }}" href="feed?offset={{ .PrevOffset }}">< Prev</a>
+    <span class="page">Page {{ .Page }}</span>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{end}}" href="feed?offset={{ .NextOffset }}">Next ></a>
 </p>
 
 {{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
 
 <p>
-{{ if not (eq .Offset 0) }}
-    <a class="btn" href="feed?offset={{ .PrevOffset }}">Prev</a>
-{{ end }}
-{{ if eq .PostCount 25 }}
-    <a class="btn" href="feed?offset={{ .NextOffset }}">Next</a>
-{{ end }}
+    <a class="{{ if (eq .Offset 0) }}disabled{{ end }}" href="feed?offset={{ .PrevOffset }}">< Prev</a>
+    <span class="page">Page {{ .Page }}</span>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{end}}" href="feed?offset={{ .NextOffset }}">Next ></a>
 </p>
 
 {{ if eq .Profile.Balance 0 }}

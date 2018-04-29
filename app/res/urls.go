@@ -55,6 +55,12 @@ const (
 	TmplProfiles = "/profile/all"
 )
 
+const (
+	UrlPostsNew     = "/posts/new"
+	UrlPostsTop     = "/posts/top"
+	UrlPostsArchive = "/posts/archive"
+)
+
 func GetBaseUrl(r *web.Response) string {
 	baseUrl := r.Request.GetHeader("AppPath")
 	if baseUrl == "" {

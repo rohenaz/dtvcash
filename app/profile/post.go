@@ -44,6 +44,27 @@ func (p Post) GetMessage() string {
 	return s
 }
 
+func (p Post) GetTimeString(timezone string) string {
+	if p.Memo.BlockId != 0 {
+		if p.Memo.Block != nil {
+			timeLayout := "2006-01-02 15:04:05 MST"
+			if len(timezone) > 0 {
+				displayLocation, err := time.LoadLocation(timezone)
+				if err != nil {
+					jerr.Get("error finding location", err).Print()
+					return p.Memo.Block.Timestamp.Format(timeLayout)
+				}
+				return p.Memo.Block.Timestamp.In(displayLocation).Format(timeLayout)
+			} else {
+				return p.Memo.Block.Timestamp.Format(timeLayout)
+			}
+		} else {
+			return "Unknown"
+		}
+	}
+	return "Unconfirmed"
+}
+
 func GetPostsForHashes(pkHashes [][]byte, selfPkHash []byte, offset uint) ([]*Post, error) {
 	dbPosts, err := db.GetPostsForPkHashes(pkHashes, offset)
 	if err != nil {
@@ -89,7 +110,7 @@ func GetPostsForHashes(pkHashes [][]byte, selfPkHash []byte, offset uint) ([]*Po
 	return posts, nil
 }
 
-func GetPostsForHash(pkHash []byte, selfPkHash []byte) ([]*Post, error) {
+func GetPostsForHash(pkHash []byte, selfPkHash []byte, offset uint) ([]*Post, error) {
 	var name = ""
 	setName, err := db.GetNameForPkHash(pkHash)
 	if err != nil {
@@ -98,7 +119,7 @@ func GetPostsForHash(pkHash []byte, selfPkHash []byte) ([]*Post, error) {
 	if setName != nil {
 		name = setName.Name
 	}
-	dbPosts, err := db.GetPostsForPkHash(pkHash)
+	dbPosts, err := db.GetPostsForPkHash(pkHash, offset)
 	if err != nil {
 		return nil, jerr.Get("error getting posts for hash", err)
 	}
@@ -119,7 +140,7 @@ func GetPostsForHash(pkHash []byte, selfPkHash []byte) ([]*Post, error) {
 	return posts, nil
 }
 
-func GetPostByTxHash(txHash []byte, selfPkHash []byte) (*Post, error) {
+func GetPostByTxHash(txHash []byte, selfPkHash []byte, offset uint) (*Post, error) {
 	memoPost, err := db.GetMemoPost(txHash)
 	if err != nil {
 		return nil, jerr.Get("error getting memo post", err)
@@ -144,7 +165,7 @@ func GetPostByTxHash(txHash []byte, selfPkHash []byte) (*Post, error) {
 			SelfPkHash: selfPkHash,
 		}
 	}
-	replies, err := db.GetPostReplies(txHash)
+	replies, err := db.GetPostReplies(txHash, offset)
 	if err != nil {
 		return nil, jerr.Get("error getting post replies", err)
 	}
@@ -177,13 +198,17 @@ func GetPostByTxHash(txHash []byte, selfPkHash []byte) (*Post, error) {
 	if setName != nil {
 		name = setName.Name
 	}
+	cnt, err := db.GetPostReplyCount(txHash)
+	if err != nil {
+		return nil, jerr.Get("error getting post reply count", err)
+	}
 	post := &Post{
 		Name:       name,
 		Memo:       memoPost,
 		Parent:     parent,
 		SelfPkHash: selfPkHash,
 		Replies:    replyPosts,
-		ReplyCount: uint(len(replies)),
+		ReplyCount: cnt,
 	}
 	return post, nil
 }
@@ -218,23 +243,47 @@ func GetRecentPosts(selfPkHash []byte, offset uint) ([]*Post, error) {
 	return posts, nil
 }
 
-func (p Post) GetTimeString(timezone string) string {
-	if p.Memo.BlockId != 0 {
-		if p.Memo.Block != nil {
-			timeLayout := "2006-01-02 15:04:05 MST"
-			if len(timezone) > 0 {
-				displayLocation, err := time.LoadLocation(timezone)
-				if err != nil {
-					jerr.Get("error finding location", err).Print()
-					return p.Memo.Block.Timestamp.Format(timeLayout)
-				}
-				return p.Memo.Block.Timestamp.In(displayLocation).Format(timeLayout)
-			} else {
-				return p.Memo.Block.Timestamp.Format(timeLayout)
-			}
-		} else {
-			return "Unknown"
-		}
+func GetTopPostsNamedRange(selfPkHash []byte, offset uint, timeRange string) ([]*Post, error) {
+	var timeStart time.Time
+	switch timeRange {
+	case TimeRange1Hour:
+		timeStart = time.Now().Add(-1 * time.Hour)
+	case TimeRange24Hours:
+		timeStart = time.Now().Add(-24 * time.Hour)
+	case TimeRange7Days:
+		timeStart = time.Now().Add(-24 * 7 * time.Hour)
+	case TimeRangeAll:
+		timeStart = time.Now().Add(-24 * 365 * 10 * time.Hour)
 	}
-	return "Unconfirmed"
+	return GetTopPosts(selfPkHash, offset, timeStart, time.Time{})
+}
+
+func GetTopPosts(selfPkHash []byte, offset uint, timeStart time.Time, timeEnd time.Time) ([]*Post, error) {
+	dbPosts, err := db.GetTopPosts(offset, timeStart, timeEnd)
+	if err != nil {
+		return nil, jerr.Get("error getting posts for hash", err)
+	}
+	var posts []*Post
+	for _, dbPost := range dbPosts {
+		var name string
+		setName, err := db.GetNameForPkHash(dbPost.PkHash)
+		if err != nil && ! db.IsRecordNotFoundError(err) {
+			return nil, jerr.Get("error getting name for hash", err)
+		}
+		if setName != nil {
+			name = setName.Name
+		}
+		cnt, err := db.GetPostReplyCount(dbPost.TxHash)
+		if err != nil {
+			return nil, jerr.Get("error getting post reply count", err)
+		}
+		post := &Post{
+			Name:       name,
+			Memo:       dbPost,
+			SelfPkHash: selfPkHash,
+			ReplyCount: cnt,
+		}
+		posts = append(posts, post)
+	}
+	return posts, nil
 }
