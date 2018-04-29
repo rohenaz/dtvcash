@@ -119,15 +119,29 @@ func GetPostReplyCount(txHash []byte) (uint, error) {
 	return cnt, nil
 }
 
-func GetPostReplies(txHash []byte) ([]*MemoPost, error) {
+func GetPostReplies(txHash []byte, offset uint) ([]*MemoPost, error) {
 	var posts []*MemoPost
-	err := findPreloadColumns([]string{
-		BlockTable,
-	}, &posts, MemoPost{
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+
+	query := db.
+		Table("memo_posts").
+		Preload(BlockTable).
+		Select("memo_posts.*, COUNT(DISTINCT memo_likes.pk_hash) AS count").
+		Joins("LEFT OUTER JOIN blocks ON (memo_posts.block_id = blocks.id)").
+		Joins("LEFT OUTER JOIN memo_likes ON (memo_posts.tx_hash = memo_likes.like_tx_hash)").
+		Group("memo_posts.id").
+		Order("count DESC, memo_posts.id DESC").
+		Limit(25).
+		Offset(offset)
+
+	result := query.Find(&posts, MemoPost{
 		ParentTxHash: txHash,
 	})
-	if err != nil {
-		return nil, jerr.Get("error finding post replies", err)
+	if result.Error != nil {
+		return nil, jerr.Get("error finding post replies", result.Error)
 	}
 	return posts, nil
 }

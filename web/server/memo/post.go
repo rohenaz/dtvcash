@@ -15,6 +15,7 @@ import (
 var postRoute = web.Route{
 	Pattern:    res.UrlMemoPost + "/" + urlTxHash.UrlPart(),
 	Handler: func(r *web.Response) {
+		offset := r.Request.GetUrlParameterInt("offset")
 		txHashString := r.Request.GetUrlNamedQueryVariable(urlTxHash.Id)
 		txHash, err := chainhash.NewHashFromStr(txHashString)
 		if err != nil {
@@ -35,7 +36,7 @@ var postRoute = web.Route{
 			}
 			pkHash = key.PkHash
 		}
-		post, err := profile.GetPostByTxHash(txHash.CloneBytes(), pkHash)
+		post, err := profile.GetPostByTxHash(txHash.CloneBytes(), pkHash, uint(offset))
 		if err != nil {
 			r.Error(jerr.Get("error getting post", err), http.StatusInternalServerError)
 			return
@@ -51,6 +52,7 @@ var postRoute = web.Route{
 			r.Helper["Title"] = fmt.Sprintf("Memo - Post by %.6s", post.Memo.GetAddressString())
 		}
 		r.Helper["Description"] = post.Memo.Message
+		res.SetPageAndOffset(r, offset)
 		r.RenderTemplate(res.TmplMemoPost)
 	},
 }

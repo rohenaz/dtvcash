@@ -47,14 +47,7 @@ var newRoute = web.Route{
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
 		}
-		var prevOffset int
-		if offset > 25 {
-			prevOffset = offset - 25
-		}
-		page := offset / 25 + 1
-		r.Helper["PrevOffset"] = prevOffset
-		r.Helper["NextOffset"] = offset + 25
-		r.Helper["Page"] = page
+		res.SetPageAndOffset(r, offset)
 		r.Helper["Posts"] = posts
 		r.Render()
 	},
