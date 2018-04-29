@@ -131,6 +131,7 @@ a.btn-leave {
 .container {
     max-width: 800px;
     margin: 0 auto;
+    padding: 0 10px;
 }
 
 .header {
@@ -140,7 +141,7 @@ a.btn-leave {
 .header .header-wrapper {
     max-width: 800px;
     margin: 0 auto;
-    padding: 5px 0;
+    padding: 5px 10px;
 }
 .header h1 {
     display: inline-block;
@@ -167,7 +168,7 @@ a.btn-leave {
 .footer .nav {
     max-width: 800px;
     margin: 0 auto;
-    padding: 10px 0;
+    padding: 10px;
 }
 
 .post {
