@@ -28,7 +28,7 @@ var MemoApp = {
     };
 
     MemoApp.InitTimeZone = function () {
-        if (document.cookie.indexOf('memo_time_zone=') === -1) {
+        if (document.cookie) {
             var tz = jstz.determine();
             document.cookie = "memo_time_zone=" + tz.name() + ";path=/;max-age=31104000";
         }

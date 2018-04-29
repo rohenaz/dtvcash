@@ -10,12 +10,12 @@ var JsFiles = []string{
 	"lib/jquery-ui.min.js",
 	"lib/pnglib.js",
 	"lib/identicon.js",
+	"lib/jstz.min.js",
 	"js/init.js",
 	"js/login.js",
 	"js/signup.js",
 	"js/key.js",
 	"js/memo.js",
-	"js/jstz.min.js",
 }
 
 var CssFiles = []string{
