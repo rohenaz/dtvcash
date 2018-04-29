@@ -128,7 +128,7 @@ a.btn.disabled {
 
 a.disabled {
     pointer-events:none;
-    color:gray;
+    color:#888;
     text-decoration: none;
 }
 
