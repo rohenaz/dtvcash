@@ -1,4 +1,4 @@
-	package server
+package server
 
 import (
 	"git.jasonc.me/main/memo/app/db"
