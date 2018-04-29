@@ -174,7 +174,7 @@ func GetRecentTopLikedTxHashes(offset uint, timeStart time.Time, timeEnd time.Ti
 	}
 	rows, err := query.Rows()
 	if err != nil {
-		return nil, jerr.Getf(err, "error running query", query.QueryExpr())
+		return nil, jerr.Get("error running query", err)
 	}
 	var txHashes [][]byte
 	for rows.Next() {

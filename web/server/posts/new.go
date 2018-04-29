@@ -32,7 +32,7 @@ var newRoute = web.Route{
 		}
 		posts, err := profile.GetRecentPosts(userPkHash, uint(offset))
 		if err != nil {
-			r.Error(jerr.Get("error getting top posts", err), http.StatusInternalServerError)
+			r.Error(jerr.Get("error getting recent posts", err), http.StatusInternalServerError)
 			return
 		}
 		for i := 0; i < len(posts); i++ {
