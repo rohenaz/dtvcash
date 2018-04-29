@@ -8,17 +8,17 @@
     <a class="btn {{ if .Today }}disabled{{ end }}" href="posts/archive?day={{ .NextDay }}">Next Day</a>
 </div>
 <div class="bottom10">
-    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; Prev Page</a>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; Prev</a>
     <span class="page">Page {{ .Page }}</span>
-    <a class="" href="{{ .OffsetLink }}&offset={{ .NextOffset }}">Next Page &gt;</a>
+    <a class="" href="{{ .OffsetLink }}&offset={{ .NextOffset }}">Next &gt;</a>
 </div>
 
 {{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
 
 <p>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; Prev</a>
     <span class="page">Page {{ .Page }}</span>
-    <a class="btn {{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; Prev Page</a>
-    <a class="btn" href="{{ .OffsetLink }}&offset={{ .NextOffset }}">Next Page &gt;</a>
+    <a class="" href="{{ .OffsetLink }}&offset={{ .NextOffset }}">Next &gt;</a>
 </p>
 
 {{ template "snippets/footer.html" . }}
