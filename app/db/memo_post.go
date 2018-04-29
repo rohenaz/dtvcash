@@ -30,7 +30,6 @@ type MemoPost struct {
 	Block        *Block
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
-	TimeZone     string
 }
 
 func (m MemoPost) Save() error {
@@ -78,13 +77,7 @@ func (m MemoPost) GetMessage() string {
 func (m MemoPost) GetTimeString() string {
 	if m.BlockId != 0 {
 		if m.Block != nil {
-			timeLayout := "2006-01-02 15:04:05 MST"
-			if(len(m.TimeZone) > 0) {
-				displayLocation,_ := time.LoadLocation(m.TimeZone)
-				return m.Block.Timestamp.In(displayLocation).Format(timeLayout)
-			} else {
-				return m.Block.Timestamp.Format(timeLayout)
-			}
+			return m.Block.Timestamp.Format("2006-01-02 15:04:05")
 		} else {
 			return "Unknown"
 		}
