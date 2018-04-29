@@ -42,7 +42,11 @@ func (l *Like) GetTimeString(timezone string) string {
 	if ! l.Timestamp.IsZero() {
 		timeLayout := "2006-01-02 15:04:05 MST"
 		if len(timezone) > 0 {
-			displayLocation, _ := time.LoadLocation(timezone)
+			displayLocation, err := time.LoadLocation(timezone)
+			if err != nil {
+				jerr.Get("error loading location", err).Print()
+				return l.Timestamp.Format(timeLayout)
+			}
 			return l.Timestamp.In(displayLocation).Format(timeLayout)
 		} else {
 			return l.Timestamp.Format(timeLayout)

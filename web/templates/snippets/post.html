@@ -26,7 +26,7 @@
         {{ else }}
             posted at
         {{ end }}
-            <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ (.TimeZone | .Post.GetTimeString) }}</a>
+            <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeString .TimeZone }}</a>
         </p>
     </div>
     <p class="message">

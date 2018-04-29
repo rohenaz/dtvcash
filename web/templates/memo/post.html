@@ -22,7 +22,7 @@
         {{- else -}}
             {{ .GetAddressString }}
         {{- end }}</a> - {{ formatBigInt .Amount }} satoshis
-            ({{ ($tz | .GetTimeString) }})
+            ({{ .GetTimeString $tz }})
             <a target="_blank"
                href="https://explorer.bitcoin.com/bch/tx/{{ .GetTransactionHashString }}">View on Block Explorer</a>
         </li>
