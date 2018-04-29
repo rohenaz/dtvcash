@@ -231,6 +231,32 @@ func GetRecentPosts(offset uint) ([]*MemoPost, error) {
 	return memoPosts, nil
 }
 
+func GetTopPosts(offset uint) ([]*MemoPost, error) {
+	topLikeTxHashes, err := GetRecentTopLikedTxHashes(offset)
+	if err != nil {
+		return nil, jerr.Get("error getting top liked tx hashes", err)
+	}
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	db = db.Preload(BlockTable)
+	var memoPosts []*MemoPost
+	result := db.Where("tx_hash IN (?)", topLikeTxHashes).Find(&memoPosts)
+	if result.Error != nil {
+		return nil, jerr.Get("error running query", result.Error)
+	}
+	var sortedPosts []*MemoPost
+	for _, txHash := range topLikeTxHashes {
+		for _, memoPost := range memoPosts {
+			if bytes.Equal(memoPost.TxHash, txHash) {
+				sortedPosts = append(sortedPosts, memoPost)
+			}
+		}
+	}
+	return sortedPosts, nil
+}
+
 func GetCountMemoPosts() (uint, error) {
 	cnt, err := count(&MemoPost{})
 	if err != nil {

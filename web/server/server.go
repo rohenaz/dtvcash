@@ -94,6 +94,7 @@ func Run(sessionCookieInsecure bool) {
 				aboutRoute,
 				needFundsRoute,
 				newPostsRoute,
+				topPostsRoute,
 				statsRoute,
 				feedRoute,
 				//testsRoute,

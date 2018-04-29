@@ -14,6 +14,7 @@ const (
 	UrlIntroducing  = "/introducing-memo"
 	UrlNeedFunds    = "/need-funds"
 	UrlNewPosts     = "/new-posts"
+	UrlTopPosts     = "/top-posts"
 	UrlStats        = "/stats"
 	UrlFeed         = "/feed"
 	UrlAbout        = "/about"
