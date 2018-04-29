@@ -223,7 +223,11 @@ func (p Post) GetTimeString(timezone string) string {
 		if p.Memo.Block != nil {
 			timeLayout := "2006-01-02 15:04:05 MST"
 			if len(timezone) > 0 {
-				displayLocation, _ := time.LoadLocation(timezone)
+				displayLocation, err := time.LoadLocation(timezone)
+				if err != nil {
+					jerr.Get("error finding location", err).Print()
+					return p.Memo.Block.Timestamp.Format(timeLayout)
+				}
 				return p.Memo.Block.Timestamp.In(displayLocation).Format(timeLayout)
 			} else {
 				return p.Memo.Block.Timestamp.Format(timeLayout)
