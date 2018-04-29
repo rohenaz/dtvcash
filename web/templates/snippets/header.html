@@ -22,6 +22,7 @@
 
     <script type="text/javascript">
         $(function () {
+            MemoApp.InitTimeZone();
             MemoApp.InitCsrf("{{ .CsrfToken }}");
             MemoApp.SetBaseUrl("{{ .BaseUrl }}");
             MemoApp.Form.LogoutButton($("#header-logout"));
