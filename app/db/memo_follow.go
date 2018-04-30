@@ -136,36 +136,71 @@ func GetFollowingForPkHash(followPkHash []byte) ([]*MemoFollow, error) {
 }
 
 func GetFollowingCountForPkHash(pkHash []byte) (uint, error) {
-	cnt, err := count(&MemoFollow{
-		PkHash: pkHash,
-	})
+
+	// Get followed count. Can't use count() here because https://github.com/jinzhu/gorm/issues/1440
+	db, err := getDb()
 	if err != nil {
-		return 0, jerr.Get("error getting following count", err)
+		return 0, jerr.Get("error getting db", err)
 	}
-	ucnt, err := count(&MemoFollow{
+	var cnt uint
+	var mf = &MemoFollow{
+		PkHash: pkHash,
+	}
+	result := db.Model(mf).Select("DISTINCT(memo_follows.follow_pk_hash)").Where(mf).Where("unfollow = ?", false).Count(&cnt)
+
+	if result.Error != nil {
+		return 0, jerr.Get("error running query", result.Error)
+	}
+
+	db, err = getDb()
+	if err != nil {
+		return 0, jerr.Get("error getting db", err)
+	}
+	var ucnt uint
+	var uf = &MemoFollow{
 		PkHash: pkHash,
 		Unfollow: true,
-	})
-	if err != nil {
-		return 0, jerr.Get("error getting following count", err)
 	}
+	result = db.Model(uf).Select("DISTINCT(memo_follows.follow_pk_hash)").Where(uf).Count(&ucnt)
+
+	if result.Error != nil {
+		return 0, jerr.Get("error running query", result.Error)
+	}
+
 	return (cnt - ucnt), nil
 }
 
 func GetFollowerCountForPkHash(followPkHash []byte) (uint, error) {
-	cnt, err := count(&MemoFollow{
-		FollowPkHash: followPkHash,
-	})
+	// Get followed count. Can't use count() here because https://github.com/jinzhu/gorm/issues/1440
+	db, err := getDb()
 	if err != nil {
-		return 0, jerr.Get("error getting follower count", err)
+		return 0, jerr.Get("error getting db", err)
 	}
-	ucnt, err := count(&MemoFollow{
+	var cnt uint
+	var f = &MemoFollow{
+		FollowPkHash: followPkHash,
+	}
+	result := db.Model(f).Select("DISTINCT(memo_follows.follow_pk_hash)").Where(f).Where("unfollow = ?", false).Count(&cnt)
+
+	if result.Error != nil {
+		return 0, jerr.Get("error running query", result.Error)
+	}
+
+	db, err = getDb()
+	if err != nil {
+		return 0, jerr.Get("error getting db", err)
+	}
+	var ucnt uint
+	var uf = &MemoFollow{
 		FollowPkHash: followPkHash,
 		Unfollow: true,
-	})
-	if err != nil {
-		return 0, jerr.Get("error getting follower count", err)
 	}
+	result = db.Model(uf).Select("DISTINCT(memo_follows.follow_pk_hash)").Where(uf).Count(&ucnt)
+
+	if result.Error != nil {
+		return 0, jerr.Get("error running query", result.Error)
+	}
+
 	return (cnt - ucnt), nil
 }
 
