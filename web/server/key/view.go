@@ -7,6 +7,7 @@ import (
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"net/http"
+	"github.com/skip2/go-qrcode"
 )
 
 var viewKeyRoute = web.Route{
@@ -53,6 +54,15 @@ var loadKeyRoute = web.Route{
 			return
 		}
 		r.Helper["PrivateKey"] = privateKey
+
+		var qr *qrcode.QRCode
+		qr, err = qrcode.New(privateKey.GetBase58Compressed(), qrcode.Medium)
+		if err != nil {
+			r.Error(jerr.Get("error generating qr", err), http.StatusInternalServerError)
+			return
+		}
+		r.Helper["QR"] = qr.ToString(true)
+
 		r.RenderTemplate(res.UrlKeyLoad)
 	},
 }
