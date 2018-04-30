@@ -140,9 +140,16 @@ func GetFollowingCountForPkHash(pkHash []byte) (uint, error) {
 		PkHash: pkHash,
 	})
 	if err != nil {
-		return 0, jerr.Get("error getting follower count", err)
+		return 0, jerr.Get("error getting following count", err)
 	}
-	return cnt, nil
+	ucnt, err := count(&MemoFollow{
+		PkHash: pkHash,
+		Unfollow: true,
+	})
+	if err != nil {
+		return 0, jerr.Get("error getting following count", err)
+	}
+	return (cnt - ucnt), nil
 }
 
 func GetFollowerCountForPkHash(followPkHash []byte) (uint, error) {
@@ -152,7 +159,14 @@ func GetFollowerCountForPkHash(followPkHash []byte) (uint, error) {
 	if err != nil {
 		return 0, jerr.Get("error getting follower count", err)
 	}
-	return cnt, nil
+	ucnt, err := count(&MemoFollow{
+		FollowPkHash: followPkHash,
+		Unfollow: true,
+	})
+	if err != nil {
+		return 0, jerr.Get("error getting follower count", err)
+	}
+	return (cnt - ucnt), nil
 }
 
 func GetCountMemoFollows() (uint, error) {
