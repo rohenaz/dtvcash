@@ -1,13 +1,14 @@
 package key
 
 import (
+	"encoding/base64"
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
-	"net/http"
 	"github.com/skip2/go-qrcode"
+	"net/http"
 )
 
 var viewKeyRoute = web.Route{
@@ -61,7 +62,12 @@ var loadKeyRoute = web.Route{
 			r.Error(jerr.Get("error generating qr", err), http.StatusInternalServerError)
 			return
 		}
-		r.Helper["QR"] = qr.ToString(true)
+		png, err := qr.PNG(250)
+		if err != nil {
+			r.Error(jerr.Get("error generating png", err), http.StatusInternalServerError)
+			return
+		}
+		r.Helper["QR"] = base64.StdEncoding.EncodeToString(png)
 
 		r.RenderTemplate(res.UrlKeyLoad)
 	},
