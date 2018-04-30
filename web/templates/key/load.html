@@ -20,7 +20,9 @@
     <tr>
         <th>QR: WIF Base58 Compressed</th>
         <td>
-            <img src="data:image/png;base64,{{ .QR }}"/>
+            <pre style="font-family: 'Courier New', 'Courier'; font-size: 5px">
+            {{ print .QR }}
+            </pre>
         </td>
     </tr>
 </table>
