@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/db"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
 	"github.com/cpacia/bchutil"
-	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 )
 
@@ -24,6 +24,7 @@ type Profile struct {
 	FollowingCount uint
 	Followers      []*Follower
 	Following      []*Follower
+	Reputation     *Reputation
 }
 
 func (p Profile) IsSelf() bool {
@@ -145,6 +146,15 @@ func (p *Profile) SetFollowingCount() error {
 		return jerr.Get("error getting following count for hash", err)
 	}
 	p.FollowingCount = cnt
+	return nil
+}
+
+func (p *Profile) SetReputation() error {
+	reputation, err := GetReputation(p.SelfPkHash, p.PkHash)
+	if err != nil {
+		return jerr.Get("error getting reputation", err)
+	}
+	p.Reputation = reputation
 	return nil
 }
 
