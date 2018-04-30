@@ -137,7 +137,7 @@ func GetFollowingForPkHash(followPkHash []byte) ([]*MemoFollow, error) {
 
 func GetFollowingCountForPkHash(pkHash []byte) (uint, error) {
 
-	// Get followed count. Can't use count() here because https://github.com/jinzhu/gorm/issues/1440
+	// Get followed count. Can't use db.count() here because https://github.com/jinzhu/gorm/issues/1440
 	db, err := getDb()
 	if err != nil {
 		return 0, jerr.Get("error getting db", err)
@@ -171,7 +171,7 @@ func GetFollowingCountForPkHash(pkHash []byte) (uint, error) {
 }
 
 func GetFollowerCountForPkHash(followPkHash []byte) (uint, error) {
-	// Get followed count. Can't use count() here because https://github.com/jinzhu/gorm/issues/1440
+	// Get follower count. Can't use db.count() here because https://github.com/jinzhu/gorm/issues/1440
 	db, err := getDb()
 	if err != nil {
 		return 0, jerr.Get("error getting db", err)
