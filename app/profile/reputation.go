@@ -10,6 +10,7 @@ import (
 type Reputation struct {
 	TrustedFollowers int
 	TotalFollowing   int
+	DirectFollow     bool
 }
 
 func (r Reputation) GetPercentString() string {
@@ -25,9 +26,13 @@ func GetReputation(selfPkHash []byte, pkHash []byte) (*Reputation, error) {
 	if err != nil {
 		return nil, jerr.Get("error getting followersToCheck", err)
 	}
+	var directFollow bool
 	var deDupedTrustedUsers []*db.MemoFollow
 TrustedFollowersDeDupeLoop:
 	for _, trustedUser := range trustedUsers {
+		if bytes.Equal(trustedUser.FollowPkHash, pkHash) {
+			directFollow = true
+		}
 		for _, deDupedTrustedUser := range deDupedTrustedUsers {
 			if bytes.Equal(deDupedTrustedUser.FollowPkHash, trustedUser.FollowPkHash) {
 				continue TrustedFollowersDeDupeLoop
@@ -55,5 +60,6 @@ TrustedFollowersLoop:
 	return &Reputation{
 		TrustedFollowers: len(trustedFollowers),
 		TotalFollowing:   len(deDupedTrustedUsers),
+		DirectFollow:     directFollow,
 	}, nil
 }

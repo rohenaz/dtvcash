@@ -41,8 +41,14 @@
     <tr>
         <th>Reputation</th>
         <td>
+        {{ if .Reputation.DirectFollow }}
+            You follow <b>{{ .Name }}</b>! -
+            <i>{{ .Reputation.TrustedFollowers }} of {{ .Reputation.TotalFollowing }}
+                ({{ .Reputation.GetPercentString }}%)</i>
+        {{ else }}
         {{ .Reputation.TrustedFollowers }} of {{ .Reputation.TotalFollowing }}
             ({{ .Reputation.GetPercentString }}%)
+        {{ end }}
         </td>
     </tr>
 {{ end }}
