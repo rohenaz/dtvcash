@@ -40,20 +40,21 @@
             </a>
         </h1>
         <div class="nav">
+        {{ $nav := .Nav }}
         {{ with .Username }}
-            <a href="">Dashboard</a>
+            <a {{ if eq $nav "home" }}class="sel"{{ end }} href="">Dashboard</a>
         {{ else }}
-            <a href="">Home</a>
+            <a {{ if eq $nav "home" }}class="sel"{{ end }} href="">Home</a>
         {{ end }}
         {{ with .Username }}
-            <a href="memo/new">New Memo</a>
+            <a {{ if eq $nav "new" }}class="sel"{{ end }} href="memo/new">New Memo</a>
         {{ end }}
-            <a href="posts/top">Posts</a>
-            <a href="profiles">Profiles</a>
+            <a {{ if eq $nav "posts" }}class="sel"{{ end }} href="posts/top">Posts</a>
+            <a {{ if eq $nav "profiles" }}class="sel"{{ end }} href="profiles">Profiles</a>
         {{ with .Username }}
             <a id="header-logout" href="logout">Logout <b>{{ . }}</b></a>
         {{ else }}
-            <a href="login">Login</a>
+            <a {{ if eq $nav "login" }}class="sel"{{ end }} href="login">Login</a>
         {{ end }}
         </div>
     </div>

@@ -15,6 +15,7 @@ import (
 var indexRoute = web.Route{
 	Pattern: res.UrlIndex,
 	Handler: func(r *web.Response) {
+		r.Helper["Nav"] = "home"
 		if ! auth.IsLoggedIn(r.Session.CookieId) {
 			r.Render()
 			return

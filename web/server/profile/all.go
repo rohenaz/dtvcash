@@ -13,6 +13,7 @@ import (
 var allRoute = web.Route{
 	Pattern:    res.UrlProfiles,
 	Handler: func(r *web.Response) {
+		r.Helper["Nav"] = "profiles"
 		var selfPkHash []byte
 		if auth.IsLoggedIn(r.Session.CookieId) {
 			user, err := auth.GetSessionUser(r.Session.CookieId)

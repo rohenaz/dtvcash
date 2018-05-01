@@ -16,6 +16,7 @@ var newRoute = web.Route{
 	Pattern:    res.UrlMemoNew,
 	NeedsLogin: true,
 	Handler: func(r *web.Response) {
+		r.Helper["Nav"] = "new"
 		user, err := auth.GetSessionUser(r.Session.CookieId)
 		if err != nil {
 			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)

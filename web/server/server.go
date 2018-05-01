@@ -72,6 +72,7 @@ func preHandler(r *web.Response) {
 	}
 	r.Helper["cssFiles"] = res.GetResCssFiles()
 	r.Helper["TimeZone"] = r.Request.GetCookie("memo_time_zone")
+	r.Helper["Nav"] = ""
 }
 
 func Run(sessionCookieInsecure bool) {

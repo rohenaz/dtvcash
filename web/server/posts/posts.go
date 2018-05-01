@@ -9,3 +9,7 @@ func GetRoutes() []web.Route {
 		archiveRoute,
 	}
 }
+
+func preHandler(r *web.Response) {
+	r.Helper["Nav"] = "posts"
+}

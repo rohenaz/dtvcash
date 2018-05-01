@@ -15,6 +15,7 @@ import (
 var newRoute = web.Route{
 	Pattern: res.UrlPostsNew,
 	Handler: func(r *web.Response) {
+		preHandler(r)
 		offset := r.Request.GetUrlParameterInt("offset")
 		var userPkHash []byte
 		if auth.IsLoggedIn(r.Session.CookieId) {

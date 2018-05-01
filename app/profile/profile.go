@@ -11,6 +11,7 @@ import (
 	"github.com/cpacia/bchutil"
 	"github.com/jchavannes/jgo/jerr"
 	"regexp"
+	"strings"
 )
 
 type Profile struct {
@@ -179,6 +180,7 @@ func (p Profile) GetText() string {
 	profile := p.Profile
 	var re = regexp.MustCompile(`(http[s]?://[^\s]*)`)
 	s := re.ReplaceAllString(profile, `<a href="$1" target="_blank">$1</a>`)
+	s = strings.Replace(s, "\n", "<br/>", -1)
 	return s
 }
 

@@ -16,6 +16,7 @@ import (
 var topRoute = web.Route{
 	Pattern: res.UrlPostsTop,
 	Handler: func(r *web.Response) {
+		preHandler(r)
 		offset := r.Request.GetUrlParameterInt("offset")
 		timeRange := r.Request.GetUrlParameter("range")
 		if timeRange == "" {

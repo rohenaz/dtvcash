@@ -5,6 +5,7 @@ import (
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -42,6 +43,7 @@ func (p Post) GetMessage() string {
 	msg := p.Memo.Message
 	var re = regexp.MustCompile(`(http[s]?://[^\s]*)`)
 	s := re.ReplaceAllString(msg, `<a href="$1" target="_blank">$1</a>`)
+	s = strings.Replace(s, "\n", "<br/>", -1)
 	return s
 }
 

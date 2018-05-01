@@ -17,6 +17,7 @@ import (
 var archiveRoute = web.Route{
 	Pattern: res.UrlPostsArchive,
 	Handler: func(r *web.Response) {
+		preHandler(r)
 		offset := r.Request.GetUrlParameterInt("offset")
 		day := r.Request.GetUrlParameter("day")
 		today := time.Now().Format("2006-01-02")
