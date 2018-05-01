@@ -1,0 +1,33 @@
+{{ template "snippets/header.html" . }}
+
+<h2>Set Name</h2>
+
+<form id="form-memo-set-profile" method="post">
+    <p>
+        <label for="profile">Profile Text</label>
+        <textarea id="profile" name="profile" class="form-control" placeholder="Profile text" autocomplete="on"
+                  required autofocus></textarea>
+    </p>
+    <p>
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" class="form-control" placeholder="Password"
+               autocomplete="on" required>
+    </p>
+    <p>
+        <label for="save-password">
+            Save password
+        </label>
+        <input id="save-password" name="save-password" type="checkbox"/>
+    </p>
+    <p>
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Set Name">
+    </p>
+</form>
+
+<script type="text/javascript">
+    $(function () {
+        MemoApp.Form.SetProfile($("#form-memo-set-profile"));
+    });
+</script>
+
+{{ template "snippets/footer.html" . }}

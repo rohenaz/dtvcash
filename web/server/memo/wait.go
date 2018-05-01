@@ -78,6 +78,13 @@ var waitSubmitRoute = web.Route{
 				return
 			}
 			r.Write(strings.TrimLeft(res.UrlProfileView + "/" + setName.GetAddressString(), "/"))
+		case memo.CodeSetProfile:
+			setProfile, err := db.GetMemoSetProfile(txHash.CloneBytes())
+			if err != nil {
+				r.Error(jerr.Get("error getting set profile from db", err), http.StatusInternalServerError)
+				return
+			}
+			r.Write(strings.TrimLeft(res.UrlProfileView + "/" + setProfile.GetAddressString(), "/"))
 		case memo.CodeReply:
 			post, err := db.GetMemoPost(txHash.CloneBytes())
 			if err != nil {

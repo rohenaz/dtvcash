@@ -238,6 +238,26 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 		if err != nil {
 			return jerr.Get("error saving memo_reply", err)
 		}
+	case memo.CodeSetProfile:
+		var profile string
+		if len(out.PkScript) > 81 {
+			profile = string(out.PkScript[6:])
+		} else {
+			profile = string(out.PkScript[5:])
+		}
+		var memoSetProfile = db.MemoSetProfile{
+			TxHash:     txn.Hash,
+			PkHash:     inputAddress.ScriptAddress(),
+			PkScript:   out.PkScript,
+			ParentHash: parentHash,
+			Address:    inputAddress.EncodeAddress(),
+			Profile:    html_parser.EscapeWithEmojis(profile),
+			BlockId:    blockId,
+		}
+		err := memoSetProfile.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_set_profile", err)
+		}
 	}
 	return nil
 }
@@ -317,6 +337,16 @@ func updateMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) er
 		err = memoPost.Save()
 		if err != nil {
 			return jerr.Get("error saving memo_reply", err)
+		}
+	case memo.CodeSetProfile:
+		memoSetProfile, err := db.GetMemoSetProfile(txn.Hash)
+		if err != nil {
+			return jerr.Get("error getting memo_set_profile", err)
+		}
+		memoSetProfile.BlockId = block.Id
+		err = memoSetProfile.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_set_profile", err)
 		}
 	}
 	return nil

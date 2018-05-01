@@ -10,12 +10,15 @@ import (
 	"github.com/btcsuite/btcutil"
 	"github.com/cpacia/bchutil"
 	"github.com/jchavannes/jgo/jerr"
+	"regexp"
 )
 
 type Profile struct {
 	Name           string
 	PkHash         []byte
 	NameTx         []byte
+	Profile        string
+	ProfileTx      []byte
 	Self           bool
 	SelfPkHash     []byte
 	Balance        int64
@@ -172,6 +175,13 @@ func (p *Profile) SetReputation() error {
 	return nil
 }
 
+func (p Profile) GetText() string {
+	profile := p.Profile
+	var re = regexp.MustCompile(`(http[s]?://[^\s]*)`)
+	s := re.ReplaceAllString(profile, `<a href="$1" target="_blank">$1</a>`)
+	return s
+}
+
 func GetProfiles(selfPkHash []byte) ([]*Profile, error) {
 	pkHashes, err := db.GetUniqueMemoAPkHashes()
 	if err != nil {
@@ -219,6 +229,14 @@ func GetProfile(pkHash []byte, selfPkHash []byte) (*Profile, error) {
 	}
 	if profile.Name == "" {
 		profile.Name = fmt.Sprintf("Profile %.6s", profile.GetAddressString())
+	}
+	memoSetProfile, err := db.GetProfileForPkHash(pkHash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return nil, jerr.Get("error getting MemoSetProfile for hash", err)
+	}
+	if memoSetProfile != nil {
+		profile.Profile = memoSetProfile.Profile
+		profile.ProfileTx = memoSetProfile.TxHash
 	}
 	return profile, nil
 }

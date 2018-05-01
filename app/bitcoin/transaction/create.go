@@ -17,7 +17,7 @@ const DustMinimumOutput int64 = 546
 type SpendOutputType uint
 
 const (
-	SpendOutputTypeP2PK        SpendOutputType = iota
+	SpendOutputTypeP2PK           SpendOutputType = iota
 	SpendOutputTypeReturn
 	SpendOutputTypeMemoMessage
 	SpendOutputTypeMemoSetName
@@ -25,6 +25,7 @@ const (
 	SpendOutputTypeMemoUnfollow
 	SpendOutputTypeMemoLike
 	SpendOutputTypeMemoReply
+	SpendOutputTypeMemoSetProfile
 )
 
 func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutputs []SpendOutput) (*wire.MsgTx, error) {
@@ -154,6 +155,20 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 				Script()
 			if err != nil {
 				return nil, jerr.Get("error creating memo reply output", err)
+			}
+			fmt.Printf("pkScript: %x\n", pkScript)
+			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
+		case SpendOutputTypeMemoSetProfile:
+			if len(spendOutput.Data) > memo.MaxPostSize {
+				return nil, jerr.New("profile too large")
+			}
+			pkScript, err := txscript.NewScriptBuilder().
+				AddOp(txscript.OP_RETURN).
+				AddData([]byte{memo.CodePrefix, memo.CodeSetProfile}).
+				AddData(spendOutput.Data).
+				Script()
+			if err != nil {
+				return nil, jerr.Get("error creating memo set profile output", err)
 			}
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
