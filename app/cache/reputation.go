@@ -21,7 +21,7 @@ func GetReputation(selfPkHash []byte, pkHash []byte) (*Reputation, error) {
 }
 
 func SetReputation(selfPkHash []byte, pkHash []byte, reputation *Reputation) error {
-	err := SetItemWithExpiration(getReputationName(selfPkHash, pkHash), reputation, 15 * 60)
+	err := SetItemWithExpiration(getReputationName(selfPkHash, pkHash), reputation, 10 * 60)
 	if err != nil {
 		return jerr.Get("error setting reputation", err)
 	}
