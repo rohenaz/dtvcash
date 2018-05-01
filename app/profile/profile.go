@@ -16,6 +16,8 @@ type Profile struct {
 	Name           string
 	PkHash         []byte
 	NameTx         []byte
+	Profile        string
+	ProfileTx      []byte
 	Self           bool
 	SelfPkHash     []byte
 	Balance        int64
@@ -219,6 +221,14 @@ func GetProfile(pkHash []byte, selfPkHash []byte) (*Profile, error) {
 	}
 	if profile.Name == "" {
 		profile.Name = fmt.Sprintf("Profile %.6s", profile.GetAddressString())
+	}
+	memoSetProfile, err := db.GetProfileForPkHash(pkHash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return nil, jerr.Get("error getting MemoSetProfile for hash", err)
+	}
+	if memoSetProfile != nil {
+		profile.Profile = memoSetProfile.Profile
+		profile.ProfileTx = memoSetProfile.TxHash
 	}
 	return profile, nil
 }

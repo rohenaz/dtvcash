@@ -75,6 +75,7 @@ var MemoApp = {
         MemoFollowSubmit: "memo/follow-submit",
         MemoUnfollowSubmit: "memo/unfollow-submit",
         MemoSetNameSubmit: "memo/set-name-submit",
+        MemoSetProfileSubmit: "memo/set-profile-submit",
         MemoLikeSubmit: "memo/like-submit",
         MemoWait: "memo/wait",
         MemoWaitSubmit: "memo/wait-submit",

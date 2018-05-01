@@ -115,6 +115,46 @@
     /**
      * @param {jQuery} $form
      */
+    MemoApp.Form.SetProfile = function ($form) {
+        CheckLoadPassword($form);
+        $form.submit(function (e) {
+            e.preventDefault();
+            var profile = $form.find("[name=profile]").val();
+            if (profile.length === 0) {
+                if (!confirm("Are you sure you want to set an empty profile?")) {
+                    return;
+                }
+            }
+
+            var password = $form.find("[name=password]").val();
+            if (password.length === 0) {
+                alert("Must enter a password.");
+                return;
+            }
+
+            CheckSavePassword($form);
+
+            $.ajax({
+                type: "POST",
+                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoSetProfileSubmit,
+                data: {
+                    profile: profile,
+                    password: password
+                },
+                success: function (txHash) {
+                    if (!txHash || txHash.length === 0) {
+                        alert("Server error. Please try refreshing the page.");
+                        return
+                    }
+                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
+                },
+                error: MemoApp.Form.ErrorHandler
+            });
+        });
+    };
+    /**
+     * @param {jQuery} $form
+     */
     MemoApp.Form.Follow = function ($form) {
         CheckLoadPassword($form);
         $form.submit(function (e) {
