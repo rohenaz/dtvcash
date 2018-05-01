@@ -43,6 +43,12 @@ var followersRoute = web.Route{
 			return
 		}
 		r.Helper["Profile"] = pf
+		followers, err := profile.GetFollowers(pkHash)
+		if err != nil {
+			r.Error(jerr.Get("error setting followers for hash", err), http.StatusInternalServerError)
+			return
+		}
+		r.Helper["Followers"] = followers
 		r.RenderTemplate(res.UrlProfileFollowers)
 	},
 }
@@ -80,6 +86,12 @@ var followingRoute = web.Route{
 			return
 		}
 		r.Helper["Profile"] = pf
+		following, err := profile.GetFollowing(pkHash)
+		if err != nil {
+			r.Error(jerr.Get("error setting following for hash", err), http.StatusInternalServerError)
+			return
+		}
+		r.Helper["Following"] = following
 		r.RenderTemplate(res.UrlProfileFollowing)
 	},
 }

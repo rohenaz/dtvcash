@@ -12,6 +12,10 @@ type Reputation struct {
 	rep *cache.Reputation
 }
 
+func (r Reputation) HasReputation() bool {
+	return r.rep != nil
+}
+
 func (r Reputation) IsDirectFollow() bool {
 	return r.rep.DirectFollow
 }
@@ -36,6 +40,9 @@ func (r Reputation) GetPercentStringIncludingDirect() string {
 }
 
 func GetReputation(selfPkHash []byte, pkHash []byte) (*Reputation, error) {
+	if len(selfPkHash) == 0 {
+		return &Reputation{}, nil
+	}
 	cachedRep, err := cache.GetReputation(selfPkHash, pkHash)
 	if err == nil {
 		return &Reputation{

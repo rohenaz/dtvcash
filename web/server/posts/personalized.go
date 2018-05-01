@@ -14,7 +14,8 @@ import (
 )
 
 var personalizedRoute = web.Route{
-	Pattern: res.UrlPostsPersonalized,
+	Pattern:    res.UrlPostsPersonalized,
+	NeedsLogin: true,
 	Handler: func(r *web.Response) {
 		preHandler(r)
 		offset := r.Request.GetUrlParameterInt("offset")

@@ -27,7 +27,7 @@ func (p Post) IsSelf() bool {
 	return bytes.Equal(p.SelfPkHash, p.Memo.PkHash)
 }
 
-func (p Post) IsLikable() bool {
+func (p Post) IsLoggedIn() bool {
 	return len(p.SelfPkHash) > 0
 }
 

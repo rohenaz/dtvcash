@@ -5,12 +5,12 @@
 </p>
 
 {{ if not .Profile.Following }}
-<h3>Not Following Anyone Yet</h3>
+<h3>{{ .Profile.Name }} is not following anyone yet</h3>
 {{ else }}
-<h3>Following</h3>
+<h3>{{ .Profile.Name }} is Following</h3>
 {{ end }}
 
-{{ range .Profile.Following }}
+{{ range .Following }}
 <p>
     <a class="btn" href="/profile/{{ .GetAddressString }}">{{ .Name }} ({{ .GetAddressString }})</a>
 </p>

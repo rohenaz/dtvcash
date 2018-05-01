@@ -76,6 +76,10 @@ func IsRecordNotFoundError(e error) bool {
 	return hasError(e, "record not found")
 }
 
+func IsNoRowsInResultSetError(e error) bool {
+	return hasError(e, "sql: no rows in result set")
+}
+
 func IsAlreadyExistsError(e error) bool {
 	return hasError(e, alreadyExistsErrorMessage)
 }

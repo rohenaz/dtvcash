@@ -30,34 +30,15 @@ type Profile struct {
 	Followers      []*Follower
 	Following      []*Follower
 	Reputation     *Reputation
+	CanFollow      bool
 }
 
 func (p Profile) IsSelf() bool {
 	return bytes.Equal(p.PkHash, p.SelfPkHash)
 }
 
-func (p Profile) CanFollow() bool {
-	if p.IsSelf() || len(p.SelfPkHash) == 0 {
-		return false
-	}
-	for _, follower := range p.Followers {
-		if bytes.Equal(follower.PkHash, p.SelfPkHash) {
-			return false
-		}
-	}
-	return true
-}
-
 func (p Profile) CanUnFollow() bool {
-	if p.IsSelf() || len(p.SelfPkHash) == 0 {
-		return false
-	}
-	for _, follower := range p.Followers {
-		if bytes.Equal(follower.PkHash, p.SelfPkHash) {
-			return true
-		}
-	}
-	return false
+	return ! p.CanFollow && len(p.SelfPkHash) > 0
 }
 
 func (p Profile) HasBalance() bool {
@@ -167,6 +148,15 @@ func (p *Profile) SetFollowingCount() error {
 	return nil
 }
 
+func (p *Profile) SetCanFollow() error {
+	canFollow, err := CanFollow(p.PkHash, p.SelfPkHash)
+	if err != nil {
+		return jerr.Get("error getting can follow", err)
+	}
+	p.CanFollow = canFollow
+	return nil
+}
+
 func (p *Profile) SetReputation() error {
 	reputation, err := GetReputation(p.SelfPkHash, p.PkHash)
 	if err != nil {
@@ -177,9 +167,11 @@ func (p *Profile) SetReputation() error {
 }
 
 func (p Profile) GetText() string {
-	profile := p.Profile
+	if p.Profile == "" {
+		return "Not set"
+	}
 	var re = regexp.MustCompile(`(http[s]?://[^\s]*)`)
-	s := re.ReplaceAllString(profile, `<a href="$1" target="_blank">$1</a>`)
+	s := re.ReplaceAllString(p.Profile, `<a href="$1" target="_blank">$1</a>`)
 	s = strings.Replace(s, "\n", "<br/>", -1)
 	return s
 }
@@ -198,18 +190,6 @@ func GetProfiles(selfPkHash []byte) ([]*Profile, error) {
 		profiles = append(profiles, profile)
 	}
 	return profiles, nil
-}
-
-func GetProfileAndSetFollowers(pkHash []byte, selfPkHash []byte) (*Profile, error) {
-	pf, err := GetProfile(pkHash, selfPkHash)
-	if err != nil {
-		return nil, jerr.Get("error getting profile for hash", err)
-	}
-	err = pf.SetFollowers()
-	if err != nil {
-		return nil, jerr.Get("error setting followers for profile", err)
-	}
-	return pf, nil
 }
 
 func GetProfile(pkHash []byte, selfPkHash []byte) (*Profile, error) {
@@ -253,4 +233,12 @@ func GetProfileAndSetBalances(pkHash []byte, selfPkHash []byte) (*Profile, error
 		return nil, jerr.Get("error setting balances", err)
 	}
 	return pf, nil
+}
+
+func CanFollow(pkHash []byte, selfPkHash []byte) (bool, error) {
+	isFollower, err := db.IsFollower(selfPkHash, pkHash)
+	if err != nil {
+		return false, jerr.Get("error determining is follower from db", err)
+	}
+	return isFollower, nil
 }

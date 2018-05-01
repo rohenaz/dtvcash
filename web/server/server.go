@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/bitcoin/queuer"
 	"git.jasonc.me/main/memo/app/db"
@@ -20,9 +21,11 @@ var UseMinJS bool
 
 func isLoggedIn(r *web.Response) bool {
 	if ! auth.IsLoggedIn(r.Session.CookieId) {
-		r.SetResponseCode(http.StatusUnauthorized)
+		fmt.Println("here1")
+		r.SetRedirect(res.UrlLogin)
 		return false
 	}
+	fmt.Println("here2")
 	return true
 }
 

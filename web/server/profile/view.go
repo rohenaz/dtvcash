@@ -61,15 +61,17 @@ var viewRoute = web.Route{
 			r.Error(jerr.Get("error setting follower count for profile", err), http.StatusInternalServerError)
 			return
 		}
-		err = pf.SetFollowers()
-		if err != nil {
-			r.Error(jerr.Get("error setting followers for profile", err), http.StatusInternalServerError)
-			return
-		}
-		err = pf.SetReputation()
-		if err != nil {
-			r.Error(jerr.Get("error getting reputation", err), http.StatusInternalServerError)
-			return
+		if len(userPkHash) > 0 {
+			err = pf.SetReputation()
+			if err != nil {
+				r.Error(jerr.Get("error getting reputation", err), http.StatusInternalServerError)
+				return
+			}
+			err = pf.SetCanFollow()
+			if err != nil {
+				r.Error(jerr.Get("error setting can follow for profile", err), http.StatusInternalServerError)
+				return
+			}
 		}
 		r.Helper["Profile"] = pf
 
