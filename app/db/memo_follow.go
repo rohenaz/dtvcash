@@ -142,14 +142,14 @@ func GetFollowingCountForPkHash(pkHash []byte) (uint, error) {
 	}
 	sql := "" +
 		"SELECT " +
-		"	SUM(IF(unfollow=0, 1, 0)) AS following " +
+		"	COALESCE(SUM(IF(unfollow=0, 1, 0)), 0) AS following " +
 		"FROM memo_follows " +
-		"WHERE id IN (" +
+		"JOIN (" +
 		"	SELECT MAX(id) AS id" +
 		"	FROM memo_follows" +
 		"	WHERE pk_hash = ?" +
 		"	GROUP BY pk_hash, follow_pk_hash" +
-		")"
+		") sq ON (sq.id = memo_follows.id)"
 	query := db.Raw(sql, pkHash)
 	var cnt uint
 	row := query.Row()
@@ -167,20 +167,20 @@ func GetFollowerCountForPkHash(followPkHash []byte) (uint, error) {
 	}
 	sql := "" +
 		"SELECT " +
-		"	SUM(IF(unfollow=0, 1, 0)) AS followers " +
+		"	COALESCE(SUM(IF(unfollow=0, 1, 0)), 0) AS followers " +
 		"FROM memo_follows " +
-		"WHERE id IN (" +
+		"JOIN (" +
 		"	SELECT MAX(id) AS id" +
 		"	FROM memo_follows" +
 		"	WHERE follow_pk_hash = ?" +
 		"	GROUP BY pk_hash, follow_pk_hash" +
-		")"
+		") sq ON (sq.id = memo_follows.id)"
 	query := db.Raw(sql, followPkHash)
 	var cnt uint
 	row := query.Row()
 	err = row.Scan(&cnt)
 	if err != nil {
-		return 0, jerr.Get("error running following count query", err)
+		return 0, jerr.Get("error running follower count query", err)
 	}
 	return cnt, nil
 }
