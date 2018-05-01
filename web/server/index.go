@@ -115,7 +115,7 @@ var feedRoute = web.Route{
 		}
 		r.Helper["Key"] = key
 
-		pf, err := profile.GetProfileAndSetBalances(key.PkHash, key.PkHash)
+		pf, err := profile.GetProfile(key.PkHash, key.PkHash)
 		if err != nil {
 			r.Error(jerr.Get("error getting profile for hash", err), http.StatusInternalServerError)
 			return

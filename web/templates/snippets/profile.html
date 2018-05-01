@@ -3,7 +3,7 @@
         <th>Name</th>
         <td class="name">
             <span class="identicon-{{ .GetAddressString }}">
-                <img class="identicon" />
+                <img class="identicon"/>
             </span>
         {{ .Name }}
         </td>
@@ -11,13 +11,13 @@
     <tr>
         <th>Address</th>
         <td class="address">
-             {{ .GetCashAddressString }}<br>
+        {{ .GetCashAddressString }}<br>
             <span class="click-for-qr"><a href="#" id="qr-code-link">Show QR code &amp; legacy address</a></span>
             <div id="qr-code">
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ .GetCashAddressString }}">
                 <br/>
                 <span class="click-for-qr">Legacy Address</span> <br>
-                {{ .GetAddressString }}
+            {{ .GetAddressString }}
             </div>
         </td>
     </tr>
@@ -37,6 +37,21 @@
             </a>
         </td>
     </tr>
+{{ if .Reputation }}
+    <tr>
+        <th>Reputation</th>
+        <td>
+        {{ if .Reputation.IsDirectFollow }}
+            You follow <b>{{ .Name }}</b>! -
+            <i>{{ .Reputation.GetTrustedFollowers }} of {{ .Reputation.GetTotalFollowing }}
+                ({{ .Reputation.GetPercentString }}%)</i>
+        {{ else }}
+        {{ .Reputation.GetTrustedFollowers }} of {{ .Reputation.GetTotalFollowing }}
+            ({{ .Reputation.GetPercentString }}%)
+        {{ end }}
+        </td>
+    </tr>
+{{ end }}
 {{ if .HasBalance }}
     <tr>
         <th>Balance</th>

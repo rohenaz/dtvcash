@@ -47,6 +47,11 @@ var newRoute = web.Route{
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
 		}
+		err = profile.AttachReputationToPosts(posts)
+		if err != nil {
+			r.Error(jerr.Get("error attaching reputation to posts", err), http.StatusInternalServerError)
+			return
+		}
 		res.SetPageAndOffset(r, offset)
 		r.Helper["Posts"] = posts
 		r.Render()

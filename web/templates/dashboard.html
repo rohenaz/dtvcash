@@ -19,4 +19,10 @@
 {{ template "snippets/feed.html" . }}
 {{ end }}
 
+{{ if eq .Profile.Balance 0 }}
+<p>
+    Send yourself some BCH to start posting.
+</p>
+{{ end }}
+
 {{ template "snippets/footer.html" . }}

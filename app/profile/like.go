@@ -87,6 +87,17 @@ func AttachLikesToPosts(posts []*Post) error {
 	return nil
 }
 
+func AttachReputationToPosts(posts []*Post) error {
+	for _, post := range posts {
+		reputation, err := GetReputation(post.SelfPkHash, post.Memo.PkHash)
+		if err != nil {
+			return jerr.Get("error getting reputation", err)
+		}
+		post.Reputation = reputation
+	}
+	return nil
+}
+
 func GetLikesForPkHash(pkHash []byte) ([]*Like, error) {
 	memoLikes, err := db.GetMemoLikesForPkHash(pkHash)
 	if err != nil {

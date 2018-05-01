@@ -66,6 +66,11 @@ var archiveRoute = web.Route{
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
 		}
+		err = profile.AttachReputationToPosts(posts)
+		if err != nil {
+			r.Error(jerr.Get("error attaching reputation to posts", err), http.StatusInternalServerError)
+			return
+		}
 		res.SetPageAndOffset(r, offset)
 		r.Helper["OffsetLink"] = fmt.Sprintf("%s?day=%s", strings.TrimLeft(res.UrlPostsArchive, "/"), day)
 		r.Helper["PrevDay"] = timeStart.Add(-24 * time.Hour).Format("2006-01-02")

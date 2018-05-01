@@ -21,6 +21,9 @@
             {{ .Post.Memo.GetAddressString }}
         {{- end -}}
             </a>
+        {{ if .Post.Reputation }}
+            ({{ .Post.Reputation.GetPercentStringIncludingDirect }}%)
+        {{ end }}
         {{ if .Post.Memo.ParentTxHash }}
             replied to <a href="post/{{ .Post.Memo.GetParentTransactionHashString }}">post</a> at
         {{ else }}

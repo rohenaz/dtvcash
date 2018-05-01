@@ -16,6 +16,7 @@ type Post struct {
 	SelfPkHash []byte
 	ReplyCount uint
 	Replies    []*Post
+	Reputation *Reputation
 }
 
 func (p Post) IsSelf() bool {

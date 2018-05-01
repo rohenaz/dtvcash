@@ -46,6 +46,11 @@ var postRoute = web.Route{
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
 		}
+		err = profile.AttachReputationToPosts(append(post.Replies, post))
+		if err != nil {
+			r.Error(jerr.Get("error attaching reputation to posts", err), http.StatusInternalServerError)
+			return
+		}
 		r.Helper["Post"] = post
 		r.Helper["Title"] = fmt.Sprintf("Memo - Post by %s", post.Name)
 		if post.Name == "" {

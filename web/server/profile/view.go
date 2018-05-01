@@ -66,6 +66,11 @@ var viewRoute = web.Route{
 			r.Error(jerr.Get("error setting followers for profile", err), http.StatusInternalServerError)
 			return
 		}
+		err = pf.SetReputation()
+		if err != nil {
+			r.Error(jerr.Get("error getting reputation", err), http.StatusInternalServerError)
+			return
+		}
 		r.Helper["Profile"] = pf
 
 		memoLikes, err := profile.GetLikesForPkHash(pkHash)
