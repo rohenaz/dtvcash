@@ -149,8 +149,7 @@ func GetFollowingCountForPkHash(pkHash []byte) (uint, error) {
 		"	FROM memo_follows" +
 		"	WHERE pk_hash = ?" +
 		"	GROUP BY pk_hash, follow_pk_hash" +
-		") " +
-		"GROUP BY pk_hash"
+		")"
 	query := db.Raw(sql, pkHash)
 	var cnt uint
 	row := query.Row()
@@ -175,8 +174,7 @@ func GetFollowerCountForPkHash(followPkHash []byte) (uint, error) {
 		"	FROM memo_follows" +
 		"	WHERE follow_pk_hash = ?" +
 		"	GROUP BY pk_hash, follow_pk_hash" +
-		") " +
-		"GROUP BY follow_pk_hash"
+		")"
 	query := db.Raw(sql, followPkHash)
 	var cnt uint
 	row := query.Row()
