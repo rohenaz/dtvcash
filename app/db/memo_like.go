@@ -203,7 +203,7 @@ func GetPersonalizedRecentTopLikedTxHashes(selfPkHash []byte, offset uint, timeS
 		"	FROM memo_follows" +
 		"	WHERE pk_hash = ?" +
 		"	GROUP BY pk_hash, follow_pk_hash" +
-		") sq ON (sq.id = memo_follows.id)" +
+		") sq ON (sq.id = memo_follows.id) " +
 		"WHERE unfollow = 0"
 	query := db.
 		Table("memo_likes").

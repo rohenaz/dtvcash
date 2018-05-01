@@ -49,17 +49,7 @@ var indexRoute = web.Route{
 		}
 		r.Helper["Profile"] = pf
 
-		err = pf.SetFollowing()
-		if err != nil {
-			r.Error(jerr.Get("error setting following for profile", err), http.StatusInternalServerError)
-			return
-		}
-
-		var pkHashes [][]byte
-		for _, following := range pf.Following {
-			pkHashes = append(pkHashes, following.PkHash)
-		}
-		err = setFeed(r, pkHashes, key.PkHash)
+		err = setFeed(r, key.PkHash)
 		if err != nil {
 			r.Error(jerr.Get("error setting feed", err), http.StatusInternalServerError)
 			return
@@ -115,29 +105,14 @@ var feedRoute = web.Route{
 			return
 		}
 		r.Helper["Key"] = key
-
-		pf, err := profile.GetProfile(key.PkHash, key.PkHash)
-		if err != nil {
-			r.Error(jerr.Get("error getting profile for hash", err), http.StatusInternalServerError)
-			return
-		}
-		err = pf.SetFollowing()
-		if err != nil {
-			r.Error(jerr.Get("error setting following count for profile", err), http.StatusInternalServerError)
-			return
-		}
-		var pkHashes [][]byte
-		for _, following := range pf.Following {
-			pkHashes = append(pkHashes, following.PkHash)
-		}
-		setFeed(r, pkHashes, key.PkHash)
+		setFeed(r, key.PkHash)
 		r.Render()
 	},
 }
 
-func setFeed(r *web.Response, pkHashes [][]byte, selfPkHash []byte) error {
+func setFeed(r *web.Response, selfPkHash []byte) error {
 	offset := r.Request.GetUrlParameterInt("offset")
-	posts, err := profile.GetPostsForHashes(pkHashes, selfPkHash, uint(offset))
+	posts, err := profile.GetPostsFeed(selfPkHash, uint(offset))
 	if err != nil {
 		return jerr.Get("error getting posts for hashes", err)
 	}

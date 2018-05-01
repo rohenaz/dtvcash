@@ -192,6 +192,36 @@ func GetPostsForPkHashes(pkHashes [][]byte, offset uint) ([]*MemoPost, error) {
 	return memoPosts, nil
 }
 
+func GetPostsFeedForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
+	var memoPosts []*MemoPost
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	joinSelect := "SELECT " +
+		"	follow_pk_hash " +
+		"FROM memo_follows " +
+		"JOIN (" +
+		"	SELECT MAX(id) AS id" +
+		"	FROM memo_follows" +
+		"	WHERE pk_hash = ?" +
+		"	GROUP BY pk_hash, follow_pk_hash" +
+		") sq ON (sq.id = memo_follows.id) " +
+		"WHERE unfollow = 0"
+	result := db.
+		Limit(25).
+		Offset(offset).
+		Preload(BlockTable).
+		Joins("JOIN (" + joinSelect + ") fsq ON (memo_posts.pk_hash = fsq.follow_pk_hash)", pkHash).
+		Order("id DESC").
+		Find(&memoPosts)
+	if result.Error != nil {
+		return nil, jerr.Get("error getting memo posts", result.Error)
+	}
+	sort.Sort(memoPostSortByDate(memoPosts))
+	return memoPosts, nil
+}
+
 func GetPostsForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 	if len(pkHash) == 0 {
 		return nil, nil

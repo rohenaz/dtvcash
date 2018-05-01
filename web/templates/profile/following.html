@@ -1,10 +1,8 @@
 {{ template "snippets/header.html" . }}
 
-<h2>
-    <a href="profile/{{ .Profile.GetAddressString }}">
-        Profile - {{ .Profile.Name }}
-    </a>
-</h2>
+<p>
+    <a href="profile/{{ .Profile.GetAddressString }}">Back to {{ .Profile.Name }}'s Profile</a>
+</p>
 
 {{ if not .Profile.Following }}
 <h3>Not Following Anyone Yet</h3>

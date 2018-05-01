@@ -68,8 +68,8 @@ func (p Post) GetTimeString(timezone string) string {
 	return "Unconfirmed"
 }
 
-func GetPostsForHashes(pkHashes [][]byte, selfPkHash []byte, offset uint) ([]*Post, error) {
-	dbPosts, err := db.GetPostsForPkHashes(pkHashes, offset)
+func GetPostsFeed(selfPkHash []byte, offset uint) ([]*Post, error) {
+	dbPosts, err := db.GetPostsFeedForPkHash(selfPkHash, offset)
 	if err != nil {
 		return nil, jerr.Get("error getting posts for hash", err)
 	}
