@@ -6,9 +6,9 @@ import (
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/cache"
 	"git.jasonc.me/main/memo/app/db"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
 	"github.com/cpacia/bchutil"
-	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 )
 

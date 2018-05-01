@@ -43,7 +43,7 @@ var waitSubmitRoute = web.Route{
 			r.Error(jerr.Getf(err, "error waiting for transaction (%s)", txHashString), http.StatusInternalServerError)
 			return
 		}
-		txn, err := db.GetTransactionByHash(txHash.CloneBytes())
+		txn, err := db.GetTransactionByHashWithOutputs(txHash.CloneBytes())
 		out, err := transaction.GetMemoOutputIfExists(txn)
 		if err != nil {
 			r.Error(jerr.Get("error checking for memo output", err), http.StatusInternalServerError)

@@ -2,7 +2,6 @@ package transaction
 
 import (
 	"bytes"
-	"fmt"
 	"git.jasonc.me/main/memo/app/cache"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/cpacia/btcd/wire"
@@ -33,7 +32,7 @@ func ConditionallySaveTransaction(msg *wire.MsgTx, dbBlock *db.Block) (bool, boo
 	} else {
 		savingMemo = true
 	}
-	err = SaveTransaction(msg, dbBlock)
+	err = SaveTransaction(dbTxn, dbBlock)
 	if err != nil {
 		return false, false, jerr.Get("error saving transaction", err)
 	}
@@ -44,30 +43,25 @@ func ConditionallySaveTransaction(msg *wire.MsgTx, dbBlock *db.Block) (bool, boo
 	return true, savingMemo, nil
 }
 
-func SaveTransaction(msg *wire.MsgTx, block *db.Block) error {
-	hash := msg.TxHash()
-	txn, err := db.GetTransactionByHash(hash.CloneBytes())
+func SaveTransaction(txn *db.Transaction, block *db.Block) error {
+	hash := txn.GetChainHash()
+	existingTxn, err := db.GetTransactionByHash(hash.CloneBytes())
 	if err != nil && ! db.IsRecordNotFoundError(err) {
 		return jerr.Get("error getting transaction from db", err)
 	}
 
-	if txn != nil {
-		if block == nil || txn.BlockId != 0 {
+	if existingTxn != nil {
+		if block == nil || existingTxn.BlockId != 0 {
 			// Nothing to update
 			return nil
 		}
-		err = updateTxn(txn, block)
+		err = updateTxn(existingTxn, block)
 		if err != nil {
 			return jerr.Get("error updating transaction", err)
 		}
 	} else {
-		txn, err = db.ConvertMsgToTransaction(msg)
-		if err != nil {
-			return jerr.Get("error converting message to transaction", err)
-		}
 		err = newTxn(txn, block)
 		if err != nil {
-			fmt.Println(GetTxInfo(msg))
 			return jerr.Get("error saving new transaction", err)
 		}
 	}
@@ -95,7 +89,9 @@ func ClearCaches(pkHashes [][]byte) error {
 }
 
 func updateTxn(txn *db.Transaction, block *db.Block) error {
-	//fmt.Printf("Updating existing txn: %s, block id: %d\n", txn.GetChainHash().String(), block.Id)
+	if block != nil {
+		txn.BlockId = block.Id
+	}
 	err := txn.Save()
 	if err != nil {
 		return jerr.Get("error saving updated transaction", err)

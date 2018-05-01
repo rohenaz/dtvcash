@@ -12,9 +12,3 @@
     <span class="page">Page {{ .Page }}</span>
     <a class="{{ if lt (len .Posts) 25 }}disabled{{end}}" href="feed?offset={{ .NextOffset }}">Next ></a>
 </p>
-
-{{ if eq .Profile.Balance 0 }}
-<p>
-    Send yourself some BCH to start posting.
-</p>
-{{ end }}
