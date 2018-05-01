@@ -225,6 +225,7 @@ func GetUniqueMemoAPkHashes() ([][]byte, error) {
 	if err != nil {
 		return nil, jerr.Get("error getting distinct pk hashes", err)
 	}
+	defer rows.Close()
 	var pkHashes [][]byte
 	for rows.Next() {
 		var pkHash []byte
