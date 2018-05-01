@@ -41,8 +41,10 @@ func onBlock(n *Node, msg *wire.MsgBlock) {
 		memosSaved,
 		dbBlock.Timestamp.String(),
 	)
-	n.NodeStatus.HeightChecked = dbBlock.Height
-	err = n.NodeStatus.Save()
+	if dbBlock.Height == n.NodeStatus.HeightChecked + 1 {
+		n.NodeStatus.HeightChecked = dbBlock.Height
+		err = n.NodeStatus.Save()
+	}
 	if err != nil {
 		jerr.Get("error saving node status", err).Print()
 		return
