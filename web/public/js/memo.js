@@ -33,8 +33,13 @@
 
         setMsgByteCount();
         CheckLoadPassword($form);
+        var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
+            if (submitting) {
+                return
+            }
+
             var message = $message.val();
             if (maxPostBytes - MemoApp.utf8ByteLength(message) < 0) {
                 alert("Maximum post message is " + maxPostBytes + " bytes. Note that some characters are more than 1 byte." +
@@ -55,6 +60,7 @@
 
             CheckSavePassword($form);
 
+            submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoNewSubmit,
@@ -63,13 +69,21 @@
                     password: password
                 },
                 success: function (txHash) {
+                    submitting = false;
                     if (!txHash || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
                     window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
-                error: MemoApp.Form.ErrorHandler
+                error: function (xhr) {
+                    submitting = false;
+                    var errorMessage =
+                        "Error with request (response code " + xhr.status + "):\n" +
+                        (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+                        "If this problem persists, try refreshing the page.";
+                    alert(errorMessage);
+                }
             });
         });
     };
@@ -78,8 +92,13 @@
      */
     MemoApp.Form.SetName = function ($form) {
         CheckLoadPassword($form);
+        var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
+            if (submitting) {
+                return
+            }
+
             var name = $form.find("[name=name]").val();
             if (name.length === 0) {
                 alert("Must enter a name.");
@@ -94,6 +113,7 @@
 
             CheckSavePassword($form);
 
+            submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoSetNameSubmit,
@@ -102,13 +122,21 @@
                     password: password
                 },
                 success: function (txHash) {
+                    submitting = false;
                     if (!txHash || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
                     window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
-                error: MemoApp.Form.ErrorHandler
+                error: function (xhr) {
+                    submitting = false;
+                    var errorMessage =
+                        "Error with request (response code " + xhr.status + "):\n" +
+                        (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+                        "If this problem persists, try refreshing the page.";
+                    alert(errorMessage);
+                }
             });
         });
     };
@@ -117,8 +145,13 @@
      */
     MemoApp.Form.SetProfile = function ($form) {
         CheckLoadPassword($form);
+        var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
+            if (submitting) {
+                return
+            }
+
             var profile = $form.find("[name=profile]").val();
             if (profile.length === 0) {
                 if (!confirm("Are you sure you want to set an empty profile?")) {
@@ -134,6 +167,7 @@
 
             CheckSavePassword($form);
 
+            submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoSetProfileSubmit,
@@ -142,13 +176,21 @@
                     password: password
                 },
                 success: function (txHash) {
+                    submitting = false;
                     if (!txHash || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
                     window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
-                error: MemoApp.Form.ErrorHandler
+                error: function (xhr) {
+                    submitting = false;
+                    var errorMessage =
+                        "Error with request (response code " + xhr.status + "):\n" +
+                        (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+                        "If this problem persists, try refreshing the page.";
+                    alert(errorMessage);
+                }
             });
         });
     };
@@ -157,8 +199,13 @@
      */
     MemoApp.Form.Follow = function ($form) {
         CheckLoadPassword($form);
+        var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
+            if (submitting) {
+                return
+            }
+
             var address = $form.find("[name=address]").val();
             if (address.length === 0) {
                 alert("Form error, address not set.");
@@ -173,6 +220,7 @@
 
             CheckSavePassword($form);
 
+            submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoFollowSubmit,
@@ -181,13 +229,21 @@
                     password: password
                 },
                 success: function (txHash) {
+                    submitting = false;
                     if (!txHash || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
                     window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
-                error: MemoApp.Form.ErrorHandler
+                error: function (xhr) {
+                    submitting = false;
+                    var errorMessage =
+                        "Error with request (response code " + xhr.status + "):\n" +
+                        (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+                        "If this problem persists, try refreshing the page.";
+                    alert(errorMessage);
+                }
             });
         });
     };
@@ -197,8 +253,12 @@
      */
     MemoApp.Form.Unfollow = function ($form) {
         CheckLoadPassword($form);
+        var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
+            if (submitting) {
+                return
+            }
 
             var address = $form.find("[name=address]").val();
             if (address.length === 0) {
@@ -214,6 +274,7 @@
 
             CheckSavePassword($form);
 
+            submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoUnfollowSubmit,
@@ -222,13 +283,21 @@
                     password: password
                 },
                 success: function (txHash) {
+                    submitting = false;
                     if (txHash === undefined || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
                     window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
-                error: MemoApp.Form.ErrorHandler
+                error: function (xhr) {
+                    submitting = false;
+                    var errorMessage =
+                        "Error with request (response code " + xhr.status + "):\n" +
+                        (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+                        "If this problem persists, try refreshing the page.";
+                    alert(errorMessage);
+                }
             });
         });
     };
@@ -237,8 +306,13 @@
      */
     MemoApp.Form.Like = function ($form) {
         CheckLoadPassword($form);
+        var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
+            if (submitting) {
+                return
+            }
+
             var txHash = $form.find("[name=tx-hash]").val();
             if (txHash.length === 0) {
                 alert("Form error, tx hash not set.");
@@ -259,6 +333,7 @@
 
             CheckSavePassword($form);
 
+            submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoLikeSubmit,
@@ -268,13 +343,21 @@
                     password: password
                 },
                 success: function (txHash) {
+                    submitting = false;
                     if (!txHash || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
                     window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
-                error: MemoApp.Form.ErrorHandler
+                error: function (xhr) {
+                    submitting = false;
+                    var errorMessage =
+                        "Error with request (response code " + xhr.status + "):\n" +
+                        (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+                        "If this problem persists, try refreshing the page.";
+                    alert(errorMessage);
+                }
             });
         });
     };
@@ -300,8 +383,12 @@
 
         setMsgByteCount();
         CheckLoadPassword($form);
+        var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
+            if (submitting) {
+                return
+            }
 
             var message = $message.val();
             if (maxReplyBytes - MemoApp.utf8ByteLength(message) < 0) {
@@ -328,6 +415,7 @@
             }
             CheckSavePassword($form);
 
+            submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoReplySubmit,
@@ -337,13 +425,21 @@
                     password: password
                 },
                 success: function (txHash) {
+                    submitting = false;
                     if (!txHash || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
                     window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
-                error: MemoApp.Form.ErrorHandler
+                error: function (xhr) {
+                    submitting = false;
+                    var errorMessage =
+                        "Error with request (response code " + xhr.status + "):\n" +
+                        (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+                        "If this problem persists, try refreshing the page.";
+                    alert(errorMessage);
+                }
             });
         });
     };
