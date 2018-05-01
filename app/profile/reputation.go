@@ -3,21 +3,48 @@ package profile
 import (
 	"bytes"
 	"fmt"
+	"git.jasonc.me/main/memo/app/cache"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
 )
 
 type Reputation struct {
-	TrustedFollowers int
-	TotalFollowing   int
-	DirectFollow     bool
+	rep *cache.Reputation
+}
+
+func (r Reputation) IsDirectFollow() bool {
+	return r.rep.DirectFollow
+}
+
+func (r Reputation) GetTrustedFollowers() int {
+	return r.rep.TrustedFollowers
+}
+
+func (r Reputation) GetTotalFollowing() int {
+	return r.rep.TotalFollowing
 }
 
 func (r Reputation) GetPercentString() string {
-	return fmt.Sprintf("%.2f", float32(r.TrustedFollowers)/float32(r.TotalFollowing)*100)
+	return fmt.Sprintf("%.2f", float32(r.rep.TrustedFollowers)/float32(r.rep.TotalFollowing)*100)
+}
+
+func (r Reputation) GetPercentStringIncludingDirect() string {
+	if r.rep.DirectFollow {
+		return "100"
+	}
+	return r.GetPercentString()
 }
 
 func GetReputation(selfPkHash []byte, pkHash []byte) (*Reputation, error) {
+	cachedRep, err := cache.GetReputation(selfPkHash, pkHash)
+	if err == nil {
+		return &Reputation{
+			rep: cachedRep,
+		}, nil
+	} else if ! cache.IsMissError(err) {
+		return nil, jerr.Get("error getting reputation from cache", err)
+	}
+
 	trustedUsers, err := db.GetFollowersForPkHash(selfPkHash)
 	if err != nil {
 		return nil, jerr.Get("error getting trustedUsers", err)
@@ -40,13 +67,6 @@ TrustedFollowersDeDupeLoop:
 		}
 		deDupedTrustedUsers = append(deDupedTrustedUsers, trustedUser)
 	}
-	for _, deDupedTrustedUser := range deDupedTrustedUsers {
-		name, err := db.GetNameForPkHash(deDupedTrustedUser.FollowPkHash)
-		if err != nil {
-			return nil, jerr.Get("error getting name for pk hash", err)
-		}
-		fmt.Printf("deDupedTrustedUser name: %s\n", name.Name)
-	}
 	var trustedFollowers []*db.MemoFollow
 TrustedFollowersLoop:
 	for _, trustedUser := range deDupedTrustedUsers {
@@ -57,9 +77,16 @@ TrustedFollowersLoop:
 			}
 		}
 	}
-	return &Reputation{
+	var rep = &cache.Reputation{
 		TrustedFollowers: len(trustedFollowers),
 		TotalFollowing:   len(deDupedTrustedUsers),
 		DirectFollow:     directFollow,
+	}
+	err = cache.SetReputation(selfPkHash, pkHash, rep)
+	if err != nil {
+		jerr.Get("error saving reputation to cache", err).Print()
+	}
+	return &Reputation{
+		rep: rep,
 	}, nil
 }

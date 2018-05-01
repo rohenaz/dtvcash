@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"git.jasonc.me/main/bitcoin/bitcoin/memo"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"git.jasonc.me/main/memo/app/cache"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/html-parser"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
@@ -156,6 +157,10 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 		if err != nil {
 			return jerr.Get("error saving memo_follow", err)
 		}
+		err = cache.ClearReputation(memoFollow.PkHash, memoFollow.FollowPkHash)
+		if err != nil && ! cache.IsMissError(err) {
+			return jerr.Get("error clearing cache", err)
+		}
 	case memo.CodeUnfollow:
 		address := wallet.GetAddressFromPkHash(out.PkScript[5:])
 		if ! bytes.Equal(address.GetScriptAddress(), out.PkScript[5:]) {
@@ -174,6 +179,10 @@ func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error
 		err := memoFollow.Save()
 		if err != nil {
 			return jerr.Get("error saving memo_follow", err)
+		}
+		err = cache.ClearReputation(memoFollow.PkHash, memoFollow.FollowPkHash)
+		if err != nil && ! cache.IsMissError(err) {
+			return jerr.Get("error clearing cache", err)
 		}
 	case memo.CodeLike:
 		txHash, err := chainhash.NewHash(out.PkScript[5:37])
