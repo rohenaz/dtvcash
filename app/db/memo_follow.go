@@ -136,37 +136,53 @@ func GetFollowingForPkHash(followPkHash []byte) ([]*MemoFollow, error) {
 }
 
 func GetFollowingCountForPkHash(pkHash []byte) (uint, error) {
-	cnt, err := count(&MemoFollow{
-		PkHash: pkHash,
-	})
+	db, err := getDb()
 	if err != nil {
-		return 0, jerr.Get("error getting following count", err)
+		return 0, jerr.Get("error getting db", err)
 	}
-	ucnt, err := count(&MemoFollow{
-		PkHash: pkHash,
-		Unfollow: true,
-	})
+	sql := "" +
+		"SELECT " +
+		"	COALESCE(SUM(IF(unfollow=0, 1, 0)), 0) AS following " +
+		"FROM memo_follows " +
+		"JOIN (" +
+		"	SELECT MAX(id) AS id" +
+		"	FROM memo_follows" +
+		"	WHERE pk_hash = ?" +
+		"	GROUP BY pk_hash, follow_pk_hash" +
+		") sq ON (sq.id = memo_follows.id)"
+	query := db.Raw(sql, pkHash)
+	var cnt uint
+	row := query.Row()
+	err = row.Scan(&cnt)
 	if err != nil {
-		return 0, jerr.Get("error getting following count", err)
+		return 0, jerr.Get("error running following count query", err)
 	}
-	return (cnt - ucnt), nil
+	return cnt, nil
 }
 
 func GetFollowerCountForPkHash(followPkHash []byte) (uint, error) {
-	cnt, err := count(&MemoFollow{
-		FollowPkHash: followPkHash,
-	})
+	db, err := getDb()
 	if err != nil {
-		return 0, jerr.Get("error getting follower count", err)
+		return 0, jerr.Get("error getting db", err)
 	}
-	ucnt, err := count(&MemoFollow{
-		FollowPkHash: followPkHash,
-		Unfollow: true,
-	})
+	sql := "" +
+		"SELECT " +
+		"	COALESCE(SUM(IF(unfollow=0, 1, 0)), 0) AS followers " +
+		"FROM memo_follows " +
+		"JOIN (" +
+		"	SELECT MAX(id) AS id" +
+		"	FROM memo_follows" +
+		"	WHERE follow_pk_hash = ?" +
+		"	GROUP BY pk_hash, follow_pk_hash" +
+		") sq ON (sq.id = memo_follows.id)"
+	query := db.Raw(sql, followPkHash)
+	var cnt uint
+	row := query.Row()
+	err = row.Scan(&cnt)
 	if err != nil {
-		return 0, jerr.Get("error getting follower count", err)
+		return 0, jerr.Get("error running follower count query", err)
 	}
-	return (cnt - ucnt), nil
+	return cnt, nil
 }
 
 func GetCountMemoFollows() (uint, error) {
