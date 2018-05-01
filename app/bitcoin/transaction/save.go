@@ -49,15 +49,12 @@ func SaveTransaction(txn *db.Transaction, block *db.Block) error {
 	if err != nil && ! db.IsRecordNotFoundError(err) {
 		return jerr.Get("error getting transaction from db", err)
 	}
-
 	if existingTxn != nil {
-		if block == nil || existingTxn.BlockId != 0 {
-			// Nothing to update
-			return nil
-		}
-		err = updateTxn(existingTxn, block)
-		if err != nil {
-			return jerr.Get("error updating transaction", err)
+		if block != nil && existingTxn.BlockId == 0 {
+			err = updateTxn(existingTxn, block)
+			if err != nil {
+				return jerr.Get("error updating transaction", err)
+			}
 		}
 	} else {
 		err = newTxn(txn, block)
