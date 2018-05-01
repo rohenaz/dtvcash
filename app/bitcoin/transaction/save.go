@@ -3,6 +3,7 @@ package transaction
 import (
 	"bytes"
 	"fmt"
+	"git.jasonc.me/main/memo/app/cache"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/cpacia/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
@@ -19,9 +20,9 @@ func ConditionallySaveTransaction(msg *wire.MsgTx, dbBlock *db.Block) (bool, boo
 	if err != nil {
 		return false, false, jerr.Get("error getting memo output", err)
 	}
+	pkHashes := GetPkHashesFromTxn(dbTxn)
 	var savingMemo bool
 	if memoOutput == nil {
-		pkHashes := GetPkHashesFromTxn(dbTxn)
 		watched, err := db.ContainsWatchedPkHash(pkHashes)
 		if err != nil && ! db.IsRecordNotFoundError(err) {
 			return false, false, jerr.Get("error checking db for watched addresses", err)
@@ -35,6 +36,10 @@ func ConditionallySaveTransaction(msg *wire.MsgTx, dbBlock *db.Block) (bool, boo
 	err = SaveTransaction(msg, dbBlock)
 	if err != nil {
 		return false, false, jerr.Get("error saving transaction", err)
+	}
+	err = ClearCaches(pkHashes)
+	if err != nil {
+		return false, false, jerr.Get("error clearing transaction caches", err)
 	}
 	return true, savingMemo, nil
 }
@@ -74,6 +79,16 @@ func SaveTransaction(msg *wire.MsgTx, block *db.Block) error {
 		err = SaveMemo(txn, memoOutput, block)
 		if err != nil {
 			return jerr.Get("error saving memos", err)
+		}
+	}
+	return nil
+}
+
+func ClearCaches(pkHashes [][]byte) error {
+	for _, pkHash := range pkHashes {
+		err := cache.ClearBalance(pkHash)
+		if err != nil && ! cache.IsMissError(err) {
+			return jerr.Get("error clearing balance cache", err)
 		}
 	}
 	return nil
