@@ -189,3 +189,50 @@ func GetRecentTopLikedTxHashes(offset uint, timeStart time.Time, timeEnd time.Ti
 	}
 	return txHashes, nil
 }
+
+func GetPersonalizedRecentTopLikedTxHashes(selfPkHash []byte, offset uint, timeStart time.Time, timeEnd time.Time) ([][]byte, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	joinSelect := "SELECT " +
+		"	follow_pk_hash " +
+		"FROM memo_follows " +
+		"JOIN (" +
+		"	SELECT MAX(id) AS id" +
+		"	FROM memo_follows" +
+		"	WHERE pk_hash = ?" +
+		"	GROUP BY pk_hash, follow_pk_hash" +
+		") sq ON (sq.id = memo_follows.id)" +
+		"WHERE unfollow = 0"
+	query := db.
+		Table("memo_likes").
+		Select("like_tx_hash, COUNT(DISTINCT pk_hash) AS count").
+		Joins("LEFT OUTER JOIN blocks ON (memo_likes.block_id = blocks.id)").
+		Joins("JOIN (" + joinSelect + ") fsq ON (memo_likes.pk_hash = fsq.follow_pk_hash)", selfPkHash).
+		Group("like_tx_hash").
+		Order("count DESC, memo_likes.id DESC").
+		Limit(25).
+		Offset(offset)
+	if timeEnd.IsZero() {
+		query = query.Where("timestamp >= ? OR timestamp IS NULL", timeStart)
+	} else {
+		query = query.Where("timestamp >= ?", timeStart).Where("timestamp < ?", timeEnd)
+	}
+	rows, err := query.Rows()
+	if err != nil {
+		return nil, jerr.Get("error running query", err)
+	}
+	defer rows.Close()
+	var txHashes [][]byte
+	for rows.Next() {
+		var likeTxHash []byte
+		var count uint
+		err := rows.Scan(&likeTxHash, &count)
+		if err != nil {
+			return nil, jerr.Get("error scanning rows", err)
+		}
+		txHashes = append(txHashes, likeTxHash)
+	}
+	return txHashes, nil
+}

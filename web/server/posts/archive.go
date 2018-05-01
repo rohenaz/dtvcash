@@ -50,7 +50,7 @@ var archiveRoute = web.Route{
 		} else {
 			r.Helper["Today"] = false
 		}
-		posts, err := profile.GetTopPosts(userPkHash, uint(offset), timeStart, timeEnd)
+		posts, err := profile.GetTopPosts(userPkHash, uint(offset), timeStart, timeEnd, false)
 		if err != nil {
 			r.Error(jerr.Get("error getting recent posts", err), http.StatusInternalServerError)
 			return

@@ -58,9 +58,10 @@ const (
 )
 
 const (
-	UrlPostsNew     = "/posts/new"
-	UrlPostsTop     = "/posts/top"
-	UrlPostsArchive = "/posts/archive"
+	UrlPostsNew          = "/posts/new"
+	UrlPostsTop          = "/posts/top"
+	UrlPostsArchive      = "/posts/archive"
+	UrlPostsPersonalized = "/posts/personalized"
 )
 
 func GetBaseUrl(r *web.Response) string {

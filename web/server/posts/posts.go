@@ -7,6 +7,7 @@ func GetRoutes() []web.Route {
 		newRoute,
 		topRoute,
 		archiveRoute,
+		personalizedRoute,
 	}
 }
 

@@ -13,8 +13,8 @@ import (
 	"strings"
 )
 
-var topRoute = web.Route{
-	Pattern: res.UrlPostsTop,
+var personalizedRoute = web.Route{
+	Pattern: res.UrlPostsPersonalized,
 	Handler: func(r *web.Response) {
 		preHandler(r)
 		offset := r.Request.GetUrlParameterInt("offset")
@@ -39,7 +39,7 @@ var topRoute = web.Route{
 			}
 			userPkHash = key.PkHash
 		}
-		posts, err := profile.GetTopPostsNamedRange(userPkHash, uint(offset), timeRange, false)
+		posts, err := profile.GetTopPostsNamedRange(userPkHash, uint(offset), timeRange, true)
 		if err != nil {
 			r.Error(jerr.Get("error getting top posts", err), http.StatusInternalServerError)
 			return
@@ -62,7 +62,7 @@ var topRoute = web.Route{
 			return
 		}
 		res.SetPageAndOffset(r, offset)
-		r.Helper["OffsetLink"] = fmt.Sprintf("%s?range=%s", strings.TrimLeft(res.UrlPostsTop, "/"), timeRange)
+		r.Helper["OffsetLink"] = fmt.Sprintf("%s?range=%s", strings.TrimLeft(res.UrlPostsPersonalized, "/"), timeRange)
 		r.Helper["Posts"] = posts
 		r.Helper["Range"] = timeRange
 		r.Render()

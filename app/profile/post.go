@@ -246,7 +246,7 @@ func GetRecentPosts(selfPkHash []byte, offset uint) ([]*Post, error) {
 	return posts, nil
 }
 
-func GetTopPostsNamedRange(selfPkHash []byte, offset uint, timeRange string) ([]*Post, error) {
+func GetTopPostsNamedRange(selfPkHash []byte, offset uint, timeRange string, personalized bool) ([]*Post, error) {
 	var timeStart time.Time
 	switch timeRange {
 	case TimeRange1Hour:
@@ -258,13 +258,22 @@ func GetTopPostsNamedRange(selfPkHash []byte, offset uint, timeRange string) ([]
 	case TimeRangeAll:
 		timeStart = time.Now().Add(-24 * 365 * 10 * time.Hour)
 	}
-	return GetTopPosts(selfPkHash, offset, timeStart, time.Time{})
+	return GetTopPosts(selfPkHash, offset, timeStart, time.Time{}, personalized)
 }
 
-func GetTopPosts(selfPkHash []byte, offset uint, timeStart time.Time, timeEnd time.Time) ([]*Post, error) {
-	dbPosts, err := db.GetTopPosts(offset, timeStart, timeEnd)
-	if err != nil {
-		return nil, jerr.Get("error getting posts for hash", err)
+func GetTopPosts(selfPkHash []byte, offset uint, timeStart time.Time, timeEnd time.Time, personalized bool) ([]*Post, error) {
+	var dbPosts []*db.MemoPost
+	var err error
+	if personalized {
+		dbPosts, err = db.GetPersonalizedTopPosts(selfPkHash, offset, timeStart, timeEnd)
+		if err != nil {
+			return nil, jerr.Get("error getting posts for hash", err)
+		}
+	} else {
+		dbPosts, err = db.GetTopPosts(offset, timeStart, timeEnd)
+		if err != nil {
+			return nil, jerr.Get("error getting posts for hash", err)
+		}
 	}
 	var posts []*Post
 	for _, dbPost := range dbPosts {
