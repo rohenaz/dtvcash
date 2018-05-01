@@ -10,6 +10,7 @@ import (
 	"github.com/btcsuite/btcutil"
 	"github.com/cpacia/bchutil"
 	"github.com/jchavannes/jgo/jerr"
+	"regexp"
 )
 
 type Profile struct {
@@ -172,6 +173,13 @@ func (p *Profile) SetReputation() error {
 	}
 	p.Reputation = reputation
 	return nil
+}
+
+func (p Profile) GetText() string {
+	profile := p.Profile
+	var re = regexp.MustCompile(`(http[s]?://[^\s]*)`)
+	s := re.ReplaceAllString(profile, `<a href="$1" target="_blank">$1</a>`)
+	return s
 }
 
 func GetProfiles(selfPkHash []byte) ([]*Profile, error) {
