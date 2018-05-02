@@ -1,6 +1,6 @@
 {{ template "snippets/header.html" . }}
 
-{{ template "posts/header.html" dict "Page" "personalized" }}
+{{ template "posts/header.html" dict "Page" "personalized" "Username" .Username }}
 
 <div class="bottom10">
     <a class="btn {{ if eq .Range "1h" }}sel{{ end }}" href="posts/personalized?range=1h">Last hour</a>

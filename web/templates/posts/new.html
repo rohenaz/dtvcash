@@ -1,6 +1,6 @@
 {{ template "snippets/header.html" . }}
 
-{{ template "posts/header.html" dict "Page" "new" }}
+{{ template "posts/header.html" dict "Page" "new" "Username" .Username }}
 
 <p style="margin:0">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="posts/new?offset={{ .PrevOffset }}">&lt; Prev</a>
