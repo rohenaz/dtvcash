@@ -23,8 +23,8 @@ func (f *Follower) GetAddressString() string {
 	return address.String()
 }
 
-func GetFollowing(pkHash []byte) ([]*Follower, error) {
-	memoFollows, err := db.GetFollowersForPkHash(pkHash)
+func GetFollowing(selfPkHash []byte, pkHash []byte, offset int) ([]*Follower, error) {
+	memoFollows, err := db.GetFollowersForPkHash(pkHash, offset)
 	if err != nil && ! db.IsRecordNotFoundError(err) {
 		return nil, jerr.Get("error getting memo follows for hash", err)
 	}
@@ -52,7 +52,7 @@ MemoFollow:
 		if ! memoFollow.Unfollow {
 			following = append(following, &Follower{
 				Name:       name,
-				SelfPkHash: pkHash,
+				SelfPkHash: selfPkHash,
 				PkHash:     memoFollow.FollowPkHash,
 			})
 		}
@@ -60,7 +60,7 @@ MemoFollow:
 	return following, nil
 }
 
-func GetFollowers(pkHash []byte, offset int) ([]*Follower, error) {
+func GetFollowers(selfPkHash []byte, pkHash []byte, offset int) ([]*Follower, error) {
 	memoFollows, err := db.GetFollowingForPkHash(pkHash, offset)
 	if err != nil && ! db.IsRecordNotFoundError(err) {
 		return nil, jerr.Get("error getting memo follows for hash", err)
@@ -78,7 +78,7 @@ func GetFollowers(pkHash []byte, offset int) ([]*Follower, error) {
 		followers = append(followers, &Follower{
 			Name:       name,
 			PkHash:     memoFollow.PkHash,
-			SelfPkHash: pkHash,
+			SelfPkHash: selfPkHash,
 		})
 	}
 	return followers, nil

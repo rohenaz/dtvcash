@@ -10,11 +10,38 @@
 <h3>{{ .Profile.Name }} is Following</h3>
 {{ end }}
 
+{{ if and (eq .NextOffset 25) (lt (len .Following) 25) }}{{ else }}
+<div>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .PrevOffset }}">&lt;
+        Prev</a>
+    <span class="page">Page {{ .Page }}</span>
+    <a class="{{ if lt (len .Following) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .NextOffset }}">Next
+        &gt;</a>
+</div>
+{{ end }}
+
 {{ range .Following }}
 <p>
-    <a class="btn" href="/profile/{{ .GetAddressString }}">{{ .Name }} ({{ .GetAddressString }})</a>
+    <a class="btn" href="/profile/{{ .GetAddressString }}">
+    {{ .Name }}
+    {{ if .Reputation }}
+        ({{ .Reputation.GetPercentStringIncludingDirect }}%)
+    {{ end }}
+        ({{ .GetAddressString }})
+    </a>
 </p>
 {{ end }}
 
+{{ if and (eq .NextOffset 25) (lt (len .Following) 25) }}{{ else }}
+<div>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .PrevOffset }}">&lt;
+        Prev</a>
+    <span class="page">Page {{ .Page }}</span>
+    <a class="{{ if lt (len .Following) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .NextOffset }}">Next
+        &gt;</a>
+</div>
+{{ end }}
+
+<br/>
 
 {{ template "snippets/footer.html" . }}

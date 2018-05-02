@@ -10,11 +10,13 @@
 <h3>Following {{ .Profile.Name }}</h3>
 {{ end }}
 
+{{ if and (eq .NextOffset 25) (lt (len .Followers) 25) }}{{ else }}
 <div>
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .PrevOffset }}">&lt; Prev</a>
     <span class="page">Page {{ .Page }}</span>
     <a class="{{ if lt (len .Followers) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .NextOffset }}">Next &gt;</a>
 </div>
+{{ end }}
 
 {{ range .Followers }}
 <p>
@@ -27,5 +29,15 @@
     </a>
 </p>
 {{ end }}
+
+{{ if and (eq .NextOffset 25) (lt (len .Followers) 25) }}{{ else }}
+<div>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .PrevOffset }}">&lt; Prev</a>
+    <span class="page">Page {{ .Page }}</span>
+    <a class="{{ if lt (len .Followers) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .NextOffset }}">Next &gt;</a>
+</div>
+{{ end }}
+
+<br/>
 
 {{ template "snippets/footer.html" . }}

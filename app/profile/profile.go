@@ -109,15 +109,6 @@ func (p *Profile) SetBalances() error {
 	return nil
 }
 
-func (p *Profile) SetFollowing() error {
-	following, err := GetFollowing(p.PkHash)
-	if err != nil {
-		return jerr.Get("error getting following for hash", err)
-	}
-	p.Following = following
-	return nil
-}
-
 func (p *Profile) SetFollowerCount() error {
 	cnt, err := db.GetFollowerCountForPkHash(p.PkHash)
 	if err != nil {

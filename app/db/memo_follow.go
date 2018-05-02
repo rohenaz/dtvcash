@@ -9,7 +9,6 @@ import (
 	"github.com/jchavannes/gorm"
 	"github.com/jchavannes/jgo/jerr"
 	"html"
-	"sort"
 	"time"
 )
 
@@ -108,17 +107,34 @@ func (txns memoFollowSortByDate) Less(i, j int) bool {
 	return txns[i].Block.Height < txns[j].Block.Height
 }
 
-func GetFollowersForPkHash(pkHash []byte) ([]*MemoFollow, error) {
-	var memoFollows []*MemoFollow
-	err := findPreloadColumns([]string{
-		BlockTable,
-	}, &memoFollows, &MemoFollow{
-		PkHash: pkHash,
-	})
+func GetFollowersForPkHash(pkHash []byte, offset int) ([]*MemoFollow, error) {
+	db, err := getDb()
 	if err != nil {
-		return nil, jerr.Get("error getting memo follows", err)
+		return nil, jerr.Get("error getting db", err)
 	}
-	sort.Sort(memoFollowSortByDate(memoFollows))
+	sql := "" +
+		"SELECT " +
+		"	memo_follows.* " +
+		"FROM memo_follows " +
+		"JOIN (" +
+		"	SELECT MAX(id) AS id" +
+		"	FROM memo_follows" +
+		"	WHERE pk_hash = ?" +
+		"	GROUP BY pk_hash, follow_pk_hash" +
+		") sq ON (sq.id = memo_follows.id) " +
+		"WHERE unfollow = 0 "
+	var query *gorm.DB
+	if offset >= 0 {
+		sql += "LIMIT ?,25"
+		query = db.Raw(sql, pkHash, offset)
+	} else {
+		query = db.Raw(sql, pkHash)
+	}
+	var memoFollows []*MemoFollow
+	result := query.Scan(&memoFollows)
+	if result.Error != nil {
+		return nil, jerr.Get("error running follower query", result.Error)
+	}
 	return memoFollows, nil
 }
 
@@ -148,7 +164,7 @@ func GetFollowingForPkHash(followPkHash []byte, offset int) ([]*MemoFollow, erro
 	var memoFollows []*MemoFollow
 	result := query.Scan(&memoFollows)
 	if result.Error != nil {
-		return nil, jerr.Get("error running following count query", result.Error)
+		return nil, jerr.Get("error running following query", result.Error)
 	}
 	return memoFollows, nil
 }

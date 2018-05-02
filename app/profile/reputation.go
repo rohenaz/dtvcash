@@ -52,7 +52,7 @@ func GetReputation(selfPkHash []byte, pkHash []byte) (*Reputation, error) {
 		return nil, jerr.Get("error getting reputation from cache", err)
 	}
 
-	trustedUsers, err := db.GetFollowersForPkHash(selfPkHash)
+	trustedUsers, err := db.GetFollowersForPkHash(selfPkHash, -1)
 	if err != nil {
 		return nil, jerr.Get("error getting trustedUsers", err)
 	}

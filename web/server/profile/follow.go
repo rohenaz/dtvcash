@@ -41,7 +41,7 @@ var followersRoute = web.Route{
 			return
 		}
 		r.Helper["Profile"] = pf
-		followers, err := profile.GetFollowers(pkHash, offset)
+		followers, err := profile.GetFollowers(userPkHash, pkHash, offset)
 		if err != nil {
 			r.Error(jerr.Get("error setting followers for hash", err), http.StatusInternalServerError)
 			return
@@ -64,6 +64,7 @@ var followersRoute = web.Route{
 var followingRoute = web.Route{
 	Pattern:    res.UrlProfileFollowing + "/" + urlAddress.UrlPart(),
 	Handler: func(r *web.Response) {
+		offset := r.Request.GetUrlParameterInt("offset")
 		addressString := r.Request.GetUrlNamedQueryVariable(urlAddress.Id)
 		address := wallet.GetAddressFromString(addressString)
 		pkHash := address.GetScriptAddress()
@@ -87,18 +88,22 @@ var followingRoute = web.Route{
 			r.Error(jerr.Get("error getting profile for hash", err), http.StatusInternalServerError)
 			return
 		}
-		err = pf.SetFollowing()
-		if err != nil {
-			r.Error(jerr.Get("error setting followers for profile", err), http.StatusInternalServerError)
-			return
-		}
 		r.Helper["Profile"] = pf
-		following, err := profile.GetFollowing(pkHash)
+		following, err := profile.GetFollowing(userPkHash, pkHash, offset)
 		if err != nil {
 			r.Error(jerr.Get("error setting following for hash", err), http.StatusInternalServerError)
 			return
 		}
+		if len(userPkHash) > 0 {
+			err = profile.AttachReputationToFollowers(following)
+			if err != nil {
+				r.Error(jerr.Get("error attaching reputation to following", err), http.StatusInternalServerError)
+				return
+			}
+		}
 		r.Helper["Following"] = following
+		r.Helper["OffsetLink"] = fmt.Sprintf("%s/%s", strings.TrimLeft(res.UrlProfileFollowing, "/"), addressString)
+		res.SetPageAndOffset(r, offset)
 		r.RenderTemplate(res.UrlProfileFollowing)
 	},
 }
