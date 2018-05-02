@@ -9,8 +9,10 @@ import (
 )
 
 type Follower struct {
-	Name   string
-	PkHash []byte
+	Name       string
+	PkHash     []byte
+	SelfPkHash []byte
+	Reputation *Reputation
 }
 
 func (f *Follower) GetAddressString() string {
@@ -49,22 +51,21 @@ MemoFollow:
 		}
 		if ! memoFollow.Unfollow {
 			following = append(following, &Follower{
-				Name:   name,
-				PkHash: memoFollow.FollowPkHash,
+				Name:       name,
+				SelfPkHash: pkHash,
+				PkHash:     memoFollow.FollowPkHash,
 			})
 		}
 	}
 	return following, nil
 }
 
-func GetFollowers(pkHash []byte) ([]*Follower, error) {
-	memoFollows, err := db.GetFollowingForPkHash(pkHash)
+func GetFollowers(pkHash []byte, offset int) ([]*Follower, error) {
+	memoFollows, err := db.GetFollowingForPkHash(pkHash, offset)
 	if err != nil && ! db.IsRecordNotFoundError(err) {
 		return nil, jerr.Get("error getting memo follows for hash", err)
 	}
-
 	var followers []*Follower
-MemoFollow:
 	for _, memoFollow := range memoFollows {
 		var name = "Unknown"
 		memoSetName, err := db.GetNameForPkHash(memoFollow.PkHash)
@@ -74,22 +75,22 @@ MemoFollow:
 		if memoSetName != nil {
 			name = memoSetName.Name
 		}
-
-		for i, follower := range followers {
-			if bytes.Equal(follower.PkHash, memoFollow.PkHash) {
-				if memoFollow.Unfollow {
-					followers = append(followers[:i], followers[i+1:]...)
-				}
-				// Check if follower is already set, don't add again
-				continue MemoFollow
-			}
-		}
-		if ! memoFollow.Unfollow {
-			followers = append(followers, &Follower{
-				Name:   name,
-				PkHash: memoFollow.PkHash,
-			})
-		}
+		followers = append(followers, &Follower{
+			Name:       name,
+			PkHash:     memoFollow.PkHash,
+			SelfPkHash: pkHash,
+		})
 	}
 	return followers, nil
+}
+
+func AttachReputationToFollowers(followers []*Follower) error {
+	for _, follower := range followers {
+		reputation, err := GetReputation(follower.SelfPkHash, follower.PkHash)
+		if err != nil {
+			return jerr.Get("error getting reputation", err)
+		}
+		follower.Reputation = reputation
+	}
+	return nil
 }

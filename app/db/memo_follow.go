@@ -6,6 +6,7 @@ import (
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
+	"github.com/jchavannes/gorm"
 	"github.com/jchavannes/jgo/jerr"
 	"html"
 	"sort"
@@ -121,17 +122,34 @@ func GetFollowersForPkHash(pkHash []byte) ([]*MemoFollow, error) {
 	return memoFollows, nil
 }
 
-func GetFollowingForPkHash(followPkHash []byte) ([]*MemoFollow, error) {
-	var memoFollows []*MemoFollow
-	err := findPreloadColumns([]string{
-		BlockTable,
-	}, &memoFollows, &MemoFollow{
-		FollowPkHash: followPkHash,
-	})
+func GetFollowingForPkHash(followPkHash []byte, offset int) ([]*MemoFollow, error) {
+	db, err := getDb()
 	if err != nil {
-		return nil, jerr.Get("error getting memo follows", err)
+		return nil, jerr.Get("error getting db", err)
 	}
-	sort.Sort(memoFollowSortByDate(memoFollows))
+	sql := "" +
+		"SELECT " +
+		"	memo_follows.* " +
+		"FROM memo_follows " +
+		"JOIN (" +
+		"	SELECT MAX(id) AS id" +
+		"	FROM memo_follows" +
+		"	WHERE follow_pk_hash = ?" +
+		"	GROUP BY pk_hash, follow_pk_hash" +
+		") sq ON (sq.id = memo_follows.id) " +
+		"WHERE unfollow = 0 "
+	var query *gorm.DB
+	if offset >= 0 {
+		sql += "LIMIT ?,25"
+		query = db.Raw(sql, followPkHash, offset)
+	} else {
+		query = db.Raw(sql, followPkHash)
+	}
+	var memoFollows []*MemoFollow
+	result := query.Scan(&memoFollows)
+	if result.Error != nil {
+		return nil, jerr.Get("error running following count query", result.Error)
+	}
 	return memoFollows, nil
 }
 

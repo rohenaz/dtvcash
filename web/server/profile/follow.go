@@ -1,6 +1,7 @@
 package profile
 
 import (
+	"fmt"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/db"
@@ -9,11 +10,13 @@ import (
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"net/http"
+	"strings"
 )
 
 var followersRoute = web.Route{
 	Pattern:    res.UrlProfileFollowers + "/" + urlAddress.UrlPart(),
 	Handler: func(r *web.Response) {
+		offset := r.Request.GetUrlParameterInt("offset")
 		addressString := r.Request.GetUrlNamedQueryVariable(urlAddress.Id)
 		address := wallet.GetAddressFromString(addressString)
 		pkHash := address.GetScriptAddress()
@@ -37,18 +40,22 @@ var followersRoute = web.Route{
 			r.Error(jerr.Get("error getting profile for hash", err), http.StatusInternalServerError)
 			return
 		}
-		err = pf.SetFollowers()
-		if err != nil {
-			r.Error(jerr.Get("error setting followers for profile", err), http.StatusInternalServerError)
-			return
-		}
 		r.Helper["Profile"] = pf
-		followers, err := profile.GetFollowers(pkHash)
+		followers, err := profile.GetFollowers(pkHash, offset)
 		if err != nil {
 			r.Error(jerr.Get("error setting followers for hash", err), http.StatusInternalServerError)
 			return
 		}
+		if len(userPkHash) > 0 {
+			err = profile.AttachReputationToFollowers(followers)
+			if err != nil {
+				r.Error(jerr.Get("error attaching reputation to followers", err), http.StatusInternalServerError)
+				return
+			}
+		}
 		r.Helper["Followers"] = followers
+		r.Helper["OffsetLink"] = fmt.Sprintf("%s/%s", strings.TrimLeft(res.UrlProfileFollowers, "/"), addressString)
+		res.SetPageAndOffset(r, offset)
 		r.RenderTemplate(res.UrlProfileFollowers)
 	},
 }

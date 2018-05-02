@@ -4,17 +4,28 @@
     <a href="profile/{{ .Profile.GetAddressString }}">Back to {{ .Profile.Name }}'s Profile</a>
 </p>
 
-{{ if not .Profile.Followers }}
+{{ if not .Followers }}
 <h3>No one is following {{ .Profile.Name }} yet</h3>
 {{ else }}
 <h3>Following {{ .Profile.Name }}</h3>
 {{ end }}
 
+<div>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .PrevOffset }}">&lt; Prev</a>
+    <span class="page">Page {{ .Page }}</span>
+    <a class="{{ if lt (len .Followers) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .NextOffset }}">Next &gt;</a>
+</div>
+
 {{ range .Followers }}
 <p>
-    <a class="btn" href="/profile/{{ .GetAddressString }}">{{ .Name }} ({{ .GetAddressString }})</a>
+    <a class="btn" href="/profile/{{ .GetAddressString }}">
+    {{ .Name }}
+    {{ if .Reputation }}
+        ({{ .Reputation.GetPercentStringIncludingDirect }}%)
+    {{ end }}
+        ({{ .GetAddressString }})
+    </a>
 </p>
 {{ end }}
-
 
 {{ template "snippets/footer.html" . }}
