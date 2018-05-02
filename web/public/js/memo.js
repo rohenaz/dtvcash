@@ -78,6 +78,12 @@
                 },
                 error: function (xhr) {
                     submitting = false;
+                    if (xhr.status === 401) {
+                        alert("Error unlocking key. " +
+                            "Please verify your password is correct. " +
+                            "If this problem persists, please try refreshing the page.");
+                        return;
+                    }
                     var errorMessage =
                         "Error with request (response code " + xhr.status + "):\n" +
                         (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
@@ -131,6 +137,12 @@
                 },
                 error: function (xhr) {
                     submitting = false;
+                    if (xhr.status === 401) {
+                        alert("Error unlocking key. " +
+                            "Please verify your password is correct. " +
+                            "If this problem persists, please try refreshing the page.");
+                        return;
+                    }
                     var errorMessage =
                         "Error with request (response code " + xhr.status + "):\n" +
                         (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
@@ -185,6 +197,12 @@
                 },
                 error: function (xhr) {
                     submitting = false;
+                    if (xhr.status === 401) {
+                        alert("Error unlocking key. " +
+                            "Please verify your password is correct. " +
+                            "If this problem persists, please try refreshing the page.");
+                        return;
+                    }
                     var errorMessage =
                         "Error with request (response code " + xhr.status + "):\n" +
                         (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
@@ -238,6 +256,12 @@
                 },
                 error: function (xhr) {
                     submitting = false;
+                    if (xhr.status === 401) {
+                        alert("Error unlocking key. " +
+                            "Please verify your password is correct. " +
+                            "If this problem persists, please try refreshing the page.");
+                        return;
+                    }
                     var errorMessage =
                         "Error with request (response code " + xhr.status + "):\n" +
                         (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
@@ -292,6 +316,12 @@
                 },
                 error: function (xhr) {
                     submitting = false;
+                    if (xhr.status === 401) {
+                        alert("Error unlocking key. " +
+                            "Please verify your password is correct. " +
+                            "If this problem persists, please try refreshing the page.");
+                        return;
+                    }
                     var errorMessage =
                         "Error with request (response code " + xhr.status + "):\n" +
                         (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
@@ -352,6 +382,12 @@
                 },
                 error: function (xhr) {
                     submitting = false;
+                    if (xhr.status === 401) {
+                        alert("Error unlocking key. " +
+                            "Please verify your password is correct. " +
+                            "If this problem persists, please try refreshing the page.");
+                        return;
+                    }
                     var errorMessage =
                         "Error with request (response code " + xhr.status + "):\n" +
                         (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
@@ -434,6 +470,12 @@
                 },
                 error: function (xhr) {
                     submitting = false;
+                    if (xhr.status === 401) {
+                        alert("Error unlocking key. " +
+                            "Please verify your password is correct. " +
+                            "If this problem persists, please try refreshing the page.");
+                        return;
+                    }
                     var errorMessage =
                         "Error with request (response code " + xhr.status + "):\n" +
                         (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
