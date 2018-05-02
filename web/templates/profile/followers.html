@@ -12,29 +12,58 @@
 
 {{ if and (eq .NextOffset 25) (lt (len .Followers) 25) }}{{ else }}
 <div>
-    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .PrevOffset }}">&lt; Prev</a>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .PrevOffset }}">
+        &lt; Prev</a>
     <span class="page">Page {{ .Page }}</span>
-    <a class="{{ if lt (len .Followers) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .NextOffset }}">Next &gt;</a>
+    <a class="{{ if lt (len .Followers) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .NextOffset }}">
+        Next &gt;</a>
 </div>
 {{ end }}
 
-{{ range .Followers }}
-<p>
-    <a class="btn" href="/profile/{{ .GetAddressString }}">
-    {{ .Name }}
-    {{ if .Reputation }}
-        ({{ .Reputation.GetPercentStringIncludingDirect }}%)
+{{ if .Followers }}
+<br/>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Reputation</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    {{ range .Followers }}
+    <tr>
+        <td>
+            <a href="/profile/{{ .GetAddressString }}">
+            {{ .Name }}
+            </a>
+        </td>
+        <td>
+            <a href="/profile/{{ .GetAddressString }}">
+            {{ .GetAddressString }}
+            </a>
+        </td>
+        <td>
+        {{ if .Reputation }}
+        {{ .Reputation.GetPercentStringIncludingDirect }}%
+        {{ end }}
+        </td>
+        </a>
+    </tr>
     {{ end }}
-        ({{ .GetAddressString }})
-    </a>
-</p>
+    </tbody>
+</table>
+<br/>
 {{ end }}
 
 {{ if and (eq .NextOffset 25) (lt (len .Followers) 25) }}{{ else }}
 <div>
-    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .PrevOffset }}">&lt; Prev</a>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .PrevOffset }}">
+        &lt; Prev</a>
     <span class="page">Page {{ .Page }}</span>
-    <a class="{{ if lt (len .Followers) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .NextOffset }}">Next &gt;</a>
+    <a class="{{ if lt (len .Followers) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .NextOffset }}">
+        Next &gt;</a>
 </div>
 {{ end }}
 
