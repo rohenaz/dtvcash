@@ -31,14 +31,11 @@ type Profile struct {
 	Following      []*Follower
 	Reputation     *Reputation
 	CanFollow      bool
+	CanUnfollow    bool
 }
 
 func (p Profile) IsSelf() bool {
 	return bytes.Equal(p.PkHash, p.SelfPkHash)
-}
-
-func (p Profile) CanUnFollow() bool {
-	return ! p.CanFollow && len(p.SelfPkHash) > 0
 }
 
 func (p Profile) HasBalance() bool {
@@ -154,6 +151,7 @@ func (p *Profile) SetCanFollow() error {
 		return jerr.Get("error getting can follow", err)
 	}
 	p.CanFollow = canFollow
+	p.CanUnfollow = !canFollow
 	return nil
 }
 
@@ -236,9 +234,9 @@ func GetProfileAndSetBalances(pkHash []byte, selfPkHash []byte) (*Profile, error
 }
 
 func CanFollow(pkHash []byte, selfPkHash []byte) (bool, error) {
-	isFollower, err := db.IsFollower(selfPkHash, pkHash)
+	isFollowing, err := db.IsFollowing(selfPkHash, pkHash)
 	if err != nil {
 		return false, jerr.Get("error determining is follower from db", err)
 	}
-	return isFollower, nil
+	return !isFollowing, nil
 }

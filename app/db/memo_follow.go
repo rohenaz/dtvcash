@@ -193,8 +193,8 @@ func GetCountMemoFollows() (uint, error) {
 	return cnt, nil
 }
 
-func IsFollower(pkHash []byte, followingPkHash []byte) (bool, error) {
-	if len(pkHash) == 0 {
+func IsFollowing(followerPkHash []byte, followingPkHash []byte) (bool, error) {
+	if len(followerPkHash) == 0 {
 		return false, nil
 	}
 	db, err := getDb()
@@ -203,14 +203,14 @@ func IsFollower(pkHash []byte, followingPkHash []byte) (bool, error) {
 	}
 	sql := "" +
 		"SELECT " +
-		"	COALESCE(unfollow, 0) AS is_following " +
+		"	COALESCE(unfollow, 1) AS is_following " +
 		"FROM memo_follows " +
 		"JOIN (" +
 		"	SELECT MAX(id) AS id" +
 		"	FROM memo_follows" +
 		"	WHERE pk_hash = ? AND follow_pk_hash = ?" +
 		") sq ON (sq.id = memo_follows.id)"
-	query := db.Raw(sql, pkHash, followingPkHash)
+	query := db.Raw(sql, followerPkHash, followingPkHash)
 	var cnt uint
 	row := query.Row()
 	err = row.Scan(&cnt)
@@ -220,5 +220,5 @@ func IsFollower(pkHash []byte, followingPkHash []byte) (bool, error) {
 		}
 		return false, jerr.Get("error is follower query", err)
 	}
-	return cnt == 1, nil
+	return cnt == 0, nil
 }
