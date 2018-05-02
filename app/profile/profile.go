@@ -133,7 +133,7 @@ func (p *Profile) SetCanFollow() error {
 		return jerr.Get("error getting can follow", err)
 	}
 	p.CanFollow = canFollow
-	p.CanUnfollow = !canFollow
+	p.CanUnfollow = !canFollow && bytes.Compare(p.PkHash, p.SelfPkHash) !=0
 	return nil
 }
 
@@ -220,5 +220,5 @@ func CanFollow(pkHash []byte, selfPkHash []byte) (bool, error) {
 	if err != nil {
 		return false, jerr.Get("error determining is follower from db", err)
 	}
-	return !isFollowing, nil
+	return !isFollowing && bytes.Compare(pkHash, selfPkHash) !=0, nil
 }
