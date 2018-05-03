@@ -304,3 +304,6 @@ span.page {
 .reputation-tooltip:hover > span {
     display: block;
 }
+#broadcasting {
+    display: none;
+}
