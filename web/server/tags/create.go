@@ -14,6 +14,7 @@ import (
 
 var createRoute = web.Route{
 	Pattern: res.UrlTagsCreate,
+	NeedsLogin:  true,
 	Handler: func(r *web.Response) {
 		preHandler(r)
 		r.Render()

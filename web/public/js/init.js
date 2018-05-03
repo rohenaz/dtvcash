@@ -101,6 +101,35 @@ var MemoApp = {
         alert(errorMessage);
     };
 
+    /**
+     * @param {string} path
+     * @param {function} close
+     * @return {WebSocket}
+     */
+    MemoApp.GetSocket = function(path, close) {
+        var loc = window.location;
+        var protocol = window.location.protocol.toLowerCase() === "https:" ? "wss" : "ws";
+        var socket = new WebSocket(protocol + "://" + loc.hostname + ":" + loc.port + path);
+
+        socket.onopen = function () {
+            console.log("Socket opened to: " + path);
+        };
+
+        socket.onclose = function () {
+            console.log("Socket closed to: " + path);
+            if (close !== undefined) {
+                close();
+            }
+        };
+
+        setInterval(function () {
+            var wsMessage = "heartbeat";
+            socket.send(JSON.stringify(wsMessage));
+        }, 15000);
+
+        return socket;
+    };
+
     MemoApp.Events = {};
 
     MemoApp.URL = {
@@ -110,6 +139,7 @@ var MemoApp = {
         LoginSubmit: "login-submit",
         SignupSubmit: "signup-submit",
         MemoPost: "post",
+        MemoPostAjax: "post-ajax",
         MemoNewSubmit: "memo/new-submit",
         MemoReplySubmit: "memo/reply-submit",
         MemoFollowSubmit: "memo/follow-submit",
@@ -120,6 +150,7 @@ var MemoApp = {
         MemoWait: "memo/wait",
         MemoWaitSubmit: "memo/wait-submit",
         KeyChangePasswordSubmit: "key/change-password-submit",
+        TagsSocket: "tags/socket",
         TagsCreateSubmit: "tags/create-submit"
     };
 })();

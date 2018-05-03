@@ -107,6 +107,32 @@
     };
 
     /**
+     * @param {string} tag
+     * @param {jQuery} $morePosts
+     */
+    MemoApp.WatchNewTags = function (tag, $morePosts) {
+        socket = MemoApp.GetSocket(MemoApp.GetBaseUrl() + MemoApp.URL.TagsSocket + "?tag=" + tag, function () {
+            console.log("socket closed...");
+        });
+        /**
+         * @param {MessageEvent} msg
+         */
+        socket.onmessage = function (msg) {
+            console.log(msg.data);
+            var txHash = msg.data.replace(/['"]+/g, '')
+            $.ajax({
+                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostAjax + "/" + txHash,
+                success: function(html) {
+                    $morePosts.append(html);
+                },
+                error: function (xhr) {
+                    alert("error getting post via ajax (status: " + xhr.status + ")");
+                }
+            });
+        };
+    };
+
+    /**
      * @param {jQuery} $broadcasting
      * @param {jQuery} $form
      */
@@ -192,7 +218,7 @@
                         data: {
                             txHash: txHash
                         },
-                        success: function() {
+                        success: function () {
                             $broadcasting.hide();
                             $message.val("");
                             $form.show();

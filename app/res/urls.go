@@ -36,6 +36,7 @@ const (
 	UrlMemoUnfollow         = "/memo/unfollow"
 	UrlMemoUnfollowSubmit   = "/memo/unfollow-submit"
 	UrlMemoPost             = "/post"
+	UrlMemoPostAjax         = "/post-ajax"
 	UrlMemoLike             = "/memo/like"
 	UrlMemoLikeSubmit       = "/memo/like-submit"
 	UrlMemoReply            = "/memo/reply"
@@ -69,8 +70,13 @@ const (
 	UrlTagsCreate       = "/tags/create"
 	UrlTagsCreateSubmit = "/tags/create-submit"
 	UrlTagView          = "/tag"
+	UrlTagsSocket       = "/tags/socket"
 
 	TmplTagView = "/tags/view"
+)
+
+const (
+	TmplSnippetsPost = "/snippets/post"
 )
 
 func GetBaseUrl(r *web.Response) string {

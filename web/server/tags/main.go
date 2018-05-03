@@ -13,6 +13,7 @@ func GetRoutes() []web.Route {
 		createRoute,
 		createSubmitRoute,
 		viewRoute,
+		socketRoute,
 	}
 }
 

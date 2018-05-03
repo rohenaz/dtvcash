@@ -167,7 +167,36 @@ func (txns memoPostSortByDate) Less(i, j int) bool {
 	if txns[j].Block == nil {
 		return false
 	}
+	if txns[i].Block.Height == txns[j].Block.Height {
+		return txns[i].Id > txns[j].Id
+	}
 	return txns[i].Block.Height > txns[j].Block.Height
+}
+
+type memoPostSortByDateAsc []*MemoPost
+
+func (txns memoPostSortByDateAsc) Len() int      { return len(txns) }
+func (txns memoPostSortByDateAsc) Swap(i, j int) { txns[i], txns[j] = txns[j], txns[i] }
+func (txns memoPostSortByDateAsc) Less(i, j int) bool {
+	if bytes.Equal(txns[i].ParentHash, txns[j].TxHash) {
+		return false
+	}
+	if bytes.Equal(txns[i].TxHash, txns[j].ParentHash) {
+		return true
+	}
+	if txns[i].Block == nil && txns[j].Block == nil {
+		return txns[i].Id < txns[j].Id
+	}
+	if txns[i].Block == nil {
+		return false
+	}
+	if txns[j].Block == nil {
+		return true
+	}
+	if txns[i].Block.Height == txns[j].Block.Height {
+		return txns[i].Id < txns[j].Id
+	}
+	return txns[i].Block.Height < txns[j].Block.Height
 }
 
 func GetPostsForPkHashes(pkHashes [][]byte, offset uint) ([]*MemoPost, error) {
@@ -289,6 +318,25 @@ func GetRecentPosts(offset uint) ([]*MemoPost, error) {
 	return memoPosts, nil
 }
 
+func GetRecentPostForTag(tag string) (*MemoPost, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	db = db.Preload(BlockTable)
+	var memoPost = MemoPost{
+		Tag: tag,
+	}
+	result := db.
+		Limit(1).
+		Order("id DESC").
+		Find(&memoPost, memoPost)
+	if result.Error != nil {
+		return nil, jerr.Get("error running recent tag post query", result.Error)
+	}
+	return &memoPost, nil
+}
+
 func GetTopPosts(offset uint, timeStart time.Time, timeEnd time.Time) ([]*MemoPost, error) {
 	topLikeTxHashes, err := GetRecentTopLikedTxHashes(offset, timeStart, timeEnd)
 	if err != nil {
@@ -391,6 +439,6 @@ func GetPostsForTag(tag string, offset uint) ([]*MemoPost, error) {
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
 	}
-	sort.Sort(memoPostSortByDate(memoPosts))
+	sort.Sort(memoPostSortByDateAsc(memoPosts))
 	return memoPosts, nil
 }

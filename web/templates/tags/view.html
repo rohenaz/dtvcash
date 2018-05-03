@@ -4,6 +4,8 @@
 
 {{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
 
+<div id="more-posts"></div>
+
 <div id="broadcasting">
     Broadcasting...
 </div>
@@ -35,6 +37,7 @@
 <script type="text/javascript">
     $(function () {
         MemoApp.Form.NewTagMessage($("#broadcasting"), $("#form-new-tag-message"));
+        MemoApp.WatchNewTags("{{ .Tag }}", $("#more-posts"));
     });
 </script>
 
