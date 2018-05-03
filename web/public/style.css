@@ -280,3 +280,27 @@ span.page {
     font-size: 1.1em;
     font-weight: bold;
 }
+.reputation-tooltip {
+    position: relative;
+}
+.reputation-tooltip:hover > span {
+    display: block;
+}
+.reputation-tooltip span {
+    position: absolute;
+    display: none;
+    color: #000;
+    background: #eee;
+    border: 1px solid #333;
+    top: 15px;
+    left: 0px;
+    word-break: break-word;
+    width: 250px;
+    font-size: 12px;
+    line-height: 16px;
+    padding: 5px;
+    text-align: left;
+}
+.reputation-tooltip:hover > span {
+    display: block;
+}

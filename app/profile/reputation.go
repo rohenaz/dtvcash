@@ -29,13 +29,10 @@ func (r Reputation) GetTotalFollowing() int {
 }
 
 func (r Reputation) GetPercentString() string {
-	return fmt.Sprintf("%.0f", float32(r.rep.TrustedFollowers)/float32(r.rep.TotalFollowing)*100)
+	return fmt.Sprintf("%.0f%%", float32(r.rep.TrustedFollowers)/float32(r.rep.TotalFollowing)*100)
 }
 
 func (r Reputation) GetPercentStringIncludingDirect() string {
-	if r.rep.DirectFollow {
-		return "100"
-	}
 	return r.GetPercentString()
 }
 

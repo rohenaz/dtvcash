@@ -41,14 +41,20 @@
     <tr>
         <th>Reputation</th>
         <td>
+            <span class="reputation-tooltip">
         {{ if .Reputation.IsDirectFollow }}
             You follow <b>{{ .Name }}</b>! -
             <i>{{ .Reputation.GetTrustedFollowers }} of {{ .Reputation.GetTotalFollowing }}
-                ({{ .Reputation.GetPercentString }}%)</i>
+                ({{ .Reputation.GetPercentString }})</i>
         {{ else }}
         {{ .Reputation.GetTrustedFollowers }} of {{ .Reputation.GetTotalFollowing }}
-            ({{ .Reputation.GetPercentString }}%)
+            ({{ .Reputation.GetPercentString }})
         {{ end }}
+                <span>
+                    Reputation is the percentage of people you follow who are following this person.
+                    For more info visit the <a href="about#reputation">about page</a>.
+                </span>
+            </span>
         </td>
     </tr>
 {{ end }}

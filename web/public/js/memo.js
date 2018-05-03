@@ -2,6 +2,8 @@
 
     var maxPostBytes = 77;
     var maxReplyBytes = 45;
+    var maxNameBytes = 77;
+    var maxProfileTextBytes = 77;
 
     /**
      * @param {jQuery} $ele
@@ -97,6 +99,23 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.SetName = function ($form) {
+        var $name = $form.find("[name=name]");
+        var $msgByteCount = $form.find(".message-byte-count");
+        $name.on("input", function () {
+            setMsgByteCount();
+        });
+
+        function setMsgByteCount() {
+            var cnt = maxNameBytes - MemoApp.utf8ByteLength($name.val());
+            $msgByteCount.html("[" + cnt + "]");
+            if (cnt < 0) {
+                $msgByteCount.addClass("red");
+            } else {
+                $msgByteCount.removeClass("red");
+            }
+        }
+
+        setMsgByteCount();
         CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
@@ -105,7 +124,13 @@
                 return
             }
 
-            var name = $form.find("[name=name]").val();
+            var name = $name.val();
+            if (maxNameBytes - MemoApp.utf8ByteLength(name) < 0) {
+                alert("Maximum name is " + maxNameBytes + " bytes. Note that some characters are more than 1 byte." +
+                    " Emojis are usually 4 bytes, for example.");
+                return;
+            }
+
             if (name.length === 0) {
                 alert("Must enter a name.");
                 return;
@@ -156,6 +181,24 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.SetProfile = function ($form) {
+        var $profile = $form.find("[name=profile]");
+        var $msgByteCount = $form.find(".message-byte-count");
+        $profile.on("input", function () {
+            setMsgByteCount();
+        });
+
+        function setMsgByteCount() {
+            var cnt = maxProfileTextBytes - MemoApp.utf8ByteLength($profile.val());
+            $msgByteCount.html("[" + cnt + "]");
+            if (cnt < 0) {
+                $msgByteCount.addClass("red");
+            } else {
+                $msgByteCount.removeClass("red");
+            }
+        }
+
+        setMsgByteCount();
+
         CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
@@ -164,7 +207,13 @@
                 return
             }
 
-            var profile = $form.find("[name=profile]").val();
+            var profile = $profile.val();
+            if (maxProfileTextBytes - MemoApp.utf8ByteLength(profile) < 0) {
+                alert("Maximum profile text is " + maxProfileTextBytes + " bytes. Note that some characters are more than 1 byte." +
+                    " Emojis are usually 4 bytes, for example.");
+                return;
+            }
+
             if (profile.length === 0) {
                 if (!confirm("Are you sure you want to set an empty profile?")) {
                     return;
