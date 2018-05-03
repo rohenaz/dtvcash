@@ -281,16 +281,7 @@ span.page {
     font-weight: bold;
 }
 .reputation-tooltip {
-    display: inline-block;
-    color: #888;
-    border: 2px solid #bbb;
     position: relative;
-    font-size: 12px;
-    padding: 0 3px;
-    cursor: pointer;
-    height: 18px;
-    width: 9px;
-    text-align: center;
 }
 .reputation-tooltip:hover > span {
     display: block;
@@ -301,8 +292,8 @@ span.page {
     color: #000;
     background: #eee;
     border: 1px solid #333;
-    top: 10px;
-    left: 5px;
+    top: 15px;
+    left: 0px;
     word-break: break-word;
     width: 250px;
     font-size: 12px;
