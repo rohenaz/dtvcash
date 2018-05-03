@@ -3,6 +3,7 @@ package tags
 import (
 	"fmt"
 	"git.jasonc.me/main/memo/app/db"
+	"git.jasonc.me/main/memo/app/html-parser"
 	"git.jasonc.me/main/memo/app/res"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
@@ -14,6 +15,7 @@ var socketRoute = web.Route{
 	Pattern: res.UrlTagsSocket,
 	Handler: func(r *web.Response) {
 		tagRaw := r.Request.GetUrlParameter("tag")
+		tag := html_parser.EscapeWithEmojis(tagRaw)
 		socket, err := r.GetWebSocket()
 		if err != nil {
 			r.Error(jerr.Get("error getting socket", err), http.StatusUnprocessableEntity)
@@ -21,7 +23,7 @@ var socketRoute = web.Route{
 		}
 		var lastPostId uint
 		for i := 0; i < 1e6; i++ {
-			recentPost, err := db.GetRecentPostForTag(tagRaw)
+			recentPost, err := db.GetRecentPostForTag(tag)
 			if err != nil {
 				r.Error(jerr.Get("error getting recent post for tag", err), http.StatusInternalServerError)
 				return
