@@ -50,6 +50,46 @@ var MemoApp = {
         return BaseURL;
     };
 
+    MemoApp.utf8ByteLength = function (str) {
+        // returns the byte length of an utf8 string
+        var s = str.length;
+        for (var i = str.length - 1; i >= 0; i--) {
+            var code = str.charCodeAt(i);
+            if (code > 0x7f && code <= 0x7ff) s++;
+            else if (code > 0x7ff && code <= 0xffff) s += 2;
+            if (code >= 0xDC00 && code <= 0xDFFF) i--; //trail surrogate
+        }
+        return parseInt(s);
+    };
+
+    /**
+     * @param {jQuery} $form
+     */
+    MemoApp.CheckLoadPassword = function($form) {
+        if (!localStorage.WalletPassword) {
+            return;
+        }
+        $form.find("[name=password]").val(localStorage.WalletPassword);
+        $form.find("[name=save-password]").prop("checked", true);
+    };
+
+    /**
+     * @param {jQuery} $form
+     */
+    MemoApp.CheckSavePassword = function($form) {
+        if (!$form.find("[name=save-password]").is(':checked')) {
+            delete(localStorage.WalletPassword);
+            return;
+        }
+
+        var password = $form.find("[name=password]").val();
+        if (password.length === 0) {
+            return;
+        }
+
+        localStorage.WalletPassword = password;
+    };
+
     /**
      * @param {XMLHttpRequest} xhr
      */
@@ -79,6 +119,7 @@ var MemoApp = {
         MemoLikeSubmit: "memo/like-submit",
         MemoWait: "memo/wait",
         MemoWaitSubmit: "memo/wait-submit",
-        KeyChangePasswordSubmit: "key/change-password-submit"
+        KeyChangePasswordSubmit: "key/change-password-submit",
+        TagsCreateSubmit: "tags/create-submit"
     };
 })();

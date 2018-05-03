@@ -5,9 +5,9 @@ import (
 )
 
 type SpendOutput struct {
-	Address   wallet.Address
-	Amount    int64
-	Type      SpendOutputType
-	ReplyHash []byte
-	Data      []byte
+	Address wallet.Address
+	Amount  int64
+	Type    SpendOutputType
+	RefData []byte
+	Data    []byte
 }

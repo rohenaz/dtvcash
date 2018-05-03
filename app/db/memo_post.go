@@ -25,6 +25,7 @@ type MemoPost struct {
 	ParentTxHash []byte      `gorm:"index:parent_tx_hash"`
 	Parent       *MemoPost
 	Replies      []*MemoPost `gorm:"foreignkey:ParentTxHash"`
+	Tag          string      `gorm:"index:tag"`
 	Message      string
 	BlockId      uint
 	Block        *Block
@@ -212,7 +213,7 @@ func GetPostsFeedForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 		Limit(25).
 		Offset(offset).
 		Preload(BlockTable).
-		Joins("JOIN (" + joinSelect + ") fsq ON (memo_posts.pk_hash = fsq.follow_pk_hash)", pkHash).
+		Joins("JOIN ("+joinSelect+") fsq ON (memo_posts.pk_hash = fsq.follow_pk_hash)", pkHash).
 		Order("id DESC").
 		Find(&memoPosts)
 	if result.Error != nil {

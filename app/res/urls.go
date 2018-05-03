@@ -64,6 +64,12 @@ const (
 	UrlPostsPersonalized = "/posts/personalized"
 )
 
+const (
+	UrlTags             = "/tags"
+	UrlTagsCreate       = "/tags/create"
+	UrlTagsCreateSubmit = "/tags/create-submit"
+)
+
 func GetBaseUrl(r *web.Response) string {
 	baseUrl := r.Request.GetHeader("AppPath")
 	if baseUrl == "" {

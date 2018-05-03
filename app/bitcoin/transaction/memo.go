@@ -85,6 +85,11 @@ func SaveMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) erro
 		if err != nil {
 			return jerr.Get("error saving memo_set_profile", err)
 		}
+	case memo.CodeTagMessage:
+		err = saveMemoTagMessage(txn, out, blockId, inputAddress, parentHash)
+		if err != nil {
+			return jerr.Get("error saving memo_post tag message", err)
+		}
 	}
 	return nil
 }
@@ -328,13 +333,61 @@ func saveMemoReply(txn *db.Transaction, out *db.TransactionOut, blockId uint, in
 	return nil
 }
 
+func saveMemoTagMessage(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+	memoPost, err := db.GetMemoPost(txn.Hash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return jerr.Get("error getting memo tag message", err)
+	}
+	if memoPost != nil {
+		if memoPost.BlockId != 0 || blockId == 0 {
+			return nil
+		}
+		memoPost.BlockId = blockId
+		err = memoPost.Save()
+		if err != nil {
+			return jerr.Get("error saving memo tag message", err)
+		}
+		return nil
+	}
+
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from memo tag message", err)
+	}
+	if len(pushData) != 3 {
+		return jerr.Newf("invalid tag message, incorrect push data (%d)", len(pushData))
+	}
+	var tagNameRaw = pushData[1]
+	var messageRaw = pushData[2]
+	if len(tagNameRaw) == 0 || len(messageRaw) == 0 {
+		return jerr.Newf("empty tag or message (%d, %d)", len(tagNameRaw), len(messageRaw))
+	}
+	tagName := html_parser.EscapeWithEmojis(string(tagNameRaw))
+	message := html_parser.EscapeWithEmojis(string(messageRaw))
+	memoPost = &db.MemoPost{
+		TxHash:     txn.Hash,
+		PkHash:     inputAddress.ScriptAddress(),
+		PkScript:   out.PkScript,
+		ParentHash: parentHash,
+		Address:    inputAddress.EncodeAddress(),
+		Tag:        tagName,
+		Message:    message,
+		BlockId:    blockId,
+	}
+	err = memoPost.Save()
+	if err != nil {
+		return jerr.Get("error saving memo tag message", err)
+	}
+	return nil
+}
+
 func saveMemoSetProfile(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
 	memoSetProfile, err := db.GetMemoSetProfile(txn.Hash)
 	if err != nil && ! db.IsRecordNotFoundError(err) {
 		return jerr.Get("error getting memo_set_profile", err)
 	}
 	if memoSetProfile != nil {
-		if memoSetProfile.BlockId != 0 || blockId == 0{
+		if memoSetProfile.BlockId != 0 || blockId == 0 {
 			return nil
 		}
 		memoSetProfile.BlockId = blockId

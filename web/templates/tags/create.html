@@ -1,0 +1,38 @@
+{{ template "snippets/header.html" . }}
+
+<h2>Create New Tag</h2>
+
+<form id="form-new-tag" method="post">
+    <p>
+        <label for="tag">Tag Name  <span class="name-byte-count"></span></label>
+        <input id="tag" type="text" name="tag" class="form-control" placeholder="Tag name"
+               required>
+    </p>
+    <p>
+        <label for="message">First message <span class="message-byte-count"></span></label>
+        <textarea id="message" type="text" name="message" class="form-control" placeholder="Message" autocomplete="on"
+                  required autofocus></textarea>
+    </p>
+    <p>
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" class="form-control" placeholder="Password"
+               autocomplete="on" required>
+    </p>
+    <p>
+        <label for="save-password">
+            Save password
+        </label>
+        <input id="save-password" name="save-password" type="checkbox"/>
+    </p>
+    <p>
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Create Tag">
+    </p>
+</form>
+
+<script type="text/javascript">
+    $(function () {
+        MemoApp.Form.NewTag($("#form-new-tag"));
+    });
+</script>
+
+{{ template "snippets/footer.html" . }}
