@@ -2,6 +2,8 @@
 
 <h2>Tag - {{ .Tag }}</h2>
 
+<p><a href="tags">Back to tags</a></p>
+
 {{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
 
 <div id="more-posts"></div>
@@ -13,7 +15,7 @@
 <form id="form-new-tag-message" method="post">
     <input type="hidden" name="tag" value="{{ .Tag }}"/>
     <p>
-        <label for="message">First message <span class="message-byte-count"></span></label>
+        <label for="message">Message <span class="message-byte-count"></span></label>
         <textarea id="message" type="text" name="message" class="form-control" placeholder="Message"
                   autocomplete="on"
                   required autofocus></textarea>
@@ -30,7 +32,7 @@
         <input id="save-password" name="save-password" type="checkbox"/>
     </p>
     <p>
-        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Post New Message to Tag">
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Send">
     </p>
 </form>
 
