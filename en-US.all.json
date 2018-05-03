@@ -1,5 +1,9 @@
 [
   {
+    "id": "home",
+    "translation": "Home"
+  },
+  {
     "id": "dashboard",
     "translation": "Dashboard"
   },
@@ -16,7 +20,11 @@
     "translation": "Profiles"
   },
   {
-    "id": "log_out",
-    "translation": "Logout ({{.Username}}"
+    "id": "login",
+    "translation": "Login"
+  },
+  {
+    "id": "logout",
+    "translation": "Logout <b>{{.Username}}</b>"
   }
 ]

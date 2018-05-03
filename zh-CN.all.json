@@ -1,0 +1,30 @@
+[
+  {
+    "id": "home",
+    "translation": "仪表板"
+  },
+  {
+    "id": "dashboard",
+    "translation": "仪表板"
+  },
+  {
+    "id": "new_memo",
+    "translation": "新备忘录"
+  },
+  {
+    "id": "posts",
+    "translation": "帖子"
+  },
+  {
+    "id": "profiles",
+    "translation": "型材"
+  },
+  {
+    "id": "login",
+    "translation": "登录"
+  },
+  {
+    "id": "logout",
+    "translation": "登出 <b>{{.Username}}</b>"
+  }
+]
