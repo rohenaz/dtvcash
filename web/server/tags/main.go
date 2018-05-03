@@ -4,7 +4,7 @@ import "github.com/jchavannes/jgo/web"
 
 var urlTagName = web.UrlParam{
 	Id:   "tag",
-	Type: web.UrlParamString,
+	Type: web.UrlParamAny,
 }
 
 func GetRoutes() []web.Route {
