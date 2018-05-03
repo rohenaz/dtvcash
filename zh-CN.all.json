@@ -26,5 +26,21 @@
   {
     "id": "logout",
     "translation": "登出 <b>{{.Username}}</b>"
+  },
+  {
+    "id": "about",
+    "translation": "信息"
+  },
+  {
+    "id": "protocol",
+    "translation": "协议"
+  },
+  {
+    "id": "disclaimer",
+    "translation": "放弃"
+  },
+  {
+    "id": "statistics",
+    "translation": "统计"
   }
 ]

@@ -26,5 +26,21 @@
   {
     "id": "logout",
     "translation": "Logout <b>{{.Username}}</b>"
+  },
+  {
+    "id": "about",
+    "translation": "About"
+  },
+  {
+    "id": "protocol",
+    "translation": "Protocol"
+  },
+  {
+    "id": "disclaimer",
+    "translation": "Disclaimer"
+  },
+  {
+    "id": "statistics",
+    "translation": "Statistics"
   }
 ]

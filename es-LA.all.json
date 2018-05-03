@@ -1,0 +1,46 @@
+[
+  {
+    "id": "home",
+    "translation": "Inicio"
+  },
+  {
+    "id": "dashboard",
+    "translation": "Tablero"
+  },
+  {
+    "id": "new_memo",
+    "translation": "Nuevo Memo"
+  },
+  {
+    "id": "posts",
+    "translation": "Publicaciones"
+  },
+  {
+    "id": "profiles",
+    "translation": "Perfiles"
+  },
+  {
+    "id": "login",
+    "translation": "Iniciar sesión"
+  },
+  {
+    "id": "logout",
+    "translation": "Cerrar sesión <b>{{.Username}}</b>"
+  },
+  {
+    "id": "about",
+    "translation": "Información"
+  },
+  {
+    "id": "protocol",
+    "translation": "Protocolo"
+  },
+  {
+    "id": "disclaimer",
+    "translation": "Renuncia"
+  },
+  {
+    "id": "statistics",
+    "translation": "Estadística"
+  }
+]

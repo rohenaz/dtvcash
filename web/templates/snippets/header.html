@@ -42,6 +42,7 @@
         </h1>
         <div class="nav">
         {{ $nav := .Nav }}
+        {{ $user := . }}
         {{ with .Username }}
             <a {{ if eq $nav "home" }}class="sel"{{ end }} href="">{{ T "dashboard" }}</a>
         {{ else }}
@@ -53,7 +54,7 @@
             <a {{ if eq $nav "posts" }}class="sel"{{ end }} href="posts/top">{{ T "posts" }}</a>
             <a {{ if eq $nav "profiles" }}class="sel"{{ end }} href="profiles">{{ T "profiles" }}</a>
         {{ with .Username }}
-            <a id="header-logout" href="logout">{{ T "logout"  . }}</a>
+            <a id="header-logout" href="logout">{{ T "logout" $user }}</a>
         {{ else }}
             <a {{ if eq $nav "login" }}class="sel"{{ end }} href="login">{{ T "login" }}</a>
         {{ end }}

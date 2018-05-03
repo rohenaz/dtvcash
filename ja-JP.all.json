@@ -1,0 +1,46 @@
+[
+  {
+    "id": "home",
+    "translation": "自宅"
+  },
+  {
+    "id": "dashboard",
+    "translation": "ダッシュボード"
+  },
+  {
+    "id": "new_memo",
+    "translation": "新しいメモ"
+  },
+  {
+    "id": "posts",
+    "translation": "投稿"
+  },
+  {
+    "id": "profiles",
+    "translation": "プロファイル"
+  },
+  {
+    "id": "login",
+    "translation": "ログイン"
+  },
+  {
+    "id": "logout",
+    "translation": "ログアウト <b>{{.Username}}</b>"
+  },
+  {
+    "id": "about",
+    "translation": "情報"
+  },
+  {
+    "id": "protocol",
+    "translation": "手順"
+  },
+  {
+    "id": "disclaimer",
+    "translation": "免責条項"
+  },
+  {
+    "id": "statistics",
+    "translation": "統計"
+  }
+]
