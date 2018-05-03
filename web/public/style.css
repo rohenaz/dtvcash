@@ -302,7 +302,8 @@ span.page {
     background: #eee;
     border: 1px solid #333;
     top: 10px;
-    left: 10px;
+    left: 5px;
+    word-break: break-word;
     width: 250px;
     font-size: 12px;
     line-height: 16px;
