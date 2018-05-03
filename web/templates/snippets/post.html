@@ -26,6 +26,12 @@
         {{- if .Post.Reputation.IsDirectFollow }}Following, {{ end -}}
         {{ .Post.Reputation.GetPercentStringIncludingDirect -}}
             )
+            <span class="reputation-tooltip">?
+                <span>
+                    Reputation is the percentage of people you follow that are following this person.
+                    For more info visit the <a href="about#reputation">about apge</a>.
+                </span>
+            </span>
         {{ end }}
         {{ if .Post.Memo.ParentTxHash }}
             replied to <a href="post/{{ .Post.Memo.GetParentTransactionHashString }}">post</a> at
