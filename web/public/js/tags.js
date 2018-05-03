@@ -221,6 +221,7 @@
                         success: function () {
                             $broadcasting.hide();
                             $message.val("");
+                            setMsgByteCount();
                             $form.show();
                         },
                         error: function () {
