@@ -1,12 +1,12 @@
 {{ template "snippets/header.html" . }}
 
-{{ template "posts/header.html" dict "Page" "top" "Username" .Username }}
+{{ template "posts/header.html" dict "Page" "personalized" "Username" .Username }}
 
 <div class="bottom10">
-    <a class="btn {{ if eq .Range "1h" }}sel{{ end }}" href="posts/top?range=1h">Last hour</a>
-    <a class="btn {{ if eq .Range "24h" }}sel{{ end }}" href="posts/top?range=24h">Last 24 hours</a>
-    <a class="btn {{ if eq .Range "7d" }}sel{{ end }}" href="posts/top?range=7d">Last 7 days</a>
-    <a class="btn {{ if eq .Range "all" }}sel{{ end }}" href="posts/top?range=all">All time</a>
+    <a class="btn {{ if eq .Range "1h" }}sel{{ end }}" href="posts/personalized?range=1h">Last hour</a>
+    <a class="btn {{ if eq .Range "24h" }}sel{{ end }}" href="posts/personalized?range=24h">Last 24 hours</a>
+    <a class="btn {{ if eq .Range "7d" }}sel{{ end }}" href="posts/personalized?range=7d">Last 7 days</a>
+    <a class="btn {{ if eq .Range "all" }}sel{{ end }}" href="posts/personalized?range=all">All time</a>
 </div>
 <div>
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; Prev</a>

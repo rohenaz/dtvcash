@@ -5,6 +5,7 @@ import (
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -16,6 +17,7 @@ type Post struct {
 	SelfPkHash []byte
 	ReplyCount uint
 	Replies    []*Post
+	Reputation *Reputation
 }
 
 func (p Post) IsSelf() bool {
@@ -25,7 +27,7 @@ func (p Post) IsSelf() bool {
 	return bytes.Equal(p.SelfPkHash, p.Memo.PkHash)
 }
 
-func (p Post) IsLikable() bool {
+func (p Post) IsLoggedIn() bool {
 	return len(p.SelfPkHash) > 0
 }
 
@@ -41,6 +43,7 @@ func (p Post) GetMessage() string {
 	msg := p.Memo.Message
 	var re = regexp.MustCompile(`(http[s]?://[^\s]*)`)
 	s := re.ReplaceAllString(msg, `<a href="$1" target="_blank">$1</a>`)
+	s = strings.Replace(s, "\n", "<br/>", -1)
 	return s
 }
 
@@ -65,8 +68,8 @@ func (p Post) GetTimeString(timezone string) string {
 	return "Unconfirmed"
 }
 
-func GetPostsForHashes(pkHashes [][]byte, selfPkHash []byte, offset uint) ([]*Post, error) {
-	dbPosts, err := db.GetPostsForPkHashes(pkHashes, offset)
+func GetPostsFeed(selfPkHash []byte, offset uint) ([]*Post, error) {
+	dbPosts, err := db.GetPostsFeedForPkHash(selfPkHash, offset)
 	if err != nil {
 		return nil, jerr.Get("error getting posts for hash", err)
 	}
@@ -243,7 +246,7 @@ func GetRecentPosts(selfPkHash []byte, offset uint) ([]*Post, error) {
 	return posts, nil
 }
 
-func GetTopPostsNamedRange(selfPkHash []byte, offset uint, timeRange string) ([]*Post, error) {
+func GetTopPostsNamedRange(selfPkHash []byte, offset uint, timeRange string, personalized bool) ([]*Post, error) {
 	var timeStart time.Time
 	switch timeRange {
 	case TimeRange1Hour:
@@ -255,13 +258,22 @@ func GetTopPostsNamedRange(selfPkHash []byte, offset uint, timeRange string) ([]
 	case TimeRangeAll:
 		timeStart = time.Now().Add(-24 * 365 * 10 * time.Hour)
 	}
-	return GetTopPosts(selfPkHash, offset, timeStart, time.Time{})
+	return GetTopPosts(selfPkHash, offset, timeStart, time.Time{}, personalized)
 }
 
-func GetTopPosts(selfPkHash []byte, offset uint, timeStart time.Time, timeEnd time.Time) ([]*Post, error) {
-	dbPosts, err := db.GetTopPosts(offset, timeStart, timeEnd)
-	if err != nil {
-		return nil, jerr.Get("error getting posts for hash", err)
+func GetTopPosts(selfPkHash []byte, offset uint, timeStart time.Time, timeEnd time.Time, personalized bool) ([]*Post, error) {
+	var dbPosts []*db.MemoPost
+	var err error
+	if personalized {
+		dbPosts, err = db.GetPersonalizedTopPosts(selfPkHash, offset, timeStart, timeEnd)
+		if err != nil {
+			return nil, jerr.Get("error getting posts for hash", err)
+		}
+	} else {
+		dbPosts, err = db.GetTopPosts(offset, timeStart, timeEnd)
+		if err != nil {
+			return nil, jerr.Get("error getting posts for hash", err)
+		}
 	}
 	var posts []*Post
 	for _, dbPost := range dbPosts {

@@ -1,7 +1,7 @@
 {{ $tz := .TimeZone }}
 {{ template "snippets/header.html" . }}
 
-<h2>Memo</h2>
+<br/>
 
 {{ template "snippets/post.html" dict "Post" .Post "Compress" false "TimeZone" .TimeZone }}
 
@@ -62,5 +62,7 @@
 {{ end }}
 
 {{ end }}
+
+<br/>
 
 {{ template "snippets/footer.html" . }}

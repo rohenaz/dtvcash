@@ -1,11 +1,11 @@
 {{ template "snippets/header.html" . }}
 
-<br/>
+<h2>Set Profile Text</h2>
 
-<form id="form-new-memo" method="post">
+<form id="form-memo-set-profile" method="post">
     <p>
-        <label for="message">Message <span class="message-byte-count"></span></label>
-        <textarea id="message" type="text" name="message" class="form-control" placeholder="Message" autocomplete="on"
+        <label for="profile">Profile Text <span class="message-byte-count"></span></label>
+        <textarea id="profile" name="profile" class="form-control" placeholder="Profile text" autocomplete="on"
                   required autofocus></textarea>
     </p>
     <p>
@@ -20,13 +20,13 @@
         <input id="save-password" name="save-password" type="checkbox"/>
     </p>
     <p>
-        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Post">
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Set Profile">
     </p>
 </form>
 
 <script type="text/javascript">
     $(function () {
-        MemoApp.Form.NewMemo($("#form-new-memo"));
+        MemoApp.Form.SetProfile($("#form-memo-set-profile"));
     });
 </script>
 

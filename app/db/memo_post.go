@@ -192,6 +192,36 @@ func GetPostsForPkHashes(pkHashes [][]byte, offset uint) ([]*MemoPost, error) {
 	return memoPosts, nil
 }
 
+func GetPostsFeedForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
+	var memoPosts []*MemoPost
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	joinSelect := "SELECT " +
+		"	follow_pk_hash " +
+		"FROM memo_follows " +
+		"JOIN (" +
+		"	SELECT MAX(id) AS id" +
+		"	FROM memo_follows" +
+		"	WHERE pk_hash = ?" +
+		"	GROUP BY pk_hash, follow_pk_hash" +
+		") sq ON (sq.id = memo_follows.id) " +
+		"WHERE unfollow = 0"
+	result := db.
+		Limit(25).
+		Offset(offset).
+		Preload(BlockTable).
+		Joins("JOIN (" + joinSelect + ") fsq ON (memo_posts.pk_hash = fsq.follow_pk_hash)", pkHash).
+		Order("id DESC").
+		Find(&memoPosts)
+	if result.Error != nil {
+		return nil, jerr.Get("error getting memo posts", result.Error)
+	}
+	sort.Sort(memoPostSortByDate(memoPosts))
+	return memoPosts, nil
+}
+
 func GetPostsForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 	if len(pkHash) == 0 {
 		return nil, nil
@@ -225,6 +255,7 @@ func GetUniqueMemoAPkHashes() ([][]byte, error) {
 	if err != nil {
 		return nil, jerr.Get("error getting distinct pk hashes", err)
 	}
+	defer rows.Close()
 	var pkHashes [][]byte
 	for rows.Next() {
 		var pkHash []byte
@@ -259,6 +290,32 @@ func GetRecentPosts(offset uint) ([]*MemoPost, error) {
 
 func GetTopPosts(offset uint, timeStart time.Time, timeEnd time.Time) ([]*MemoPost, error) {
 	topLikeTxHashes, err := GetRecentTopLikedTxHashes(offset, timeStart, timeEnd)
+	if err != nil {
+		return nil, jerr.Get("error getting top liked tx hashes", err)
+	}
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	db = db.Preload(BlockTable)
+	var memoPosts []*MemoPost
+	result := db.Where("tx_hash IN (?)", topLikeTxHashes).Find(&memoPosts)
+	if result.Error != nil {
+		return nil, jerr.Get("error running query", result.Error)
+	}
+	var sortedPosts []*MemoPost
+	for _, txHash := range topLikeTxHashes {
+		for _, memoPost := range memoPosts {
+			if bytes.Equal(memoPost.TxHash, txHash) {
+				sortedPosts = append(sortedPosts, memoPost)
+			}
+		}
+	}
+	return sortedPosts, nil
+}
+
+func GetPersonalizedTopPosts(selfPkHash []byte, offset uint, timeStart time.Time, timeEnd time.Time) ([]*MemoPost, error) {
+	topLikeTxHashes, err := GetPersonalizedRecentTopLikedTxHashes(selfPkHash, offset, timeStart, timeEnd)
 	if err != nil {
 		return nil, jerr.Get("error getting top liked tx hashes", err)
 	}

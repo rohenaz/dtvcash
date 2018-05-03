@@ -1,6 +1,6 @@
 {{ template "snippets/header.html" . }}
 
-{{ template "posts/header.html" dict "Page" "archive" }}
+{{ template "posts/header.html" dict "Page" "archive" "Username" .Username }}
 
 <div class="bottom10">
     <a class="btn" href="posts/archive?day={{ .PrevDay }}">Prev Day</a>

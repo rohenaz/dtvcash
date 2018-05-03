@@ -3,7 +3,7 @@
         <th>Name</th>
         <td class="name">
             <span class="identicon-{{ .GetAddressString }}">
-                <img class="identicon" />
+                <img class="identicon"/>
             </span>
         {{ .Name }}
         </td>
@@ -11,13 +11,13 @@
     <tr>
         <th>Address</th>
         <td class="address">
-             {{ .GetCashAddressString }}<br>
+        {{ .GetCashAddressString }}<br>
             <span class="click-for-qr"><a href="#" id="qr-code-link">Show QR code &amp; legacy address</a></span>
             <div id="qr-code">
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ .GetCashAddressString }}">
                 <br/>
                 <span class="click-for-qr">Legacy Address</span> <br>
-                {{ .GetAddressString }}
+            {{ .GetAddressString }}
             </div>
         </td>
     </tr>
@@ -37,6 +37,27 @@
             </a>
         </td>
     </tr>
+{{ if .Reputation }}
+    <tr>
+        <th>Reputation</th>
+        <td>
+            <span class="reputation-tooltip">
+        {{ if .Reputation.IsDirectFollow }}
+            You follow <b>{{ .Name }}</b>! -
+            <i>{{ .Reputation.GetTrustedFollowers }} of {{ .Reputation.GetTotalFollowing }}
+                ({{ .Reputation.GetPercentString }})</i>
+        {{ else }}
+        {{ .Reputation.GetTrustedFollowers }} of {{ .Reputation.GetTotalFollowing }}
+            ({{ .Reputation.GetPercentString }})
+        {{ end }}
+                <span>
+                    Reputation is the percentage of people you follow who are following this person.
+                    For more info visit the <a href="about#reputation">about page</a>.
+                </span>
+            </span>
+        </td>
+    </tr>
+{{ end }}
 {{ if .HasBalance }}
     <tr>
         <th>Balance</th>
@@ -44,12 +65,17 @@
     </tr>
 {{ end }}
     <tr>
+        <th>Profile</th>
+        <td>
+        {{ .GetText }}
+        </td>
+    </tr>
+    <tr>
         <th>Actions</th>
         <td>
         {{ if .CanFollow }}
             <a class="btn" href="memo/follow/{{ .GetAddressString }}">Follow {{ .Name }}</a>
-        {{ end }}
-        {{ if .CanUnFollow }}
+        {{ else if .CanUnfollow }}
             <a class="btn" href="memo/unfollow/{{ .GetAddressString }}">Unfollow {{ .Name }}</a>
         {{ end }}
             <a class="btn btn-leave" target="_blank"

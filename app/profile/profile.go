@@ -4,17 +4,22 @@ import (
 	"bytes"
 	"fmt"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"git.jasonc.me/main/memo/app/cache"
 	"git.jasonc.me/main/memo/app/db"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
 	"github.com/cpacia/bchutil"
-	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
+	"regexp"
+	"strings"
 )
 
 type Profile struct {
 	Name           string
 	PkHash         []byte
 	NameTx         []byte
+	Profile        string
+	ProfileTx      []byte
 	Self           bool
 	SelfPkHash     []byte
 	Balance        int64
@@ -24,34 +29,13 @@ type Profile struct {
 	FollowingCount uint
 	Followers      []*Follower
 	Following      []*Follower
+	Reputation     *Reputation
+	CanFollow      bool
+	CanUnfollow    bool
 }
 
 func (p Profile) IsSelf() bool {
 	return bytes.Equal(p.PkHash, p.SelfPkHash)
-}
-
-func (p Profile) CanFollow() bool {
-	if p.IsSelf() || len(p.SelfPkHash) == 0 {
-		return false
-	}
-	for _, follower := range p.Followers {
-		if bytes.Equal(follower.PkHash, p.SelfPkHash) {
-			return false
-		}
-	}
-	return true
-}
-
-func (p Profile) CanUnFollow() bool {
-	if p.IsSelf() || len(p.SelfPkHash) == 0 {
-		return false
-	}
-	for _, follower := range p.Followers {
-		if bytes.Equal(follower.PkHash, p.SelfPkHash) {
-			return true
-		}
-	}
-	return false
 }
 
 func (p Profile) HasBalance() bool {
@@ -92,6 +76,15 @@ func (p Profile) GetCashAddressString() string {
 }
 
 func (p *Profile) SetBalances() error {
+	bal, err := cache.GetBalance(p.PkHash)
+	if err == nil {
+		p.Balance = bal
+		p.BalanceBCH = float64(bal) * 1e-8
+		p.hasBalance = true
+		return nil
+	} else if ! cache.IsMissError(err) {
+		jerr.Get("error getting balance from cache", err).Print()
+	}
 	outs, err := db.GetTransactionOutputsForPkHash(p.PkHash)
 	if err != nil {
 		return jerr.Get("error getting outs", err)
@@ -109,24 +102,10 @@ func (p *Profile) SetBalances() error {
 	p.Balance = balance
 	p.BalanceBCH = balanceBCH
 	p.hasBalance = true
-	return nil
-}
-
-func (p *Profile) SetFollowers() error {
-	followers, err := GetFollowers(p.PkHash)
+	err = cache.SetBalance(p.PkHash, p.Balance)
 	if err != nil {
-		return jerr.Get("error getting followers for hash", err)
+		jerr.Get("error setting balance in cache", err).Print()
 	}
-	p.Followers = followers
-	return nil
-}
-
-func (p *Profile) SetFollowing() error {
-	following, err := GetFollowing(p.PkHash)
-	if err != nil {
-		return jerr.Get("error getting following for hash", err)
-	}
-	p.Following = following
 	return nil
 }
 
@@ -148,6 +127,35 @@ func (p *Profile) SetFollowingCount() error {
 	return nil
 }
 
+func (p *Profile) SetCanFollow() error {
+	canFollow, err := CanFollow(p.PkHash, p.SelfPkHash)
+	if err != nil {
+		return jerr.Get("error getting can follow", err)
+	}
+	p.CanFollow = canFollow
+	p.CanUnfollow = !canFollow && bytes.Compare(p.PkHash, p.SelfPkHash) !=0
+	return nil
+}
+
+func (p *Profile) SetReputation() error {
+	reputation, err := GetReputation(p.SelfPkHash, p.PkHash)
+	if err != nil {
+		return jerr.Get("error getting reputation", err)
+	}
+	p.Reputation = reputation
+	return nil
+}
+
+func (p Profile) GetText() string {
+	if p.Profile == "" {
+		return "Not set"
+	}
+	var re = regexp.MustCompile(`(http[s]?://[^\s]*)`)
+	s := re.ReplaceAllString(p.Profile, `<a href="$1" target="_blank">$1</a>`)
+	s = strings.Replace(s, "\n", "<br/>", -1)
+	return s
+}
+
 func GetProfiles(selfPkHash []byte) ([]*Profile, error) {
 	pkHashes, err := db.GetUniqueMemoAPkHashes()
 	if err != nil {
@@ -162,18 +170,6 @@ func GetProfiles(selfPkHash []byte) ([]*Profile, error) {
 		profiles = append(profiles, profile)
 	}
 	return profiles, nil
-}
-
-func GetProfileAndSetFollowers(pkHash []byte, selfPkHash []byte) (*Profile, error) {
-	pf, err := GetProfile(pkHash, selfPkHash)
-	if err != nil {
-		return nil, jerr.Get("error getting profile for hash", err)
-	}
-	err = pf.SetFollowers()
-	if err != nil {
-		return nil, jerr.Get("error setting followers for profile", err)
-	}
-	return pf, nil
 }
 
 func GetProfile(pkHash []byte, selfPkHash []byte) (*Profile, error) {
@@ -196,6 +192,14 @@ func GetProfile(pkHash []byte, selfPkHash []byte) (*Profile, error) {
 	if profile.Name == "" {
 		profile.Name = fmt.Sprintf("Profile %.6s", profile.GetAddressString())
 	}
+	memoSetProfile, err := db.GetProfileForPkHash(pkHash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return nil, jerr.Get("error getting MemoSetProfile for hash", err)
+	}
+	if memoSetProfile != nil {
+		profile.Profile = memoSetProfile.Profile
+		profile.ProfileTx = memoSetProfile.TxHash
+	}
 	return profile, nil
 }
 
@@ -209,4 +213,12 @@ func GetProfileAndSetBalances(pkHash []byte, selfPkHash []byte) (*Profile, error
 		return nil, jerr.Get("error setting balances", err)
 	}
 	return pf, nil
+}
+
+func CanFollow(pkHash []byte, selfPkHash []byte) (bool, error) {
+	isFollowing, err := db.IsFollowing(selfPkHash, pkHash)
+	if err != nil {
+		return false, jerr.Get("error determining is follower from db", err)
+	}
+	return !isFollowing && bytes.Compare(pkHash, selfPkHash) !=0, nil
 }

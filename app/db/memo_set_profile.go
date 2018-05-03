@@ -12,21 +12,21 @@ import (
 	"time"
 )
 
-type MemoSetName struct {
+type MemoSetProfile struct {
 	Id         uint   `gorm:"primary_key"`
 	TxHash     []byte `gorm:"unique;size:50"`
 	ParentHash []byte
 	PkHash     []byte `gorm:"index:pk_hash"`
 	PkScript   []byte
 	Address    string
-	Name       string
+	Profile    string
 	BlockId    uint
 	Block      *Block
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }
 
-func (m MemoSetName) Save() error {
+func (m MemoSetProfile) Save() error {
 	result := save(&m)
 	if result.Error != nil {
 		return jerr.Get("error saving memo test", result.Error)
@@ -34,7 +34,7 @@ func (m MemoSetName) Save() error {
 	return nil
 }
 
-func (m MemoSetName) GetTransactionHashString() string {
+func (m MemoSetProfile) GetTransactionHashString() string {
 	hash, err := chainhash.NewHash(m.TxHash)
 	if err != nil {
 		jerr.Get("error getting chainhash from memo post", err).Print()
@@ -43,7 +43,7 @@ func (m MemoSetName) GetTransactionHashString() string {
 	return hash.String()
 }
 
-func (m MemoSetName) GetAddressString() string {
+func (m MemoSetProfile) GetAddressString() string {
 	pkHash, err := btcutil.NewAddressPubKeyHash(m.PkHash, &wallet.MainNetParamsOld)
 	if err != nil {
 		jerr.Get("error getting pubkeyhash from memo post", err).Print()
@@ -52,51 +52,51 @@ func (m MemoSetName) GetAddressString() string {
 	return pkHash.EncodeAddress()
 }
 
-func (m MemoSetName) GetScriptString() string {
+func (m MemoSetProfile) GetScriptString() string {
 	return html.EscapeString(script.GetScriptString(m.PkScript))
 }
 
-func (m MemoSetName) GetTimeString() string {
+func (m MemoSetProfile) GetTimeString() string {
 	if m.BlockId != 0 {
 		return m.Block.Timestamp.Format("2006-01-02 15:04:05")
 	}
 	return "Unconfirmed"
 }
 
-func GetMemoSetNameById(id uint) (*MemoSetName, error) {
-	var memoSetName MemoSetName
-	err := find(&memoSetName, MemoSetName{
+func GetMemoSetProfileById(id uint) (*MemoSetProfile, error) {
+	var memoSetProfile MemoSetProfile
+	err := find(&memoSetProfile, MemoSetProfile{
 		Id: id,
 	})
 	if err != nil {
-		return nil, jerr.Get("error getting memo set name", err)
+		return nil, jerr.Get("error getting memo set profile", err)
 	}
-	return &memoSetName, nil
+	return &memoSetProfile, nil
 }
 
-func GetMemoSetName(txHash []byte) (*MemoSetName, error) {
-	var memoSetName MemoSetName
-	err := find(&memoSetName, MemoSetName{
+func GetMemoSetProfile(txHash []byte) (*MemoSetProfile, error) {
+	var memoSetProfile MemoSetProfile
+	err := find(&memoSetProfile, MemoSetProfile{
 		TxHash: txHash,
 	})
 	if err != nil {
-		return nil, jerr.Get("error getting memo set name", err)
+		return nil, jerr.Get("error getting memo set profile", err)
 	}
-	return &memoSetName, nil
+	return &memoSetProfile, nil
 }
 
-type memoSetNameSortByDate []*MemoSetName
+type memoSetProfileSortByDate []*MemoSetProfile
 
-func (txns memoSetNameSortByDate) Len() int      { return len(txns) }
-func (txns memoSetNameSortByDate) Swap(i, j int) { txns[i], txns[j] = txns[j], txns[i] }
-func (txns memoSetNameSortByDate) Less(i, j int) bool {
+func (txns memoSetProfileSortByDate) Len() int                      { return len(txns) }
+func (txns memoSetProfileSortByDate) Swap(i, j int)      { txns[i], txns[j] = txns[j], txns[i] }
+func (txns memoSetProfileSortByDate) Less(i, j int) bool {
 	if bytes.Equal(txns[i].ParentHash, txns[j].TxHash) {
 		return true
 	}
 	if bytes.Equal(txns[i].TxHash, txns[j].ParentHash) {
 		return false
 	}
-	if txns[i].Block == nil && txns[j].Block == nil {
+	if txns[i].Block == nil && txns[j].Block == nil{
 		return false
 	}
 	if txns[i].Block == nil {
@@ -108,33 +108,33 @@ func (txns memoSetNameSortByDate) Less(i, j int) bool {
 	return txns[i].Block.Height > txns[j].Block.Height
 }
 
-func GetNameForPkHash(pkHash []byte) (*MemoSetName, error) {
-	names, err := GetSetNamesForPkHash(pkHash)
+func GetProfileForPkHash(pkHash []byte) (*MemoSetProfile, error) {
+	profiles, err := GetSetProfilesForPkHash(pkHash)
 	if err != nil {
-		return nil, jerr.Get("error getting set names for pk hash", err)
+		return nil, jerr.Get("error getting set profiles for pk hash", err)
 	}
-	if len(names) == 0 {
+	if len(profiles) == 0 {
 		return nil, nil
 	}
-	return names[0], nil
+	return profiles[0], nil
 }
 
-func GetSetNamesForPkHash(pkHash []byte) ([]*MemoSetName, error) {
-	var memoSetNames []*MemoSetName
+func GetSetProfilesForPkHash(pkHash []byte) ([]*MemoSetProfile, error) {
+	var memoSetProfiles []*MemoSetProfile
 	err := findPreloadColumns([]string{
 		BlockTable,
-	}, &memoSetNames, &MemoSetName{
+	}, &memoSetProfiles, &MemoSetProfile{
 		PkHash: pkHash,
 	})
 	if err != nil {
-		return nil, jerr.Get("error getting memo names", err)
+		return nil, jerr.Get("error getting memo profiles", err)
 	}
-	sort.Sort(memoSetNameSortByDate(memoSetNames))
-	return memoSetNames, nil
+	sort.Sort(memoSetProfileSortByDate(memoSetProfiles))
+	return memoSetProfiles, nil
 }
 
-func GetCountMemoSetName() (uint, error) {
-	cnt, err := count(&MemoSetName{})
+func GetCountMemoSetProfile() (uint, error) {
+	cnt, err := count(&MemoSetProfile{})
 	if err != nil {
 		return 0, jerr.Get("error getting total count", err)
 	}

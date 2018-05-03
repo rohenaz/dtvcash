@@ -4,6 +4,9 @@ body {
     -webkit-text-size-adjust: 100%;
     /* Fix for text-size-adjust being ignored: https://bugs.webkit.org/show_bug.cgi?id=FontBoosting */
     max-height: 1000000px;
+    padding: 0;
+    margin: 0;
+    background: rgba(0,0,0,0.03);
 }
 html {
     font-family: sans-serif;
@@ -54,6 +57,10 @@ label {
     cursor: pointer;
 }
 
+hr.no-margin {
+    margin: 0;
+}
+
 span.inline {
     display: inline-block;
 }
@@ -67,6 +74,9 @@ select {
     min-width: 150px;
 }
 
+table.table {
+    width: 100%;
+}
 table.table,
 table.table th,
 table.table td {
@@ -110,7 +120,7 @@ a.btn, input[type=submit].btn {
     background: rgba(84,141,29,0.2);
     box-shadow: 1px 1px 0px rgba(0,0,0,0.3);
     border-radius: 11px;
-    border: none;
+    border: 1px solid rgba(84,141,29,0.0);
     margin: 5px 0;
 }
 a.btn-leave {
@@ -132,14 +142,36 @@ a.disabled {
     text-decoration: none;
 }
 
+.wrapper {
+    background: #fff;
+    padding: 1px 0;
+}
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+
+.header {
+    padding: 1px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+.header .header-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 5px 10px;
+}
 .header h1 {
     display: inline-block;
     vertical-align: bottom;
-    margin: 0 10px 0 0;
+    margin: 0 15px 0 0;
+}
+.header .nav {
+    display: inline-block;
+    vertical-align: bottom;
 }
 .nav {
     margin-top: 5px;
-    display: inline-block;
 }
 .nav a {
     color: #333;
@@ -147,12 +179,24 @@ a.disabled {
     display: inline-block;
     margin: 5px 10px 5px 0;
 }
+.nav a.sel {
+    text-decoration: underline;
+}
+.footer {
+    padding: 1px 0;
+    border-top: 1px solid rgba(0,0,0,0.2);
+}
+.footer .nav {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 10px;
+}
 
 .post {
     border: 1px solid rgba(0,0,0,0.3);
     box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
     padding: 1px 10px;
-    max-width: 600px;
+    max-width: 775px;
     margin: 12px 0;
     border-radius: 11px;
     background: #dde8d4;
@@ -230,4 +274,33 @@ span.page {
 
 .bottom10 {
     margin-bottom: 10px;
+}
+
+#about h3 {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+.reputation-tooltip {
+    position: relative;
+}
+.reputation-tooltip:hover > span {
+    display: block;
+}
+.reputation-tooltip span {
+    position: absolute;
+    display: none;
+    color: #000;
+    background: #eee;
+    border: 1px solid #333;
+    top: 15px;
+    left: 0px;
+    word-break: break-word;
+    width: 250px;
+    font-size: 12px;
+    line-height: 16px;
+    padding: 5px;
+    text-align: left;
+}
+.reputation-tooltip:hover > span {
+    display: block;
 }

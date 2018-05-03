@@ -1,17 +1,24 @@
-
-<hr/>
-
-<div class="footer nav">
-    <a href="/about">About</a>
-    <a href="protocol">Protocol</a>
-    <a href="disclaimer">Disclaimer</a>
-    <a href="/stats">Stats</a>
 </div>
 
-<script async src="https://www.googletagmanager.com/gtag/js?id={{ .GoogleId }}"></script>
-<script>
+</div>
+
+<div class="footer">
+    <div class="nav">
+        <a href="/about">About</a>
+        <a href="protocol">Protocol</a>
+        <a href="disclaimer">Disclaimer</a>
+        <a href="/stats">Stats</a>
+    </div>
+</div>
+
+<script type="text/javascript" async src="https://www.googletagmanager.com/gtag/js?id={{ .GoogleId }}"></script>
+<script type="text/javascript">
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
     gtag('js', new Date());
 
     gtag('config', '{{ .GoogleId }}');

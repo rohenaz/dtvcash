@@ -7,5 +7,10 @@ func GetRoutes() []web.Route {
 		newRoute,
 		topRoute,
 		archiveRoute,
+		personalizedRoute,
 	}
+}
+
+func preHandler(r *web.Response) {
+	r.Helper["Nav"] = "posts"
 }

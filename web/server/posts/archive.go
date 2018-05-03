@@ -17,6 +17,7 @@ import (
 var archiveRoute = web.Route{
 	Pattern: res.UrlPostsArchive,
 	Handler: func(r *web.Response) {
+		preHandler(r)
 		offset := r.Request.GetUrlParameterInt("offset")
 		day := r.Request.GetUrlParameter("day")
 		today := time.Now().Format("2006-01-02")
@@ -49,7 +50,7 @@ var archiveRoute = web.Route{
 		} else {
 			r.Helper["Today"] = false
 		}
-		posts, err := profile.GetTopPosts(userPkHash, uint(offset), timeStart, timeEnd)
+		posts, err := profile.GetTopPosts(userPkHash, uint(offset), timeStart, timeEnd, false)
 		if err != nil {
 			r.Error(jerr.Get("error getting recent posts", err), http.StatusInternalServerError)
 			return
@@ -65,6 +66,13 @@ var archiveRoute = web.Route{
 		if err != nil {
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
+		}
+		if len(userPkHash) > 0 {
+			err = profile.AttachReputationToPosts(posts)
+			if err != nil {
+				r.Error(jerr.Get("error attaching reputation to posts", err), http.StatusInternalServerError)
+				return
+			}
 		}
 		res.SetPageAndOffset(r, offset)
 		r.Helper["OffsetLink"] = fmt.Sprintf("%s?day=%s", strings.TrimLeft(res.UrlPostsArchive, "/"), day)

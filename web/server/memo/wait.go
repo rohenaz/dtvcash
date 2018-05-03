@@ -43,7 +43,7 @@ var waitSubmitRoute = web.Route{
 			r.Error(jerr.Getf(err, "error waiting for transaction (%s)", txHashString), http.StatusInternalServerError)
 			return
 		}
-		txn, err := db.GetTransactionByHash(txHash.CloneBytes())
+		txn, err := db.GetTransactionByHashWithOutputs(txHash.CloneBytes())
 		out, err := transaction.GetMemoOutputIfExists(txn)
 		if err != nil {
 			r.Error(jerr.Get("error checking for memo output", err), http.StatusInternalServerError)
@@ -78,6 +78,13 @@ var waitSubmitRoute = web.Route{
 				return
 			}
 			r.Write(strings.TrimLeft(res.UrlProfileView + "/" + setName.GetAddressString(), "/"))
+		case memo.CodeSetProfile:
+			setProfile, err := db.GetMemoSetProfile(txHash.CloneBytes())
+			if err != nil {
+				r.Error(jerr.Get("error getting set profile from db", err), http.StatusInternalServerError)
+				return
+			}
+			r.Write(strings.TrimLeft(res.UrlProfileView + "/" + setProfile.GetAddressString(), "/"))
 		case memo.CodeReply:
 			post, err := db.GetMemoPost(txHash.CloneBytes())
 			if err != nil {

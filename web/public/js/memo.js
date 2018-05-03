@@ -2,6 +2,8 @@
 
     var maxPostBytes = 77;
     var maxReplyBytes = 45;
+    var maxNameBytes = 77;
+    var maxProfileTextBytes = 77;
 
     /**
      * @param {jQuery} $ele
@@ -33,8 +35,13 @@
 
         setMsgByteCount();
         CheckLoadPassword($form);
+        var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
+            if (submitting) {
+                return
+            }
+
             var message = $message.val();
             if (maxPostBytes - MemoApp.utf8ByteLength(message) < 0) {
                 alert("Maximum post message is " + maxPostBytes + " bytes. Note that some characters are more than 1 byte." +
@@ -55,6 +62,7 @@
 
             CheckSavePassword($form);
 
+            submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoNewSubmit,
@@ -63,13 +71,27 @@
                     password: password
                 },
                 success: function (txHash) {
+                    submitting = false;
                     if (!txHash || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
                     window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
-                error: MemoApp.Form.ErrorHandler
+                error: function (xhr) {
+                    submitting = false;
+                    if (xhr.status === 401) {
+                        alert("Error unlocking key. " +
+                            "Please verify your password is correct. " +
+                            "If this problem persists, please try refreshing the page.");
+                        return;
+                    }
+                    var errorMessage =
+                        "Error with request (response code " + xhr.status + "):\n" +
+                        (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+                        "If this problem persists, try refreshing the page.";
+                    alert(errorMessage);
+                }
             });
         });
     };
@@ -77,10 +99,38 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.SetName = function ($form) {
+        var $name = $form.find("[name=name]");
+        var $msgByteCount = $form.find(".message-byte-count");
+        $name.on("input", function () {
+            setMsgByteCount();
+        });
+
+        function setMsgByteCount() {
+            var cnt = maxNameBytes - MemoApp.utf8ByteLength($name.val());
+            $msgByteCount.html("[" + cnt + "]");
+            if (cnt < 0) {
+                $msgByteCount.addClass("red");
+            } else {
+                $msgByteCount.removeClass("red");
+            }
+        }
+
+        setMsgByteCount();
         CheckLoadPassword($form);
+        var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
-            var name = $form.find("[name=name]").val();
+            if (submitting) {
+                return
+            }
+
+            var name = $name.val();
+            if (maxNameBytes - MemoApp.utf8ByteLength(name) < 0) {
+                alert("Maximum name is " + maxNameBytes + " bytes. Note that some characters are more than 1 byte." +
+                    " Emojis are usually 4 bytes, for example.");
+                return;
+            }
+
             if (name.length === 0) {
                 alert("Must enter a name.");
                 return;
@@ -94,6 +144,7 @@
 
             CheckSavePassword($form);
 
+            submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoSetNameSubmit,
@@ -102,13 +153,111 @@
                     password: password
                 },
                 success: function (txHash) {
+                    submitting = false;
                     if (!txHash || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
                     window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
-                error: MemoApp.Form.ErrorHandler
+                error: function (xhr) {
+                    submitting = false;
+                    if (xhr.status === 401) {
+                        alert("Error unlocking key. " +
+                            "Please verify your password is correct. " +
+                            "If this problem persists, please try refreshing the page.");
+                        return;
+                    }
+                    var errorMessage =
+                        "Error with request (response code " + xhr.status + "):\n" +
+                        (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+                        "If this problem persists, try refreshing the page.";
+                    alert(errorMessage);
+                }
+            });
+        });
+    };
+    /**
+     * @param {jQuery} $form
+     */
+    MemoApp.Form.SetProfile = function ($form) {
+        var $profile = $form.find("[name=profile]");
+        var $msgByteCount = $form.find(".message-byte-count");
+        $profile.on("input", function () {
+            setMsgByteCount();
+        });
+
+        function setMsgByteCount() {
+            var cnt = maxProfileTextBytes - MemoApp.utf8ByteLength($profile.val());
+            $msgByteCount.html("[" + cnt + "]");
+            if (cnt < 0) {
+                $msgByteCount.addClass("red");
+            } else {
+                $msgByteCount.removeClass("red");
+            }
+        }
+
+        setMsgByteCount();
+
+        CheckLoadPassword($form);
+        var submitting = false;
+        $form.submit(function (e) {
+            e.preventDefault();
+            if (submitting) {
+                return
+            }
+
+            var profile = $profile.val();
+            if (maxProfileTextBytes - MemoApp.utf8ByteLength(profile) < 0) {
+                alert("Maximum profile text is " + maxProfileTextBytes + " bytes. Note that some characters are more than 1 byte." +
+                    " Emojis are usually 4 bytes, for example.");
+                return;
+            }
+
+            if (profile.length === 0) {
+                if (!confirm("Are you sure you want to set an empty profile?")) {
+                    return;
+                }
+            }
+
+            var password = $form.find("[name=password]").val();
+            if (password.length === 0) {
+                alert("Must enter a password.");
+                return;
+            }
+
+            CheckSavePassword($form);
+
+            submitting = true;
+            $.ajax({
+                type: "POST",
+                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoSetProfileSubmit,
+                data: {
+                    profile: profile,
+                    password: password
+                },
+                success: function (txHash) {
+                    submitting = false;
+                    if (!txHash || txHash.length === 0) {
+                        alert("Server error. Please try refreshing the page.");
+                        return
+                    }
+                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
+                },
+                error: function (xhr) {
+                    submitting = false;
+                    if (xhr.status === 401) {
+                        alert("Error unlocking key. " +
+                            "Please verify your password is correct. " +
+                            "If this problem persists, please try refreshing the page.");
+                        return;
+                    }
+                    var errorMessage =
+                        "Error with request (response code " + xhr.status + "):\n" +
+                        (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+                        "If this problem persists, try refreshing the page.";
+                    alert(errorMessage);
+                }
             });
         });
     };
@@ -117,8 +266,13 @@
      */
     MemoApp.Form.Follow = function ($form) {
         CheckLoadPassword($form);
+        var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
+            if (submitting) {
+                return
+            }
+
             var address = $form.find("[name=address]").val();
             if (address.length === 0) {
                 alert("Form error, address not set.");
@@ -133,6 +287,7 @@
 
             CheckSavePassword($form);
 
+            submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoFollowSubmit,
@@ -141,13 +296,27 @@
                     password: password
                 },
                 success: function (txHash) {
+                    submitting = false;
                     if (!txHash || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
                     window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
-                error: MemoApp.Form.ErrorHandler
+                error: function (xhr) {
+                    submitting = false;
+                    if (xhr.status === 401) {
+                        alert("Error unlocking key. " +
+                            "Please verify your password is correct. " +
+                            "If this problem persists, please try refreshing the page.");
+                        return;
+                    }
+                    var errorMessage =
+                        "Error with request (response code " + xhr.status + "):\n" +
+                        (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+                        "If this problem persists, try refreshing the page.";
+                    alert(errorMessage);
+                }
             });
         });
     };
@@ -157,8 +326,12 @@
      */
     MemoApp.Form.Unfollow = function ($form) {
         CheckLoadPassword($form);
+        var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
+            if (submitting) {
+                return
+            }
 
             var address = $form.find("[name=address]").val();
             if (address.length === 0) {
@@ -174,6 +347,7 @@
 
             CheckSavePassword($form);
 
+            submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoUnfollowSubmit,
@@ -182,13 +356,27 @@
                     password: password
                 },
                 success: function (txHash) {
+                    submitting = false;
                     if (txHash === undefined || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
                     window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
-                error: MemoApp.Form.ErrorHandler
+                error: function (xhr) {
+                    submitting = false;
+                    if (xhr.status === 401) {
+                        alert("Error unlocking key. " +
+                            "Please verify your password is correct. " +
+                            "If this problem persists, please try refreshing the page.");
+                        return;
+                    }
+                    var errorMessage =
+                        "Error with request (response code " + xhr.status + "):\n" +
+                        (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+                        "If this problem persists, try refreshing the page.";
+                    alert(errorMessage);
+                }
             });
         });
     };
@@ -197,8 +385,13 @@
      */
     MemoApp.Form.Like = function ($form) {
         CheckLoadPassword($form);
+        var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
+            if (submitting) {
+                return
+            }
+
             var txHash = $form.find("[name=tx-hash]").val();
             if (txHash.length === 0) {
                 alert("Form error, tx hash not set.");
@@ -219,6 +412,7 @@
 
             CheckSavePassword($form);
 
+            submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoLikeSubmit,
@@ -228,13 +422,27 @@
                     password: password
                 },
                 success: function (txHash) {
+                    submitting = false;
                     if (!txHash || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
                     window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
-                error: MemoApp.Form.ErrorHandler
+                error: function (xhr) {
+                    submitting = false;
+                    if (xhr.status === 401) {
+                        alert("Error unlocking key. " +
+                            "Please verify your password is correct. " +
+                            "If this problem persists, please try refreshing the page.");
+                        return;
+                    }
+                    var errorMessage =
+                        "Error with request (response code " + xhr.status + "):\n" +
+                        (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+                        "If this problem persists, try refreshing the page.";
+                    alert(errorMessage);
+                }
             });
         });
     };
@@ -260,8 +468,12 @@
 
         setMsgByteCount();
         CheckLoadPassword($form);
+        var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
+            if (submitting) {
+                return
+            }
 
             var message = $message.val();
             if (maxReplyBytes - MemoApp.utf8ByteLength(message) < 0) {
@@ -288,6 +500,7 @@
             }
             CheckSavePassword($form);
 
+            submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoReplySubmit,
@@ -297,13 +510,27 @@
                     password: password
                 },
                 success: function (txHash) {
+                    submitting = false;
                     if (!txHash || txHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
                     window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
                 },
-                error: MemoApp.Form.ErrorHandler
+                error: function (xhr) {
+                    submitting = false;
+                    if (xhr.status === 401) {
+                        alert("Error unlocking key. " +
+                            "Please verify your password is correct. " +
+                            "If this problem persists, please try refreshing the page.");
+                        return;
+                    }
+                    var errorMessage =
+                        "Error with request (response code " + xhr.status + "):\n" +
+                        (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+                        "If this problem persists, try refreshing the page.";
+                    alert(errorMessage);
+                }
             });
         });
     };

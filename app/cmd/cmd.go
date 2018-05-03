@@ -48,7 +48,6 @@ var webCmd = &cobra.Command{
 
 var mainNodeCmd = &cobra.Command{
 	Use:   "main-node",
-	Short: "",
 	RunE: func(c *cobra.Command, args []string) error {
 		main_node.Start()
 		main_node.WaitForDisconnect()
@@ -60,7 +59,6 @@ var mainNodeCmd = &cobra.Command{
 
 var scannerCmd = &cobra.Command{
 	Use:   "scanner",
-	Short: "",
 	RunE: func(c *cobra.Command, args []string) error {
 		scanner.Node.Start()
 		scanner.Node.Peer.WaitForDisconnect()
@@ -71,7 +69,6 @@ var scannerCmd = &cobra.Command{
 
 var fixPostEmojisCmd = &cobra.Command{
 	Use:   "fix-post-emojis",
-	Short: "",
 	RunE: func(c *cobra.Command, args []string) error {
 		var diffCount int
 		for i := 1; i < 10000; i++ {
@@ -107,7 +104,6 @@ var fixPostEmojisCmd = &cobra.Command{
 
 var fixNameEmojisCmd = &cobra.Command{
 	Use:   "fix-name-emojis",
-	Short: "",
 	RunE: func(c *cobra.Command, args []string) error {
 		var diffCount int
 		for i := 1; i < 10000; i++ {
@@ -138,7 +134,6 @@ var fixNameEmojisCmd = &cobra.Command{
 
 var scanPostsCmd = &cobra.Command{
 	Use:   "scan-posts",
-	Short: "",
 	RunE: func(c *cobra.Command, args []string) error {
 		var foundCount int
 		for i := 1; i < 10000; i++ {
@@ -164,7 +159,6 @@ var scanPostsCmd = &cobra.Command{
 
 var viewPostCmd = &cobra.Command{
 	Use:   "view-post",
-	Short: "",
 	RunE: func(c *cobra.Command, args []string) error {
 		hash, err := chainhash.NewHashFromStr("41b531d1821d13c48b2b879c0d44b2e02e858e625d6ba7312497b5cd33b95044")
 		if err != nil {

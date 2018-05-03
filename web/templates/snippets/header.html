@@ -32,41 +32,45 @@
 <body>
 
 <div class="header">
-    <h1>
-        <a href="">
-            <img src="/logo.png"/>
-            Memo
-        </a>
-    </h1>
-
-    <div class="nav">
-    {{ with .Username }}
-        <a href="">Dashboard</a>
-    {{ else }}
-        <a href="">Home</a>
-    {{ end }}
-    {{ with .Username }}
-        <a href="memo/new">New Memo</a>
-    {{ end }}
-        <a href="posts/top">Posts</a>
-        <a href="profiles">Profiles</a>
-    {{ with .Username }}
-        <a id="header-logout" href="logout">Logout <b>{{ . }}</b></a>
-    {{ else }}
-        <a href="login">Login</a>
-    {{ end }}
+    <div class="header-wrapper">
+        <h1>
+            <a href="">
+                <img src="/logo.png"/>
+                Memo
+            </a>
+        </h1>
+        <div class="nav">
+        {{ $nav := .Nav }}
+        {{ with .Username }}
+            <a {{ if eq $nav "home" }}class="sel"{{ end }} href="">Dashboard</a>
+        {{ else }}
+            <a {{ if eq $nav "home" }}class="sel"{{ end }} href="">Home</a>
+        {{ end }}
+        {{ with .Username }}
+            <a {{ if eq $nav "new" }}class="sel"{{ end }} href="memo/new">New Memo</a>
+        {{ end }}
+            <a {{ if eq $nav "posts" }}class="sel"{{ end }} href="posts/top">Posts</a>
+            <a {{ if eq $nav "profiles" }}class="sel"{{ end }} href="profiles">Profiles</a>
+        {{ with .Username }}
+            <a id="header-logout" href="logout">Logout <b>{{ . }}</b></a>
+        {{ else }}
+            <a {{ if eq $nav "login" }}class="sel"{{ end }} href="login">Login</a>
+        {{ end }}
+        </div>
     </div>
 </div>
 
-<hr/>
+<div class="wrapper">
 
-<p class="notice">
-</p>
+    <div class="container">
 
-<style type="text/css">
-    .notice {
-        font-weight: bold;
-        font-style: italic;
-        font-size: 14px;
-    }
-</style>
+        <p class="notice">
+        </p>
+
+        <style type="text/css">
+            .notice {
+                font-weight: bold;
+                font-style: italic;
+                font-size: 14px;
+            }
+        </style>

@@ -46,12 +46,18 @@ var unfollowRoute = web.Route{
 			return
 		}
 
-		pf, err := profile.GetProfileAndSetFollowers(pkHash, key.PkHash)
+		pf, err := profile.GetProfile(pkHash, key.PkHash)
 		if err != nil {
 			r.Error(jerr.Get("error getting profile for hash", err), http.StatusInternalServerError)
 			return
 		}
-		if ! pf.CanUnFollow() {
+
+		canFollow, err := profile.CanFollow(pkHash, key.PkHash)
+		if err != nil {
+			r.Error(jerr.Get("error getting can follow", err), http.StatusInternalServerError)
+			return
+		}
+		if canFollow {
 			r.Error(jerr.New("unable to unfollow user"), http.StatusUnprocessableEntity)
 			return
 		}

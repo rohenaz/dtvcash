@@ -6,9 +6,9 @@ import (
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
+	"github.com/jchavannes/gorm"
 	"github.com/jchavannes/jgo/jerr"
 	"html"
-	"sort"
 	"time"
 )
 
@@ -107,66 +107,116 @@ func (txns memoFollowSortByDate) Less(i, j int) bool {
 	return txns[i].Block.Height < txns[j].Block.Height
 }
 
-func GetFollowersForPkHash(pkHash []byte) ([]*MemoFollow, error) {
-	var memoFollows []*MemoFollow
-	err := findPreloadColumns([]string{
-		BlockTable,
-	}, &memoFollows, &MemoFollow{
-		PkHash: pkHash,
-	})
+func GetFollowersForPkHash(pkHash []byte, offset int) ([]*MemoFollow, error) {
+	db, err := getDb()
 	if err != nil {
-		return nil, jerr.Get("error getting memo follows", err)
+		return nil, jerr.Get("error getting db", err)
 	}
-	sort.Sort(memoFollowSortByDate(memoFollows))
+	sql := "" +
+		"SELECT " +
+		"	memo_follows.* " +
+		"FROM memo_follows " +
+		"JOIN (" +
+		"	SELECT MAX(id) AS id" +
+		"	FROM memo_follows" +
+		"	WHERE pk_hash = ?" +
+		"	GROUP BY pk_hash, follow_pk_hash" +
+		") sq ON (sq.id = memo_follows.id) " +
+		"WHERE unfollow = 0 "
+	var query *gorm.DB
+	if offset >= 0 {
+		sql += "LIMIT ?,25"
+		query = db.Raw(sql, pkHash, offset)
+	} else {
+		query = db.Raw(sql, pkHash)
+	}
+	var memoFollows []*MemoFollow
+	result := query.Scan(&memoFollows)
+	if result.Error != nil {
+		return nil, jerr.Get("error running follower query", result.Error)
+	}
 	return memoFollows, nil
 }
 
-func GetFollowingForPkHash(followPkHash []byte) ([]*MemoFollow, error) {
-	var memoFollows []*MemoFollow
-	err := findPreloadColumns([]string{
-		BlockTable,
-	}, &memoFollows, &MemoFollow{
-		FollowPkHash: followPkHash,
-	})
+func GetFollowingForPkHash(followPkHash []byte, offset int) ([]*MemoFollow, error) {
+	db, err := getDb()
 	if err != nil {
-		return nil, jerr.Get("error getting memo follows", err)
+		return nil, jerr.Get("error getting db", err)
 	}
-	sort.Sort(memoFollowSortByDate(memoFollows))
+	sql := "" +
+		"SELECT " +
+		"	memo_follows.* " +
+		"FROM memo_follows " +
+		"JOIN (" +
+		"	SELECT MAX(id) AS id" +
+		"	FROM memo_follows" +
+		"	WHERE follow_pk_hash = ?" +
+		"	GROUP BY pk_hash, follow_pk_hash" +
+		") sq ON (sq.id = memo_follows.id) " +
+		"WHERE unfollow = 0 "
+	var query *gorm.DB
+	if offset >= 0 {
+		sql += "LIMIT ?,25"
+		query = db.Raw(sql, followPkHash, offset)
+	} else {
+		query = db.Raw(sql, followPkHash)
+	}
+	var memoFollows []*MemoFollow
+	result := query.Scan(&memoFollows)
+	if result.Error != nil {
+		return nil, jerr.Get("error running following query", result.Error)
+	}
 	return memoFollows, nil
 }
 
 func GetFollowingCountForPkHash(pkHash []byte) (uint, error) {
-	cnt, err := count(&MemoFollow{
-		PkHash: pkHash,
-	})
+	db, err := getDb()
 	if err != nil {
-		return 0, jerr.Get("error getting following count", err)
+		return 0, jerr.Get("error getting db", err)
 	}
-	ucnt, err := count(&MemoFollow{
-		PkHash: pkHash,
-		Unfollow: true,
-	})
+	sql := "" +
+		"SELECT " +
+		"	COALESCE(SUM(IF(unfollow=0, 1, 0)), 0) AS following " +
+		"FROM memo_follows " +
+		"JOIN (" +
+		"	SELECT MAX(id) AS id" +
+		"	FROM memo_follows" +
+		"	WHERE pk_hash = ?" +
+		"	GROUP BY pk_hash, follow_pk_hash" +
+		") sq ON (sq.id = memo_follows.id)"
+	query := db.Raw(sql, pkHash)
+	var cnt uint
+	row := query.Row()
+	err = row.Scan(&cnt)
 	if err != nil {
-		return 0, jerr.Get("error getting following count", err)
+		return 0, jerr.Get("error running following count query", err)
 	}
-	return (cnt - ucnt), nil
+	return cnt, nil
 }
 
 func GetFollowerCountForPkHash(followPkHash []byte) (uint, error) {
-	cnt, err := count(&MemoFollow{
-		FollowPkHash: followPkHash,
-	})
+	db, err := getDb()
 	if err != nil {
-		return 0, jerr.Get("error getting follower count", err)
+		return 0, jerr.Get("error getting db", err)
 	}
-	ucnt, err := count(&MemoFollow{
-		FollowPkHash: followPkHash,
-		Unfollow: true,
-	})
+	sql := "" +
+		"SELECT " +
+		"	COALESCE(SUM(IF(unfollow=0, 1, 0)), 0) AS followers " +
+		"FROM memo_follows " +
+		"JOIN (" +
+		"	SELECT MAX(id) AS id" +
+		"	FROM memo_follows" +
+		"	WHERE follow_pk_hash = ?" +
+		"	GROUP BY pk_hash, follow_pk_hash" +
+		") sq ON (sq.id = memo_follows.id)"
+	query := db.Raw(sql, followPkHash)
+	var cnt uint
+	row := query.Row()
+	err = row.Scan(&cnt)
 	if err != nil {
-		return 0, jerr.Get("error getting follower count", err)
+		return 0, jerr.Get("error running follower count query", err)
 	}
-	return (cnt - ucnt), nil
+	return cnt, nil
 }
 
 func GetCountMemoFollows() (uint, error) {
@@ -175,4 +225,34 @@ func GetCountMemoFollows() (uint, error) {
 		return 0, jerr.Get("error getting total count", err)
 	}
 	return cnt, nil
+}
+
+func IsFollowing(followerPkHash []byte, followingPkHash []byte) (bool, error) {
+	if len(followerPkHash) == 0 {
+		return false, nil
+	}
+	db, err := getDb()
+	if err != nil {
+		return false, jerr.Get("error getting db", err)
+	}
+	sql := "" +
+		"SELECT " +
+		"	COALESCE(unfollow, 1) AS is_following " +
+		"FROM memo_follows " +
+		"JOIN (" +
+		"	SELECT MAX(id) AS id" +
+		"	FROM memo_follows" +
+		"	WHERE pk_hash = ? AND follow_pk_hash = ?" +
+		") sq ON (sq.id = memo_follows.id)"
+	query := db.Raw(sql, followerPkHash, followingPkHash)
+	var cnt uint
+	row := query.Row()
+	err = row.Scan(&cnt)
+	if err != nil {
+		if IsNoRowsInResultSetError(err) {
+			return false, nil
+		}
+		return false, jerr.Get("error is follower query", err)
+	}
+	return cnt == 0, nil
 }

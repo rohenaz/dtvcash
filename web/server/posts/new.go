@@ -15,6 +15,7 @@ import (
 var newRoute = web.Route{
 	Pattern: res.UrlPostsNew,
 	Handler: func(r *web.Response) {
+		preHandler(r)
 		offset := r.Request.GetUrlParameterInt("offset")
 		var userPkHash []byte
 		if auth.IsLoggedIn(r.Session.CookieId) {
@@ -46,6 +47,13 @@ var newRoute = web.Route{
 		if err != nil {
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
+		}
+		if len(userPkHash) > 0 {
+			err = profile.AttachReputationToPosts(posts)
+			if err != nil {
+				r.Error(jerr.Get("error attaching reputation to posts", err), http.StatusInternalServerError)
+				return
+			}
 		}
 		res.SetPageAndOffset(r, offset)
 		r.Helper["Posts"] = posts

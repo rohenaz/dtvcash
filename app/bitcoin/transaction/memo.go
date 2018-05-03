@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"git.jasonc.me/main/bitcoin/bitcoin/memo"
 	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"git.jasonc.me/main/memo/app/cache"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/html-parser"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
@@ -31,20 +32,337 @@ func GetMemoOutputIfExists(txn *db.Transaction) (*db.TransactionOut, error) {
 }
 
 func SaveMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error {
-	_, err := db.GetMemoTest(txn.Hash)
+	inputAddress, err := getInputPkHash(txn)
+	if err != nil {
+		return jerr.Get("error getting pk hash from input", err)
+	}
+	var blockId uint
+	if block != nil {
+		blockId = block.Id
+	}
+	// Used for ordering
+	var parentHash []byte
+	if len(txn.TxIn) == 1 {
+		parentHash = txn.TxIn[0].PreviousOutPointHash
+	}
+	err = saveMemoTest(txn, out, blockId, inputAddress)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return jerr.Get("error saving memo_test", err)
+	}
+	switch out.PkScript[3] {
+	case memo.CodePost:
+		err = saveMemoPost(txn, out, blockId, inputAddress, parentHash)
+		if err != nil {
+			return jerr.Get("error saving memo_post", err)
+		}
+	case memo.CodeSetName:
+		err = saveMemoSetName(txn, out, blockId, inputAddress, parentHash)
+		if err != nil {
+			return jerr.Get("error saving memo_set_name", err)
+		}
+	case memo.CodeFollow:
+		err = saveMemoFollow(txn, out, blockId, inputAddress, parentHash, false)
+		if err != nil {
+			return jerr.Get("error saving memo_follow", err)
+		}
+	case memo.CodeUnfollow:
+		err = saveMemoFollow(txn, out, blockId, inputAddress, parentHash, true)
+		if err != nil {
+			return jerr.Get("error saving memo_follow", err)
+		}
+	case memo.CodeLike:
+		err = saveMemoLike(txn, out, blockId, inputAddress, parentHash)
+		if err != nil {
+			return jerr.Get("error saving memo_like", err)
+		}
+	case memo.CodeReply:
+		err = saveMemoReply(txn, out, blockId, inputAddress, parentHash)
+		if err != nil {
+			return jerr.Get("error saving memo_post reply", err)
+		}
+	case memo.CodeSetProfile:
+		err = saveMemoSetProfile(txn, out, blockId, inputAddress, parentHash)
+		if err != nil {
+			return jerr.Get("error saving memo_set_profile", err)
+		}
+	}
+	return nil
+}
+
+func saveMemoTest(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash) error {
+	memoTest, err := db.GetMemoTest(txn.Hash)
 	if err != nil && ! db.IsRecordNotFoundError(err) {
 		return jerr.Get("error getting memo_test", err)
 	}
-	if err == nil {
-		err = updateMemo(txn, out, block)
-		if err != nil {
-			return jerr.Get("error updating memo", err)
+	if memoTest != nil {
+		if memoTest.BlockId != 0 || blockId == 0 {
+			return nil
 		}
+		memoTest.BlockId = blockId
+		err = memoTest.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_test", err)
+		}
+		return nil
+	}
+	memoTest = &db.MemoTest{
+		TxHash:   txn.Hash,
+		PkHash:   inputAddress.ScriptAddress(),
+		PkScript: out.PkScript,
+		Address:  inputAddress.EncodeAddress(),
+		BlockId:  blockId,
+	}
+	err = memoTest.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_test", err)
+	}
+	return nil
+}
+
+func saveMemoPost(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+	memoPost, err := db.GetMemoPost(txn.Hash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return jerr.Get("error getting memo_post", err)
+	}
+	if memoPost != nil {
+		if memoPost.BlockId != 0 || blockId == 0 {
+			return nil
+		}
+		memoPost.BlockId = blockId
+		err = memoPost.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_post", err)
+		}
+		return nil
+	}
+	var message string
+	if len(out.PkScript) > 81 {
+		message = string(out.PkScript[6:])
 	} else {
-		err = newMemo(txn, out, block)
-		if err != nil {
-			return jerr.Get("error saving new memo", err)
+		message = string(out.PkScript[5:])
+	}
+	memoPost = &db.MemoPost{
+		TxHash:     txn.Hash,
+		PkHash:     inputAddress.ScriptAddress(),
+		PkScript:   out.PkScript,
+		ParentHash: parentHash,
+		Address:    inputAddress.EncodeAddress(),
+		Message:    html_parser.EscapeWithEmojis(message),
+		BlockId:    blockId,
+	}
+	err = memoPost.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_post", err)
+	}
+	return nil
+}
+
+func saveMemoSetName(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+	memoSetName, err := db.GetMemoSetName(txn.Hash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return jerr.Get("error getting memo_set_name", err)
+	}
+	if memoSetName != nil {
+		if memoSetName.BlockId != 0 || blockId == 0 {
+			return nil
 		}
+		memoSetName.BlockId = blockId
+		err = memoSetName.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_set_name", err)
+		}
+		return nil
+	}
+	var name string
+	if len(out.PkScript) > 81 {
+		name = string(out.PkScript[6:])
+	} else {
+		name = string(out.PkScript[5:])
+	}
+	memoSetName = &db.MemoSetName{
+		TxHash:     txn.Hash,
+		PkHash:     inputAddress.ScriptAddress(),
+		PkScript:   out.PkScript,
+		ParentHash: parentHash,
+		Address:    inputAddress.EncodeAddress(),
+		Name:       html_parser.EscapeWithEmojis(name),
+		BlockId:    blockId,
+	}
+	err = memoSetName.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_set_name", err)
+	}
+	return nil
+}
+
+func saveMemoFollow(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte, unfollow bool) error {
+	memoFollow, err := db.GetMemoFollow(txn.Hash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return jerr.Get("error getting memo_follow", err)
+	}
+	if memoFollow != nil {
+		if memoFollow.BlockId != 0 || blockId == 0 {
+			return nil
+		}
+		memoFollow.BlockId = blockId
+		err = memoFollow.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_follow", err)
+		}
+		return nil
+	}
+	address := wallet.GetAddressFromPkHash(out.PkScript[5:])
+	if ! bytes.Equal(address.GetScriptAddress(), out.PkScript[5:]) {
+		return jerr.New("unable to parse follow address")
+	}
+	memoFollow = &db.MemoFollow{
+		TxHash:       txn.Hash,
+		PkHash:       inputAddress.ScriptAddress(),
+		PkScript:     out.PkScript,
+		ParentHash:   parentHash,
+		Address:      inputAddress.EncodeAddress(),
+		FollowPkHash: address.GetScriptAddress(),
+		BlockId:      blockId,
+		Unfollow:     unfollow,
+	}
+	err = memoFollow.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_follow", err)
+	}
+	err = cache.ClearReputation(memoFollow.PkHash, memoFollow.FollowPkHash)
+	if err != nil && ! cache.IsMissError(err) {
+		return jerr.Get("error clearing cache", err)
+	}
+	return nil
+}
+
+func saveMemoLike(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+	memoLike, err := db.GetMemoLike(txn.Hash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return jerr.Get("error getting memo_like", err)
+	}
+	if memoLike != nil {
+		if memoLike.BlockId != 0 || blockId == 0 {
+			return nil
+		}
+		memoLike.BlockId = blockId
+		err = memoLike.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_like", err)
+		}
+		return nil
+	}
+
+	txHash, err := chainhash.NewHash(out.PkScript[5:37])
+	if err != nil {
+		return jerr.Get("error parsing transaction hash", err)
+	}
+	var tipPkHash []byte
+	var tipAmount int64
+	for _, txOut := range txn.TxOut {
+		if len(txOut.KeyPkHash) == 0 || bytes.Equal(txOut.KeyPkHash, inputAddress.ScriptAddress()) {
+			continue
+		}
+		if len(tipPkHash) != 0 {
+			return jerr.New("error found multiple tip outputs, unable to process")
+		}
+		tipAmount += txOut.Value
+		tipPkHash = txOut.KeyPkHash
+	}
+	memoLike = &db.MemoLike{
+		TxHash:     txn.Hash,
+		PkHash:     inputAddress.ScriptAddress(),
+		PkScript:   out.PkScript,
+		ParentHash: parentHash,
+		Address:    inputAddress.EncodeAddress(),
+		LikeTxHash: txHash.CloneBytes(),
+		BlockId:    blockId,
+		TipPkHash:  tipPkHash,
+		TipAmount:  tipAmount,
+	}
+	err = memoLike.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_like", err)
+	}
+	return nil
+}
+
+func saveMemoReply(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+	memoPost, err := db.GetMemoPost(txn.Hash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return jerr.Get("error getting memo_reply", err)
+	}
+	if memoPost != nil {
+		if memoPost.BlockId != 0 || blockId == 0 {
+			return nil
+		}
+		memoPost.BlockId = blockId
+		err = memoPost.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_reply", err)
+		}
+		return nil
+	}
+
+	if len(out.PkScript) < 38 {
+		return jerr.Newf("invalid reply, length too short (%d)", len(out.PkScript))
+	}
+	txHash, err := chainhash.NewHash(out.PkScript[5:37])
+	if err != nil {
+		return jerr.Get("error parsing transaction hash", err)
+	}
+	memoPost = &db.MemoPost{
+		TxHash:       txn.Hash,
+		PkHash:       inputAddress.ScriptAddress(),
+		PkScript:     out.PkScript,
+		ParentHash:   parentHash,
+		Address:      inputAddress.EncodeAddress(),
+		ParentTxHash: txHash.CloneBytes(),
+		Message:      html_parser.EscapeWithEmojis(string(out.PkScript[38:])),
+		BlockId:      blockId,
+	}
+	err = memoPost.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_reply", err)
+	}
+	return nil
+}
+
+func saveMemoSetProfile(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+	memoSetProfile, err := db.GetMemoSetProfile(txn.Hash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return jerr.Get("error getting memo_set_profile", err)
+	}
+	if memoSetProfile != nil {
+		if memoSetProfile.BlockId != 0 || blockId == 0{
+			return nil
+		}
+		memoSetProfile.BlockId = blockId
+		err = memoSetProfile.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_set_profile", err)
+		}
+		return nil
+	}
+
+	var profile string
+	if len(out.PkScript) > 81 {
+		profile = string(out.PkScript[6:])
+	} else {
+		profile = string(out.PkScript[5:])
+	}
+	memoSetProfile = &db.MemoSetProfile{
+		TxHash:     txn.Hash,
+		PkHash:     inputAddress.ScriptAddress(),
+		PkScript:   out.PkScript,
+		ParentHash: parentHash,
+		Address:    inputAddress.EncodeAddress(),
+		Profile:    html_parser.EscapeWithEmojis(profile),
+		BlockId:    blockId,
+	}
+	err = memoSetProfile.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_set_profile", err)
 	}
 	return nil
 }
@@ -69,246 +387,4 @@ func getInputPkHash(txn *db.Transaction) (*btcutil.AddressPubKeyHash, error) {
 		return nil, jerr.Get("error getting pubkeyhash from memo test", err)
 	}
 	return addressPkHash, nil
-}
-
-func newMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error {
-	//fmt.Printf("Found new memo (txn: %s)\n", txn.GetChainHash().String())
-	inputAddress, err := getInputPkHash(txn)
-	if err != nil {
-		return jerr.Get("error getting pk hash from input", err)
-	}
-	var blockId uint
-	if block != nil {
-		blockId = block.Id
-	}
-	// Used for ordering
-	var parentHash []byte
-	if len(txn.TxIn) == 1 {
-		parentHash = txn.TxIn[0].PreviousOutPointHash
-	}
-	var memoTest = db.MemoTest{
-		TxHash:   txn.Hash,
-		PkHash:   inputAddress.ScriptAddress(),
-		PkScript: out.PkScript,
-		Address:  inputAddress.EncodeAddress(),
-		BlockId:  blockId,
-	}
-	err = memoTest.Save()
-	if err != nil {
-		return jerr.Get("error saving memo_test", err)
-	}
-	switch out.PkScript[3] {
-	case memo.CodePost:
-		var message string
-		if len(out.PkScript) > 81 {
-			message = string(out.PkScript[6:])
-		} else {
-			message = string(out.PkScript[5:])
-		}
-		var memoPost = db.MemoPost{
-			TxHash:     txn.Hash,
-			PkHash:     inputAddress.ScriptAddress(),
-			PkScript:   out.PkScript,
-			ParentHash: parentHash,
-			Address:    inputAddress.EncodeAddress(),
-			Message:    html_parser.EscapeWithEmojis(message),
-			BlockId:    blockId,
-		}
-		err := memoPost.Save()
-		if err != nil {
-			return jerr.Get("error saving memo_post", err)
-		}
-	case memo.CodeSetName:
-		var name string
-		if len(out.PkScript) > 81 {
-			name = string(out.PkScript[6:])
-		} else {
-			name = string(out.PkScript[5:])
-		}
-		var memoSetName = db.MemoSetName{
-			TxHash:     txn.Hash,
-			PkHash:     inputAddress.ScriptAddress(),
-			PkScript:   out.PkScript,
-			ParentHash: parentHash,
-			Address:    inputAddress.EncodeAddress(),
-			Name:       html_parser.EscapeWithEmojis(name),
-			BlockId:    blockId,
-		}
-		err := memoSetName.Save()
-		if err != nil {
-			return jerr.Get("error saving memo_set_name", err)
-		}
-	case memo.CodeFollow:
-		address := wallet.GetAddressFromPkHash(out.PkScript[5:])
-		if ! bytes.Equal(address.GetScriptAddress(), out.PkScript[5:]) {
-			return jerr.New("unable to parse follow address")
-		}
-		var memoFollow = db.MemoFollow{
-			TxHash:       txn.Hash,
-			PkHash:       inputAddress.ScriptAddress(),
-			PkScript:     out.PkScript,
-			ParentHash:   parentHash,
-			Address:      inputAddress.EncodeAddress(),
-			FollowPkHash: address.GetScriptAddress(),
-			BlockId:      blockId,
-		}
-		err := memoFollow.Save()
-		if err != nil {
-			return jerr.Get("error saving memo_follow", err)
-		}
-	case memo.CodeUnfollow:
-		address := wallet.GetAddressFromPkHash(out.PkScript[5:])
-		if ! bytes.Equal(address.GetScriptAddress(), out.PkScript[5:]) {
-			return jerr.New("unable to parse follow address")
-		}
-		var memoFollow = db.MemoFollow{
-			TxHash:       txn.Hash,
-			PkHash:       inputAddress.ScriptAddress(),
-			PkScript:     out.PkScript,
-			ParentHash:   parentHash,
-			Address:      inputAddress.EncodeAddress(),
-			FollowPkHash: address.GetScriptAddress(),
-			BlockId:      blockId,
-			Unfollow:     true,
-		}
-		err := memoFollow.Save()
-		if err != nil {
-			return jerr.Get("error saving memo_follow", err)
-		}
-	case memo.CodeLike:
-		txHash, err := chainhash.NewHash(out.PkScript[5:37])
-		if err != nil {
-			return jerr.Get("error parsing transaction hash", err)
-		}
-		var tipPkHash []byte
-		var tipAmount int64
-		for _, txOut := range txn.TxOut {
-			if len(txOut.KeyPkHash) == 0 || bytes.Equal(txOut.KeyPkHash, inputAddress.ScriptAddress()) {
-				continue
-			}
-			if len(tipPkHash) != 0 {
-				return jerr.New("error found multiple tip outputs, unable to process")
-			}
-			tipAmount += txOut.Value
-			tipPkHash = txOut.KeyPkHash
-		}
-		var memoLike = db.MemoLike{
-			TxHash:     txn.Hash,
-			PkHash:     inputAddress.ScriptAddress(),
-			PkScript:   out.PkScript,
-			ParentHash: parentHash,
-			Address:    inputAddress.EncodeAddress(),
-			LikeTxHash: txHash.CloneBytes(),
-			BlockId:    blockId,
-			TipPkHash:  tipPkHash,
-			TipAmount:  tipAmount,
-		}
-		err = memoLike.Save()
-		if err != nil {
-			return jerr.Get("error saving memo_like", err)
-		}
-	case memo.CodeReply:
-		if len(out.PkScript) < 38 {
-			return jerr.Newf("invalid reply, length too short (%d)", len(out.PkScript))
-		}
-		txHash, err := chainhash.NewHash(out.PkScript[5:37])
-		if err != nil {
-			return jerr.Get("error parsing transaction hash", err)
-		}
-		var memoPost = db.MemoPost{
-			TxHash:       txn.Hash,
-			PkHash:       inputAddress.ScriptAddress(),
-			PkScript:     out.PkScript,
-			ParentHash:   parentHash,
-			Address:      inputAddress.EncodeAddress(),
-			ParentTxHash: txHash.CloneBytes(),
-			Message:      html_parser.EscapeWithEmojis(string(out.PkScript[38:])),
-			BlockId:      blockId,
-		}
-		err = memoPost.Save()
-		if err != nil {
-			return jerr.Get("error saving memo_reply", err)
-		}
-	}
-	return nil
-}
-
-func updateMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) error {
-	//fmt.Printf("Updating existing memo (txn: %s)\n", txn.GetChainHash().String())
-	memoTest, err := db.GetMemoTest(txn.Hash)
-	if err != nil {
-		return jerr.Get("error getting memo_test", err)
-	}
-	if block == nil || memoTest.BlockId != 0 {
-		// Nothing to update
-		return nil
-	}
-	memoTest.BlockId = block.Id
-	err = memoTest.Save()
-	if err != nil {
-		return jerr.Get("error saving memo_test", err)
-	}
-	switch out.PkScript[3] {
-	case memo.CodePost:
-		memoPost, err := db.GetMemoPost(txn.Hash)
-		if err != nil {
-			return jerr.Get("error getting memo_post", err)
-		}
-		memoPost.BlockId = block.Id
-		err = memoPost.Save()
-		if err != nil {
-			return jerr.Get("error saving memo_post", err)
-		}
-	case memo.CodeSetName:
-		memoSetName, err := db.GetMemoSetName(txn.Hash)
-		if err != nil {
-			return jerr.Get("error getting memo_set_name", err)
-		}
-		memoSetName.BlockId = block.Id
-		err = memoSetName.Save()
-		if err != nil {
-			return jerr.Get("error saving memo_set_name", err)
-		}
-	case memo.CodeFollow:
-		memoFollow, err := db.GetMemoFollow(txn.Hash)
-		if err != nil {
-			return jerr.Get("error getting memo_follow", err)
-		}
-		memoFollow.BlockId = block.Id
-		err = memoFollow.Save()
-		if err != nil {
-			return jerr.Get("error saving memo_follow", err)
-		}
-	case memo.CodeUnfollow:
-		memoFollow, err := db.GetMemoFollow(txn.Hash)
-		if err != nil {
-			return jerr.Get("error getting memo_follow", err)
-		}
-		memoFollow.BlockId = block.Id
-		err = memoFollow.Save()
-		if err != nil {
-			return jerr.Get("error saving memo_follow", err)
-		}
-	case memo.CodeLike:
-		memoLike, err := db.GetMemoLike(txn.Hash)
-		if err != nil {
-			return jerr.Get("error getting memo_like", err)
-		}
-		memoLike.BlockId = block.Id
-		err = memoLike.Save()
-		if err != nil {
-			return jerr.Get("error saving memo_like", err)
-		}
-	case memo.CodeReply:
-		memoPost, err := db.GetMemoPost(txn.Hash)
-		if err != nil {
-			return jerr.Get("error getting memo_reply", err)
-		}
-		memoPost.BlockId = block.Id
-		err = memoPost.Save()
-		if err != nil {
-			return jerr.Get("error saving memo_reply", err)
-		}
-	}
-	return nil
 }

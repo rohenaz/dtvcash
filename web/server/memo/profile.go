@@ -12,11 +12,10 @@ import (
 	"net/http"
 )
 
-var newRoute = web.Route{
-	Pattern:    res.UrlMemoNew,
+var setProfileRoute = web.Route{
+	Pattern:    res.UrlMemoSetProfile,
 	NeedsLogin: true,
 	Handler: func(r *web.Response) {
-		r.Helper["Nav"] = "new"
 		user, err := auth.GetSessionUser(r.Session.CookieId)
 		if err != nil {
 			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
@@ -40,12 +39,12 @@ var newRoute = web.Route{
 	},
 }
 
-var newSubmitRoute = web.Route{
-	Pattern:     res.UrlMemoNewSubmit,
+var setProfileSubmitRoute = web.Route{
+	Pattern:     res.UrlMemoSetProfileSubmit,
 	NeedsLogin:  true,
 	CsrfProtect: true,
 	Handler: func(r *web.Response) {
-		message := r.Request.GetFormValue("message")
+		profile := r.Request.GetFormValue("profile")
 		password := r.Request.GetFormValue("password")
 		user, err := auth.GetSessionUser(r.Session.CookieId)
 		if err != nil {
@@ -65,7 +64,7 @@ var newSubmitRoute = web.Route{
 		}
 
 		address := key.GetAddress()
-		var fee = int64(284 - memo.MaxPostSize + len([]byte(message)))
+		var fee = int64(283 - memo.MaxPostSize + len([]byte(profile)))
 		var minInput = fee + transaction.DustMinimumOutput
 
 		txOut, err := db.GetSpendableTxOut(key.PkHash, minInput)
@@ -79,8 +78,8 @@ var newSubmitRoute = web.Route{
 			Address: address,
 			Amount:  txOut.Value - fee,
 		}, {
-			Type: transaction.SpendOutputTypeMemoMessage,
-			Data: []byte(message),
+			Type: transaction.SpendOutputTypeMemoSetProfile,
+			Data: []byte(profile),
 		}})
 		if err != nil {
 			r.Error(jerr.Get("error creating tx", err), http.StatusInternalServerError)

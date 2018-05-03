@@ -27,21 +27,23 @@ const (
 )
 
 const (
-	UrlMemoNew            = "/memo/new"
-	UrlMemoNewSubmit      = "/memo/new-submit"
-	UrlMemoSetName        = "/memo/set-name"
-	UrlMemoSetNameSubmit  = "/memo/set-name-submit"
-	UrlMemoFollow         = "/memo/follow"
-	UrlMemoFollowSubmit   = "/memo/follow-submit"
-	UrlMemoUnfollow       = "/memo/unfollow"
-	UrlMemoUnfollowSubmit = "/memo/unfollow-submit"
-	UrlMemoPost           = "/post"
-	UrlMemoLike           = "/memo/like"
-	UrlMemoLikeSubmit     = "/memo/like-submit"
-	UrlMemoReply          = "/memo/reply"
-	UrlMemoReplySubmit    = "/memo/reply-submit"
-	UrlMemoWait           = "/memo/wait"
-	UrlMemoWaitSubmit     = "/memo/wait-submit"
+	UrlMemoNew              = "/memo/new"
+	UrlMemoNewSubmit        = "/memo/new-submit"
+	UrlMemoSetName          = "/memo/set-name"
+	UrlMemoSetNameSubmit    = "/memo/set-name-submit"
+	UrlMemoFollow           = "/memo/follow"
+	UrlMemoFollowSubmit     = "/memo/follow-submit"
+	UrlMemoUnfollow         = "/memo/unfollow"
+	UrlMemoUnfollowSubmit   = "/memo/unfollow-submit"
+	UrlMemoPost             = "/post"
+	UrlMemoLike             = "/memo/like"
+	UrlMemoLikeSubmit       = "/memo/like-submit"
+	UrlMemoReply            = "/memo/reply"
+	UrlMemoReplySubmit      = "/memo/reply-submit"
+	UrlMemoWait             = "/memo/wait"
+	UrlMemoWaitSubmit       = "/memo/wait-submit"
+	UrlMemoSetProfile       = "/memo/set-profile"
+	UrlMemoSetProfileSubmit = "/memo/set-profile-submit"
 
 	TmplMemoPost = "/memo/post"
 )
@@ -56,9 +58,10 @@ const (
 )
 
 const (
-	UrlPostsNew     = "/posts/new"
-	UrlPostsTop     = "/posts/top"
-	UrlPostsArchive = "/posts/archive"
+	UrlPostsNew          = "/posts/new"
+	UrlPostsTop          = "/posts/top"
+	UrlPostsArchive      = "/posts/archive"
+	UrlPostsPersonalized = "/posts/personalized"
 )
 
 func GetBaseUrl(r *web.Response) string {
