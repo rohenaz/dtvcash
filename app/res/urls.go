@@ -68,6 +68,9 @@ const (
 	UrlTags             = "/tags"
 	UrlTagsCreate       = "/tags/create"
 	UrlTagsCreateSubmit = "/tags/create-submit"
+	UrlTagView          = "/tag"
+
+	TmplTagView = "/tags/view"
 )
 
 func GetBaseUrl(r *web.Response) string {

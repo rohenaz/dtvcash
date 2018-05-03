@@ -1,0 +1,9 @@
+{{ template "snippets/header.html" . }}
+
+<h2>Tag - {{ .Tag }}</h2>
+
+{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
+
+<br/>
+
+{{ template "snippets/footer.html" . }}

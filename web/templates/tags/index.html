@@ -4,6 +4,16 @@
 
 <p><a href="tags/create">Create New Tag</a></p>
 
+<table class="table">
+    <tbody>
+    {{ range .Tags }}
+    <tr>
+        <td><a href="tag/{{ . }}">{{ . }}</a></td>
+    </tr>
+    {{ end }}
+    </tbody>
+</table>
+
 <br/>
 
 {{ template "snippets/footer.html" . }}

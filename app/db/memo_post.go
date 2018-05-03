@@ -348,3 +348,49 @@ func GetCountMemoPosts() (uint, error) {
 	}
 	return cnt, nil
 }
+
+func GetUniqueTags() ([]string, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	rows, err := db.Table("memo_posts").Select("DISTINCT(tag)").Where("tag IS NOT NULL AND tag != ''").Rows()
+	if err != nil {
+		return nil, jerr.Get("error getting distinct tags", err)
+	}
+	defer rows.Close()
+	var tags []string
+	for rows.Next() {
+		var tag string
+		err := rows.Scan(&tag)
+		if err != nil {
+			return nil, jerr.Get("error scanning row with tag", err)
+		}
+		tags = append(tags, tag)
+	}
+	return tags, nil
+}
+
+func GetPostsForTag(tag string, offset uint) ([]*MemoPost, error) {
+	if len(tag) == 0 {
+		return nil, jerr.New("empty tag")
+	}
+	var memoPosts []*MemoPost
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	query := db.
+		Preload(BlockTable).
+		Order("id DESC").
+		Limit(25).
+		Offset(offset)
+	result := query.Find(&memoPosts, &MemoPost{
+		Tag: tag,
+	})
+	if result.Error != nil {
+		return nil, jerr.Get("error getting memo posts", result.Error)
+	}
+	sort.Sort(memoPostSortByDate(memoPosts))
+	return memoPosts, nil
+}
