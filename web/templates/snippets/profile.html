@@ -42,6 +42,9 @@
         <th>Connectivity</th>
         <td>
             <span class="reputation-tooltip">
+        {{ if .IsSelf }}
+            <b>This is you!</b>
+        {{ end }}
         {{ if .Reputation.IsDirectFollow }}
             You follow <b>{{ .Name }}</b>! -
             <i>{{ .Reputation.GetTrustedFollowers }} of {{ .Reputation.GetTotalFollowing }}
