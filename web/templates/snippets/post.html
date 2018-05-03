@@ -23,10 +23,10 @@
             </a>
         {{ if .Post.Reputation }}
             <span class="reputation-tooltip">
-            (
-        {{- if .Post.Reputation.IsDirectFollow }}Following, {{ end -}}
-        {{ .Post.Reputation.GetPercentStringIncludingDirect -}}
-            )
+                (
+            {{- if .Post.Reputation.IsDirectFollow -}}Following, {{ end -}}
+                Rep: {{ .Post.Reputation.GetPercentStringIncludingDirect -}}
+                )
                 <span>
                     Reputation is the percentage of people you follow who are following this person.
                     For more info visit the <a href="about#reputation">about page</a>.
