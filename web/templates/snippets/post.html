@@ -22,7 +22,10 @@
         {{- end -}}
             </a>
         {{ if .Post.Reputation }}
-            ({{ .Post.Reputation.GetPercentStringIncludingDirect }}%)
+            (
+        {{- if .Post.Reputation.IsDirectFollow }}Following, {{ end -}}
+        {{ .Post.Reputation.GetPercentStringIncludingDirect -}}
+            )
         {{ end }}
         {{ if .Post.Memo.ParentTxHash }}
             replied to <a href="post/{{ .Post.Memo.GetParentTransactionHashString }}">post</a> at
