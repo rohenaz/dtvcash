@@ -39,7 +39,7 @@
     </tr>
 {{ if .Reputation }}
     <tr>
-        <th>Connectivity</th>
+        <th>Connections</th>
         <td>
             <span class="reputation-tooltip">
         {{ if .IsSelf }}
@@ -50,11 +50,12 @@
             <i>{{ .Reputation.GetTrustedFollowers }} of {{ .Reputation.GetTotalFollowing }}
                 ({{ .Reputation.GetPercentString }})</i>
         {{ else }}
-        {{ .Reputation.GetTrustedFollowers }} of {{ .Reputation.GetTotalFollowing }}
-            ({{ .Reputation.GetPercentString }})
+        {{ .Reputation.GetTrustedFollowers }} of the {{ .Reputation.GetTotalFollowing }}
+            users you follow are following this person
+            ({{ .Reputation.GetPercentString }}).
         {{ end }}
                 <span>
-                    Connectivity is the percentage of people you follow who are following this person.
+                    Shared Connections is the percentage of people you follow who are following this person.
                     For more info visit the <a href="about#connectivity">about page</a>.
                 </span>
             </span>
