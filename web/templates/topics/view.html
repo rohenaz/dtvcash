@@ -1,8 +1,8 @@
 {{ template "snippets/header.html" . }}
 
-<h2>Tag - {{ .Tag }}</h2>
+<h2>Topic - {{ .Topic }}</h2>
 
-<p><a href="tags">Back to tags</a></p>
+<p><a href="topics">Back to topics</a></p>
 
 {{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
 
@@ -12,8 +12,8 @@
     Broadcasting...
 </div>
 
-<form id="form-new-tag-message" method="post">
-    <input type="hidden" name="tag" value="{{ .Tag }}"/>
+<form id="form-new-topic-message" method="post">
+    <input type="hidden" name="topic" value="{{ .Topic }}"/>
     <p>
         <label for="message">Message <span class="message-byte-count"></span></label>
         <textarea id="message" type="text" name="message" class="form-control" placeholder="Message"
@@ -38,8 +38,8 @@
 
 <script type="text/javascript">
     $(function () {
-        MemoApp.Form.NewTagMessage($("#broadcasting"), $("#form-new-tag-message"));
-        MemoApp.WatchNewTags("{{ .Tag }}", $("#more-posts"));
+        MemoApp.Form.NewTopicMessage($("#broadcasting"), $("#form-new-topic-message"));
+        MemoApp.WatchNewTopics("{{ .Topic }}", $("#more-posts"));
     });
 </script>
 

@@ -1,18 +1,18 @@
 (function () {
 
-    var maxNewTagBytes = 74;
+    var maxNewTopicBytes = 74;
 
     /**
      * @param {jQuery} $form
      */
-    MemoApp.Form.NewTag = function ($form) {
-        var $tagName = $form.find("[name=tag]");
+    MemoApp.Form.NewTopic = function ($form) {
+        var $topicName = $form.find("[name=topic]");
         var $message = $form.find("[name=message]");
 
-        var $tagByteCount = $form.find(".name-byte-count");
+        var $topicByteCount = $form.find(".name-byte-count");
         var $msgByteCount = $form.find(".message-byte-count");
 
-        $tagName.on("input", function () {
+        $topicName.on("input", function () {
             setMsgByteCount();
         });
         $message.on("input", function () {
@@ -20,18 +20,18 @@
         });
 
         function getByteSize() {
-            return MemoApp.utf8ByteLength($tagName.val()) + MemoApp.utf8ByteLength($message.val());
+            return MemoApp.utf8ByteLength($topicName.val()) + MemoApp.utf8ByteLength($message.val());
         }
 
         function setMsgByteCount() {
-            var cnt = maxNewTagBytes - getByteSize();
-            $tagByteCount.html("[" + cnt + "]");
+            var cnt = maxNewTopicBytes - getByteSize();
+            $topicByteCount.html("[" + cnt + "]");
             $msgByteCount.html("[" + cnt + "]");
             if (cnt < 0) {
-                $tagByteCount.addClass("red");
+                $topicByteCount.addClass("red");
                 $msgByteCount.addClass("red");
             } else {
-                $tagByteCount.removeClass("red");
+                $topicByteCount.removeClass("red");
                 $msgByteCount.removeClass("red");
             }
         }
@@ -45,16 +45,16 @@
                 return
             }
 
-            var tagName = $tagName.val();
+            var topicName = $topicName.val();
             var message = $message.val();
-            if (maxNewTagBytes - getByteSize() < 0) {
-                alert("Maximum size is " + maxNewTagBytes + " bytes. Note that some characters are more than 1 byte." +
+            if (maxNewTopicBytes - getByteSize() < 0) {
+                alert("Maximum size is " + maxNewTopicBytes + " bytes. Note that some characters are more than 1 byte." +
                     " Emojis are usually 4 bytes, for example.");
                 return;
             }
 
-            if (tagName.length === 0) {
-                alert("Must enter a tag name.");
+            if (topicName.length === 0) {
+                alert("Must enter a topic name.");
                 return;
             }
 
@@ -74,9 +74,9 @@
             submitting = true;
             $.ajax({
                 type: "POST",
-                url: MemoApp.GetBaseUrl() + MemoApp.URL.TagsCreateSubmit,
+                url: MemoApp.GetBaseUrl() + MemoApp.URL.TopicsCreateSubmit,
                 data: {
-                    tag: tagName,
+                    topic: topicName,
                     message: message,
                     password: password
                 },
@@ -107,11 +107,11 @@
     };
 
     /**
-     * @param {string} tag
+     * @param {string} topic
      * @param {jQuery} $morePosts
      */
-    MemoApp.WatchNewTags = function (tag, $morePosts) {
-        socket = MemoApp.GetSocket(MemoApp.GetBaseUrl() + MemoApp.URL.TagsSocket + "?tag=" + tag, function () {
+    MemoApp.WatchNewTopics = function (topic, $morePosts) {
+        socket = MemoApp.GetSocket(MemoApp.GetBaseUrl() + MemoApp.URL.TopicsSocket + "?topic=" + topic, function () {
             console.log("socket closed...");
         });
         /**
@@ -136,8 +136,8 @@
      * @param {jQuery} $broadcasting
      * @param {jQuery} $form
      */
-    MemoApp.Form.NewTagMessage = function ($broadcasting, $form) {
-        var $tagName = $form.find("[name=tag]");
+    MemoApp.Form.NewTopicMessage = function ($broadcasting, $form) {
+        var $topicName = $form.find("[name=topic]");
         var $message = $form.find("[name=message]");
 
         var $msgByteCount = $form.find(".message-byte-count");
@@ -147,11 +147,11 @@
         });
 
         function getByteSize() {
-            return MemoApp.utf8ByteLength($tagName.val()) + MemoApp.utf8ByteLength($message.val());
+            return MemoApp.utf8ByteLength($topicName.val()) + MemoApp.utf8ByteLength($message.val());
         }
 
         function setMsgByteCount() {
-            var cnt = maxNewTagBytes - getByteSize();
+            var cnt = maxNewTopicBytes - getByteSize();
             $msgByteCount.html("[" + cnt + "]");
             if (cnt < 0) {
                 $msgByteCount.addClass("red");
@@ -169,16 +169,16 @@
                 return
             }
 
-            var tagName = $tagName.val();
+            var topicName = $topicName.val();
             var message = $message.val();
-            if (maxNewTagBytes - getByteSize() < 0) {
-                alert("Maximum size is " + maxNewTagBytes + " bytes. Note that some characters are more than 1 byte." +
+            if (maxNewTopicBytes - getByteSize() < 0) {
+                alert("Maximum size is " + maxNewTopicBytes + " bytes. Note that some characters are more than 1 byte." +
                     " Emojis are usually 4 bytes, for example.");
                 return;
             }
 
-            if (tagName.length === 0) {
-                alert("Must enter a tag name.");
+            if (topicName.length === 0) {
+                alert("Must enter a topic name.");
                 return;
             }
 
@@ -198,9 +198,9 @@
             submitting = true;
             $.ajax({
                 type: "POST",
-                url: MemoApp.GetBaseUrl() + MemoApp.URL.TagsCreateSubmit,
+                url: MemoApp.GetBaseUrl() + MemoApp.URL.TopicsCreateSubmit,
                 data: {
-                    tag: tagName,
+                    topic: topicName,
                     message: message,
                     password: password
                 },

@@ -1,4 +1,4 @@
-package tags
+package topics
 
 import (
 	"git.jasonc.me/main/memo/app/auth"
@@ -12,11 +12,11 @@ import (
 )
 
 var viewRoute = web.Route{
-	Pattern: res.UrlTagView + "/" + urlTagName.UrlPart(),
+	Pattern: res.UrlTopicView + "/" + urlTopicName.UrlPart(),
 	Handler: func(r *web.Response) {
 		preHandler(r)
-		tagRaw := r.Request.GetUrlNamedQueryVariable(urlTagName.Id)
-		tag := html_parser.EscapeWithEmojis(tagRaw)
+		topicRaw := r.Request.GetUrlNamedQueryVariable(urlTopicName.Id)
+		topic := html_parser.EscapeWithEmojis(topicRaw)
 		var userPkHash []byte
 		if auth.IsLoggedIn(r.Session.CookieId) {
 			user, err := auth.GetSessionUser(r.Session.CookieId)
@@ -31,13 +31,13 @@ var viewRoute = web.Route{
 			}
 			userPkHash = key.PkHash
 		}
-		tagPosts, err := profile.GetPostsForTag(tag, userPkHash, 0)
+		topicPosts, err := profile.GetPostsForTopic(topic, userPkHash, 0)
 		if err != nil {
-			r.Error(jerr.Get("error getting tag posts from db", err), http.StatusInternalServerError)
+			r.Error(jerr.Get("error getting topic posts from db", err), http.StatusInternalServerError)
 			return
 		}
-		r.Helper["Tag"] = tagRaw
-		r.Helper["Posts"] = tagPosts
-		r.RenderTemplate(res.TmplTagView)
+		r.Helper["Topic"] = topicRaw
+		r.Helper["Posts"] = topicPosts
+		r.RenderTemplate(res.TmplTopicView)
 	},
 }

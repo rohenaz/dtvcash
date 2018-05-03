@@ -1,4 +1,4 @@
-package tags
+package topics
 
 import (
 	"git.jasonc.me/main/memo/app/db"
@@ -9,15 +9,15 @@ import (
 )
 
 var indexRoute = web.Route{
-	Pattern: res.UrlTags,
+	Pattern: res.UrlTopics,
 	Handler: func(r *web.Response) {
 		preHandler(r)
-		tags, err := db.GetUniqueTags()
+		topics, err := db.GetUniqueTopics()
 		if err != nil {
-			r.Error(jerr.Get("error getting tags from db", err), http.StatusInternalServerError)
+			r.Error(jerr.Get("error getting topics from db", err), http.StatusInternalServerError)
 			return
 		}
-		r.Helper["Tags"] = tags
+		r.Helper["Topics"] = topics
 		r.Render()
 	},
 }

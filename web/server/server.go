@@ -10,7 +10,7 @@ import (
 	"git.jasonc.me/main/memo/web/server/memo"
 	"git.jasonc.me/main/memo/web/server/posts"
 	"git.jasonc.me/main/memo/web/server/profile"
-	"git.jasonc.me/main/memo/web/server/tags"
+	"git.jasonc.me/main/memo/web/server/topics"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"log"
@@ -102,7 +102,7 @@ func Run(sessionCookieInsecure bool) {
 				feedRoute,
 				//testsRoute,
 			},
-			tags.GetRoutes(),
+			topics.GetRoutes(),
 			posts.GetRoutes(),
 			key.GetRoutes(),
 			auth2.GetRoutes(),

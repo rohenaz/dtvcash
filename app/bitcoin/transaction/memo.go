@@ -85,8 +85,8 @@ func SaveMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) erro
 		if err != nil {
 			return jerr.Get("error saving memo_set_profile", err)
 		}
-	case memo.CodeTagMessage:
-		err = saveMemoTagMessage(txn, out, blockId, inputAddress, parentHash)
+	case memo.CodeTopicMessage:
+		err = saveMemoTopicMessage(txn, out, blockId, inputAddress, parentHash)
 		if err != nil {
 			return jerr.Get("error saving memo_post tag message", err)
 		}
@@ -333,10 +333,10 @@ func saveMemoReply(txn *db.Transaction, out *db.TransactionOut, blockId uint, in
 	return nil
 }
 
-func saveMemoTagMessage(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+func saveMemoTopicMessage(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
 	memoPost, err := db.GetMemoPost(txn.Hash)
 	if err != nil && ! db.IsRecordNotFoundError(err) {
-		return jerr.Get("error getting memo tag message", err)
+		return jerr.Get("error getting memo topic message", err)
 	}
 	if memoPost != nil {
 		if memoPost.BlockId != 0 || blockId == 0 {
@@ -345,24 +345,24 @@ func saveMemoTagMessage(txn *db.Transaction, out *db.TransactionOut, blockId uin
 		memoPost.BlockId = blockId
 		err = memoPost.Save()
 		if err != nil {
-			return jerr.Get("error saving memo tag message", err)
+			return jerr.Get("error saving memo topic message", err)
 		}
 		return nil
 	}
 
 	pushData, err := txscript.PushedData(out.PkScript)
 	if err != nil {
-		return jerr.Get("error parsing push data from memo tag message", err)
+		return jerr.Get("error parsing push data from memo topic message", err)
 	}
 	if len(pushData) != 3 {
-		return jerr.Newf("invalid tag message, incorrect push data (%d)", len(pushData))
+		return jerr.Newf("invalid topic message, incorrect push data (%d)", len(pushData))
 	}
-	var tagNameRaw = pushData[1]
+	var topicNameRaw = pushData[1]
 	var messageRaw = pushData[2]
-	if len(tagNameRaw) == 0 || len(messageRaw) == 0 {
-		return jerr.Newf("empty tag or message (%d, %d)", len(tagNameRaw), len(messageRaw))
+	if len(topicNameRaw) == 0 || len(messageRaw) == 0 {
+		return jerr.Newf("empty topic or message (%d, %d)", len(topicNameRaw), len(messageRaw))
 	}
-	tagName := html_parser.EscapeWithEmojis(string(tagNameRaw))
+	topicName := html_parser.EscapeWithEmojis(string(topicNameRaw))
 	message := html_parser.EscapeWithEmojis(string(messageRaw))
 	memoPost = &db.MemoPost{
 		TxHash:     txn.Hash,
@@ -370,13 +370,13 @@ func saveMemoTagMessage(txn *db.Transaction, out *db.TransactionOut, blockId uin
 		PkScript:   out.PkScript,
 		ParentHash: parentHash,
 		Address:    inputAddress.EncodeAddress(),
-		Tag:        tagName,
+		Topic:      topicName,
 		Message:    message,
 		BlockId:    blockId,
 	}
 	err = memoPost.Save()
 	if err != nil {
-		return jerr.Get("error saving memo tag message", err)
+		return jerr.Get("error saving memo topic message", err)
 	}
 	return nil
 }

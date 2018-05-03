@@ -17,7 +17,7 @@ const DustMinimumOutput int64 = 546
 type SpendOutputType uint
 
 const (
-	SpendOutputTypeP2PK           SpendOutputType = iota
+	SpendOutputTypeP2PK             SpendOutputType = iota
 	SpendOutputTypeReturn
 	SpendOutputTypeMemoMessage
 	SpendOutputTypeMemoSetName
@@ -26,7 +26,7 @@ const (
 	SpendOutputTypeMemoLike
 	SpendOutputTypeMemoReply
 	SpendOutputTypeMemoSetProfile
-	SpendOutputTypeMemoTagMessage
+	SpendOutputTypeMemoTopicMessage
 )
 
 func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutputs []SpendOutput) (*wire.MsgTx, error) {
@@ -173,8 +173,8 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 			}
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
-		case SpendOutputTypeMemoTagMessage:
-			if len(spendOutput.Data) + len(spendOutput.RefData) > memo.MaxTagMessageSize {
+		case SpendOutputTypeMemoTopicMessage:
+			if len(spendOutput.Data)+len(spendOutput.RefData) > memo.MaxTagMessageSize {
 				return nil, jerr.New("data too large")
 			}
 			if len(spendOutput.Data) == 0 || len(spendOutput.RefData) == 0 {
@@ -182,7 +182,7 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 			}
 			pkScript, err := txscript.NewScriptBuilder().
 				AddOp(txscript.OP_RETURN).
-				AddData([]byte{memo.CodePrefix, memo.CodeTagMessage}).
+				AddData([]byte{memo.CodePrefix, memo.CodeTopicMessage}).
 				AddData(spendOutput.RefData).
 				AddData(spendOutput.Data).
 				Script()

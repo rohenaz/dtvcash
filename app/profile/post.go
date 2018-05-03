@@ -300,8 +300,8 @@ func GetTopPosts(selfPkHash []byte, offset uint, timeStart time.Time, timeEnd ti
 	return posts, nil
 }
 
-func GetPostsForTag(tag string, selfPkHash []byte, offset uint) ([]*Post, error) {
-	dbPosts, err := db.GetPostsForTag(tag, offset)
+func GetPostsForTopic(tag string, selfPkHash []byte, offset uint) ([]*Post, error) {
+	dbPosts, err := db.GetPostsForTopic(tag, offset)
 	if err != nil {
 		return nil, jerr.Get("error getting posts for hash", err)
 	}

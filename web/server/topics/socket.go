@@ -1,4 +1,4 @@
-package tags
+package topics
 
 import (
 	"fmt"
@@ -12,10 +12,10 @@ import (
 )
 
 var socketRoute = web.Route{
-	Pattern: res.UrlTagsSocket,
+	Pattern: res.UrlTopicsSocket,
 	Handler: func(r *web.Response) {
-		tagRaw := r.Request.GetUrlParameter("tag")
-		tag := html_parser.EscapeWithEmojis(tagRaw)
+		topicRaw := r.Request.GetUrlParameter("topic")
+		topic := html_parser.EscapeWithEmojis(topicRaw)
 		socket, err := r.GetWebSocket()
 		if err != nil {
 			r.Error(jerr.Get("error getting socket", err), http.StatusUnprocessableEntity)
@@ -23,9 +23,9 @@ var socketRoute = web.Route{
 		}
 		var lastPostId uint
 		for i := 0; i < 1e6; i++ {
-			recentPost, err := db.GetRecentPostForTag(tag)
+			recentPost, err := db.GetRecentPostForTopic(topic)
 			if err != nil {
-				r.Error(jerr.Get("error getting recent post for tag", err), http.StatusInternalServerError)
+				r.Error(jerr.Get("error getting recent post for topic", err), http.StatusInternalServerError)
 				return
 			}
 			if lastPostId == 0 {

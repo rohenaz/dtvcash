@@ -66,13 +66,13 @@ const (
 )
 
 const (
-	UrlTags             = "/tags"
-	UrlTagsCreate       = "/tags/create"
-	UrlTagsCreateSubmit = "/tags/create-submit"
-	UrlTagView          = "/tag"
-	UrlTagsSocket       = "/tags/socket"
+	UrlTopics           = "/topics"
+	UrlTopicsCreate       = "/topics/create"
+	UrlTopicsCreateSubmit = "/topics/create-submit"
+	UrlTopicView          = "/topic"
+	UrlTopicsSocket       = "/topics/socket"
 
-	TmplTagView = "/tags/view"
+	TmplTopicView = "/topics/view"
 )
 
 const (

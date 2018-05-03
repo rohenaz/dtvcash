@@ -92,7 +92,7 @@ var waitSubmitRoute = web.Route{
 				return
 			}
 			r.Write(strings.TrimLeft(res.UrlMemoPost + "/" + post.GetTransactionHashString(), "/"))
-		case memo.CodeTagMessage:
+		case memo.CodeTopicMessage:
 			post, err := db.GetMemoPost(txHash.CloneBytes())
 			if err != nil {
 				r.Error(jerr.Get("error getting post from db", err), http.StatusInternalServerError)

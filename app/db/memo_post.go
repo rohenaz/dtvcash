@@ -25,7 +25,7 @@ type MemoPost struct {
 	ParentTxHash []byte      `gorm:"index:parent_tx_hash"`
 	Parent       *MemoPost
 	Replies      []*MemoPost `gorm:"foreignkey:ParentTxHash"`
-	Tag          string      `gorm:"index:tag"`
+	Topic        string      `gorm:"index:tag"`
 	Message      string
 	BlockId      uint
 	Block        *Block
@@ -318,21 +318,21 @@ func GetRecentPosts(offset uint) ([]*MemoPost, error) {
 	return memoPosts, nil
 }
 
-func GetRecentPostForTag(tag string) (*MemoPost, error) {
+func GetRecentPostForTopic(topic string) (*MemoPost, error) {
 	db, err := getDb()
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
 	}
 	db = db.Preload(BlockTable)
 	var memoPost = MemoPost{
-		Tag: tag,
+		Topic: topic,
 	}
 	result := db.
 		Limit(1).
 		Order("id DESC").
 		Find(&memoPost, memoPost)
 	if result.Error != nil {
-		return nil, jerr.Get("error running recent tag post query", result.Error)
+		return nil, jerr.Get("error running recent topic post query", result.Error)
 	}
 	return &memoPost, nil
 }
@@ -397,31 +397,31 @@ func GetCountMemoPosts() (uint, error) {
 	return cnt, nil
 }
 
-func GetUniqueTags() ([]string, error) {
+func GetUniqueTopics() ([]string, error) {
 	db, err := getDb()
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
 	}
-	rows, err := db.Table("memo_posts").Select("DISTINCT(tag)").Where("tag IS NOT NULL AND tag != ''").Rows()
+	rows, err := db.Table("memo_posts").Select("DISTINCT(topic)").Where("topic IS NOT NULL AND topic != ''").Rows()
 	if err != nil {
-		return nil, jerr.Get("error getting distinct tags", err)
+		return nil, jerr.Get("error getting distinct topics", err)
 	}
 	defer rows.Close()
-	var tags []string
+	var topics []string
 	for rows.Next() {
-		var tag string
-		err := rows.Scan(&tag)
+		var topic string
+		err := rows.Scan(&topic)
 		if err != nil {
-			return nil, jerr.Get("error scanning row with tag", err)
+			return nil, jerr.Get("error scanning row with topic", err)
 		}
-		tags = append(tags, tag)
+		topics = append(topics, topic)
 	}
-	return tags, nil
+	return topics, nil
 }
 
-func GetPostsForTag(tag string, offset uint) ([]*MemoPost, error) {
-	if len(tag) == 0 {
-		return nil, jerr.New("empty tag")
+func GetPostsForTopic(topic string, offset uint) ([]*MemoPost, error) {
+	if len(topic) == 0 {
+		return nil, jerr.New("empty topic")
 	}
 	var memoPosts []*MemoPost
 	db, err := getDb()
@@ -434,7 +434,7 @@ func GetPostsForTag(tag string, offset uint) ([]*MemoPost, error) {
 		Limit(25).
 		Offset(offset)
 	result := query.Find(&memoPosts, &MemoPost{
-		Tag: tag,
+		Topic: topic,
 	})
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)

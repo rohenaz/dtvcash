@@ -1,4 +1,4 @@
-package tags
+package topics
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ import (
 )
 
 var createRoute = web.Route{
-	Pattern: res.UrlTagsCreate,
+	Pattern: res.UrlTopicsCreate,
 	NeedsLogin:  true,
 	Handler: func(r *web.Response) {
 		preHandler(r)
@@ -22,11 +22,11 @@ var createRoute = web.Route{
 }
 
 var createSubmitRoute = web.Route{
-	Pattern:     res.UrlTagsCreateSubmit,
+	Pattern:     res.UrlTopicsCreateSubmit,
 	NeedsLogin:  true,
 	CsrfProtect: true,
 	Handler: func(r *web.Response) {
-		tagName := r.Request.GetFormValue("tag")
+		topicName := r.Request.GetFormValue("topic")
 		message := r.Request.GetFormValue("message")
 		password := r.Request.GetFormValue("password")
 		user, err := auth.GetSessionUser(r.Session.CookieId)
@@ -61,8 +61,8 @@ var createSubmitRoute = web.Route{
 			Address: address,
 			Amount:  txOut.Value - fee,
 		}, {
-			Type:    transaction.SpendOutputTypeMemoTagMessage,
-			RefData: []byte(tagName),
+			Type:    transaction.SpendOutputTypeMemoTopicMessage,
+			RefData: []byte(topicName),
 			Data:    []byte(message),
 		}})
 		if err != nil {

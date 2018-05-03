@@ -1,14 +1,14 @@
 {{ template "snippets/header.html" . }}
 
-<p><a href="tags/create">Create New Tag</a></p>
+<p><a href="topics/create">Create New Topic</a></p>
 
-<h3>Rooms</h3>
+<h3>Existing Topics</h3>
 
 <table class="table">
     <tbody>
-    {{ range .Tags }}
+    {{ range .Topics }}
     <tr>
-        <td><a href="tag/{{ . }}">{{ . }}</a></td>
+        <td><a href="topic/{{ . }}">{{ . }}</a></td>
     </tr>
     {{ end }}
     </tbody>

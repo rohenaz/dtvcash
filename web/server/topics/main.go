@@ -1,9 +1,9 @@
-package tags
+package topics
 
 import "github.com/jchavannes/jgo/web"
 
-var urlTagName = web.UrlParam{
-	Id:   "tag",
+var urlTopicName = web.UrlParam{
+	Id:   "topic",
 	Type: web.UrlParamAny,
 }
 
@@ -18,5 +18,5 @@ func GetRoutes() []web.Route {
 }
 
 func preHandler(r *web.Response) {
-	r.Helper["Nav"] = "tags"
+	r.Helper["Nav"] = "topics"
 }

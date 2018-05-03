@@ -1,16 +1,16 @@
 {{ template "snippets/header.html" . }}
 
-<h2>Create New Tag</h2>
+<h2>Create New Topic</h2>
 
 <p>
-    <i>Note: The longer the tag name, the shorter the messages can be.
-    This applies to all messages with the tag, not just the first one.</i>
+    <i>Note: The longer the topic name, the shorter the messages can be.
+    This applies to all messages with the topic, not just the first one.</i>
 </p>
 
-<form id="form-new-tag" method="post">
+<form id="form-new-topic" method="post">
     <p>
-        <label for="tag">Tag Name  <span class="name-byte-count"></span></label>
-        <input id="tag" type="text" name="tag" class="form-control" placeholder="Tag name"
+        <label for="topic">Topic Name  <span class="name-byte-count"></span></label>
+        <input id="topic" type="text" name="topic" class="form-control" placeholder="Topic name"
                required>
     </p>
     <p>
@@ -30,13 +30,13 @@
         <input id="save-password" name="save-password" type="checkbox"/>
     </p>
     <p>
-        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Create Tag">
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Create Topic">
     </p>
 </form>
 
 <script type="text/javascript">
     $(function () {
-        MemoApp.Form.NewTag($("#form-new-tag"));
+        MemoApp.Form.NewTopic($("#form-new-topic"));
     });
 </script>
 
