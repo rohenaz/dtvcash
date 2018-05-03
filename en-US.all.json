@@ -1,0 +1,22 @@
+[
+  {
+    "id": "dashboard",
+    "translation": "Dashboard"
+  },
+  {
+    "id": "new_memo",
+    "translation": "New Memo"
+  },
+  {
+    "id": "posts",
+    "translation": "Posts"
+  },
+  {
+    "id": "profiles",
+    "translation": "Profiles"
+  },
+  {
+    "id": "log_out",
+    "translation": "Logout ({{.Username}}"
+  }
+]

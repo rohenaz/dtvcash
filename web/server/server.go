@@ -15,6 +15,7 @@ import (
 	"github.com/jchavannes/jgo/web"
 	"log"
 	"net/http"
+	"github.com/nicksnyder/go-i18n/i18n"
 )
 
 var UseMinJS bool
@@ -76,6 +77,13 @@ func preHandler(r *web.Response) {
 	r.Helper["cssFiles"] = res.GetResCssFiles()
 	r.Helper["TimeZone"] = r.Request.GetCookie("memo_time_zone")
 	r.Helper["Nav"] = ""
+
+
+	i18n.MustLoadTranslationFile("en-US.all.json")
+	T := i18n.MustTfunc("en-US", "en-US")
+	userStruct := struct{ Username string }{Username: "Bob"}
+	fmt.Println(T("log_out", userStruct))
+
 }
 
 func Run(sessionCookieInsecure bool) {
