@@ -8,7 +8,7 @@
 <div class="bottom10">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="topics?offset={{ .PrevOffset }}">&lt; Prev</a>
     <span class="page">Page {{ .Page }}</span>
-    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="topics?offset={{ .NextOffset }}">Next &gt;</a>
+    <a class="{{ if lt (len .Topics) 25 }}disabled{{ end }}" href="topics?offset={{ .NextOffset }}">Next &gt;</a>
 </div>
 {{ end }}
 
@@ -35,7 +35,7 @@
 <div class="bottom10">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="topics?offset={{ .PrevOffset }}">&lt; Prev</a>
     <span class="page">Page {{ .Page }}</span>
-    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="topics?offset={{ .NextOffset }}">Next &gt;</a>
+    <a class="{{ if lt (len .Topics) 25 }}disabled{{ end }}" href="topics?offset={{ .NextOffset }}">Next &gt;</a>
 </div>
 {{ end }}
 
