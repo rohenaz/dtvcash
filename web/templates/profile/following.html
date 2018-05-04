@@ -13,10 +13,10 @@
 {{ if and (eq .NextOffset 25) (lt (len .Following) 25) }}{{ else }}
 <div>
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .PrevOffset }}">
-        &lt; Prev</a>
-    <span class="page">Page {{ .Page }}</span>
+        &lt; {{ T "previous" }}</a>
+    <span class="page">{{ T "page" }} {{ .Page }}</span>
     <a class="{{ if lt (len .Following) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .NextOffset }}">
-        Next &gt;</a>
+    {{ T "next" }} &gt;</a>
 </div>
 {{ end }}
 
@@ -25,9 +25,9 @@
 <table class="table">
     <thead>
     <tr>
-        <th>Name</th>
-        <th>Address</th>
-        <th>Reputation</th>
+        <th>{{ T "name" }}</th>
+        <th>{{ T "address" }}</th>
+        <th>{{ T "connections" }}</th>
     </tr>
     </thead>
     <tbody>
@@ -60,10 +60,10 @@
 {{ if and (eq .NextOffset 25) (lt (len .Following) 25) }}{{ else }}
 <div>
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .PrevOffset }}">
-        &lt; Prev</a>
-    <span class="page">Page {{ .Page }}</span>
+        &lt; {{ T "previous" }}</a>
+    <span class="page">{{ T "page" }} {{ .Page }}</span>
     <a class="{{ if lt (len .Following) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .NextOffset }}">
-        Next &gt;</a>
+    {{ T "next" }} &gt;</a>
 </div>
 {{ end }}
 
