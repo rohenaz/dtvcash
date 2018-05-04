@@ -31,6 +31,8 @@
     </tbody>
 </table>
 
+<br/>
+
 {{ if and (eq .NextOffset 25) (lt (len .Topics) 25) }}{{ else }}
 <div class="bottom10">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="topics?offset={{ .PrevOffset }}">&lt; Prev</a>
