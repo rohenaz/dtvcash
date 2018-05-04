@@ -111,7 +111,6 @@
      * @param {jQuery} $allPosts
      */
     MemoApp.WatchNewTopics = function (topic, $allPosts) {
-        var $morePosts = $allPosts.find("#more-posts");
         $allPosts.scrollTop($allPosts[0].scrollHeight);
         socket = MemoApp.GetSocket(MemoApp.GetBaseUrl() + MemoApp.URL.TopicsSocket + "?topic=" + topic, function () {
             console.log("socket closed...");
@@ -125,7 +124,7 @@
             $.ajax({
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostAjax + "/" + txHash,
                 success: function(html) {
-                    $morePosts.append(html);
+                    $allPosts.append(html);
                     //$('html, body').css({scrollTop: $(document).height()-$(window).height()});
                     $allPosts.scrollTop($allPosts[0].scrollHeight);
                 },
