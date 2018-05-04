@@ -61,9 +61,9 @@ func init() {
 								item.LastPostId = recentPost.Id
 								err = item.Socket.WriteJSON(txHash)
 								if err != nil {
-									go func(item *Item) {
+									go func(item *Item, err error) {
 										item.Error <- jerr.Get("error writing to socket", err)
-									}(item)
+									}(item, err)
 									items = append(items[:i], items[i+1:]...)
 									i--
 								}
