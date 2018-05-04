@@ -112,6 +112,12 @@
      */
     MemoApp.WatchNewTopics = function (topic, $allPosts) {
         function connect() {
+            if (!(_lastPostId > 0) || !(_lastLikeId > 0)) {
+                setTimeout(function() {
+                    connect();
+                }, 500);
+                return;
+            }
             var params = "?topic=" + topic + "&lastPostId=" + _lastPostId + "&lastLikeId=" + _lastLikeId;
             var socket = MemoApp.GetSocket(MemoApp.GetBaseUrl() + MemoApp.URL.TopicsSocket + params);
 
