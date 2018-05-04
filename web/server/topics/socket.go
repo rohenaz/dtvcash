@@ -1,14 +1,12 @@
 package topics
 
 import (
-	"fmt"
-	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/html-parser"
 	"git.jasonc.me/main/memo/app/res"
+	"git.jasonc.me/main/memo/app/watcher"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"net/http"
-	"time"
 )
 
 var socketRoute = web.Route{
@@ -22,20 +20,10 @@ var socketRoute = web.Route{
 			r.Error(jerr.Get("error getting socket", err), http.StatusUnprocessableEntity)
 			return
 		}
-		for i := 0; i < 1e6; i++ {
-			recentPosts, err := db.GetRecentPostsForTopic(topic, lastPostId)
-			if err != nil && !db.IsRecordNotFoundError(err) {
-				r.Error(jerr.Get("error getting recent post for topic", err), http.StatusInternalServerError)
-				return
-			}
-			if len(recentPosts) > 0 {
-				fmt.Println("Found new post(s)!")
-				for _, recentPost := range recentPosts {
-					lastPostId = recentPost.Id
-					socket.WriteJSON(recentPost.GetTransactionHashString())
-				}
-			}
-			time.Sleep(250 * time.Millisecond)
+		err = watcher.RegisterSocket(socket, topic, lastPostId)
+		if err != nil {
+			r.Error(jerr.Get("error writing to socket", err), http.StatusInternalServerError)
+			return
 		}
 	},
 }
