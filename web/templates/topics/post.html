@@ -28,13 +28,21 @@
             <span class="reputation-tooltip">
                 (
             {{- if .Post.Reputation.IsDirectFollow -}}Following, {{ end -}}
-                {{ .Post.Reputation.GetPercentStringIncludingDirect -}}
+            {{ .Post.Reputation.GetPercentStringIncludingDirect -}}
                 )
             </span>
         </span>
         {{ end }}
             <a class="time"
                href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeString .TimeZone }}</a>
+        {{- if .Post.Likes }}
+            <span class="like">
+                <i>
+                    <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ len .Post.Likes }} like{{ if not (eq (len .Post.Likes) 1) }}s{{ end }}</a>
+                    (tip: {{ formatBigInt .Post.GetTotalTip }} satoshis)
+                </i>
+            </span>
+        {{- end }}
         </p>
     </div>
     <div class="message">
@@ -62,7 +70,7 @@
 </div>
 
 <script type="text/javascript">
-    $(function() {
+    $(function () {
         MemoApp.SetLastPostId({{ .Post.Memo.Id }});
     });
 </script>

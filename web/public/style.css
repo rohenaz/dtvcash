@@ -363,6 +363,9 @@ span.page {
     font-style: italic;
     font-size: 12px;
 }
+.topic-post .like {
+    font-size: 12px;
+}
 #password-clear {
     display: none;
 }

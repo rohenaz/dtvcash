@@ -43,6 +43,11 @@ var viewRoute = web.Route{
 				return
 			}
 		}
+		err = profile.AttachLikesToPosts(topicPosts)
+		if err != nil {
+			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
+			return
+		}
 		r.Helper["Topic"] = topicRaw
 		r.Helper["Posts"] = topicPosts
 		r.Helper["FirstPostId"] = topicPosts[0].Memo.Id
