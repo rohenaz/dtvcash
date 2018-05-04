@@ -124,11 +124,20 @@
              * @param {MessageEvent} msg
              */
             socket.onmessage = function (msg) {
-                var txHash = msg.data.replace(/['"]+/g, '');
+                var data;
+                try {
+                    data = JSON.parse(msg.data);
+                } catch(e) {
+                    return;
+                }
+                var txHash = data.Hash.replace(/['"]+/g, '');
+                var $post = $("#topic-post-" + txHash);
+                if (data.Type === 2 && !$post.length) {
+                    return;
+                }
                 $.ajax({
                     url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostAjax + "/" + txHash,
                     success: function (html) {
-                        var $post = $("#topic-post-" + txHash);
                         if ($post.length) {
                             $post.replaceWith(html);
                             return;

@@ -29,6 +29,11 @@ func RegisterSocket(socket *web.Socket, topic string, lastPostId uint, lastLikeI
 	return <-item.Error
 }
 
+type txSend struct {
+	Hash string
+	Type uint
+}
+
 func init() {
 	go func() {
 		for {
@@ -61,7 +66,10 @@ func init() {
 							var item = items[i]
 							if item.Topic == topic && item.LastPostId < recentPost.Id {
 								item.LastPostId = recentPost.Id
-								err = item.Socket.WriteJSON(txHash)
+								err = item.Socket.WriteJSON(txSend{
+									Hash: txHash,
+									Type: 1,
+								})
 								if err != nil {
 									go func(item *Item, err error) {
 										item.Error <- jerr.Get("error writing to socket", err)
@@ -103,7 +111,10 @@ func init() {
 							var item = items[i]
 							if item.Topic == topic && item.LastLikeId < recentLike.Id {
 								item.LastLikeId = recentLike.Id
-								err = item.Socket.WriteJSON(txHash)
+								err = item.Socket.WriteJSON(txSend{
+									Hash: txHash,
+									Type: 2,
+								})
 								if err != nil {
 									go func(item *Item, err error) {
 										item.Error <- jerr.Get("error writing to socket", err)
