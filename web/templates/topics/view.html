@@ -4,7 +4,7 @@
 
 <p><a href="topics">Back to topics</a></p>
 
-<div id="all-posts">
+<div id="all-posts" style="position:relative;">
 {{ template "topics/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
 </div>
 
@@ -44,6 +44,7 @@
     $(function () {
         MemoApp.Form.NewTopicMessage($("#broadcasting"), $("#form-new-topic-message"));
         MemoApp.WatchNewTopics("{{ .Topic }}", $("#all-posts"), {{ .LostPostId }});
+        MemoApp.LoadMore("{{ .Topic }}", $("#all-posts"), {{ .FirstPostId }});
     });
 </script>
 

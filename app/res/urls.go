@@ -71,9 +71,11 @@ const (
 	UrlTopicsCreateSubmit = "/topics/create-submit"
 	UrlTopicView          = "/topic"
 	UrlTopicsSocket       = "/topics/socket"
+	UrlTopicsMorePosts    = "/topics/more-posts"
 
-	TmplTopicView = "/topics/view"
-	TmplTopicPost = "/topics/post"
+	TmplTopicView  = "/topics/view"
+	TmplTopicPost  = "/topics/post"
+	TmplTopicPosts = "/topics/posts"
 )
 
 const (

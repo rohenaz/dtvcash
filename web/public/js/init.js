@@ -151,6 +151,7 @@ var MemoApp = {
         MemoWaitSubmit: "memo/wait-submit",
         KeyChangePasswordSubmit: "key/change-password-submit",
         TopicsSocket: "topics/socket",
+        TopicsMorePosts: "topics/more-posts",
         TopicsCreateSubmit: "topics/create-submit"
     };
 })();

@@ -443,3 +443,27 @@ func GetPostsForTopic(topic string, offset uint) ([]*MemoPost, error) {
 	sort.Sort(memoPostSortByDateAsc(memoPosts))
 	return memoPosts, nil
 }
+
+func GetOlderPostsForTopic(topic string, firstPostId uint) ([]*MemoPost, error) {
+	if len(topic) == 0 {
+		return nil, jerr.New("empty topic")
+	}
+	var memoPosts []*MemoPost
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	query := db.
+		Preload(BlockTable).
+		Where("id < ?", firstPostId).
+		Order("id DESC").
+		Limit(25)
+	result := query.Find(&memoPosts, &MemoPost{
+		Topic: topic,
+	})
+	if result.Error != nil {
+		return nil, jerr.Get("error getting memo posts", result.Error)
+	}
+	sort.Sort(memoPostSortByDateAsc(memoPosts))
+	return memoPosts, nil
+}

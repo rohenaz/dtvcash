@@ -329,3 +329,33 @@ func GetPostsForTopic(tag string, selfPkHash []byte, offset uint) ([]*Post, erro
 	}
 	return posts, nil
 }
+
+func GetOlderPostsForTopic(tag string, selfPkHash []byte, firstPostId uint) ([]*Post, error) {
+	dbPosts, err := db.GetOlderPostsForTopic(tag, firstPostId)
+	if err != nil {
+		return nil, jerr.Get("error getting posts", err)
+	}
+	var posts []*Post
+	for _, dbPost := range dbPosts {
+		var name string
+		setName, err := db.GetNameForPkHash(dbPost.PkHash)
+		if err != nil && ! db.IsRecordNotFoundError(err) {
+			return nil, jerr.Get("error getting name for hash", err)
+		}
+		if setName != nil {
+			name = setName.Name
+		}
+		cnt, err := db.GetPostReplyCount(dbPost.TxHash)
+		if err != nil {
+			return nil, jerr.Get("error getting post reply count", err)
+		}
+		post := &Post{
+			Name:       name,
+			Memo:       dbPost,
+			SelfPkHash: selfPkHash,
+			ReplyCount: cnt,
+		}
+		posts = append(posts, post)
+	}
+	return posts, nil
+}

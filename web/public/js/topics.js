@@ -123,7 +123,7 @@
             var txHash = msg.data.replace(/['"]+/g, '');
             $.ajax({
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostAjax + "/" + txHash,
-                success: function(html) {
+                success: function (html) {
                     $allPosts.append(html);
                     $allPosts.scrollTop($allPosts[0].scrollHeight);
                 },
@@ -132,6 +132,55 @@
                 }
             });
         };
+    };
+
+    var _firstPostId;
+
+    /**
+     * @param {string} topic
+     * @param {jQuery} $allPosts
+     * @param {number} firstPostId
+     */
+    MemoApp.LoadMore = function (topic, $allPosts, firstPostId) {
+        _firstPostId = firstPostId;
+        var submitting = false;
+        $allPosts.scroll(function () {
+            if (submitting) {
+                return;
+            }
+            var pos = $allPosts.scrollTop();
+            if (pos === 0) {
+                submitting = true;
+                $.ajax({
+                    url: MemoApp.GetBaseUrl() + MemoApp.URL.TopicsMorePosts,
+                    data: {
+                        firstPostId: _firstPostId,
+                        topic: topic
+                    },
+                    success: function (html) {
+                        submitting = false;
+                        if (html === "") {
+                            return;
+                        }
+                        var firstItem = $allPosts.find(":first");
+                        var curOffset = firstItem.offset().top - $allPosts.scrollTop();
+                        $allPosts.prepend(html);
+                        $allPosts.scrollTop(firstItem.offset().top - curOffset);
+                    },
+                    error: function (xhr) {
+                        submitting = false;
+                        alert("error getting posts (status: " + xhr.status + ")");
+                    }
+                });
+            }
+        });
+    };
+
+    /**
+     * @param {number} firstPostId
+     */
+    MemoApp.SetFirstPostId = function (firstPostId) {
+        _firstPostId = firstPostId;
     };
 
     /**
@@ -171,7 +220,7 @@
             $passwordArea.hide();
             $passwordClear.addClass("show");
         }
-        $passwordClear.find("a").click(function(e) {
+        $passwordClear.find("a").click(function (e) {
             e.preventDefault();
             $passwordArea.show();
             $passwordClear.removeClass("show");
@@ -179,7 +228,7 @@
             $passwordArea.find("[name=password]").val("");
             $passwordArea.find("[name=save-password]").prop('checked', false);
         });
-        $passwordArea.find("[name=save-password]").change(function() {
+        $passwordArea.find("[name=save-password]").change(function () {
             if (this.checked) {
                 $passwordArea.hide();
                 $passwordClear.addClass("show");
