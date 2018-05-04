@@ -109,23 +109,22 @@
     /**
      * @param {string} topic
      * @param {jQuery} $allPosts
+     * @param {number} lastPostId
      */
-    MemoApp.WatchNewTopics = function (topic, $allPosts) {
+    MemoApp.WatchNewTopics = function (topic, $allPosts, lastPostId) {
         $allPosts.scrollTop($allPosts[0].scrollHeight);
-        socket = MemoApp.GetSocket(MemoApp.GetBaseUrl() + MemoApp.URL.TopicsSocket + "?topic=" + topic, function () {
+        socket = MemoApp.GetSocket(MemoApp.GetBaseUrl() + MemoApp.URL.TopicsSocket + "?topic=" + topic + "&lastPostId=" + lastPostId, function () {
             console.log("socket closed...");
         });
         /**
          * @param {MessageEvent} msg
          */
         socket.onmessage = function (msg) {
-            console.log(msg.data);
-            var txHash = msg.data.replace(/['"]+/g, '')
+            var txHash = msg.data.replace(/['"]+/g, '');
             $.ajax({
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostAjax + "/" + txHash,
                 success: function(html) {
                     $allPosts.append(html);
-                    //$('html, body').css({scrollTop: $(document).height()-$(window).height()});
                     $allPosts.scrollTop($allPosts[0].scrollHeight);
                 },
                 error: function (xhr) {

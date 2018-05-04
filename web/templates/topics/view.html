@@ -43,7 +43,7 @@
 <script type="text/javascript">
     $(function () {
         MemoApp.Form.NewTopicMessage($("#broadcasting"), $("#form-new-topic-message"));
-        MemoApp.WatchNewTopics("{{ .Topic }}", $("#all-posts"));
+        MemoApp.WatchNewTopics("{{ .Topic }}", $("#all-posts"), {{ .LostPostId }});
     });
 </script>
 

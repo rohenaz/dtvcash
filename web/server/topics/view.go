@@ -43,6 +43,7 @@ var viewRoute = web.Route{
 		}
 		r.Helper["Topic"] = topicRaw
 		r.Helper["Posts"] = topicPosts
+		r.Helper["LostPostId"] = topicPosts[len(topicPosts)-1].Memo.Id
 		r.RenderTemplate(res.TmplTopicView)
 	},
 }
