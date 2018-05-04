@@ -42,5 +42,173 @@
   {
     "id": "statistics",
     "translation": "Estadística"
+  },
+  {
+    "id": "name",
+    "translation": "Nombre"
+  },
+  {
+    "id": "address",
+    "translation": "Dirección"
+  },
+  {
+    "id": "followers",
+    "translation": "Seguidores"
+  },
+  {
+    "id": "following",
+    "translation": "Siguientes"
+  },
+  {
+    "id": "balance",
+    "translation": "Saldo"
+  },
+  {
+    "id": "profile",
+    "translation": "Perfil"
+  },
+  {
+    "id": "actions",
+    "translation": "Acciones"
+  },
+  {
+    "id": "view_your_profile",
+    "translation": "Ver Perfil"
+  },
+  {
+    "id": "set_name",
+    "translation": "Actualizar nombre"
+  },
+  {
+    "id": "set_profile",
+    "translation": "Actualizar Perfil"
+  },
+  {
+    "id": "export_key",
+    "translation": "Exportar Clave"
+  },
+  {
+    "id": "change_password",
+    "translation": "Cambiar Contraseña"
+  },
+  {
+    "id": "reply",
+    "translation": "Respuesta"
+  },
+  {
+    "id": "like",
+    "translation": "Me gusta"
+  },
+  {
+    "id": "replies",
+    "translation": "Respuestas"
+  },
+  {
+    "id": "likes",
+    "translation": "Me gustas"
+  },
+  {
+    "id": "top",
+    "translation": "Popular"
+  },
+  {
+    "id": "personalized",
+    "translation": "Perzonalido"
+  },
+  {
+    "id": "new",
+    "translation": "Nuevo"
+  },
+  {
+    "id": "archive",
+    "translation": "Archivo"
+  },
+  {
+    "id": "last_hour",
+    "translation": "Últimas hora"
+  },
+  {
+    "id": "last_24_hours",
+    "translation": "Últimas 24 horas"
+  },
+  {
+    "id": "last_7_days",
+    "translation": "Ultimos 7 días"
+  },
+  {
+    "id": "all_time",
+    "translation": "Todo el periodo"
+  },
+  {
+    "id": "message",
+    "translation": "Mensaje"
+  },
+  {
+    "id": "password",
+    "translation": "Contraseña"
+  },
+  {
+    "id": "save_password",
+    "translation": "Guardar contraseña"
+  },
+  {
+    "id": "post",
+    "translation": "Enviar"
+  },
+  {
+    "id": "profile_text",
+    "translation": "texto de perfil"
+  },
+  {
+    "id": "feed",
+    "translation": "Feed"
+  },
+  {
+    "id": "posted_at",
+    "translation": "publicado en"
+  },
+  {
+    "id": "view_on_block_explorer",
+    "translation": "Ver en el explorador de bloques"
+  },
+  {
+    "id": "view_address_on_block_explorer",
+    "translation": "Ver la dirección en el explorador de bloques"
+  },
+  {
+    "id": "view_name_on_block_explorer",
+    "translation": "Ver el nombre en el explorador de bloques"
+  },
+  {
+    "id": "page",
+    "translation": "Página"
+  },
+  {
+    "id": "previous",
+    "translation": "Anterior"
+  },
+  {
+    "id": "next",
+    "translation": "Siguiente"
+  },
+  {
+    "id": "connections",
+    "translation": "Conexiones"
+  },
+  {
+    "id": "follow",
+    "translation": "Seguir"
+  },
+  {
+    "id": "unfollow",
+    "translation": "Dejar de seguir"
+  },
+  {
+    "id": "next_day",
+    "translation": "Día siguiente"
+  },
+  {
+    "id": "previous_day",
+    "translation": "El día anterior"
   }
 ]

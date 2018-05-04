@@ -36,7 +36,7 @@
         {{ if .Post.Memo.ParentTxHash }}
             replied to <a href="post/{{ .Post.Memo.GetParentTransactionHashString }}">post</a> at
         {{ else }}
-            posted at
+            {{ T "posted_at" }}
         {{ end }}
             <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeString .TimeZone }}</a>
         </p>

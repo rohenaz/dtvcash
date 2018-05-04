@@ -42,5 +42,173 @@
   {
     "id": "statistics",
     "translation": "统计"
+  },
+  {
+    "id": "name",
+    "translation": ""
+  },
+  {
+    "id": "address",
+    "translation": ""
+  },
+  {
+    "id": "followers",
+    "translation": ""
+  },
+  {
+    "id": "following",
+    "translation": ""
+  },
+  {
+    "id": "balance",
+    "translation": ""
+  },
+  {
+    "id": "profile",
+    "translation": ""
+  },
+  {
+    "id": "actions",
+    "translation": ""
+  },
+  {
+    "id": "view_your_profile",
+    "translation": ""
+  },
+  {
+    "id": "set_name",
+    "translation": ""
+  },
+  {
+    "id": "set_profile",
+    "translation": ""
+  },
+  {
+    "id": "export_key",
+    "translation": ""
+  },
+  {
+    "id": "change_password",
+    "translation": ""
+  },
+  {
+    "id": "reply",
+    "translation": ""
+  },
+  {
+    "id": "like",
+    "translation": ""
+  },
+  {
+    "id": "replies",
+    "translation": ""
+  },
+  {
+    "id": "likes",
+    "translation": ""
+  },
+  {
+    "id": "top",
+    "translation": ""
+  },
+  {
+    "id": "personalized",
+    "translation": ""
+  },
+  {
+    "id": "new",
+    "translation": ""
+  },
+  {
+    "id": "archive",
+    "translation": ""
+  },
+  {
+    "id": "last_hour",
+    "translation": ""
+  },
+  {
+    "id": "last_24_hours",
+    "translation": ""
+  },
+  {
+    "id": "last_7_days",
+    "translation": ""
+  },
+  {
+    "id": "all_time",
+    "translation": ""
+  },
+  {
+    "id": "message",
+    "translation": ""
+  },
+  {
+    "id": "password",
+    "translation": ""
+  },
+  {
+    "id": "save_password",
+    "translation": ""
+  },
+  {
+    "id": "post",
+    "translation": ""
+  },
+  {
+    "id": "profile_text",
+    "translation": ""
+  },
+  {
+    "id": "feed",
+    "translation": ""
+  },
+  {
+    "id": "posted_at",
+    "translation": ""
+  },
+  {
+    "id": "view_on_block_explorer",
+    "translation": ""
+  },
+  {
+    "id": "view_address_on_block_explorer",
+    "translation": ""
+  },
+  {
+    "id": "view_name_on_block_explorer",
+    "translation": ""
+  },
+  {
+    "id": "page",
+    "translation": ""
+  },
+  {
+    "id": "previous",
+    "translation": ""
+  },
+  {
+    "id": "next",
+    "translation": ""
+  },
+  {
+    "id": "connections",
+    "translation": ""
+  },
+  {
+    "id": "follow",
+    "translation": ""
+  },
+  {
+    "id": "unfollow",
+    "translation": ""
+  },
+  {
+    "id": "next_day",
+    "translation": ""
+  },
+  {
+    "id": "previous_day",
+    "translation": ""
   }
 ]

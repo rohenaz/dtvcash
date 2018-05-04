@@ -42,5 +42,177 @@
   {
     "id": "statistics",
     "translation": "Statistics"
+  },
+  {
+    "id": "statistics",
+    "translation": "Stats"
+  },
+  {
+    "id": "name",
+    "translation": "Name"
+  },
+  {
+    "id": "address",
+    "translation": "Address"
+  },
+  {
+    "id": "followers",
+    "translation": "Followers"
+  },
+  {
+    "id": "following",
+    "translation": "Following"
+  },
+  {
+    "id": "balance",
+    "translation": "Balance"
+  },
+  {
+    "id": "profile",
+    "translation": "Profile"
+  },
+  {
+    "id": "actions",
+    "translation": "Actions"
+  },
+  {
+    "id": "view_your_profile",
+    "translation": "View Your Profile"
+  },
+  {
+    "id": "set_name",
+    "translation": "Set Name"
+  },
+  {
+    "id": "set_profile",
+    "translation": "Set Profile"
+  },
+  {
+    "id": "export_key",
+    "translation": "Export Key"
+  },
+  {
+    "id": "change_password",
+    "translation": "Change Password"
+  },
+  {
+    "id": "reply",
+    "translation": "Reply"
+  },
+  {
+    "id": "like",
+    "translation": "Like"
+  },
+  {
+    "id": "replies",
+    "translation": "Replies"
+  },
+  {
+    "id": "likes",
+    "translation": "Likes"
+  },
+  {
+    "id": "top",
+    "translation": "Top"
+  },
+  {
+    "id": "personalized",
+    "translation": "Personalized"
+  },
+  {
+    "id": "new",
+    "translation": "New"
+  },
+  {
+    "id": "archive",
+    "translation": "Archive"
+  },
+  {
+    "id": "last_hour",
+    "translation": "Last hour"
+  },
+  {
+    "id": "last_24_hours",
+    "translation": "Last 24 hours"
+  },
+  {
+    "id": "last_7_days",
+    "translation": "Last 7 days"
+  },
+  {
+    "id": "all_time",
+    "translation": "All time"
+  },
+  {
+    "id": "message",
+    "translation": "Message"
+  },
+  {
+    "id": "password",
+    "translation": "Password"
+  },
+  {
+    "id": "save_password",
+    "translation": "Save password"
+  },
+  {
+    "id": "post",
+    "translation": "Post"
+  },
+  {
+    "id": "profile_text",
+    "translation": "Profile text"
+  },
+  {
+    "id": "feed",
+    "translation": "Feed"
+  },
+  {
+    "id": "posted_at",
+    "translation": "posted at"
+  },
+  {
+    "id": "view_on_block_explorer",
+    "translation": "View on Block Explorer"
+  },
+  {
+    "id": "view_address_on_block_explorer",
+    "translation": "View Address on Block Explorer"
+  },
+  {
+    "id": "view_name_on_block_explorer",
+    "translation": "View Name on Block Explorer"
+  },
+  {
+    "id": "page",
+    "translation": "Page"
+  },
+  {
+    "id": "previous",
+    "translation": "Previous"
+  },
+  {
+    "id": "next",
+    "translation": "Next"
+  },
+  {
+    "id": "connections",
+    "translation": "Connections"
+  },
+  {
+    "id": "follow",
+    "translation": "Follow"
+  },
+  {
+    "id": "unfollow",
+    "translation": "Unfollow"
+  },
+  {
+    "id": "next_day",
+    "translation": "Next Day"
+  },
+  {
+    "id": "previous_day",
+    "translation": "Previous Day"
   }
 ]
