@@ -12,12 +12,14 @@ var indexRoute = web.Route{
 	Pattern: res.UrlTopics,
 	Handler: func(r *web.Response) {
 		preHandler(r)
-		topics, err := db.GetUniqueTopics()
+		offset := r.Request.GetUrlParameterInt("offset")
+		topics, err := db.GetUniqueTopics(uint(offset))
 		if err != nil {
 			r.Error(jerr.Get("error getting topics from db", err), http.StatusInternalServerError)
 			return
 		}
 		r.Helper["Topics"] = topics
+		res.SetPageAndOffset(r, offset)
 		r.Render()
 	},
 }

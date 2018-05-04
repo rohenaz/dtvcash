@@ -398,24 +398,40 @@ func GetCountMemoPosts() (uint, error) {
 	return cnt, nil
 }
 
-func GetUniqueTopics() ([]string, error) {
+type Topic struct {
+	Name       string
+	RecentTime time.Time
+	Count      int
+}
+
+func GetUniqueTopics(offset uint) ([]*Topic, error) {
 	db, err := getDb()
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
 	}
-	rows, err := db.Table("memo_posts").Select("DISTINCT(topic)").Where("topic IS NOT NULL AND topic != ''").Rows()
+	rows, err := db.
+		Table("memo_posts").
+		Select("topic, MAX(memo_posts.created_at) AS max_time, COUNT(*)").
+		Joins("LEFT OUTER JOIN blocks ON (memo_posts.block_id = blocks.id)").
+		Where("topic IS NOT NULL AND topic != ''").
+		Group("topic").
+		Order("max_time DESC").
+		Limit(25).
+		Offset(offset).
+		Rows()
 	if err != nil {
 		return nil, jerr.Get("error getting distinct topics", err)
 	}
 	defer rows.Close()
-	var topics []string
+	var topics []*Topic
 	for rows.Next() {
-		var topic string
-		err := rows.Scan(&topic)
+		var topic Topic
+
+		err := rows.Scan(&topic.Name, &topic.RecentTime, &topic.Count)
 		if err != nil {
 			return nil, jerr.Get("error scanning row with topic", err)
 		}
-		topics = append(topics, topic)
+		topics = append(topics, &topic)
 	}
 	return topics, nil
 }

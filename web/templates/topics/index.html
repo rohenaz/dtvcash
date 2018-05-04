@@ -4,15 +4,40 @@
 
 <h3>Existing Topics</h3>
 
-<table class="table">
+{{ if and (eq .NextOffset 25) (lt (len .Topics) 25) }}{{ else }}
+<div class="bottom10">
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="topics?offset={{ .PrevOffset }}">&lt; Prev</a>
+    <span class="page">Page {{ .Page }}</span>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="topics?offset={{ .NextOffset }}">Next &gt;</a>
+</div>
+{{ end }}
+
+<table class="table left">
+    <thead>
+    <tr>
+        <th>Topic</th>
+        <th>Most recent post</th>
+        <th>Total posts</th>
+    </tr>
+    </thead>
     <tbody>
     {{ range .Topics }}
     <tr>
-        <td><a href="topic/{{ . }}">{{ . }}</a></td>
+        <td><a href="topic/{{ .Name }}">{{ .Name }}</a></td>
+        <td>{{ .RecentTime.Format "2006-01-02 15:04:05 MST" }}</td>
+        <td>{{ .Count }}</td>
     </tr>
     {{ end }}
     </tbody>
 </table>
+
+{{ if and (eq .NextOffset 25) (lt (len .Topics) 25) }}{{ else }}
+<div class="bottom10">
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="topics?offset={{ .PrevOffset }}">&lt; Prev</a>
+    <span class="page">Page {{ .Page }}</span>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="topics?offset={{ .NextOffset }}">Next &gt;</a>
+</div>
+{{ end }}
 
 <br/>
 
