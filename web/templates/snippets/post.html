@@ -39,6 +39,9 @@
             posted at
         {{ end }}
             <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeString .TimeZone }}</a>
+        {{- if .Post.Memo.Topic }}
+            in <a href="topic/{{ .Post.Memo.Topic }}">{{ .Post.Memo.Topic }}</a>
+        {{ end }}
         </p>
     </div>
     <p class="message">
@@ -51,9 +54,6 @@
             (tip: {{ formatBigInt .Post.GetTotalTip }} satoshis)
         {{- end }},
             <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.ReplyCount }} replies</a></i>
-        {{- if .Post.Memo.Topic }},
-        Posted in topic: <a href="topic/{{ .Post.Memo.Topic }}">{{ .Post.Memo.Topic }}</a>
-        {{ end }}
     </p>
 {{ if not .Compress }}
     <p class="actions">
