@@ -378,13 +378,18 @@ span.page {
     display: none;
     font-size: 12px;
 }
+.topic-post .like-form a {
+    display: inline-block;
+    padding-top: 4px;
+}
 .topic-post .like-form label {
     min-width: unset;
+    padding-top: 4px;
 }
 .topic-post .like-form input {
     width: 50px;
     padding: 2px 5px;
-    margin: -4px 0 0 0;
+    margin: 0;
     vertical-align: top;
     min-width: unset;
 }
