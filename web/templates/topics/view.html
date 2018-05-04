@@ -52,10 +52,8 @@
         MemoApp.SetFirstPostId({{ .FirstPostId }});
         var $allPosts = $("#all-posts");
         $allPosts.scrollTop($allPosts[0].scrollHeight);
-        setTimeout(function() {
-            MemoApp.WatchNewTopics("{{ .Topic }}", $allPosts);
-            MemoApp.LoadMore("{{ .Topic }}", $("#all-posts"));
-        }, 1000);
+        MemoApp.WatchNewTopics("{{ .Topic }}", $allPosts);
+        MemoApp.LoadMore("{{ .Topic }}", $allPosts);
     });
 </script>
 

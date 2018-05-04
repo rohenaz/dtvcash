@@ -46,7 +46,7 @@ func init() {
 				if !ok {
 					topicLastLikeIds[item.Topic] = item.LastLikeId
 				}
-				if item.LastPostId < topicLastPostIds[item.Topic] {
+				if item.LastPostId < topicLastLikeIds[item.Topic] {
 					topicLastLikeIds[item.Topic] = item.LastLikeId
 				}
 			}
