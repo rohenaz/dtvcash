@@ -43,10 +43,24 @@ var viewRoute = web.Route{
 				return
 			}
 		}
+		err = profile.AttachLikesToPosts(topicPosts)
+		if err != nil {
+			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
+			return
+		}
+		var lastLikeId uint
+		for _, topicPost := range topicPosts {
+			for _, like := range topicPost.Likes {
+				if like.Id > lastLikeId {
+					lastLikeId = like.Id
+				}
+			}
+		}
 		r.Helper["Topic"] = topicRaw
 		r.Helper["Posts"] = topicPosts
 		r.Helper["FirstPostId"] = topicPosts[0].Memo.Id
-		r.Helper["LostPostId"] = topicPosts[len(topicPosts)-1].Memo.Id
+		r.Helper["LastPostId"] = topicPosts[len(topicPosts)-1].Memo.Id
+		r.Helper["LastLikeId"] = lastLikeId
 		r.RenderTemplate(res.TmplTopicView)
 	},
 }

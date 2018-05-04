@@ -323,12 +323,10 @@ func GetRecentPostsForTopic(topic string, lastPostId uint) ([]*MemoPost, error) 
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
 	}
-	db = db.Preload(BlockTable)
 	var memoPosts []*MemoPost
 	result := db.
 		Where("id > ?", lastPostId).
-		Limit(1).
-		Order("id DESC").
+		Order("id ASC").
 		Find(&memoPosts, MemoPost{
 		Topic: topic,
 	})
@@ -448,7 +446,7 @@ func GetPostsForTopic(topic string, offset uint) ([]*MemoPost, error) {
 	query := db.
 		Preload(BlockTable).
 		Order("id DESC").
-		Limit(25).
+		Limit(26).
 		Offset(offset)
 	result := query.Find(&memoPosts, &MemoPost{
 		Topic: topic,
@@ -473,7 +471,7 @@ func GetOlderPostsForTopic(topic string, firstPostId uint) ([]*MemoPost, error) 
 		Preload(BlockTable).
 		Where("id < ?", firstPostId).
 		Order("id DESC").
-		Limit(25)
+		Limit(26)
 	result := query.Find(&memoPosts, &MemoPost{
 		Topic: topic,
 	})
