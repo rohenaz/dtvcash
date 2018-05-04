@@ -194,7 +194,7 @@
      * @param {number} firstPostId
      */
     MemoApp.SetFirstPostId = function (firstPostId) {
-        if (firstPostId < _firstPostId) {
+        if (_firstPostId === undefined || firstPostId < _firstPostId) {
             _firstPostId = firstPostId;
         }
     };
@@ -203,7 +203,7 @@
      * @param {number} lastPostId
      */
     MemoApp.SetLastPostId = function (lastPostId) {
-        if (lastPostId > _lastLikeId) {
+        if (_lastLikeId === undefined || lastPostId > _lastLikeId) {
             _lastPostId = lastPostId;
         }
     };
@@ -212,7 +212,7 @@
      * @param {number} lastLikeId
      */
     MemoApp.SetLastLikeId = function (lastLikeId) {
-        if (lastLikeId > _lastLikeId) {
+        if (_lastLikeId === undefined || lastLikeId > _lastLikeId) {
             _lastLikeId = lastLikeId;
         }
     };
