@@ -326,7 +326,7 @@ span.page {
     border-radius: 8px;
     padding: 5px 10px;
 }
-.topic-post:nth-child(2n) {
+.topic-post:nth-of-type(2n) {
     background: rgba(0,0,0,0.1);
 }
 .topic-post .identicon {

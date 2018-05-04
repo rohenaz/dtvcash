@@ -110,7 +110,11 @@ var MemoApp = {
         var protocol = window.location.protocol.toLowerCase() === "https:" ? "wss" : "ws";
         var socket = new WebSocket(protocol + "://" + loc.hostname + ":" + loc.port + path);
 
-        setInterval(function () {
+        var heartbeatInterval = setInterval(function () {
+            if (socket.readyState === socket.CLOSED) {
+                clearInterval(heartbeatInterval);
+                return;
+            }
             var wsMessage = "heartbeat";
             socket.send(JSON.stringify(wsMessage));
         }, 15000);
