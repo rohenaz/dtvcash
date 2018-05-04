@@ -320,7 +320,7 @@ span.page {
 }
 #all-posts {
     max-height: 50%;
-    overflow: scroll;
+    overflow-y: scroll;
 }
 .topic-post {
     border-radius: 8px;
