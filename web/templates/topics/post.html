@@ -15,7 +15,7 @@
                 post</a>
         </p>
     {{ end }}
-        <p class="name">
+        <div class="name">
             <a href="profile/{{ .Post.Memo.GetAddressString }}">{{ $len := len .Post.Name }}
         {{- if gt $len 0 -}}
             {{ .Post.Name }}
@@ -35,15 +35,46 @@
         {{ end }}
             <a class="time"
                href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeString .TimeZone }}</a>
-        {{- if .Post.Likes }}
-            <span class="like">
-                <i>
-                    <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ len .Post.Likes }} like{{ if not (eq (len .Post.Likes) 1) }}s{{ end }}</a>
+            <div class="like" id="like-{{ .Post.Memo.GetTransactionHashString }}">
+                <span class="like-info" id="like-info-{{ .Post.Memo.GetTransactionHashString }}">
+                {{- if .Post.Likes }}
+                    <a id="like-link-{{ .Post.Memo.GetTransactionHashString }}" href="#">
+                    {{- len .Post.Likes }}
+                        like{{ if not (eq (len .Post.Likes) 1) }}s{{ end }}</a>
                     (tip: {{ formatBigInt .Post.GetTotalTip }} satoshis)
-                </i>
-            </span>
-        {{- end }}
-        </p>
+                {{- else }}
+                    <a class="like-link" id="like-link-{{ .Post.Memo.GetTransactionHashString }}" href="#">Like</a>
+                {{- end }}
+                </span>
+                <form class="like-form" id="like-form-{{ .Post.Memo.GetTransactionHashString }}">
+                    <input id="tx-hash-{{ .Post.Memo.GetTransactionHashString }}" type="hidden" name="tx-hash"
+                           value="{{ .Post.Memo.GetTransactionHashString }}"/>
+                    <label for="tip-{{ .Post.Memo.GetTransactionHashString }}">Tip</label>
+                    <input id="tip-{{ .Post.Memo.GetTransactionHashString }}" type="text" name="tip"
+                           class="form-control"
+                           placeholder="0">
+                    <span class="password-area">
+                        <label for="password-{{ .Post.Memo.GetTransactionHashString }}">Password</label>
+                        <input id="password-{{ .Post.Memo.GetTransactionHashString }}" type="password" name="password"
+                               class="form-control" placeholder="Password"
+                               autocomplete="on" required>
+                        <label for="save-password-{{ .Post.Memo.GetTransactionHashString }}">
+                            Save<br/>Password
+                        </label>
+                        <input id="save-password-{{ .Post.Memo.GetTransactionHashString }}" name="save-password"
+                               type="checkbox"/>
+                    </span>
+                    <input class="btn btn-lg btn-primary btn-block" type="submit" value="Like">
+                    <a href="#" id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
+                </form>
+                <span class="broadcasting">Broadcasting...</span>
+                <script type="text/javascript">
+                    $(function () {
+                        MemoApp.Form.NewTopicLike($("#like-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}");
+                    });
+                </script>
+            </div>
+        </div>
     </div>
     <div class="message">
     {{ .Post.GetMessage }}

@@ -365,6 +365,40 @@ span.page {
 }
 .topic-post .like {
     font-size: 12px;
+    display: inline-block;
+}
+.topic-post .like-info {
+    font-style: italic;
+}
+.topic-post a.like-link {
+    font-weight: normal;
+    color: #888;
+}
+.topic-post .like-form {
+    display: none;
+    font-size: 12px;
+}
+.topic-post .like-form label {
+    min-width: unset;
+}
+.topic-post .like-form input {
+    width: 50px;
+    padding: 2px 5px;
+    margin: -4px 0 0 0;
+    vertical-align: top;
+    min-width: unset;
+}
+.topic-post .like-form input[type=checkbox] {
+    width: unset;
+}
+.topic-post .like-form input[type=submit] {
+    background: rgba(0,0,0,0.05);
+}
+.topic-post .like .broadcasting {
+    display: none;
+}
+.topic-post .like .broadcasting.show {
+    display: inline-block;
 }
 #password-clear {
     display: none;

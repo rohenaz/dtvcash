@@ -112,11 +112,12 @@
      */
     MemoApp.WatchNewTopics = function (topic, $allPosts) {
         $allPosts.scrollTop($allPosts[0].scrollHeight);
+
         function connect() {
             var socket = MemoApp.GetSocket(MemoApp.GetBaseUrl() + MemoApp.URL.TopicsSocket + "?topic=" + topic + "&lastPostId=" + _lastPostId);
 
-            socket.onclose = function() {
-                setTimeout(function() {
+            socket.onclose = function () {
+                setTimeout(function () {
                     connect();
                 }, 1000);
             };
@@ -137,6 +138,7 @@
                 });
             };
         }
+
         connect();
     };
 
@@ -237,8 +239,9 @@
             $passwordArea.show();
             $passwordClear.removeClass("show");
             delete(localStorage.WalletPassword);
-            $passwordArea.find("[name=password]").val("");
-            $passwordArea.find("[name=save-password]").prop('checked', false);
+            $(".password-area").show();
+            $("[name=password]").val("");
+            $("[name=save-password]").prop('checked', false);
         });
         $passwordArea.find("[name=save-password]").change(function () {
             if (this.checked) {
@@ -313,6 +316,120 @@
                             alert("Error waiting for transaction to broadcast.");
                             $broadcasting.removeClass("show");
                             $message.val("");
+                        }
+                    });
+                },
+                error: function (xhr) {
+                    submitting = false;
+                    if (xhr.status === 401) {
+                        alert("Error unlocking key. " +
+                            "Please verify your password is correct. " +
+                            "If this problem persists, please try refreshing the page.");
+                        return;
+                    }
+                    var errorMessage =
+                        "Error with request (response code " + xhr.status + "):\n" +
+                        (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+                        "If this problem persists, try refreshing the page.";
+                    alert(errorMessage);
+                }
+            });
+        });
+    };
+
+    /**
+     * @param {jQuery} $like
+     * @param {string} txHash
+     */
+    MemoApp.Form.NewTopicLike = function ($like, txHash) {
+        $like.find("#like-link-" + txHash).click(function (e) {
+            e.preventDefault();
+            $("#like-info-" + txHash).hide();
+            $("#like-form-" + txHash).css({"display": "inline-block"});
+        });
+        $like.find("#like-cancel-" + txHash).click(function (e) {
+            e.preventDefault();
+            $("#like-info-" + txHash).show();
+            $("#like-form-" + txHash).css({"display": "none"});
+        });
+        var $form = $like.find("form");
+
+        var $passwordArea = $like.find(".password-area");
+        var $passwordClear = $like.find(".password-clear");
+
+        MemoApp.CheckLoadPassword($form);
+        if (localStorage.WalletPassword) {
+            $passwordArea.hide();
+            $passwordClear.addClass("show");
+        }
+        $passwordArea.find("[name=save-password]").change(function () {
+            if (this.checked) {
+                $passwordArea.hide();
+                $passwordClear.addClass("show");
+                MemoApp.CheckSavePassword($form);
+            }
+        });
+
+        var $broadcasting = $like.find(".broadcasting");
+
+        var submitting = false;
+        $form.submit(function (e) {
+            e.preventDefault();
+            if (submitting) {
+                return
+            }
+
+            var txHash = $form.find("[name=tx-hash]").val();
+            if (txHash.length === 0) {
+                alert("Form error, tx hash not set.");
+                return;
+            }
+
+            var tip = $form.find("[name=tip]").val();
+            if (tip.length !== 0 && tip < 546) {
+                alert("Must enter a tip greater than 546 (the minimum dust limit).");
+                return;
+            }
+
+            var password = $form.find("[name=password]").val();
+            if (password.length === 0) {
+                alert("Must enter a password.");
+                return;
+            }
+
+            MemoApp.CheckSavePassword($form);
+
+            submitting = true;
+            $.ajax({
+                type: "POST",
+                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoLikeSubmit,
+                data: {
+                    txHash: txHash,
+                    tip: tip,
+                    password: password
+                },
+                success: function (txHash) {
+                    submitting = false;
+                    if (!txHash || txHash.length === 0) {
+                        alert("Server error. Please try refreshing the page.");
+                        return
+                    }
+                    $broadcasting.addClass("show");
+                    $form.hide();
+                    $.ajax({
+                        type: "POST",
+                        url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoWaitSubmit,
+                        data: {
+                            txHash: txHash
+                        },
+                        success: function () {
+                            submitting = false;
+                            $broadcasting.removeClass("show");
+                        },
+                        error: function () {
+                            submitting = false;
+                            alert("Error waiting for transaction to broadcast.");
+                            $broadcasting.removeClass("show");
                         }
                     });
                 },
