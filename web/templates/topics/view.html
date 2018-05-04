@@ -4,42 +4,49 @@
 
 <p><a href="topics">Back to topics</a></p>
 
-{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
+<div id="all-posts">
+{{ template "topics/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
 
-<div id="more-posts"></div>
+    <div id="more-posts"></div>
 
-<div id="broadcasting">
-    Broadcasting...
 </div>
 
 <form id="form-new-topic-message" method="post">
     <input type="hidden" name="topic" value="{{ .Topic }}"/>
     <p>
         <label for="message">Message <span class="message-byte-count"></span></label>
-        <textarea id="message" type="text" name="message" class="form-control" placeholder="Message"
-                  autocomplete="on"
-                  required autofocus></textarea>
+        <input id="message" type="text" name="message" class="form-control" placeholder="Message"
+               autocomplete="on"
+               required autofocus/>
     </p>
-    <p>
-        <label for="password">Password</label>
-        <input id="password" type="password" name="password" class="form-control" placeholder="Password"
-               autocomplete="on" required>
-    </p>
-    <p>
-        <label for="save-password">
-            Save password
-        </label>
-        <input id="save-password" name="save-password" type="checkbox"/>
-    </p>
+    <div id="password-area">
+        <p>
+            <label for="password">Password</label>
+            <input id="password" type="password" name="password" class="form-control" placeholder="Password"
+                   autocomplete="on" required>
+        </p>
+        <p>
+            <label for="save-password">
+                Save password
+            </label>
+            <input id="save-password" name="save-password" type="checkbox"/>
+        </p>
+    </div>
     <p>
         <input class="btn btn-lg btn-primary btn-block" type="submit" value="Send">
+        <span id="password-clear">
+            <a href="#">Uncache password</a>
+        </span>
+        <span id="broadcasting">
+            Broadcasting...
+        </span>
     </p>
 </form>
 
 <script type="text/javascript">
     $(function () {
         MemoApp.Form.NewTopicMessage($("#broadcasting"), $("#form-new-topic-message"));
-        MemoApp.WatchNewTopics("{{ .Topic }}", $("#more-posts"));
+        MemoApp.WatchNewTopics("{{ .Topic }}", $("#all-posts"));
     });
 </script>
 

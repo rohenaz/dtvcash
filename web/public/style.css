@@ -293,7 +293,7 @@ span.page {
     background: #eee;
     border: 1px solid #333;
     top: 15px;
-    left: 0px;
+    left: 0;
     word-break: break-word;
     width: 250px;
     font-size: 12px;
@@ -305,5 +305,64 @@ span.page {
     display: block;
 }
 #broadcasting {
+    display: none;
+    padding: 12px 10px 0 10px;
+}
+#broadcasting.show {
+    display: inline-block;
+}
+#password-clear {
+    display: none;
+    padding: 12px 10px 0 10px;
+}
+#password-clear.show {
+    display: inline-block;
+}
+#all-posts {
+    max-height: 50%;
+    overflow: scroll;
+}
+.topic-post {
+    border-radius: 8px;
+    padding: 5px 10px;
+}
+.topic-post:nth-child(2n) {
+    background: rgba(0,0,0,0.1);
+}
+.topic-post .identicon {
+    float: left;
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+.topic-post .post-header,
+.topic-post .post-header p {
+    margin: 0;
+}
+.topic-post .name {
+    font-weight: bold;
+}
+.topic-post .name a {
+    display: inline-block;
+    margin-right: 5px;
+    color: #000;
+    text-decoration: none;
+}
+.topic-post .name a:hover {
+    text-decoration: underline;
+}
+.topic-post .name .time {
+    font-weight: normal;
+    font-size: 12px;
+    color: #888;
+}
+.topic-post .reputation {
+    display: inline-block;
+    margin-right: 5px;
+    font-weight: normal;
+    font-style: italic;
+    font-size: 12px;
+}
+#password-clear {
     display: none;
 }

@@ -1,0 +1,62 @@
+<div class="topic-post">
+    <a href="profile/{{ .Post.Memo.GetAddressString }}">
+    <span class="identicon-{{ .Post.Memo.GetAddressString }}">
+        <img class="identicon"/>
+    </span>
+    </a>
+    <div class="post-header">
+    {{ if .Post.Parent }}
+        <p class="reply-header">
+            Replying to
+            <span class="identicon-{{ .Post.Parent.Memo.GetAddressString }}">
+                <img class="identicon"/>
+            </span>
+            <a href="post/{{ .Post.Parent.Memo.GetTransactionHashString }}">{{ .Post.Parent.Name }}'s
+                post</a>
+        </p>
+    {{ end }}
+        <p class="name">
+            <a href="profile/{{ .Post.Memo.GetAddressString }}">{{ $len := len .Post.Name }}
+        {{- if gt $len 0 -}}
+            {{ .Post.Name }}
+        {{- else -}}
+            {{ .Post.Memo.GetAddressString }}
+        {{- end -}}
+            </a>
+        {{ if .Post.Reputation }}
+            <span class="reputation">
+            <span class="reputation-tooltip">
+                (
+            {{- if .Post.Reputation.IsDirectFollow -}}Following, {{ end -}}
+                Rep: {{ .Post.Reputation.GetPercentStringIncludingDirect -}}
+                )
+            </span>
+        </span>
+        {{ end }}
+            <a class="time"
+               href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeString .TimeZone }}</a>
+        </p>
+    </div>
+    <div class="message">
+    {{ .Post.GetMessage }}
+    </div>
+    <script type="text/javascript">
+        var data = new Identicon('{{ .Post.Memo.GetAddressString }}', {
+            foreground: [255, 255, 255, 0],
+            background: [0, 0, 0, 255],
+            size: 18,
+            margin: 0
+        }).toString();
+        $(".identicon-{{ .Post.Memo.GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
+        {{ if .Post.Parent }}
+        data = new Identicon('{{ .Post.Parent.Memo.GetAddressString }}', {
+            foreground: [255, 255, 255, 0],
+            background: [0, 0, 0, 255],
+            size: 18,
+            margin: 0
+        }).toString();
+        $(".identicon-{{ .Post.Parent.Memo.GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
+        {{ end }}
+    </script>
+    <div style="clear:both;"></div>
+</div>

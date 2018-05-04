@@ -101,6 +101,6 @@ var postAjaxRoute = web.Route{
 			}
 		}
 		r.Helper["Post"] = post
-		r.RenderTemplate(res.TmplSnippetsPost)
+		r.RenderTemplate(res.TmplTopicPost)
 	},
 }

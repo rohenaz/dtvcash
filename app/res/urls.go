@@ -66,13 +66,14 @@ const (
 )
 
 const (
-	UrlTopics           = "/topics"
+	UrlTopics             = "/topics"
 	UrlTopicsCreate       = "/topics/create"
 	UrlTopicsCreateSubmit = "/topics/create-submit"
 	UrlTopicView          = "/topic"
 	UrlTopicsSocket       = "/topics/socket"
 
 	TmplTopicView = "/topics/view"
+	TmplTopicPost = "/topics/post"
 )
 
 const (

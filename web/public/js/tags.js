@@ -108,9 +108,11 @@
 
     /**
      * @param {string} topic
-     * @param {jQuery} $morePosts
+     * @param {jQuery} $allPosts
      */
-    MemoApp.WatchNewTopics = function (topic, $morePosts) {
+    MemoApp.WatchNewTopics = function (topic, $allPosts) {
+        var $morePosts = $allPosts.find("#more-posts");
+        $allPosts.scrollTop($allPosts[0].scrollHeight);
         socket = MemoApp.GetSocket(MemoApp.GetBaseUrl() + MemoApp.URL.TopicsSocket + "?topic=" + topic, function () {
             console.log("socket closed...");
         });
@@ -124,6 +126,8 @@
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostAjax + "/" + txHash,
                 success: function(html) {
                     $morePosts.append(html);
+                    //$('html, body').css({scrollTop: $(document).height()-$(window).height()});
+                    $allPosts.scrollTop($allPosts[0].scrollHeight);
                 },
                 error: function (xhr) {
                     alert("error getting post via ajax (status: " + xhr.status + ")");
@@ -160,8 +164,30 @@
             }
         }
 
+        var $passwordArea = $form.find("#password-area");
+        var $passwordClear = $form.find("#password-clear");
+
         setMsgByteCount();
         MemoApp.CheckLoadPassword($form);
+        if (localStorage.WalletPassword) {
+            $passwordArea.hide();
+            $passwordClear.addClass("show");
+        }
+        $passwordClear.find("a").click(function(e) {
+            e.preventDefault();
+            $passwordArea.show();
+            $passwordClear.removeClass("show");
+            delete(localStorage.WalletPassword);
+            $passwordArea.find("[name=password]").val("");
+            $passwordArea.find("[name=save-password]").prop('checked', false);
+        });
+        $passwordArea.find("[name=save-password]").change(function() {
+            if (this.checked) {
+                $passwordArea.hide();
+                $passwordClear.addClass("show");
+                MemoApp.CheckSavePassword($form);
+            }
+        });
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -205,13 +231,12 @@
                     password: password
                 },
                 success: function (txHash) {
-                    submitting = false;
                     if (!txHash || txHash.length === 0) {
+                        submitting = false;
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
-                    $broadcasting.show();
-                    $form.hide();
+                    $broadcasting.addClass("show");
                     $.ajax({
                         type: "POST",
                         url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoWaitSubmit,
@@ -219,16 +244,16 @@
                             txHash: txHash
                         },
                         success: function () {
-                            $broadcasting.hide();
+                            submitting = false;
+                            $broadcasting.removeClass("show");
                             $message.val("");
                             setMsgByteCount();
-                            $form.show();
                         },
                         error: function () {
+                            submitting = false;
                             alert("Error waiting for transaction to broadcast.");
-                            $broadcasting.hide();
+                            $broadcasting.removeClass("show");
                             $message.val("");
-                            $form.show();
                         }
                     });
                 },

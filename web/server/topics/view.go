@@ -36,6 +36,11 @@ var viewRoute = web.Route{
 			r.Error(jerr.Get("error getting topic posts from db", err), http.StatusInternalServerError)
 			return
 		}
+		err = profile.AttachReputationToPosts(topicPosts)
+		if err != nil {
+			r.Error(jerr.Get("error attaching reputation to posts", err), http.StatusInternalServerError)
+			return
+		}
 		r.Helper["Topic"] = topicRaw
 		r.Helper["Posts"] = topicPosts
 		r.RenderTemplate(res.TmplTopicView)
