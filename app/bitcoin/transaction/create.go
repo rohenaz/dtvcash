@@ -17,7 +17,7 @@ const DustMinimumOutput int64 = 546
 type SpendOutputType uint
 
 const (
-	SpendOutputTypeP2PK           SpendOutputType = iota
+	SpendOutputTypeP2PK             SpendOutputType = iota
 	SpendOutputTypeReturn
 	SpendOutputTypeMemoMessage
 	SpendOutputTypeMemoSetName
@@ -26,6 +26,7 @@ const (
 	SpendOutputTypeMemoLike
 	SpendOutputTypeMemoReply
 	SpendOutputTypeMemoSetProfile
+	SpendOutputTypeMemoTopicMessage
 )
 
 func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutputs []SpendOutput) (*wire.MsgTx, error) {
@@ -150,7 +151,7 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 			pkScript, err := txscript.NewScriptBuilder().
 				AddOp(txscript.OP_RETURN).
 				AddData([]byte{memo.CodePrefix, memo.CodeReply}).
-				AddData(spendOutput.ReplyHash).
+				AddData(spendOutput.RefData).
 				AddData(spendOutput.Data).
 				Script()
 			if err != nil {
@@ -169,6 +170,24 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 				Script()
 			if err != nil {
 				return nil, jerr.Get("error creating memo set profile output", err)
+			}
+			fmt.Printf("pkScript: %x\n", pkScript)
+			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
+		case SpendOutputTypeMemoTopicMessage:
+			if len(spendOutput.Data)+len(spendOutput.RefData) > memo.MaxTagMessageSize {
+				return nil, jerr.New("data too large")
+			}
+			if len(spendOutput.Data) == 0 || len(spendOutput.RefData) == 0 {
+				return nil, jerr.New("empty data")
+			}
+			pkScript, err := txscript.NewScriptBuilder().
+				AddOp(txscript.OP_RETURN).
+				AddData([]byte{memo.CodePrefix, memo.CodeTopicMessage}).
+				AddData(spendOutput.RefData).
+				AddData(spendOutput.Data).
+				Script()
+			if err != nil {
+				return nil, jerr.Get("error creating memo tag message output", err)
 			}
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))

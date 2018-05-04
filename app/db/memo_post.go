@@ -25,6 +25,7 @@ type MemoPost struct {
 	ParentTxHash []byte      `gorm:"index:parent_tx_hash"`
 	Parent       *MemoPost
 	Replies      []*MemoPost `gorm:"foreignkey:ParentTxHash"`
+	Topic        string      `gorm:"index:tag"`
 	Message      string
 	BlockId      uint
 	Block        *Block
@@ -166,7 +167,36 @@ func (txns memoPostSortByDate) Less(i, j int) bool {
 	if txns[j].Block == nil {
 		return false
 	}
+	if txns[i].Block.Height == txns[j].Block.Height {
+		return txns[i].Id > txns[j].Id
+	}
 	return txns[i].Block.Height > txns[j].Block.Height
+}
+
+type memoPostSortByDateAsc []*MemoPost
+
+func (txns memoPostSortByDateAsc) Len() int      { return len(txns) }
+func (txns memoPostSortByDateAsc) Swap(i, j int) { txns[i], txns[j] = txns[j], txns[i] }
+func (txns memoPostSortByDateAsc) Less(i, j int) bool {
+	if bytes.Equal(txns[i].ParentHash, txns[j].TxHash) {
+		return false
+	}
+	if bytes.Equal(txns[i].TxHash, txns[j].ParentHash) {
+		return true
+	}
+	if txns[i].Block == nil && txns[j].Block == nil {
+		return txns[i].Id < txns[j].Id
+	}
+	if txns[i].Block == nil {
+		return false
+	}
+	if txns[j].Block == nil {
+		return true
+	}
+	if txns[i].Block.Height == txns[j].Block.Height {
+		return txns[i].Id < txns[j].Id
+	}
+	return txns[i].Block.Height < txns[j].Block.Height
 }
 
 func GetPostsForPkHashes(pkHashes [][]byte, offset uint) ([]*MemoPost, error) {
@@ -212,7 +242,7 @@ func GetPostsFeedForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 		Limit(25).
 		Offset(offset).
 		Preload(BlockTable).
-		Joins("JOIN (" + joinSelect + ") fsq ON (memo_posts.pk_hash = fsq.follow_pk_hash)", pkHash).
+		Joins("JOIN ("+joinSelect+") fsq ON (memo_posts.pk_hash = fsq.follow_pk_hash)", pkHash).
 		Order("id DESC").
 		Find(&memoPosts)
 	if result.Error != nil {
@@ -288,6 +318,26 @@ func GetRecentPosts(offset uint) ([]*MemoPost, error) {
 	return memoPosts, nil
 }
 
+func GetRecentPostsForTopic(topic string, lastPostId uint) ([]*MemoPost, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	db = db.Preload(BlockTable)
+	var memoPosts []*MemoPost
+	result := db.
+		Where("id > ?", lastPostId).
+		Limit(1).
+		Order("id DESC").
+		Find(&memoPosts, MemoPost{
+		Topic: topic,
+	})
+	if result.Error != nil {
+		return nil, jerr.Get("error running recent topic post query", result.Error)
+	}
+	return memoPosts, nil
+}
+
 func GetTopPosts(offset uint, timeStart time.Time, timeEnd time.Time) ([]*MemoPost, error) {
 	topLikeTxHashes, err := GetRecentTopLikedTxHashes(offset, timeStart, timeEnd)
 	if err != nil {
@@ -346,4 +396,90 @@ func GetCountMemoPosts() (uint, error) {
 		return 0, jerr.Get("error getting total count", err)
 	}
 	return cnt, nil
+}
+
+type Topic struct {
+	Name       string
+	RecentTime time.Time
+	Count      int
+}
+
+func GetUniqueTopics(offset uint) ([]*Topic, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	rows, err := db.
+		Table("memo_posts").
+		Select("topic, MAX(memo_posts.created_at) AS max_time, COUNT(*)").
+		Joins("LEFT OUTER JOIN blocks ON (memo_posts.block_id = blocks.id)").
+		Where("topic IS NOT NULL AND topic != ''").
+		Group("topic").
+		Order("max_time DESC").
+		Limit(25).
+		Offset(offset).
+		Rows()
+	if err != nil {
+		return nil, jerr.Get("error getting distinct topics", err)
+	}
+	defer rows.Close()
+	var topics []*Topic
+	for rows.Next() {
+		var topic Topic
+
+		err := rows.Scan(&topic.Name, &topic.RecentTime, &topic.Count)
+		if err != nil {
+			return nil, jerr.Get("error scanning row with topic", err)
+		}
+		topics = append(topics, &topic)
+	}
+	return topics, nil
+}
+
+func GetPostsForTopic(topic string, offset uint) ([]*MemoPost, error) {
+	if len(topic) == 0 {
+		return nil, jerr.New("empty topic")
+	}
+	var memoPosts []*MemoPost
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	query := db.
+		Preload(BlockTable).
+		Order("id DESC").
+		Limit(25).
+		Offset(offset)
+	result := query.Find(&memoPosts, &MemoPost{
+		Topic: topic,
+	})
+	if result.Error != nil {
+		return nil, jerr.Get("error getting memo posts", result.Error)
+	}
+	sort.Sort(memoPostSortByDateAsc(memoPosts))
+	return memoPosts, nil
+}
+
+func GetOlderPostsForTopic(topic string, firstPostId uint) ([]*MemoPost, error) {
+	if len(topic) == 0 {
+		return nil, jerr.New("empty topic")
+	}
+	var memoPosts []*MemoPost
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	query := db.
+		Preload(BlockTable).
+		Where("id < ?", firstPostId).
+		Order("id DESC").
+		Limit(25)
+	result := query.Find(&memoPosts, &MemoPost{
+		Topic: topic,
+	})
+	if result.Error != nil {
+		return nil, jerr.Get("error getting memo posts", result.Error)
+	}
+	sort.Sort(memoPostSortByDateAsc(memoPosts))
+	return memoPosts, nil
 }

@@ -117,9 +117,9 @@ var replySubmitRoute = web.Route{
 			Address: address,
 			Amount:  txOut.Value - fee,
 		}, {
-			Type:      transaction.SpendOutputTypeMemoReply,
-			ReplyHash: txHash.CloneBytes(),
-			Data:      []byte(message),
+			Type:    transaction.SpendOutputTypeMemoReply,
+			RefData: txHash.CloneBytes(),
+			Data:    []byte(message),
 		}})
 		if err != nil {
 			r.Error(jerr.Get("error creating tx", err), http.StatusInternalServerError)

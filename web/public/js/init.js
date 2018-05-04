@@ -50,6 +50,46 @@ var MemoApp = {
         return BaseURL;
     };
 
+    MemoApp.utf8ByteLength = function (str) {
+        // returns the byte length of an utf8 string
+        var s = str.length;
+        for (var i = str.length - 1; i >= 0; i--) {
+            var code = str.charCodeAt(i);
+            if (code > 0x7f && code <= 0x7ff) s++;
+            else if (code > 0x7ff && code <= 0xffff) s += 2;
+            if (code >= 0xDC00 && code <= 0xDFFF) i--; //trail surrogate
+        }
+        return parseInt(s);
+    };
+
+    /**
+     * @param {jQuery} $form
+     */
+    MemoApp.CheckLoadPassword = function($form) {
+        if (!localStorage.WalletPassword) {
+            return;
+        }
+        $form.find("[name=password]").val(localStorage.WalletPassword);
+        $form.find("[name=save-password]").prop("checked", true);
+    };
+
+    /**
+     * @param {jQuery} $form
+     */
+    MemoApp.CheckSavePassword = function($form) {
+        if (!$form.find("[name=save-password]").is(':checked')) {
+            delete(localStorage.WalletPassword);
+            return;
+        }
+
+        var password = $form.find("[name=password]").val();
+        if (password.length === 0) {
+            return;
+        }
+
+        localStorage.WalletPassword = password;
+    };
+
     /**
      * @param {XMLHttpRequest} xhr
      */
@@ -61,6 +101,27 @@ var MemoApp = {
         alert(errorMessage);
     };
 
+    /**
+     * @param {string} path
+     * @return {WebSocket}
+     */
+    MemoApp.GetSocket = function(path) {
+        var loc = window.location;
+        var protocol = window.location.protocol.toLowerCase() === "https:" ? "wss" : "ws";
+        var socket = new WebSocket(protocol + "://" + loc.hostname + ":" + loc.port + path);
+
+        var heartbeatInterval = setInterval(function () {
+            if (socket.readyState === socket.CLOSED) {
+                clearInterval(heartbeatInterval);
+                return;
+            }
+            var wsMessage = "heartbeat";
+            socket.send(JSON.stringify(wsMessage));
+        }, 15000);
+
+        return socket;
+    };
+
     MemoApp.Events = {};
 
     MemoApp.URL = {
@@ -70,6 +131,7 @@ var MemoApp = {
         LoginSubmit: "login-submit",
         SignupSubmit: "signup-submit",
         MemoPost: "post",
+        MemoPostAjax: "post-ajax",
         MemoNewSubmit: "memo/new-submit",
         MemoReplySubmit: "memo/reply-submit",
         MemoFollowSubmit: "memo/follow-submit",
@@ -79,6 +141,9 @@ var MemoApp = {
         MemoLikeSubmit: "memo/like-submit",
         MemoWait: "memo/wait",
         MemoWaitSubmit: "memo/wait-submit",
-        KeyChangePasswordSubmit: "key/change-password-submit"
+        KeyChangePasswordSubmit: "key/change-password-submit",
+        TopicsSocket: "topics/socket",
+        TopicsMorePosts: "topics/more-posts",
+        TopicsCreateSubmit: "topics/create-submit"
     };
 })();

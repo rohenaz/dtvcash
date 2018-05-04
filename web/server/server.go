@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/bitcoin/queuer"
 	"git.jasonc.me/main/memo/app/db"
@@ -11,6 +10,7 @@ import (
 	"git.jasonc.me/main/memo/web/server/memo"
 	"git.jasonc.me/main/memo/web/server/posts"
 	"git.jasonc.me/main/memo/web/server/profile"
+	"git.jasonc.me/main/memo/web/server/topics"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"log"
@@ -21,11 +21,9 @@ var UseMinJS bool
 
 func isLoggedIn(r *web.Response) bool {
 	if ! auth.IsLoggedIn(r.Session.CookieId) {
-		fmt.Println("here1")
 		r.SetRedirect(res.UrlLogin)
 		return false
 	}
-	fmt.Println("here2")
 	return true
 }
 
@@ -104,6 +102,7 @@ func Run(sessionCookieInsecure bool) {
 				feedRoute,
 				//testsRoute,
 			},
+			topics.GetRoutes(),
 			posts.GetRoutes(),
 			key.GetRoutes(),
 			auth2.GetRoutes(),
