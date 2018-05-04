@@ -194,14 +194,18 @@
      * @param {number} firstPostId
      */
     MemoApp.SetFirstPostId = function (firstPostId) {
-        _firstPostId = firstPostId;
+        if (firstPostId < _firstPostId) {
+            _firstPostId = firstPostId;
+        }
     };
 
     /**
      * @param {number} lastPostId
      */
     MemoApp.SetLastPostId = function (lastPostId) {
-        _lastPostId = lastPostId;
+        if (lastPostId > _lastLikeId) {
+            _lastPostId = lastPostId;
+        }
     };
 
     /**
