@@ -103,24 +103,12 @@ var MemoApp = {
 
     /**
      * @param {string} path
-     * @param {function} close
      * @return {WebSocket}
      */
-    MemoApp.GetSocket = function(path, close) {
+    MemoApp.GetSocket = function(path) {
         var loc = window.location;
         var protocol = window.location.protocol.toLowerCase() === "https:" ? "wss" : "ws";
         var socket = new WebSocket(protocol + "://" + loc.hostname + ":" + loc.port + path);
-
-        socket.onopen = function () {
-            console.log("Socket opened to: " + path);
-        };
-
-        socket.onclose = function () {
-            console.log("Socket closed to: " + path);
-            if (close !== undefined) {
-                close();
-            }
-        };
 
         setInterval(function () {
             var wsMessage = "heartbeat";

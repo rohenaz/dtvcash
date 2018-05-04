@@ -1,7 +1,6 @@
 package watcher
 
 import (
-	"fmt"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
@@ -22,6 +21,7 @@ func RegisterSocket(socket *web.Socket, topic string, lastPostId uint) error {
 		Socket:     socket,
 		Topic:      topic,
 		LastPostId: lastPostId,
+		Error:      make(chan error),
 	}
 	items = append(items, item)
 	return <-item.Error
@@ -53,15 +53,17 @@ func init() {
 					}
 				}
 				if len(recentPosts) > 0 {
-					fmt.Println("Found new post(s)!")
 					for _, recentPost := range recentPosts {
+						txHash := recentPost.GetTransactionHashString()
 						for i := 0; i < len(items); i++ {
 							var item = items[i]
 							if item.Topic == topic && item.LastPostId < recentPost.Id {
 								item.LastPostId = recentPost.Id
-								err = item.Socket.WriteJSON(recentPost.GetTransactionHashString())
+								err = item.Socket.WriteJSON(txHash)
 								if err != nil {
-									item.Error <- jerr.Get("error writing to socket", err)
+									go func(item *Item) {
+										item.Error <- jerr.Get("error writing to socket", err)
+									}(item)
 									items = append(items[:i], items[i+1:]...)
 									i--
 								}

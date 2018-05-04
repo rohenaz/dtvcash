@@ -366,3 +366,12 @@ span.page {
 #password-clear {
     display: none;
 }
+#password-clear a {
+    color: #888;
+    font-size: 14px;
+    font-style: italic;
+    text-decoration: none;
+}
+#password-clear a:hover {
+    text-decoration: underline;
+}

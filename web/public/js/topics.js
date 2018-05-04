@@ -109,40 +109,42 @@
     /**
      * @param {string} topic
      * @param {jQuery} $allPosts
-     * @param {number} lastPostId
      */
-    MemoApp.WatchNewTopics = function (topic, $allPosts, lastPostId) {
+    MemoApp.WatchNewTopics = function (topic, $allPosts) {
         $allPosts.scrollTop($allPosts[0].scrollHeight);
-        socket = MemoApp.GetSocket(MemoApp.GetBaseUrl() + MemoApp.URL.TopicsSocket + "?topic=" + topic + "&lastPostId=" + lastPostId, function () {
-            console.log("socket closed...");
-        });
-        /**
-         * @param {MessageEvent} msg
-         */
-        socket.onmessage = function (msg) {
-            var txHash = msg.data.replace(/['"]+/g, '');
-            $.ajax({
-                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostAjax + "/" + txHash,
-                success: function (html) {
-                    $allPosts.append(html);
-                    $allPosts.scrollTop($allPosts[0].scrollHeight);
-                },
-                error: function (xhr) {
-                    alert("error getting post via ajax (status: " + xhr.status + ")");
-                }
-            });
-        };
-    };
+        function connect() {
+            var socket = MemoApp.GetSocket(MemoApp.GetBaseUrl() + MemoApp.URL.TopicsSocket + "?topic=" + topic + "&lastPostId=" + _lastPostId);
 
-    var _firstPostId;
+            socket.onclose = function() {
+                setTimeout(function() {
+                    connect();
+                }, 1000);
+            };
+            /**
+             * @param {MessageEvent} msg
+             */
+            socket.onmessage = function (msg) {
+                var txHash = msg.data.replace(/['"]+/g, '');
+                $.ajax({
+                    url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostAjax + "/" + txHash,
+                    success: function (html) {
+                        $allPosts.append(html);
+                        $allPosts.scrollTop($allPosts[0].scrollHeight);
+                    },
+                    error: function (xhr) {
+                        alert("error getting post via ajax (status: " + xhr.status + ")");
+                    }
+                });
+            };
+        }
+        connect();
+    };
 
     /**
      * @param {string} topic
      * @param {jQuery} $allPosts
-     * @param {number} firstPostId
      */
-    MemoApp.LoadMore = function (topic, $allPosts, firstPostId) {
-        _firstPostId = firstPostId;
+    MemoApp.LoadMore = function (topic, $allPosts) {
         var submitting = false;
         $allPosts.scroll(function () {
             if (submitting) {
@@ -176,11 +178,21 @@
         });
     };
 
+    var _firstPostId;
+    var _lastPostId;
+
     /**
      * @param {number} firstPostId
      */
     MemoApp.SetFirstPostId = function (firstPostId) {
         _firstPostId = firstPostId;
+    };
+
+    /**
+     * @param {number} lastPostId
+     */
+    MemoApp.SetLastPostId = function (lastPostId) {
+        _lastPostId = lastPostId;
     };
 
     /**

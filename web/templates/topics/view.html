@@ -21,7 +21,7 @@
         <p>
             <label for="password">Password</label>
             <input id="password" type="password" name="password" class="form-control" placeholder="Password"
-                   autocomplete="on" required>
+                   autocomplete="on" required/>
         </p>
         <p>
             <label for="save-password">
@@ -31,12 +31,14 @@
         </p>
     </div>
     <p>
-        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Send">
-        <span id="password-clear">
-            <a href="#">Uncache password</a>
-        </span>
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Send"/>
         <span id="broadcasting">
             Broadcasting...
+        </span>
+    </p>
+    <p>
+        <span id="password-clear">
+            <a href="#">Uncache password</a>
         </span>
     </p>
 </form>
@@ -47,8 +49,9 @@
     {{ if .Username }}
         MemoApp.Form.NewTopicMessage($("#broadcasting"), $("#form-new-topic-message"));
     {{ end }}
-        MemoApp.WatchNewTopics("{{ .Topic }}", $("#all-posts"), {{ .LostPostId }});
-        MemoApp.LoadMore("{{ .Topic }}", $("#all-posts"), {{ .FirstPostId }});
+        MemoApp.SetFirstPostId({{ .FirstPostId }});
+        MemoApp.WatchNewTopics("{{ .Topic }}", $("#all-posts"));
+        MemoApp.LoadMore("{{ .Topic }}", $("#all-posts"));
     });
 </script>
 
