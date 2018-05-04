@@ -100,6 +100,11 @@ var postAjaxRoute = web.Route{
 				return
 			}
 		}
+		err = profile.AttachLikesToPosts([]*profile.Post{post})
+		if err != nil {
+			r.Error(jerr.Get("error attaching likes to post", err), http.StatusInternalServerError)
+			return
+		}
 		r.Helper["Post"] = post
 		r.RenderTemplate(res.TmplTopicPost)
 	},

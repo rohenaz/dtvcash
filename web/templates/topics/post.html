@@ -1,4 +1,4 @@
-<div class="topic-post">
+<div class="topic-post" id="topic-post-{{ .Post.Memo.GetTransactionHashString }}">
     <a href="profile/{{ .Post.Memo.GetAddressString }}">
     <span class="identicon-{{ .Post.Memo.GetAddressString }}">
         <img class="identicon"/>
@@ -103,5 +103,6 @@
 <script type="text/javascript">
     $(function () {
         MemoApp.SetLastPostId({{ .Post.Memo.Id }});
+        MemoApp.SetLastLikeId({{ .Post.GetLastLikeId }});
     });
 </script>

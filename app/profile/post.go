@@ -68,6 +68,16 @@ func (p Post) GetTimeString(timezone string) string {
 	return "Unconfirmed"
 }
 
+func (p Post) GetLastLikeId() uint {
+	var lastLikeId uint
+	for _, like := range p.Likes {
+		if like.Id > lastLikeId {
+			lastLikeId = like.Id
+		}
+	}
+	return lastLikeId
+}
+
 func GetPostsFeed(selfPkHash []byte, offset uint) ([]*Post, error) {
 	dbPosts, err := db.GetPostsFeedForPkHash(selfPkHash, offset)
 	if err != nil {

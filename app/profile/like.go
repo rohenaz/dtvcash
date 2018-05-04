@@ -10,6 +10,7 @@ import (
 )
 
 type Like struct {
+	Id         uint
 	Amount     int64
 	Name       string
 	PkHash     []byte
@@ -64,6 +65,7 @@ func AttachLikesToPosts(posts []*Post) error {
 		var likes []*Like
 		for _, memoLike := range memoLikes {
 			var like = &Like{
+				Id:      memoLike.Id,
 				PkHash:  memoLike.PkHash,
 				TxnHash: memoLike.TxHash,
 			}

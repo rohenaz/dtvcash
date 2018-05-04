@@ -114,7 +114,8 @@
         $allPosts.scrollTop($allPosts[0].scrollHeight);
 
         function connect() {
-            var socket = MemoApp.GetSocket(MemoApp.GetBaseUrl() + MemoApp.URL.TopicsSocket + "?topic=" + topic + "&lastPostId=" + _lastPostId);
+            var params = "?topic=" + topic + "&lastPostId=" + _lastPostId + "&lastLikeId=" + _lastLikeId;
+            var socket = MemoApp.GetSocket(MemoApp.GetBaseUrl() + MemoApp.URL.TopicsSocket + params);
 
             socket.onclose = function () {
                 setTimeout(function () {
@@ -129,6 +130,11 @@
                 $.ajax({
                     url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostAjax + "/" + txHash,
                     success: function (html) {
+                        var $post = $("#topic-post-" + txHash);
+                        if ($post.length) {
+                            $post.replaceWith(html);
+                            return;
+                        }
                         $allPosts.append(html);
                         $allPosts.scrollTop($allPosts[0].scrollHeight);
                     },
@@ -182,6 +188,7 @@
 
     var _firstPostId;
     var _lastPostId;
+    var _lastLikeId;
 
     /**
      * @param {number} firstPostId
@@ -195,6 +202,15 @@
      */
     MemoApp.SetLastPostId = function (lastPostId) {
         _lastPostId = lastPostId;
+    };
+
+    /**
+     * @param {number} lastLikeId
+     */
+    MemoApp.SetLastLikeId = function (lastLikeId) {
+        if (lastLikeId > _lastLikeId) {
+            _lastLikeId = lastLikeId;
+        }
     };
 
     /**
