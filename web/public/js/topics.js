@@ -201,7 +201,7 @@
      * @param {number} lastPostId
      */
     MemoApp.SetLastPostId = function (lastPostId) {
-        if (_lastLikeId === undefined || lastPostId > _lastLikeId) {
+        if (_lastPostId === undefined || lastPostId > _lastPostId) {
             _lastPostId = lastPostId;
         }
     };

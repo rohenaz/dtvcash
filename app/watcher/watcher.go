@@ -33,7 +33,6 @@ func init() {
 	go func() {
 		for {
 			var topicLastPostIds = make(map[string]uint)
-			var topicLastLikeIds = make(map[string]uint)
 			for _, item := range items {
 				_, ok := topicLastPostIds[item.Topic]
 				if !ok {
@@ -41,13 +40,6 @@ func init() {
 				}
 				if item.LastPostId < topicLastPostIds[item.Topic] {
 					topicLastPostIds[item.Topic] = item.LastPostId
-				}
-				_, ok = topicLastLikeIds[item.Topic]
-				if !ok {
-					topicLastLikeIds[item.Topic] = item.LastLikeId
-				}
-				if item.LastLikeId < topicLastLikeIds[item.Topic] {
-					topicLastLikeIds[item.Topic] = item.LastLikeId
 				}
 			}
 			for topic, lastPostId := range topicLastPostIds {
@@ -80,6 +72,16 @@ func init() {
 							}
 						}
 					}
+				}
+			}
+			var topicLastLikeIds = make(map[string]uint)
+			for _, item := range items {
+				_, ok := topicLastLikeIds[item.Topic]
+				if !ok {
+					topicLastLikeIds[item.Topic] = item.LastLikeId
+				}
+				if item.LastLikeId < topicLastLikeIds[item.Topic] {
+					topicLastLikeIds[item.Topic] = item.LastLikeId
 				}
 			}
 			for topic, lastLikeId := range topicLastLikeIds {
