@@ -8,6 +8,7 @@
 {{ template "topics/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
 </div>
 
+{{ if .Username }}
 <form id="form-new-topic-message" method="post">
     <input type="hidden" name="topic" value="{{ .Topic }}"/>
     <p>
@@ -39,10 +40,13 @@
         </span>
     </p>
 </form>
+{{ end }}
 
 <script type="text/javascript">
     $(function () {
+    {{ if .Username }}
         MemoApp.Form.NewTopicMessage($("#broadcasting"), $("#form-new-topic-message"));
+    {{ end }}
         MemoApp.WatchNewTopics("{{ .Topic }}", $("#all-posts"), {{ .LostPostId }});
         MemoApp.LoadMore("{{ .Topic }}", $("#all-posts"), {{ .FirstPostId }});
     });
