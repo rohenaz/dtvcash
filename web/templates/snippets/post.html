@@ -46,22 +46,22 @@
     </p>
     <p class="likes">
         <i>
-            <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ len .Post.Likes }} likes</a>
+            <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ len .Post.Likes }} {{ T "likes" }}</a>
         {{- if .Post.Likes }}
             (tip: {{ formatBigInt .Post.GetTotalTip }} satoshis)
         {{- end }},
-            <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.ReplyCount }} replies</a>
+            <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.ReplyCount }} {{ T "replies" }}</a>
         </i>
     </p>
 {{ if not .Compress }}
     <p class="actions">
     {{ if .Post.IsLoggedIn }}
-        <a class="btn" href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">Reply</a>
-        <a class="btn" href="memo/like/{{ .Post.Memo.GetTransactionHashString }}">Like</a>
+        <a class="btn" href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">{{ T "reply" }}</a>
+        <a class="btn" href="memo/like/{{ .Post.Memo.GetTransactionHashString }}">{{ T "like" }}</a>
     {{ end }}
         <a class="btn btn-leave" target="_blank"
            href="https://explorer.bitcoin.com/bch/tx/{{ .Post.Memo.GetTransactionHashString }}">
-            View on Block Explorer</a>
+            {{ T "view_on_block_explorer" }}</a>
     </p>
 {{ end }}
 </div>
