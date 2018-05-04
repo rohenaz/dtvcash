@@ -50,8 +50,10 @@
         MemoApp.Form.NewTopicMessage($("#broadcasting"), $("#form-new-topic-message"));
     {{ end }}
         MemoApp.SetFirstPostId({{ .FirstPostId }});
+        var $allPosts = $("#all-posts");
+        $allPosts.scrollTop($allPosts[0].scrollHeight);
         setTimeout(function() {
-            MemoApp.WatchNewTopics("{{ .Topic }}", $("#all-posts"));
+            MemoApp.WatchNewTopics("{{ .Topic }}", $allPosts);
             MemoApp.LoadMore("{{ .Topic }}", $("#all-posts"));
         }, 1000);
     });

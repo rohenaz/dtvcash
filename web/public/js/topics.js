@@ -111,8 +111,6 @@
      * @param {jQuery} $allPosts
      */
     MemoApp.WatchNewTopics = function (topic, $allPosts) {
-        $allPosts.scrollTop($allPosts[0].scrollHeight);
-
         function connect() {
             var params = "?topic=" + topic + "&lastPostId=" + _lastPostId + "&lastLikeId=" + _lastLikeId;
             var socket = MemoApp.GetSocket(MemoApp.GetBaseUrl() + MemoApp.URL.TopicsSocket + params);
