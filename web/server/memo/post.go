@@ -2,10 +2,10 @@ package memo
 
 import (
 	"fmt"
-	"git.jasonc.me/main/memo/app/auth"
-	"git.jasonc.me/main/memo/app/db"
-	"git.jasonc.me/main/memo/app/profile"
-	"git.jasonc.me/main/memo/app/res"
+	"github.com/memocash/memo/app/auth"
+	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/profile"
+	"github.com/memocash/memo/app/res"
 	"github.com/cpacia/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"

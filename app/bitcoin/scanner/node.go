@@ -2,10 +2,10 @@ package scanner
 
 import (
 	"fmt"
-	"git.jasonc.me/main/memo/app/bitcoin/wallet"
-	"git.jasonc.me/main/memo/app/bitcoin/main-node"
-	"git.jasonc.me/main/memo/app/bitcoin/transaction"
-	"git.jasonc.me/main/memo/app/db"
+	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/bitcoin/main-node"
+	"github.com/memocash/memo/app/bitcoin/transaction"
+	"github.com/memocash/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/cpacia/bchutil/bloom"
 	"github.com/cpacia/btcd/peer"

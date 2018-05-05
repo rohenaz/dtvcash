@@ -1,7 +1,7 @@
 package db
 
 import (
-	"git.jasonc.me/main/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/bitcoin/wallet"
 	"git.jasonc.me/main/cryptography"
 	"github.com/jchavannes/jgo/jerr"
 	"time"

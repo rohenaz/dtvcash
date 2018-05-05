@@ -2,7 +2,7 @@ package script
 
 import (
 	"bytes"
-	"git.jasonc.me/main/memo/app/bitcoin/memo"
+	"github.com/memocash/memo/app/bitcoin/memo"
 	"github.com/cpacia/btcd/txscript"
 	"strings"
 )

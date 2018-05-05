@@ -1,10 +1,10 @@
 package auth
 
 import (
-	"git.jasonc.me/main/memo/app/bitcoin/wallet"
-	"git.jasonc.me/main/memo/app/auth"
-	"git.jasonc.me/main/memo/app/db"
-	"git.jasonc.me/main/memo/app/res"
+	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/auth"
+	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/res"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"net/http"

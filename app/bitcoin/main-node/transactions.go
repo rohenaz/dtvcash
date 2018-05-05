@@ -2,7 +2,7 @@ package main_node
 
 import (
 	"fmt"
-	"git.jasonc.me/main/memo/app/bitcoin/transaction"
+	"github.com/memocash/memo/app/bitcoin/transaction"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/cpacia/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"

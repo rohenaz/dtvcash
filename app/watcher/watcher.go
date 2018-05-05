@@ -1,7 +1,7 @@
 package watcher
 
 import (
-	"git.jasonc.me/main/memo/app/db"
+	"github.com/memocash/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"time"

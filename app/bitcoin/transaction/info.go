@@ -2,7 +2,7 @@ package transaction
 
 import (
 	"fmt"
-	"git.jasonc.me/main/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/cpacia/btcd/txscript"
 	"github.com/cpacia/btcd/wire"
 )
