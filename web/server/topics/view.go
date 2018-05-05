@@ -36,6 +36,11 @@ var viewRoute = web.Route{
 			r.Error(jerr.Get("error getting topic posts from db", err), http.StatusInternalServerError)
 			return
 		}
+		if len(topicPosts) == 0 {
+			r.SetRedirect(res.UrlTopics)
+			r.Error(jerr.Get("no posts for topic", err), http.StatusInternalServerError)
+			return
+		}
 		if len(userPkHash) > 0 {
 			err = profile.AttachReputationToPosts(topicPosts)
 			if err != nil {
