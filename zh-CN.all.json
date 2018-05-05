@@ -1,23 +1,23 @@
 [
   {
     "id": "home",
-    "translation": "仪表板"
+    "translation": "主页"
   },
   {
     "id": "dashboard",
-    "translation": "仪表板"
+    "translation": "控制面板"
   },
   {
     "id": "new_memo",
-    "translation": "新备忘录"
+    "translation": "新记事本"
   },
   {
     "id": "posts",
-    "translation": "帖子"
+    "translation": "回复"
   },
   {
     "id": "profiles",
-    "translation": "型材"
+    "translation": "档案"
   },
   {
     "id": "login",
@@ -29,7 +29,7 @@
   },
   {
     "id": "about",
-    "translation": "信息"
+    "translation": "关于"
   },
   {
     "id": "protocol",
@@ -37,7 +37,7 @@
   },
   {
     "id": "disclaimer",
-    "translation": "放弃"
+    "translation": "免责声明"
   },
   {
     "id": "statistics",
@@ -45,170 +45,170 @@
   },
   {
     "id": "name",
-    "translation": ""
+    "translation": "名称"
   },
   {
     "id": "address",
-    "translation": ""
+    "translation": "地址"
   },
   {
     "id": "followers",
-    "translation": ""
+    "translation": "关注者"
   },
   {
     "id": "following",
-    "translation": ""
+    "translation": "已关注"
   },
   {
     "id": "balance",
-    "translation": ""
+    "translation": "余额"
   },
   {
     "id": "profile",
-    "translation": ""
+    "translation": "档案"
   },
   {
     "id": "actions",
-    "translation": ""
+    "translation": "动作"
   },
   {
     "id": "view_your_profile",
-    "translation": ""
+    "translation": "查看您的档案"
   },
   {
     "id": "set_name",
-    "translation": ""
+    "translation": "设置名称"
   },
   {
     "id": "set_profile",
-    "translation": ""
+    "translation": "设置档案"
   },
   {
     "id": "export_key",
-    "translation": ""
+    "translation": "导出键"
   },
   {
     "id": "change_password",
-    "translation": ""
+    "translation": "更改密码"
   },
   {
     "id": "reply",
-    "translation": ""
+    "translation": "回复"
   },
   {
     "id": "like",
-    "translation": ""
+    "translation": "点赞"
   },
   {
     "id": "replies",
-    "translation": ""
+    "translation": "回复"
   },
   {
     "id": "likes",
-    "translation": ""
+    "translation": "点赞"
   },
   {
     "id": "top",
-    "translation": ""
+    "translation": "顶部"
   },
   {
     "id": "personalized",
-    "translation": ""
+    "translation": "个性化"
   },
   {
     "id": "new",
-    "translation": ""
+    "translation": "新"
   },
   {
     "id": "archive",
-    "translation": ""
+    "translation": "归档"
   },
   {
     "id": "last_hour",
-    "translation": ""
+    "translation": "前一小时"
   },
   {
     "id": "last_24_hours",
-    "translation": ""
+    "translation": "前24小时"
   },
   {
     "id": "last_7_days",
-    "translation": ""
+    "translation": "前七天"
   },
   {
     "id": "all_time",
-    "translation": ""
+    "translation": "所有时间"
   },
   {
     "id": "message",
-    "translation": ""
+    "translation": "消息"
   },
   {
     "id": "password",
-    "translation": ""
+    "translation": "密码"
   },
   {
     "id": "save_password",
-    "translation": ""
+    "translation": "保存密码"
   },
   {
     "id": "post",
-    "translation": ""
+    "translation": "回复"
   },
   {
     "id": "profile_text",
-    "translation": ""
+    "translation": "档案内容"
   },
   {
     "id": "feed",
-    "translation": ""
+    "translation": "源"
   },
   {
     "id": "posted_at",
-    "translation": ""
+    "translation": "发表于"
   },
   {
     "id": "view_on_block_explorer",
-    "translation": ""
+    "translation": "在区块链浏览器中查看"
   },
   {
     "id": "view_address_on_block_explorer",
-    "translation": ""
+    "translation": "在区块链浏览器中查看地址"
   },
   {
     "id": "view_name_on_block_explorer",
-    "translation": ""
+    "translation": "在区块链浏览器中查看名称"
   },
   {
     "id": "page",
-    "translation": ""
+    "translation": "页"
   },
   {
     "id": "previous",
-    "translation": ""
+    "translation": "前一个"
   },
   {
     "id": "next",
-    "translation": ""
+    "translation": "后一个"
   },
   {
     "id": "connections",
-    "translation": ""
+    "translation": "连接"
   },
   {
     "id": "follow",
-    "translation": ""
+    "translation": "关注"
   },
   {
     "id": "unfollow",
-    "translation": ""
+    "translation": "取消关注"
   },
   {
     "id": "next_day",
-    "translation": ""
+    "translation": "明天"
   },
   {
     "id": "previous_day",
-    "translation": ""
+    "translation": "前一天"
   }
 ]
