@@ -210,5 +210,9 @@
   {
     "id": "previous_day",
     "translation": "El día anterior"
+  },
+  {
+    "id": "topics",
+    "translation": "Temas"
   }
 ]

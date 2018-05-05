@@ -210,5 +210,9 @@
   {
     "id": "previous_day",
     "translation": "前一天"
+  },
+  {
+    "id": "topics",
+    "translation": "主题"
   }
 ]
