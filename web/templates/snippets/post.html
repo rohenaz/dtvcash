@@ -39,6 +39,9 @@
             {{ T "posted_at" }}
         {{ end }}
             <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeString .TimeZone }}</a>
+        {{- if .Post.Memo.Topic }}
+            in <a href="topic/{{ .Post.Memo.Topic }}">{{ .Post.Memo.Topic }}</a>
+        {{ end }}
         </p>
     </div>
     <p class="message">

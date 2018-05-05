@@ -236,3 +236,23 @@ func GetPersonalizedRecentTopLikedTxHashes(selfPkHash []byte, offset uint, timeS
 	}
 	return txHashes, nil
 }
+
+func GetRecentLikesForTopic(topic string, lastLikeId uint) ([]*MemoLike, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	var memoLikes []*MemoLike
+	result := db.
+		Table("memo_likes").
+		Select("memo_likes.*").
+		Joins("JOIN memo_posts ON (memo_likes.like_tx_hash = memo_posts.tx_hash)").
+		Where("memo_likes.id > ?", lastLikeId).
+		Where("memo_posts.topic = ?", topic).
+		Order("id ASC").
+		Find(&memoLikes)
+	if result.Error != nil {
+		return nil, jerr.Get("error running recent topic likes query", result.Error)
+	}
+	return memoLikes, nil
+}
