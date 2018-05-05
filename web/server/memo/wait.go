@@ -1,7 +1,7 @@
 package memo
 
 import (
-	"git.jasonc.me/main/bitcoin/bitcoin/memo"
+	"git.jasonc.me/main/memo/app/bitcoin/memo"
 	"git.jasonc.me/main/memo/app/bitcoin/transaction"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"

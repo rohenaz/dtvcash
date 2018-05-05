@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"git.jasonc.me/main/memo/app/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/res"

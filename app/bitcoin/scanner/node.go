@@ -2,7 +2,7 @@ package scanner
 
 import (
 	"fmt"
-	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"git.jasonc.me/main/memo/app/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/bitcoin/main-node"
 	"git.jasonc.me/main/memo/app/bitcoin/transaction"
 	"git.jasonc.me/main/memo/app/db"

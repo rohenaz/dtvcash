@@ -2,7 +2,7 @@ package queuer
 
 import (
 	"fmt"
-	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"git.jasonc.me/main/memo/app/bitcoin/wallet"
 	"github.com/cpacia/btcd/peer"
 	"github.com/cpacia/btcd/wire"
 	"log"

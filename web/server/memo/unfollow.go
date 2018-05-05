@@ -3,8 +3,8 @@ package memo
 import (
 	"bytes"
 	"fmt"
-	"git.jasonc.me/main/bitcoin/bitcoin/memo"
-	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"git.jasonc.me/main/memo/app/bitcoin/memo"
+	"git.jasonc.me/main/memo/app/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/bitcoin/transaction"
 	"git.jasonc.me/main/memo/app/db"

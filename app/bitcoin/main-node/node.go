@@ -2,7 +2,7 @@ package main_node
 
 import (
 	"fmt"
-	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"git.jasonc.me/main/memo/app/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/cpacia/btcd/peer"
 	"github.com/cpacia/btcd/wire"

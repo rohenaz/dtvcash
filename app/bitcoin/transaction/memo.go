@@ -2,8 +2,8 @@ package transaction
 
 import (
 	"bytes"
-	"git.jasonc.me/main/bitcoin/bitcoin/memo"
-	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"git.jasonc.me/main/memo/app/bitcoin/memo"
+	"git.jasonc.me/main/memo/app/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/cache"
 	"git.jasonc.me/main/memo/app/db"
 	"git.jasonc.me/main/memo/app/html-parser"

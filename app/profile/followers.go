@@ -2,7 +2,7 @@ package profile
 
 import (
 	"bytes"
-	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"git.jasonc.me/main/memo/app/bitcoin/wallet"
 	"git.jasonc.me/main/memo/app/db"
 	"github.com/btcsuite/btcutil"
 	"github.com/jchavannes/jgo/jerr"

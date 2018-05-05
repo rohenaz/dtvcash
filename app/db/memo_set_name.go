@@ -2,8 +2,8 @@ package db
 
 import (
 	"bytes"
-	"git.jasonc.me/main/bitcoin/bitcoin/script"
-	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"git.jasonc.me/main/memo/app/bitcoin/script"
+	"git.jasonc.me/main/memo/app/bitcoin/wallet"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
 	"github.com/jchavannes/jgo/jerr"
