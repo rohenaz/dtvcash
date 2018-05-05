@@ -54,7 +54,7 @@ var followersRoute = web.Route{
 			}
 		}
 		r.Helper["Followers"] = followers
-		r.Helper["OffsetLink"] = fmt.Sprintf("%s/%s", strings.TrimLeft(res.UrlProfileFollowers, "/"), addressString)
+		r.Helper["OffsetLink"] = fmt.Sprintf("%s/%s", strings.TrimLeft(res.UrlProfileFollowers, "/"), address.GetEncoded())
 		res.SetPageAndOffset(r, offset)
 		r.RenderTemplate(res.UrlProfileFollowers)
 	},
@@ -102,7 +102,7 @@ var followingRoute = web.Route{
 			}
 		}
 		r.Helper["Following"] = following
-		r.Helper["OffsetLink"] = fmt.Sprintf("%s/%s", strings.TrimLeft(res.UrlProfileFollowing, "/"), addressString)
+		r.Helper["OffsetLink"] = fmt.Sprintf("%s/%s", strings.TrimLeft(res.UrlProfileFollowing, "/"), address.GetEncoded())
 		res.SetPageAndOffset(r, offset)
 		r.RenderTemplate(res.UrlProfileFollowing)
 	},

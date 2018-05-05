@@ -6,8 +6,8 @@ import (
 	"git.jasonc.me/main/memo/app/res"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
-	"net/http"
 	"github.com/skip2/go-qrcode"
+	"net/http"
 )
 
 var viewKeyRoute = web.Route{

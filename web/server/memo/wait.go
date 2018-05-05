@@ -17,12 +17,12 @@ var waitRoute = web.Route{
 	NeedsLogin: true,
 	Handler: func(r *web.Response) {
 		txHashString := r.Request.GetUrlNamedQueryVariable(urlTxHash.Id)
-		_, err := chainhash.NewHashFromStr(txHashString)
+		hash, err := chainhash.NewHashFromStr(txHashString)
 		if err != nil {
 			r.Error(jerr.Get("error getting transaction hash", err), http.StatusInternalServerError)
 			return
 		}
-		r.Helper["TxHash"] = txHashString
+		r.Helper["TxHash"] = hash.String()
 		r.RenderTemplate(res.UrlMemoWait)
 	},
 }

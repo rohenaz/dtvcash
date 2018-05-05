@@ -3,6 +3,7 @@ package topics
 import (
 	"git.jasonc.me/main/memo/app/auth"
 	"git.jasonc.me/main/memo/app/db"
+	"git.jasonc.me/main/memo/app/html-parser"
 	"git.jasonc.me/main/memo/app/profile"
 	"git.jasonc.me/main/memo/app/res"
 	"github.com/jchavannes/jgo/jerr"
@@ -14,7 +15,8 @@ var postsMoreRoute = web.Route{
 	Pattern:    res.UrlTopicsMorePosts,
 	Handler: func(r *web.Response) {
 		firstPostId := r.Request.GetUrlParameterUInt("firstPostId")
-		topic := r.Request.GetUrlParameter("topic")
+		topicRaw := r.Request.GetUrlParameter("topic")
+		topic := html_parser.EscapeWithEmojis(topicRaw)
 		var userPkHash []byte
 		if auth.IsLoggedIn(r.Session.CookieId) {
 			user, err := auth.GetSessionUser(r.Session.CookieId)
