@@ -56,7 +56,7 @@ var viewRoute = web.Route{
 				}
 			}
 		}
-		r.Helper["Topic"] = topicRaw
+		r.Helper["Topic"] = topic
 		r.Helper["Posts"] = topicPosts
 		r.Helper["FirstPostId"] = topicPosts[0].Memo.Id
 		r.Helper["LastPostId"] = topicPosts[len(topicPosts)-1].Memo.Id
