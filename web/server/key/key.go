@@ -8,5 +8,7 @@ func GetRoutes() []web.Route {
 		loadKeyRoute,
 		changePasswordRoute,
 		changePasswordSubmitRoute,
+		deleteAccountRoute,
+		deleteAccountSubmitRoute,
 	}
 }

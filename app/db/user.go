@@ -21,6 +21,14 @@ func (u *User) Save() error {
 	return nil
 }
 
+func (u *User) Delete() error {
+	result := remove(u)
+	if result.Error != nil {
+		return jerr.Get("error deleting user", result.Error)
+	}
+	return nil
+}
+
 func CreateUser(username string, hashedPassword string) (*User, error) {
 	user := &User{
 		Username:     username,

@@ -1,0 +1,27 @@
+{{ template "snippets/header.html" . }}
+
+<h2>Delete Account</h2>
+
+<div id="delete-account">
+    <form id="delete-account-form" method="post">
+        <p>
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password"/>
+        </p>
+        <p>
+            <label for="confirm">To confirm, type:<br/><b>DELETE ACCOUNT</b></label>
+            <input type="text" name="confirm" id="confirm"/>
+        </p>
+        <p>
+            <input class="btn" type="submit" value="Delete Account"/>
+        </p>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        MemoApp.Form.DeleteAccount($("#delete-account-form"), $("#delete-account"));
+    });
+</script>
+
+{{ template "snippets/footer.html" . }}
