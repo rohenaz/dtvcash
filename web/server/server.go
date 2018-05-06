@@ -95,6 +95,7 @@ func Run(sessionCookieInsecure bool) {
 				protocolRoute,
 				disclaimerRoute,
 				introducingMemoRoute,
+				openSourcingMemoRoute,
 				aboutRoute,
 				needFundsRoute,
 				newPostsRoute,

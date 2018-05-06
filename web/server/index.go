@@ -83,6 +83,14 @@ var introducingMemoRoute = web.Route{
 	},
 }
 
+var openSourcingMemoRoute = web.Route{
+	Pattern: res.UrlOpenSource,
+	Handler: func(r *web.Response) {
+		r.Helper["Title"] = "Open Sourcing Memo"
+		r.Render()
+	},
+}
+
 var aboutRoute = web.Route{
 	Pattern: res.UrlAbout,
 	Handler: func(r *web.Response) {
