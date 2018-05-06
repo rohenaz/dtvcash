@@ -2,7 +2,7 @@ package main_node
 
 import (
 	"fmt"
-	"github.com/cpacia/btcd/wire"
+	"github.com/jchavannes/btcd/wire"
 )
 
 func onReject(n *Node, msg *wire.MsgReject) {

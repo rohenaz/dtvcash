@@ -2,8 +2,8 @@ package queuer
 
 import (
 	"fmt"
-	"github.com/cpacia/btcd/peer"
-	"github.com/cpacia/btcd/wire"
+	"github.com/jchavannes/btcd/peer"
+	"github.com/jchavannes/btcd/wire"
 	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/memocash/memo/app/config"
 	"log"

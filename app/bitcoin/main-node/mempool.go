@@ -1,6 +1,6 @@
 package main_node
 
-import "github.com/cpacia/btcd/wire"
+import "github.com/jchavannes/btcd/wire"
 
 func queueMempool(n  *Node) {
 	msgMemPool := wire.NewMsgMemPool()

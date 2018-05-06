@@ -3,9 +3,9 @@ package scanner
 import (
 	"fmt"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/cpacia/bchutil/bloom"
-	"github.com/cpacia/btcd/peer"
-	"github.com/cpacia/btcd/wire"
+	"github.com/jchavannes/bchutil/bloom"
+	"github.com/jchavannes/btcd/peer"
+	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/bitcoin/main-node"
 	"github.com/memocash/memo/app/bitcoin/transaction"

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
-	"github.com/cpacia/btcd/wire"
+	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
 )
 

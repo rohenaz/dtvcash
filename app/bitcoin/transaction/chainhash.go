@@ -2,7 +2,7 @@ package transaction
 
 import (
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	chainhash2 "github.com/cpacia/btcd/chaincfg/chainhash"
+	chainhash2 "github.com/jchavannes/btcd/chaincfg/chainhash"
 )
 
 func ConvertChainHashToBCH(hash *chainhash.Hash) *chainhash2.Hash {

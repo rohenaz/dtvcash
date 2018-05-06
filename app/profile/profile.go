@@ -8,7 +8,7 @@ import (
 	"github.com/memocash/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
-	"github.com/cpacia/bchutil"
+	"github.com/jchavannes/bchutil"
 	"github.com/jchavannes/jgo/jerr"
 	"regexp"
 	"strings"

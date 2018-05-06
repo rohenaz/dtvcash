@@ -5,8 +5,8 @@ import (
 	"github.com/memocash/memo/app/bitcoin/transaction"
 	"github.com/memocash/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/cpacia/bchutil"
-	"github.com/cpacia/btcd/wire"
+	"github.com/jchavannes/bchutil"
+	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
 )
 

@@ -3,7 +3,7 @@ package script
 import (
 	"bytes"
 	"github.com/memocash/memo/app/bitcoin/memo"
-	"github.com/cpacia/btcd/txscript"
+	"github.com/jchavannes/btcd/txscript"
 	"strings"
 )
 

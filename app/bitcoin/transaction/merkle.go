@@ -3,7 +3,7 @@ package transaction
 import (
 	"fmt"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/cpacia/btcd/wire"
+	"github.com/jchavannes/btcd/wire"
 )
 
 func GetTransactionsFromMerkleBlock(merkleBlock *wire.MsgMerkleBlock) []MerkleTransaction {

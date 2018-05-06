@@ -8,7 +8,7 @@ import (
 	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
-	"github.com/cpacia/btcd/txscript"
+	"github.com/jchavannes/btcd/txscript"
 	"github.com/jchavannes/jgo/jerr"
 	"html"
 	"strings"

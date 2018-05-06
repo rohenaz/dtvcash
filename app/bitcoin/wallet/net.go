@@ -3,9 +3,9 @@ package wallet
 import (
 	chainCfgOld "github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcd/wire"
-	"github.com/cpacia/bchutil"
-	"github.com/cpacia/btcd/chaincfg"
-	"github.com/cpacia/btcd/txscript"
+	"github.com/jchavannes/bchutil"
+	"github.com/jchavannes/btcd/chaincfg"
+	"github.com/jchavannes/btcd/txscript"
 )
 
 var MainNetParams = chaincfg.MainNetParams

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/memocash/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/cpacia/btcd/wire"
+	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
 )
 
