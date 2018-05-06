@@ -214,5 +214,9 @@
   {
     "id": "previous_day",
     "translation": "Previous Day"
+  },
+  {
+    "id": "topics",
+    "translation": "Topics"
   }
 ]
