@@ -3,9 +3,9 @@ package transaction
 import (
 	"bytes"
 	"fmt"
-	"git.jasonc.me/main/bitcoin/bitcoin/memo"
-	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
-	"git.jasonc.me/main/memo/app/db"
+	"github.com/memocash/memo/app/bitcoin/memo"
+	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/cpacia/btcd/txscript"
 	"github.com/cpacia/btcd/wire"

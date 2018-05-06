@@ -3,7 +3,7 @@ package cache
 import (
 	"bytes"
 	"encoding/gob"
-	"git.jasonc.me/main/memo/app/config"
+	"github.com/memocash/memo/app/config"
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/jchavannes/jgo/jerr"
 )

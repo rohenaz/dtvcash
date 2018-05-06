@@ -2,7 +2,7 @@ package profile
 
 import (
 	"bytes"
-	"git.jasonc.me/main/memo/app/db"
+	"github.com/memocash/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
 	"regexp"
 	"strings"

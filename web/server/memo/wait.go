@@ -1,10 +1,10 @@
 package memo
 
 import (
-	"git.jasonc.me/main/bitcoin/bitcoin/memo"
-	"git.jasonc.me/main/memo/app/bitcoin/transaction"
-	"git.jasonc.me/main/memo/app/db"
-	"git.jasonc.me/main/memo/app/res"
+	"github.com/memocash/memo/app/bitcoin/memo"
+	"github.com/memocash/memo/app/bitcoin/transaction"
+	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/res"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"

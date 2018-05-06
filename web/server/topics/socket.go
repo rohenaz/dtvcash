@@ -1,9 +1,9 @@
 package topics
 
 import (
-	"git.jasonc.me/main/memo/app/html-parser"
-	"git.jasonc.me/main/memo/app/res"
-	"git.jasonc.me/main/memo/app/watcher"
+	"github.com/memocash/memo/app/html-parser"
+	"github.com/memocash/memo/app/res"
+	"github.com/memocash/memo/app/watcher"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"net/http"

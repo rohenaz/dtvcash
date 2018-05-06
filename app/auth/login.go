@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"git.jasonc.me/main/memo/app/db"
+	"github.com/memocash/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
 	"golang.org/x/crypto/bcrypt"
 	"strings"

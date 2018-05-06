@@ -2,12 +2,12 @@ package cmd
 
 import (
 	"fmt"
-	"git.jasonc.me/main/memo/app/bitcoin/main-node"
-	"git.jasonc.me/main/memo/app/bitcoin/scanner"
-	"git.jasonc.me/main/memo/app/db"
-	"git.jasonc.me/main/memo/app/html-parser"
-	"git.jasonc.me/main/memo/app/res"
-	"git.jasonc.me/main/memo/web/server"
+	"github.com/memocash/memo/app/bitcoin/main-node"
+	"github.com/memocash/memo/app/bitcoin/scanner"
+	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/html-parser"
+	"github.com/memocash/memo/app/res"
+	"github.com/memocash/memo/web/server"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jlog"
 	"github.com/spf13/cobra"

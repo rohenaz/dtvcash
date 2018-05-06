@@ -3,8 +3,8 @@ package profile
 import (
 	"bytes"
 	"fmt"
-	"git.jasonc.me/main/memo/app/cache"
-	"git.jasonc.me/main/memo/app/db"
+	"github.com/memocash/memo/app/cache"
+	"github.com/memocash/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
 )
 
