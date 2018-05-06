@@ -2,7 +2,7 @@ package wallet
 
 import (
 	"encoding/hex"
-	"git.jasonc.me/forks/go-mnemonic/bip39"
+	"github.com/jchavannes/go-mnemonic/bip39"
 	"github.com/jchavannes/jgo/jerr"
 )
 

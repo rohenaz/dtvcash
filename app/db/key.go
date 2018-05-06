@@ -1,9 +1,9 @@
 package db
 
 import (
-	"github.com/memocash/memo/app/bitcoin/wallet"
-	"git.jasonc.me/main/cryptography"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/crypto"
 	"time"
 )
 
@@ -29,11 +29,11 @@ func (k *Key) Save() error {
 }
 
 func (k Key) GetPrivateKey(password string) (*wallet.PrivateKey, error) {
-	key, err := cryptography.GenerateEncryptionKeyFromPassword(password)
+	key, err := crypto.GenerateEncryptionKeyFromPassword(password)
 	if err != nil {
 		return nil, jerr.Get("error generating key from password", err)
 	}
-	decrypted, err := cryptography.Decrypt(k.Value, key)
+	decrypted, err := crypto.Decrypt(k.Value, key)
 	if err != nil {
 		return nil, jerr.Get("failed to decrypt", err)
 	}
@@ -52,11 +52,11 @@ func (k *Key) UpdatePassword(oldPassword string, newPassword string) error {
 	if err != nil {
 		return jerr.Get("error getting key from password", err)
 	}
-	encryptionKey, err := cryptography.GenerateEncryptionKeyFromPassword(newPassword)
+	encryptionKey, err := crypto.GenerateEncryptionKeyFromPassword(newPassword)
 	if err != nil {
 		return jerr.Get("error generating key from password", err)
 	}
-	encryptedSecret, err := cryptography.Encrypt(privateKey.Secret, encryptionKey)
+	encryptedSecret, err := crypto.Encrypt(privateKey.Secret, encryptionKey)
 	if err != nil {
 		return jerr.Get("failed to encrypt", err)
 	}
@@ -85,7 +85,7 @@ func (k Key) Delete() error {
 }
 
 func GenerateKey(name string, password string, userId uint) (*Key, error) {
-	key, err := cryptography.GenerateEncryptionKeyFromPassword(password)
+	key, err := crypto.GenerateEncryptionKeyFromPassword(password)
 	if err != nil {
 		return nil, jerr.Get("error generating key from password", err)
 	}
@@ -94,7 +94,7 @@ func GenerateKey(name string, password string, userId uint) (*Key, error) {
 }
 
 func ImportKey(name string, password string, wif string, userId uint) (*Key, error) {
-	key, err := cryptography.GenerateEncryptionKeyFromPassword(password)
+	key, err := crypto.GenerateEncryptionKeyFromPassword(password)
 	if err != nil {
 		return nil, jerr.Get("error generating key from password", err)
 	}
@@ -106,7 +106,7 @@ func ImportKey(name string, password string, wif string, userId uint) (*Key, err
 }
 
 func createKey(name string, privateKey wallet.PrivateKey, key []byte, userId uint) (*Key, error) {
-	encryptedSecret, err := cryptography.Encrypt(privateKey.Secret, key)
+	encryptedSecret, err := crypto.Encrypt(privateKey.Secret, key)
 	if err != nil {
 		return nil, jerr.Get("failed to encrypt", err)
 	}
