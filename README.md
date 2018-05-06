@@ -41,6 +41,12 @@ go build
 ./memo web --insecure
 ```
 
+### Notes
+- Can take about 30 minutes for main-node to full sync
+- Main node can sometimes disconnect while syncing, just restart
+- You may see a few errors, these are mal-formed memos and can be ignored
+
+
 ### View
 
 Visit `http://127.0.0.1:8261` in your browser
