@@ -246,5 +246,13 @@
   {
     "id": "Forget_password",
     "translation": "パスワードを忘れる"
+  },
+  {
+    "id": "Names_set",
+    "translation": "作成された名前"
+  },
+  {
+    "id": "Total",
+    "translation": "合計"
   }
 ]

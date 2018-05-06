@@ -246,5 +246,13 @@
   {
     "id": "Forget_password",
     "translation": "忘记密码"
+  },
+  {
+    "id": "Names_set",
+    "translation": "创建的名称"
+  },
+  {
+    "id": "Total",
+    "translation": "总"
   }
 ]

@@ -44,10 +44,6 @@
     "translation": "Statistics"
   },
   {
-    "id": "statistics",
-    "translation": "Stats"
-  },
-  {
     "id": "name",
     "translation": "Name"
   },
@@ -101,7 +97,10 @@
   },
   {
     "id": "like",
-    "translation": "Like"
+    "translation": {
+      "one": "Like",
+      "other": "Likes"
+    }
   },
   {
     "id": "replies",
@@ -201,7 +200,10 @@
   },
   {
     "id": "follow",
-    "translation": "Follow"
+    "translation": {
+      "one": "Follow",
+      "other": "Follows"
+    }
   },
   {
     "id": "unfollow",
@@ -250,5 +252,13 @@
   {
     "id": "Forget_password",
     "translation": "Uncache password"
+  },
+  {
+    "id": "Names_set",
+    "translation": "Names set"
+  },
+  {
+    "id": "Total",
+    "translation": "Total"
   }
 ]

@@ -97,7 +97,10 @@
   },
   {
     "id": "like",
-    "translation": "Me gusta"
+    "translation": {
+      "one": "Me gusta",
+      "other": "Me gustas"
+    }
   },
   {
     "id": "replies",
@@ -197,7 +200,10 @@
   },
   {
     "id": "follow",
-    "translation": "Seguir"
+    "translation": {
+      "one": "Seguir",
+      "other": "Seguirs"
+    }
   },
   {
     "id": "unfollow",
@@ -246,5 +252,13 @@
   {
     "id": "Forget_password",
     "translation": "Contraseña olvidada"
+  },
+  {
+    "id": "Names_set",
+    "translation": "Nombres establecidos"
+  },
+  {
+    "id": "Total",
+    "translation": "Total"
   }
 ]
