@@ -30,7 +30,7 @@ type TransactionIn struct {
 	SignatureScript       []byte
 	UnlockString          string
 	Sequence              uint32
-	TxnOutHashString      string
+	TxnOutHashString      string          `gorm:"size:4096"`
 	TxnOut                *TransactionOut `gorm:"foreignkey:TxnOutHashString"`
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
