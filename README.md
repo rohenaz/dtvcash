@@ -24,7 +24,8 @@
     MEMCACHE_HOST: 127.0.0.1
     MEMCACHE_PORT: 11211
     
-    BITCOIN_NODE: 127.0.0.1
+    BITCOIN_NODE_HOST: 127.0.0.1
+    BITCOIN_NODE_PORT: 8333
     ```
 
 ### Running
@@ -39,3 +40,7 @@ go build
 # Separately run web server
 ./memo web --insecure
 ```
+
+### View
+
+Visit `http://127.0.0.1:8261` in your browser
