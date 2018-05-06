@@ -212,7 +212,15 @@
     "translation": "前一天"
   },
   {
-    "id": "topics",
+    "id": "Topic",
     "translation": "主题"
+  },
+  {
+    "id": "Topics",
+    "translation": "主题"
+  },
+  {
+    "id": "Send",
+    "translation": "发送"
   }
 ]

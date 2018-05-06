@@ -1,6 +1,6 @@
 {{ template "snippets/header.html" . }}
 
-<h2>Topic - {{ .Topic }}</h2>
+<h2>{{ T "Topic" }} - {{ .Topic }}</h2>
 
 <p><a href="topics">Back to topics</a></p>
 
@@ -12,26 +12,26 @@
 <form id="form-new-topic-message" method="post">
     <input type="hidden" name="topic" value="{{ .Topic }}"/>
     <p>
-        <label for="message">Message <span class="message-byte-count"></span></label>
-        <input id="message" type="text" name="message" class="form-control" placeholder="Message"
+        <label for="message">{{ T "message" }} <span class="message-byte-count"></span></label>
+        <input id="message" type="text" name="message" class="form-control" placeholder="{{ T "message" }}"
                autocomplete="on"
                required autofocus/>
     </p>
     <div id="password-area">
         <p>
-            <label for="password">Password</label>
+            <label for="password">{{ T "password" }}</label>
             <input id="password" type="password" name="password" class="form-control" placeholder="Password"
                    autocomplete="on" required/>
         </p>
         <p>
             <label for="save-password">
-                Save password
+                {{ T "save_password" }}
             </label>
             <input id="save-password" name="save-password" type="checkbox"/>
         </p>
     </div>
     <p>
-        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Send"/>
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="{{ T "Send" }}"/>
         <span id="broadcasting">
             Broadcasting...
         </span>

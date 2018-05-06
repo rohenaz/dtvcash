@@ -212,7 +212,15 @@
     "translation": "前の日"
   },
   {
-    "id": "topics",
+    "id": "Topic",
     "translation": "トピック"
+  },
+  {
+    "id": "Topics",
+    "translation": "トピック"
+  },
+  {
+    "id": "Send",
+    "translation": "送信"
   }
 ]

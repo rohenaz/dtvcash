@@ -53,7 +53,7 @@
         {{ end }}
             <a {{ if eq $nav "posts" }}class="sel"{{ end }} href="posts/top">{{ T "posts" }}</a>
             <a {{ if eq $nav "profiles" }}class="sel"{{ end }} href="profiles">{{ T "profiles" }}</a>
-            <a {{ if eq $nav "topics" }}class="sel"{{ end }} href="topics">{{ T "topics" }}</a>
+            <a {{ if eq $nav "topics" }}class="sel"{{ end }} href="topics">{{ T "Topics" }}</a>
         {{ with .Username }}
             <a id="header-logout" href="logout">{{ T "logout" $user }}</a>
         {{ else }}

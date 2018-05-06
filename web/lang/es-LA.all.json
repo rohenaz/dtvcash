@@ -212,7 +212,15 @@
     "translation": "El día anterior"
   },
   {
-    "id": "topics",
+    "id": "Topic",
+    "translation": "Tema"
+  },
+  {
+    "id": "Topics",
     "translation": "Temas"
+  },
+  {
+    "id": "Send",
+    "translation": "Enviar"
   }
 ]

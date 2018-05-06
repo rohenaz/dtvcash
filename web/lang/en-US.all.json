@@ -216,7 +216,15 @@
     "translation": "Previous Day"
   },
   {
-    "id": "topics",
+    "id": "Topic",
+    "translation": "Topic"
+  },
+  {
+    "id": "Topics",
     "translation": "Topics"
+  },
+  {
+    "id": "Send",
+    "translation": "Send"
   }
 ]
