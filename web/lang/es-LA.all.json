@@ -222,5 +222,21 @@
   {
     "id": "Send",
     "translation": "Enviar"
+  },
+  {
+    "id": "Existing_Topics",
+    "translation": "Temas Existentes"
+  },
+  {
+    "id": "Create_new_topic",
+    "translation": "Crear nuevo tema"
+  },
+  {
+    "id": "Most_recent_post",
+    "translation": "Publicación más reciente"
+  },
+  {
+    "id": "Total_posts",
+    "translation": "Puestos totales"
   }
 ]

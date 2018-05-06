@@ -1,8 +1,8 @@
 {{ template "snippets/header.html" . }}
 
-<p><a href="topics/create">Create New Topic</a></p>
+<p><a href="topics/create">{{ T "Create_new_topic" }}</a></p>
 
-<h3>Existing Topics</h3>
+<h3>{{ T "Existing_Topics" }}</h3>
 
 {{ if and (eq .NextOffset 25) (lt (len .Topics) 25) }}{{ else }}
 <div class="bottom10">
@@ -16,8 +16,8 @@
     <thead>
     <tr>
         <th>{{ T "Topic" }}</th>
-        <th>Most recent post</th>
-        <th>Total posts</th>
+        <th>{{ T "Most_recent_post" }}</th>
+        <th>{{ T "Total_posts" }}</th>
     </tr>
     </thead>
     <tbody>

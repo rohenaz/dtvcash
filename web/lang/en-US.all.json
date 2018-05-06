@@ -226,5 +226,21 @@
   {
     "id": "Send",
     "translation": "Send"
+  },
+  {
+    "id": "Existing_Topics",
+    "translation": "Existing Topics"
+  },
+  {
+    "id": "Create_new_topic",
+    "translation": "Create new topic"
+  },
+  {
+    "id": "Most_recent_post",
+    "translation": "Most recent post"
+  },
+  {
+    "id": "Total_posts",
+    "translation": "Total posts"
   }
 ]

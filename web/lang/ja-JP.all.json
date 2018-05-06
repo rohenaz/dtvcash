@@ -222,5 +222,21 @@
   {
     "id": "Send",
     "translation": "送信"
+  },
+  {
+    "id": "Existing_Topics",
+    "translation": "既存のトピック"
+  },
+  {
+    "id": "Create_new_topic",
+    "translation": "トピックを作成する"
+  },
+  {
+    "id": "Most_recent_post",
+    "translation": "最も最近の"
+  },
+  {
+    "id": "Total_posts",
+    "translation": "合計"
   }
 ]

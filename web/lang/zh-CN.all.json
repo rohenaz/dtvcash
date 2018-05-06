@@ -222,5 +222,21 @@
   {
     "id": "Send",
     "translation": "发送"
+  },
+  {
+    "id": "Existing_Topics",
+    "translation": "当前话题"
+  },
+  {
+    "id": "Create_new_topic",
+    "translation": "新话题"
+  },
+  {
+    "id": "Most_recent_post",
+    "translation": "最近的"
+  },
+  {
+    "id": "Total_posts",
+    "translation": "总"
   }
 ]
