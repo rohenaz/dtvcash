@@ -260,5 +260,9 @@
   {
     "id": "Total",
     "translation": "Total"
+  },
+  {
+    "id": "Delete_Account",
+    "translation": "Borrar Cuenta"
   }
 ]

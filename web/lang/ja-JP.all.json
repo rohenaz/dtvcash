@@ -254,5 +254,9 @@
   {
     "id": "Total",
     "translation": "合計"
+  },
+  {
+    "id": "Delete_Account",
+    "translation": "アカウントを削除する"
   }
 ]
