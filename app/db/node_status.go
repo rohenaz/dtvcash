@@ -1,7 +1,6 @@
 package db
 
 import (
-	"git.jasonc.me/main/bitcoin/app/db"
 	"github.com/jchavannes/jgo/jerr"
 	"time"
 )
@@ -26,7 +25,7 @@ func GetNodeStatus() (*NodeStatus, error) {
 	if err == nil {
 		return status, nil
 	}
-	if ! db.IsRecordNotFoundError(err) {
+	if ! IsRecordNotFoundError(err) {
 		return nil, jerr.Get("error getting status", err)
 	}
 	err = create(status)

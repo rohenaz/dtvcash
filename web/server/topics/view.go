@@ -1,14 +1,14 @@
 package topics
 
 import (
-	"git.jasonc.me/main/memo/app/auth"
-	"git.jasonc.me/main/memo/app/db"
-	"git.jasonc.me/main/memo/app/html-parser"
-	"git.jasonc.me/main/memo/app/profile"
-	"git.jasonc.me/main/memo/app/res"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
+	"github.com/memocash/memo/app/auth"
+	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/profile"
+	"github.com/memocash/memo/app/res"
 	"net/http"
+	"net/url"
 )
 
 var viewRoute = web.Route{
@@ -16,7 +16,11 @@ var viewRoute = web.Route{
 	Handler: func(r *web.Response) {
 		preHandler(r)
 		topicRaw := r.Request.GetUrlNamedQueryVariable(urlTopicName.Id)
-		topic := html_parser.EscapeWithEmojis(topicRaw)
+		unescaped, err := url.QueryUnescape(topicRaw)
+		if err != nil {
+			r.Error(jerr.Get("error unescaping topic", err), http.StatusUnprocessableEntity)
+			return
+		}
 		var userPkHash []byte
 		if auth.IsLoggedIn(r.Session.CookieId) {
 			user, err := auth.GetSessionUser(r.Session.CookieId)
@@ -31,14 +35,13 @@ var viewRoute = web.Route{
 			}
 			userPkHash = key.PkHash
 		}
-		topicPosts, err := profile.GetPostsForTopic(topic, userPkHash, 0)
+		topicPosts, err := profile.GetPostsForTopic(unescaped, userPkHash, 0)
 		if err != nil {
 			r.Error(jerr.Get("error getting topic posts from db", err), http.StatusInternalServerError)
 			return
 		}
 		if len(topicPosts) == 0 {
-			r.SetRedirect(res.UrlTopics)
-			r.Error(jerr.Get("no posts for topic", err), http.StatusInternalServerError)
+			r.Error(jerr.New("no posts for topic"), http.StatusInternalServerError)
 			return
 		}
 		if len(userPkHash) > 0 {
@@ -61,7 +64,7 @@ var viewRoute = web.Route{
 				}
 			}
 		}
-		r.Helper["Topic"] = topic
+		r.Helper["Topic"] = topicPosts[0].Memo.Topic
 		r.Helper["Posts"] = topicPosts
 		r.Helper["FirstPostId"] = topicPosts[0].Memo.Id
 		r.Helper["LastPostId"] = topicPosts[len(topicPosts)-1].Memo.Id

@@ -1,8 +1,8 @@
 package auth
 
 import (
+	"github.com/memocash/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
-	"git.jasonc.me/main/memo/app/db"
 )
 
 func Logout(cookieId string) error {

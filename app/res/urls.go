@@ -24,6 +24,8 @@ const (
 	UrlKeyLoad                 = "/key/load"
 	UrlKeyChangePassword       = "/key/change-password"
 	UrlKeyChangePasswordSubmit = "/key/change-password-submit"
+	UrlKeyDeleteAccount        = "/key/delete-account"
+	UrlKeyDeleteAccountSubmit  = "/key/delete-account-submit"
 )
 
 const (

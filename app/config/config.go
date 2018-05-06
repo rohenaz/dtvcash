@@ -17,6 +17,11 @@ const (
 	EnvMemcachePort = "MEMCACHE_PORT"
 )
 
+const (
+	BitcoinNodeHost = "BITCOIN_NODE_HOST"
+	BitcoinNodePort = "BITCOIN_NODE_PORT"
+)
+
 type MysqlConfig struct {
 	Host     string
 	Username string
@@ -31,6 +36,15 @@ type MemcacheConfig struct {
 
 func (m MemcacheConfig) GetConnectionString() string {
 	return fmt.Sprintf("%s:%s", m.Host, m.Port)
+}
+
+type BitcoinNodeConfig struct {
+	Host string
+	Port string
+}
+
+func (b BitcoinNodeConfig) GetConnectionString() string {
+	return fmt.Sprintf("%s:%s", b.Host, b.Port)
 }
 
 func init() {
@@ -57,5 +71,12 @@ func GetMemcacheConfig() MemcacheConfig {
 	return MemcacheConfig{
 		Host: viper.GetString(EnvMemcacheHost),
 		Port: viper.GetString(EnvMemcachePort),
+	}
+}
+
+func GetBitcoinNode() BitcoinNodeConfig {
+	return BitcoinNodeConfig{
+		Host: viper.GetString(BitcoinNodeHost),
+		Port: viper.GetString(BitcoinNodePort),
 	}
 }

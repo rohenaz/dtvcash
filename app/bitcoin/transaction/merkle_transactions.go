@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/cpacia/btcd/wire"
+	"github.com/jchavannes/btcd/wire"
 )
 
-// https://github.com/cpacia/BitcoinCash-Wallet/blob/master/mblock.go
+// https://github.com/jchavannes/BitcoinCash-Wallet/blob/master/mblock.go
 func makeMerkleParent(left *chainhash.Hash, right *chainhash.Hash) (*chainhash.Hash, error) {
 	// dupes can screw things up; CVE-2012-2459. check for them
 	if left != nil && right != nil && left.IsEqual(right) {

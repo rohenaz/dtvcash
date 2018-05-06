@@ -1,10 +1,10 @@
 package memo
 
 import (
-	"git.jasonc.me/main/bitcoin/bitcoin/memo"
-	"git.jasonc.me/main/memo/app/bitcoin/transaction"
-	"git.jasonc.me/main/memo/app/db"
-	"git.jasonc.me/main/memo/app/res"
+	"github.com/memocash/memo/app/bitcoin/memo"
+	"github.com/memocash/memo/app/bitcoin/transaction"
+	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/res"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
@@ -17,12 +17,12 @@ var waitRoute = web.Route{
 	NeedsLogin: true,
 	Handler: func(r *web.Response) {
 		txHashString := r.Request.GetUrlNamedQueryVariable(urlTxHash.Id)
-		_, err := chainhash.NewHashFromStr(txHashString)
+		hash, err := chainhash.NewHashFromStr(txHashString)
 		if err != nil {
 			r.Error(jerr.Get("error getting transaction hash", err), http.StatusInternalServerError)
 			return
 		}
-		r.Helper["TxHash"] = txHashString
+		r.Helper["TxHash"] = hash.String()
 		r.RenderTemplate(res.UrlMemoWait)
 	},
 }

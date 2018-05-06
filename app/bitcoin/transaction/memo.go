@@ -2,14 +2,14 @@ package transaction
 
 import (
 	"bytes"
-	"git.jasonc.me/main/bitcoin/bitcoin/memo"
-	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
-	"git.jasonc.me/main/memo/app/cache"
-	"git.jasonc.me/main/memo/app/db"
-	"git.jasonc.me/main/memo/app/html-parser"
+	"github.com/memocash/memo/app/bitcoin/memo"
+	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/cache"
+	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/html-parser"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
-	"github.com/cpacia/btcd/txscript"
+	"github.com/jchavannes/btcd/txscript"
 	"github.com/jchavannes/jgo/jerr"
 )
 

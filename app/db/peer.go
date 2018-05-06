@@ -2,7 +2,7 @@ package db
 
 import (
 	"fmt"
-	"github.com/cpacia/btcd/wire"
+	"github.com/jchavannes/btcd/wire"
 	"net"
 	"time"
 )

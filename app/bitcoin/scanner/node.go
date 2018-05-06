@@ -2,20 +2,19 @@ package scanner
 
 import (
 	"fmt"
-	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
-	"git.jasonc.me/main/memo/app/bitcoin/main-node"
-	"git.jasonc.me/main/memo/app/bitcoin/transaction"
-	"git.jasonc.me/main/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/cpacia/bchutil/bloom"
-	"github.com/cpacia/btcd/peer"
-	"github.com/cpacia/btcd/wire"
+	"github.com/jchavannes/bchutil/bloom"
+	"github.com/jchavannes/btcd/peer"
+	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/main-node"
+	"github.com/memocash/memo/app/bitcoin/transaction"
+	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/config"
+	"github.com/memocash/memo/app/db"
 	"log"
 	"net"
 )
-
-const BitcoinPeerAddress = "dev1.jasonc.me:8333"
 
 var Node SNode
 
@@ -29,6 +28,7 @@ type SNode struct {
 }
 
 func (n *SNode) Start() {
+	bitcoinNodeConfig := config.GetBitcoinNode()
 	var p, err = peer.NewOutboundPeer(&peer.Config{
 		UserAgentName:    "bch-lite-node",
 		UserAgentVersion: "0.1.0",
@@ -41,13 +41,13 @@ func (n *SNode) Start() {
 			OnMerkleBlock: n.OnMerkleBlock,
 			OnTx:          n.OnTx,
 		},
-	}, BitcoinPeerAddress)
+	}, bitcoinNodeConfig.GetConnectionString())
 	if err != nil {
 		log.Fatal(err)
 	}
 	n.Peer = p
-	fmt.Printf("Starting bitcoin queuer node: %s\n", BitcoinPeerAddress)
-	conn, err := net.Dial("tcp", BitcoinPeerAddress)
+	fmt.Printf("Starting bitcoin queuer node: %s\n", bitcoinNodeConfig.GetConnectionString())
+	conn, err := net.Dial("tcp", bitcoinNodeConfig.GetConnectionString())
 	if err != nil {
 		log.Fatal(err)
 	}

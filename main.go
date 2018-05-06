@@ -1,6 +1,6 @@
 package main
 
-import "git.jasonc.me/main/memo/app/cmd"
+import "github.com/memocash/memo/app/cmd"
 
 func main() {
 	cmd.Execute()

@@ -2,11 +2,11 @@ package profile
 
 import (
 	"fmt"
-	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
-	"git.jasonc.me/main/memo/app/auth"
-	"git.jasonc.me/main/memo/app/db"
-	"git.jasonc.me/main/memo/app/profile"
-	"git.jasonc.me/main/memo/app/res"
+	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/auth"
+	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/profile"
+	"github.com/memocash/memo/app/res"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"net/http"
@@ -54,7 +54,7 @@ var followersRoute = web.Route{
 			}
 		}
 		r.Helper["Followers"] = followers
-		r.Helper["OffsetLink"] = fmt.Sprintf("%s/%s", strings.TrimLeft(res.UrlProfileFollowers, "/"), addressString)
+		r.Helper["OffsetLink"] = fmt.Sprintf("%s/%s", strings.TrimLeft(res.UrlProfileFollowers, "/"), address.GetEncoded())
 		res.SetPageAndOffset(r, offset)
 		r.RenderTemplate(res.UrlProfileFollowers)
 	},
@@ -102,7 +102,7 @@ var followingRoute = web.Route{
 			}
 		}
 		r.Helper["Following"] = following
-		r.Helper["OffsetLink"] = fmt.Sprintf("%s/%s", strings.TrimLeft(res.UrlProfileFollowing, "/"), addressString)
+		r.Helper["OffsetLink"] = fmt.Sprintf("%s/%s", strings.TrimLeft(res.UrlProfileFollowing, "/"), address.GetEncoded())
 		res.SetPageAndOffset(r, offset)
 		r.RenderTemplate(res.UrlProfileFollowing)
 	},

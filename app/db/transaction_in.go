@@ -3,9 +3,9 @@ package db
 import (
 	"encoding/hex"
 	"fmt"
-	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/cpacia/btcd/wire"
+	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
 	"strings"
 	"time"
@@ -30,7 +30,7 @@ type TransactionIn struct {
 	SignatureScript       []byte
 	UnlockString          string
 	Sequence              uint32
-	TxnOutHashString      string
+	TxnOutHashString      string          `gorm:"size:4096"`
 	TxnOut                *TransactionOut `gorm:"foreignkey:TxnOutHashString"`
 	CreatedAt             time.Time
 	UpdatedAt             time.Time

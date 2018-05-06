@@ -1,7 +1,6 @@
 package db
 
 import (
-	"git.jasonc.me/main/bitcoin/app/db"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"time"
@@ -36,7 +35,7 @@ func GetCsrfToken(cookieId string) (*CsrfToken, error) {
 	if err == nil {
 		return csrfToken, nil
 	}
-	if ! db.IsRecordNotFoundError(err) {
+	if ! IsRecordNotFoundError(err) {
 		return nil, jerr.Get("error getting token from database", err)
 	}
 	csrfToken.Token = web.CreateToken()

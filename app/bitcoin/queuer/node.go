@@ -2,14 +2,13 @@ package queuer
 
 import (
 	"fmt"
-	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
-	"github.com/cpacia/btcd/peer"
-	"github.com/cpacia/btcd/wire"
+	"github.com/jchavannes/btcd/peer"
+	"github.com/jchavannes/btcd/wire"
+	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/config"
 	"log"
 	"net"
 )
-
-const BitcoinPeerAddress = "dev1.jasonc.me:8333"
 
 var Node QNode
 
@@ -18,6 +17,7 @@ type QNode struct {
 }
 
 func (n *QNode) Start() {
+	bitcoinNodeConfig := config.GetBitcoinNode()
 	var p, err = peer.NewOutboundPeer(&peer.Config{
 		UserAgentName:    "bch-lite-node",
 		UserAgentVersion: "0.1.0",
@@ -28,13 +28,13 @@ func (n *QNode) Start() {
 			OnReject: n.OnReject,
 			OnPing:   n.OnPing,
 		},
-	}, BitcoinPeerAddress)
+	}, bitcoinNodeConfig.GetConnectionString())
 	if err != nil {
 		log.Fatal(err)
 	}
 	n.Peer = p
-	fmt.Printf("Starting bitcoin queuer node: %s\n", BitcoinPeerAddress)
-	conn, err := net.Dial("tcp", BitcoinPeerAddress)
+	fmt.Printf("Starting bitcoin queuer node: %s\n", bitcoinNodeConfig.GetConnectionString())
+	conn, err := net.Dial("tcp", bitcoinNodeConfig.GetConnectionString())
 	if err != nil {
 		log.Fatal(err)
 	}

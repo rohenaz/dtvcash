@@ -2,8 +2,8 @@ package main_node
 
 import (
 	"fmt"
-	"git.jasonc.me/main/memo/app/db"
-	"github.com/cpacia/btcd/wire"
+	"github.com/memocash/memo/app/db"
+	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
 )
 

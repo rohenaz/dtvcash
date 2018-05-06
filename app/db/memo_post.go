@@ -2,11 +2,12 @@ package db
 
 import (
 	"bytes"
-	"git.jasonc.me/main/bitcoin/bitcoin/script"
-	"git.jasonc.me/main/bitcoin/bitcoin/wallet"
+	"github.com/memocash/memo/app/bitcoin/script"
+	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 	"html"
+	"net/url"
 	"sort"
 	"time"
 )
@@ -400,6 +401,10 @@ type Topic struct {
 	Name       string
 	RecentTime time.Time
 	Count      int
+}
+
+func (t Topic) GetUrlEncoded() string {
+	return url.QueryEscape(t.Name)
 }
 
 func GetUniqueTopics(offset uint) ([]*Topic, error) {

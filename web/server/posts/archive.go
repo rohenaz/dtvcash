@@ -3,10 +3,10 @@ package posts
 import (
 	"bytes"
 	"fmt"
-	"git.jasonc.me/main/memo/app/auth"
-	"git.jasonc.me/main/memo/app/db"
-	"git.jasonc.me/main/memo/app/profile"
-	"git.jasonc.me/main/memo/app/res"
+	"github.com/memocash/memo/app/auth"
+	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/profile"
+	"github.com/memocash/memo/app/res"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"net/http"
@@ -24,6 +24,8 @@ var archiveRoute = web.Route{
 		if day == "" {
 			day = today
 		}
+		timeStart, err := time.Parse("2006-01-02", day)
+		day = timeStart.Format("2006-01-02")
 		var userPkHash []byte
 		if auth.IsLoggedIn(r.Session.CookieId) {
 			user, err := auth.GetSessionUser(r.Session.CookieId)
@@ -38,7 +40,6 @@ var archiveRoute = web.Route{
 			}
 			userPkHash = key.PkHash
 		}
-		timeStart, err := time.Parse("2006-01-02", day)
 		if err != nil {
 			r.Error(jerr.Get("error parsing time", err), http.StatusUnprocessableEntity)
 			return
