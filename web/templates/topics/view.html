@@ -2,7 +2,7 @@
 
 <h2>{{ T "Topic" }} - {{ .Topic }}</h2>
 
-<p><a href="topics">Back to topics</a></p>
+<p><a href="topics">{{ T "Back_to_topics" }}</a></p>
 
 <div id="all-posts" style="position:relative;">
 {{ template "topics/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
@@ -38,7 +38,7 @@
     </p>
     <p>
         <span id="password-clear">
-            <a href="#">Uncache password</a>
+            <a href="#">{{ T "Forget_password" }}</a>
         </span>
     </p>
 </form>

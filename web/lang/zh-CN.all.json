@@ -238,5 +238,13 @@
   {
     "id": "Total_posts",
     "translation": "总"
+  },
+  {
+    "id": "Back_to_topics",
+    "translation": "返回主题"
+  },
+  {
+    "id": "Forget_password",
+    "translation": "忘记密码"
   }
 ]

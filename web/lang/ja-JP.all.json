@@ -238,5 +238,13 @@
   {
     "id": "Total_posts",
     "translation": "合計"
+  },
+  {
+    "id": "Back_to_topics",
+    "translation": "トピックに戻る"
+  },
+  {
+    "id": "Forget_password",
+    "translation": "パスワードを忘れる"
   }
 ]

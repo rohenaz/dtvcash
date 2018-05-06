@@ -242,5 +242,13 @@
   {
     "id": "Total_posts",
     "translation": "Total posts"
+  },
+  {
+    "id": "Back_to_topics",
+    "translation": "Back to topics"
+  },
+  {
+    "id": "Forget_password",
+    "translation": "Uncache password"
   }
 ]

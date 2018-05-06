@@ -238,5 +238,13 @@
   {
     "id": "Total_posts",
     "translation": "Puestos totales"
+  },
+  {
+    "id": "Back_to_topics",
+    "translation": "Volver a los temas"
+  },
+  {
+    "id": "Forget_password",
+    "translation": "Contraseña olvidada"
   }
 ]
