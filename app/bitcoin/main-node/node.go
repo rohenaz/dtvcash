@@ -2,15 +2,14 @@ package main_node
 
 import (
 	"fmt"
-	"github.com/memocash/memo/app/bitcoin/wallet"
-	"github.com/memocash/memo/app/db"
 	"github.com/cpacia/btcd/peer"
 	"github.com/cpacia/btcd/wire"
+	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/config"
+	"github.com/memocash/memo/app/db"
 	"log"
 	"net"
 )
-
-const BitcoinPeerAddress = "dev1.jasonc.me:8333"
 
 var BitcoinNode Node
 
@@ -35,6 +34,7 @@ func (n *Node) Start() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	bitcoinNodeConfig := config.GetBitcoinNode()
 	n.NodeStatus = nodeStatus
 	p, err := peer.NewOutboundPeer(&peer.Config{
 		UserAgentName:    "bch-lite-node",
@@ -49,13 +49,13 @@ func (n *Node) Start() {
 			OnReject:  n.OnReject,
 			OnPing:    n.OnPing,
 		},
-	}, BitcoinPeerAddress)
+	}, bitcoinNodeConfig.GetConnectionString())
 	if err != nil {
 		log.Fatal(err)
 	}
 	n.Peer = p
-	fmt.Printf("Starting bitcoin node: %s\n", BitcoinPeerAddress)
-	conn, err := net.Dial("tcp", BitcoinPeerAddress)
+	fmt.Printf("Starting bitcoin node: %s\n", bitcoinNodeConfig.GetConnectionString())
+	conn, err := net.Dial("tcp", bitcoinNodeConfig.GetConnectionString())
 	if err != nil {
 		log.Fatal(err)
 	}
