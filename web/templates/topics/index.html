@@ -23,7 +23,7 @@
     <tbody>
     {{ range .Topics }}
     <tr>
-        <td><a href="topic/{{ .Name }}">{{ .Name }}</a></td>
+        <td><a href="topic/{{ .GetUrlEncoded }}">{{ .Name }}</a></td>
         <td>{{ .RecentTime.Format "2006-01-02 15:04:05 MST" }}</td>
         <td>{{ .Count }}</td>
     </tr>
