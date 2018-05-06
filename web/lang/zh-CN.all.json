@@ -1,0 +1,262 @@
+[
+  {
+    "id": "home",
+    "translation": "主页"
+  },
+  {
+    "id": "dashboard",
+    "translation": "控制面板"
+  },
+  {
+    "id": "new_memo",
+    "translation": "新记事本"
+  },
+  {
+    "id": "posts",
+    "translation": "回复"
+  },
+  {
+    "id": "profiles",
+    "translation": "档案"
+  },
+  {
+    "id": "login",
+    "translation": "登录"
+  },
+  {
+    "id": "logout",
+    "translation": "登出 <b>{{.Username}}</b>"
+  },
+  {
+    "id": "about",
+    "translation": "关于"
+  },
+  {
+    "id": "protocol",
+    "translation": "协议"
+  },
+  {
+    "id": "disclaimer",
+    "translation": "免责声明"
+  },
+  {
+    "id": "statistics",
+    "translation": "统计"
+  },
+  {
+    "id": "name",
+    "translation": "名称"
+  },
+  {
+    "id": "address",
+    "translation": "地址"
+  },
+  {
+    "id": "followers",
+    "translation": "关注者"
+  },
+  {
+    "id": "following",
+    "translation": "已关注"
+  },
+  {
+    "id": "balance",
+    "translation": "余额"
+  },
+  {
+    "id": "profile",
+    "translation": "档案"
+  },
+  {
+    "id": "actions",
+    "translation": "动作"
+  },
+  {
+    "id": "view_your_profile",
+    "translation": "查看您的档案"
+  },
+  {
+    "id": "set_name",
+    "translation": "设置名称"
+  },
+  {
+    "id": "set_profile",
+    "translation": "设置档案"
+  },
+  {
+    "id": "export_key",
+    "translation": "导出键"
+  },
+  {
+    "id": "change_password",
+    "translation": "更改密码"
+  },
+  {
+    "id": "reply",
+    "translation": "回复"
+  },
+  {
+    "id": "like",
+    "translation": "点赞"
+  },
+  {
+    "id": "replies",
+    "translation": "回复"
+  },
+  {
+    "id": "likes",
+    "translation": "点赞"
+  },
+  {
+    "id": "top",
+    "translation": "顶部"
+  },
+  {
+    "id": "personalized",
+    "translation": "个性化"
+  },
+  {
+    "id": "new",
+    "translation": "新"
+  },
+  {
+    "id": "archive",
+    "translation": "归档"
+  },
+  {
+    "id": "last_hour",
+    "translation": "前一小时"
+  },
+  {
+    "id": "last_24_hours",
+    "translation": "前24小时"
+  },
+  {
+    "id": "last_7_days",
+    "translation": "前七天"
+  },
+  {
+    "id": "all_time",
+    "translation": "所有时间"
+  },
+  {
+    "id": "message",
+    "translation": "消息"
+  },
+  {
+    "id": "password",
+    "translation": "密码"
+  },
+  {
+    "id": "save_password",
+    "translation": "保存密码"
+  },
+  {
+    "id": "post",
+    "translation": "回复"
+  },
+  {
+    "id": "profile_text",
+    "translation": "档案内容"
+  },
+  {
+    "id": "feed",
+    "translation": "源"
+  },
+  {
+    "id": "posted_at",
+    "translation": "发表于"
+  },
+  {
+    "id": "view_on_block_explorer",
+    "translation": "在区块链浏览器中查看"
+  },
+  {
+    "id": "view_address_on_block_explorer",
+    "translation": "在区块链浏览器中查看地址"
+  },
+  {
+    "id": "view_name_on_block_explorer",
+    "translation": "在区块链浏览器中查看名称"
+  },
+  {
+    "id": "page",
+    "translation": "页"
+  },
+  {
+    "id": "previous",
+    "translation": "前一个"
+  },
+  {
+    "id": "next",
+    "translation": "后一个"
+  },
+  {
+    "id": "connections",
+    "translation": "连接"
+  },
+  {
+    "id": "follow",
+    "translation": "关注"
+  },
+  {
+    "id": "unfollow",
+    "translation": "取消关注"
+  },
+  {
+    "id": "next_day",
+    "translation": "明天"
+  },
+  {
+    "id": "previous_day",
+    "translation": "前一天"
+  },
+  {
+    "id": "Topic",
+    "translation": "主题"
+  },
+  {
+    "id": "Topics",
+    "translation": "主题"
+  },
+  {
+    "id": "Send",
+    "translation": "发送"
+  },
+  {
+    "id": "Existing_Topics",
+    "translation": "当前话题"
+  },
+  {
+    "id": "Create_new_topic",
+    "translation": "新话题"
+  },
+  {
+    "id": "Most_recent_post",
+    "translation": "最近的"
+  },
+  {
+    "id": "Total_posts",
+    "translation": "总"
+  },
+  {
+    "id": "Back_to_topics",
+    "translation": "返回主题"
+  },
+  {
+    "id": "Forget_password",
+    "translation": "忘记密码"
+  },
+  {
+    "id": "Names_set",
+    "translation": "创建的名称"
+  },
+  {
+    "id": "Total",
+    "translation": "总"
+  },
+  {
+    "id": "Delete_Account",
+    "translation": "删除帐户"
+  }
+]

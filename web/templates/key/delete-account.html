@@ -1,11 +1,11 @@
 {{ template "snippets/header.html" . }}
 
-<h2>Delete Account</h2>
+<h2>{{ T "Delete_Account" }}</h2>
 
 <div id="delete-account">
     <form id="delete-account-form" method="post">
         <p>
-            <label for="password">Password:</label>
+            <label for="password">{{ T "password" }}:</label>
             <input type="password" name="password" id="password"/>
         </p>
         <p>
@@ -13,7 +13,7 @@
             <input type="text" name="confirm" id="confirm"/>
         </p>
         <p>
-            <input class="btn" type="submit" value="Delete Account"/>
+            <input class="btn" type="submit" value="{{ T "Delete_Account" }}"/>
         </p>
     </form>
 </div>

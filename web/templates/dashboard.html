@@ -4,13 +4,13 @@
 
 {{ template "snippets/profile.html" .Profile }}
 <p>
-    <a class="btn" href="profile/{{ .Profile.GetAddressString }}">View Your Profile</a>
-    <a class="btn" href="memo/new">New Memo</a>
-    <a class="btn" href="memo/set-name">Set Name</a>
-    <a class="btn" href="memo/set-profile">Set Profile</a>
-    <a class="btn" href="key/export">Export Key</a>
-    <a class="btn" href="key/change-password">Change Password</a>
-    <a class="btn" href="key/delete-account">Delete Account</a>
+    <a class="btn" href="profile/{{ .Profile.GetAddressString }}">{{ T "view_your_profile" }}</a>
+    <a class="btn" href="memo/new">{{ T "new_memo" }}</a>
+    <a class="btn" href="memo/set-name">{{ T "set_name" }}</a>
+    <a class="btn" href="memo/set-profile">{{ T "set_profile" }}</a>
+    <a class="btn" href="key/export">{{ T "export_key" }}</a>
+    <a class="btn" href="key/change-password">{{ T "change_password" }}</a>
+    <a class="btn" href="key/delete-account">{{ T "Delete_Account" }}</a>
 </p>
 
 {{ if not .Posts }}

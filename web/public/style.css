@@ -183,13 +183,13 @@ a.disabled {
     text-decoration: underline;
 }
 .footer {
-    padding: 1px 0;
+    padding: 10px 0;
     border-top: 1px solid rgba(0,0,0,0.2);
 }
 .footer .nav {
     max-width: 800px;
     margin: 0 auto;
-    padding: 10px;
+    padding: 0px 10px 10px 10px;
 }
 
 .post {

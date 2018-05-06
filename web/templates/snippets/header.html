@@ -26,6 +26,7 @@
             MemoApp.InitCsrf("{{ .CsrfToken }}");
             MemoApp.SetBaseUrl("{{ .BaseUrl }}");
             MemoApp.Form.LogoutButton($("#header-logout"));
+            MemoApp.SetLanguageEvents();
         });
     </script>
 </head>
@@ -41,21 +42,22 @@
         </h1>
         <div class="nav">
         {{ $nav := .Nav }}
+        {{ $user := . }}
         {{ with .Username }}
-            <a {{ if eq $nav "home" }}class="sel"{{ end }} href="">Dashboard</a>
+            <a {{ if eq $nav "home" }}class="sel"{{ end }} href="">{{ T "dashboard" }}</a>
         {{ else }}
-            <a {{ if eq $nav "home" }}class="sel"{{ end }} href="">Home</a>
+            <a {{ if eq $nav "home" }}class="sel"{{ end }} href="">{{ T "home" }}</a>
         {{ end }}
         {{ with .Username }}
-            <a {{ if eq $nav "new" }}class="sel"{{ end }} href="memo/new">New Memo</a>
+            <a {{ if eq $nav "new" }}class="sel"{{ end }} href="memo/new">{{ T "new_memo" }}</a>
         {{ end }}
-            <a {{ if eq $nav "posts" }}class="sel"{{ end }} href="posts/top">Posts</a>
-            <a {{ if eq $nav "profiles" }}class="sel"{{ end }} href="profiles">Profiles</a>
-            <a {{ if eq $nav "topics" }}class="sel"{{ end }} href="topics">Topics</a>
+            <a {{ if eq $nav "posts" }}class="sel"{{ end }} href="posts/top">{{ T "posts" }}</a>
+            <a {{ if eq $nav "profiles" }}class="sel"{{ end }} href="profiles">{{ T "profiles" }}</a>
+            <a {{ if eq $nav "topics" }}class="sel"{{ end }} href="topics">{{ T "Topics" }}</a>
         {{ with .Username }}
-            <a id="header-logout" href="logout">Logout <b>{{ . }}</b></a>
+            <a id="header-logout" href="logout">{{ T "logout" $user }}</a>
         {{ else }}
-            <a {{ if eq $nav "login" }}class="sel"{{ end }} href="login">Login</a>
+            <a {{ if eq $nav "login" }}class="sel"{{ end }} href="login">{{ T "login" }}</a>
         {{ end }}
         </div>
     </div>

@@ -1,7 +1,7 @@
 {{ $tz := .TimeZone }}
 {{ template "snippets/header.html" . }}
 
-<h2>Profile</h2>
+<h2>{{ T "profile" }}</h2>
 
 {{ template "snippets/profile.html" .Profile }}
 
@@ -38,14 +38,14 @@
 {{ if not .Posts }}
 <h3>No Posts Yet</h3>
 {{ else }}
-<h3>Posts</h3>
+<h3>{{ T "posts" }}</h3>
 {{ end }}
 
 {{ if and (eq .NextOffset 25) (lt (len .Posts) 25) }}{{ else }}
 <div class="bottom10">
-    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .PrevOffset }}">&lt; Prev</a>
-    <span class="page">Page {{ .Page }}</span>
-    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .NextOffset }}">Next &gt;</a>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
+    <span class="page">{{ T "page" }} {{ .Page }}</span>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
 </div>
 {{ end }}
 
@@ -53,9 +53,9 @@
 
 {{ if and (eq .NextOffset 25) (lt (len .Posts) 25) }}{{ else }}
 <div class="bottom10">
-    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .PrevOffset }}">&lt; Prev</a>
-    <span class="page">Page {{ .Page }}</span>
-    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .NextOffset }}">Next &gt;</a>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
+    <span class="page">{{ T "page" }} {{ .Page }}</span>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
 </div>
 {{ end }}
 

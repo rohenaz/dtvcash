@@ -13,6 +13,8 @@ import (
 	"github.com/memocash/memo/web/server/topics"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
+	"github.com/nicksnyder/go-i18n/i18n"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -74,12 +76,26 @@ func preHandler(r *web.Response) {
 	r.Helper["cssFiles"] = res.GetResCssFiles()
 	r.Helper["TimeZone"] = r.Request.GetCookie("memo_time_zone")
 	r.Helper["Nav"] = ""
+
+	r.SetFuncMap(map[string]interface{}{
+		"T": i18n.MustTfunc(r.Request.GetCookie("memo_language"), r.Request.GetHeader("Accept-Language")),
+	})
 }
 
 func Run(sessionCookieInsecure bool) {
 	go func() {
 		queuer.StartAndKeepAlive()
 	}()
+
+	var langDir = "web/lang"
+	files, err := ioutil.ReadDir(langDir)
+	if err != nil {
+		log.Fatal(jerr.Get("error getting language files", err))
+	}
+
+	for _, file := range files {
+		i18n.MustLoadTranslationFile(langDir + "/" + file.Name())
+	}
 
 	// Start web server
 	ws := web.Server{
@@ -114,7 +130,7 @@ func Run(sessionCookieInsecure bool) {
 		TemplatesDir:   "web/templates",
 		UseSessions:    true,
 	}
-	err := ws.Run()
+	err = ws.Run()
 	if err != nil {
 		log.Fatal(err)
 	}

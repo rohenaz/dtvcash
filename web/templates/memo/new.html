@@ -4,23 +4,23 @@
 
 <form id="form-new-memo" method="post">
     <p>
-        <label for="message">Message <span class="message-byte-count"></span></label>
+        <label for="message">{{ T "message" }} <span class="message-byte-count"></span></label>
         <textarea id="message" type="text" name="message" class="form-control" placeholder="Message" autocomplete="on"
                   required autofocus></textarea>
     </p>
     <p>
-        <label for="password">Password</label>
+        <label for="password">{{ T "password" }}</label>
         <input id="password" type="password" name="password" class="form-control" placeholder="Password"
                autocomplete="on" required>
     </p>
     <p>
         <label for="save-password">
-            Save password
+        {{ T "save_password" }}
         </label>
         <input id="save-password" name="save-password" type="checkbox"/>
     </p>
     <p>
-        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Post">
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="{{ T "post" }}">
     </p>
 </form>
 

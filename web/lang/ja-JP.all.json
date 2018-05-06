@@ -1,0 +1,262 @@
+[
+  {
+    "id": "home",
+    "translation": "ホーム"
+  },
+  {
+    "id": "dashboard",
+    "translation": "ダッシュボード"
+  },
+  {
+    "id": "new_memo",
+    "translation": "新投稿"
+  },
+  {
+    "id": "posts",
+    "translation": "投稿"
+  },
+  {
+    "id": "profiles",
+    "translation": "プロフィール"
+  },
+  {
+    "id": "login",
+    "translation": "ログイン"
+  },
+  {
+    "id": "logout",
+    "translation": "ログアウト <b>{{.Username}}</b>"
+  },
+  {
+    "id": "about",
+    "translation": "当社について"
+  },
+  {
+    "id": "protocol",
+    "translation": "プロトコル"
+  },
+  {
+    "id": "disclaimer",
+    "translation": "免責事項"
+  },
+  {
+    "id": "statistics",
+    "translation": "統計"
+  },
+  {
+    "id": "name",
+    "translation": "名前"
+  },
+  {
+    "id": "address",
+    "translation": "住所"
+  },
+  {
+    "id": "followers",
+    "translation": "フォロワー"
+  },
+  {
+    "id": "following",
+    "translation": "フォロー中"
+  },
+  {
+    "id": "balance",
+    "translation": "残高"
+  },
+  {
+    "id": "profile",
+    "translation": "プロフィール"
+  },
+  {
+    "id": "actions",
+    "translation": "アクション"
+  },
+  {
+    "id": "view_your_profile",
+    "translation": "自分のプロファイルを見る"
+  },
+  {
+    "id": "set_name",
+    "translation": "名前の設定"
+  },
+  {
+    "id": "set_profile",
+    "translation": "プロフィールの設定"
+  },
+  {
+    "id": "export_key",
+    "translation": "エクスポートキー"
+  },
+  {
+    "id": "change_password",
+    "translation": "パスワード変更"
+  },
+  {
+    "id": "reply",
+    "translation": "返信する"
+  },
+  {
+    "id": "like",
+    "translation": "いいね"
+  },
+  {
+    "id": "replies",
+    "translation": "返信"
+  },
+  {
+    "id": "likes",
+    "translation": "いいね"
+  },
+  {
+    "id": "top",
+    "translation": "人気"
+  },
+  {
+    "id": "personalized",
+    "translation": "パーソナライズ"
+  },
+  {
+    "id": "new",
+    "translation": "新着"
+  },
+  {
+    "id": "archive",
+    "translation": "アーカイブ"
+  },
+  {
+    "id": "last_hour",
+    "translation": "1時間以内"
+  },
+  {
+    "id": "last_24_hours",
+    "translation": "24時間以内"
+  },
+  {
+    "id": "last_7_days",
+    "translation": "7日以内"
+  },
+  {
+    "id": "all_time",
+    "translation": "すべて"
+  },
+  {
+    "id": "message",
+    "translation": "メッセージ"
+  },
+  {
+    "id": "password",
+    "translation": "パスワード"
+  },
+  {
+    "id": "save_password",
+    "translation": "パスワードを保存する"
+  },
+  {
+    "id": "post",
+    "translation": "投稿"
+  },
+  {
+    "id": "profile_text",
+    "translation": "プロフィールの文"
+  },
+  {
+    "id": "feed",
+    "translation": "ニュースフィード"
+  },
+  {
+    "id": "posted_at",
+    "translation": "投稿時間"
+  },
+  {
+    "id": "view_on_block_explorer",
+    "translation": "ブロックエクスプローラーで見る"
+  },
+  {
+    "id": "view_address_on_block_explorer",
+    "translation": "ブロックエクスプローラーで住所を見る"
+  },
+  {
+    "id": "view_name_on_block_explorer",
+    "translation": "ブロックエクスプローラーで名前を見る"
+  },
+  {
+    "id": "page",
+    "translation": "ページ"
+  },
+  {
+    "id": "previous",
+    "translation": "前"
+  },
+  {
+    "id": "next",
+    "translation": "次"
+  },
+  {
+    "id": "connections",
+    "translation": "コネクション"
+  },
+  {
+    "id": "follow",
+    "translation": "フォロー"
+  },
+  {
+    "id": "unfollow",
+    "translation": "フォロー解除"
+  },
+  {
+    "id": "next_day",
+    "translation": "次の日"
+  },
+  {
+    "id": "previous_day",
+    "translation": "前の日"
+  },
+  {
+    "id": "Topic",
+    "translation": "トピック"
+  },
+  {
+    "id": "Topics",
+    "translation": "トピック"
+  },
+  {
+    "id": "Send",
+    "translation": "送信"
+  },
+  {
+    "id": "Existing_Topics",
+    "translation": "既存のトピック"
+  },
+  {
+    "id": "Create_new_topic",
+    "translation": "トピックを作成する"
+  },
+  {
+    "id": "Most_recent_post",
+    "translation": "最も最近の"
+  },
+  {
+    "id": "Total_posts",
+    "translation": "合計"
+  },
+  {
+    "id": "Back_to_topics",
+    "translation": "トピックに戻る"
+  },
+  {
+    "id": "Forget_password",
+    "translation": "パスワードを忘れる"
+  },
+  {
+    "id": "Names_set",
+    "translation": "作成された名前"
+  },
+  {
+    "id": "Total",
+    "translation": "合計"
+  },
+  {
+    "id": "Delete_Account",
+    "translation": "アカウントを削除する"
+  }
+]

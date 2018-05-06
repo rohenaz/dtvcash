@@ -1,0 +1,268 @@
+[
+  {
+    "id": "home",
+    "translation": "Inicio"
+  },
+  {
+    "id": "dashboard",
+    "translation": "Tablero"
+  },
+  {
+    "id": "new_memo",
+    "translation": "Nuevo Memo"
+  },
+  {
+    "id": "posts",
+    "translation": "Publicaciones"
+  },
+  {
+    "id": "profiles",
+    "translation": "Perfiles"
+  },
+  {
+    "id": "login",
+    "translation": "Iniciar sesión"
+  },
+  {
+    "id": "logout",
+    "translation": "Cerrar sesión <b>{{.Username}}</b>"
+  },
+  {
+    "id": "about",
+    "translation": "Información"
+  },
+  {
+    "id": "protocol",
+    "translation": "Protocolo"
+  },
+  {
+    "id": "disclaimer",
+    "translation": "Renuncia"
+  },
+  {
+    "id": "statistics",
+    "translation": "Estadística"
+  },
+  {
+    "id": "name",
+    "translation": "Nombre"
+  },
+  {
+    "id": "address",
+    "translation": "Dirección"
+  },
+  {
+    "id": "followers",
+    "translation": "Seguidores"
+  },
+  {
+    "id": "following",
+    "translation": "Siguientes"
+  },
+  {
+    "id": "balance",
+    "translation": "Saldo"
+  },
+  {
+    "id": "profile",
+    "translation": "Perfil"
+  },
+  {
+    "id": "actions",
+    "translation": "Acciones"
+  },
+  {
+    "id": "view_your_profile",
+    "translation": "Ver Perfil"
+  },
+  {
+    "id": "set_name",
+    "translation": "Actualizar nombre"
+  },
+  {
+    "id": "set_profile",
+    "translation": "Actualizar Perfil"
+  },
+  {
+    "id": "export_key",
+    "translation": "Exportar Clave"
+  },
+  {
+    "id": "change_password",
+    "translation": "Cambiar Contraseña"
+  },
+  {
+    "id": "reply",
+    "translation": "Respuesta"
+  },
+  {
+    "id": "like",
+    "translation": {
+      "one": "Me gusta",
+      "other": "Me gustas"
+    }
+  },
+  {
+    "id": "replies",
+    "translation": "respuestas"
+  },
+  {
+    "id": "likes",
+    "translation": "me gustas"
+  },
+  {
+    "id": "top",
+    "translation": "Popular"
+  },
+  {
+    "id": "personalized",
+    "translation": "Perzonalido"
+  },
+  {
+    "id": "new",
+    "translation": "Nuevo"
+  },
+  {
+    "id": "archive",
+    "translation": "Archivo"
+  },
+  {
+    "id": "last_hour",
+    "translation": "Últimas hora"
+  },
+  {
+    "id": "last_24_hours",
+    "translation": "Últimas 24 horas"
+  },
+  {
+    "id": "last_7_days",
+    "translation": "Ultimos 7 días"
+  },
+  {
+    "id": "all_time",
+    "translation": "Todo el periodo"
+  },
+  {
+    "id": "message",
+    "translation": "Mensaje"
+  },
+  {
+    "id": "password",
+    "translation": "Contraseña"
+  },
+  {
+    "id": "save_password",
+    "translation": "Guardar contraseña"
+  },
+  {
+    "id": "post",
+    "translation": "Enviar"
+  },
+  {
+    "id": "profile_text",
+    "translation": "Texto de perfil"
+  },
+  {
+    "id": "feed",
+    "translation": "Feed"
+  },
+  {
+    "id": "posted_at",
+    "translation": "publicado en"
+  },
+  {
+    "id": "view_on_block_explorer",
+    "translation": "Ver en el explorador de bloques"
+  },
+  {
+    "id": "view_address_on_block_explorer",
+    "translation": "Ver la dirección en el explorador de bloques"
+  },
+  {
+    "id": "view_name_on_block_explorer",
+    "translation": "Ver el nombre en el explorador de bloques"
+  },
+  {
+    "id": "page",
+    "translation": "Página"
+  },
+  {
+    "id": "previous",
+    "translation": "Anterior"
+  },
+  {
+    "id": "next",
+    "translation": "Siguiente"
+  },
+  {
+    "id": "connections",
+    "translation": "Conexiones"
+  },
+  {
+    "id": "follow",
+    "translation": {
+      "one": "Seguir",
+      "other": "Seguirs"
+    }
+  },
+  {
+    "id": "unfollow",
+    "translation": "Dejar de seguir"
+  },
+  {
+    "id": "next_day",
+    "translation": "Día siguiente"
+  },
+  {
+    "id": "previous_day",
+    "translation": "El día anterior"
+  },
+  {
+    "id": "Topic",
+    "translation": "Tema"
+  },
+  {
+    "id": "Topics",
+    "translation": "Temas"
+  },
+  {
+    "id": "Send",
+    "translation": "Enviar"
+  },
+  {
+    "id": "Existing_Topics",
+    "translation": "Temas Existentes"
+  },
+  {
+    "id": "Create_new_topic",
+    "translation": "Crear nuevo tema"
+  },
+  {
+    "id": "Most_recent_post",
+    "translation": "Publicación más reciente"
+  },
+  {
+    "id": "Total_posts",
+    "translation": "Puestos totales"
+  },
+  {
+    "id": "Back_to_topics",
+    "translation": "Volver a los temas"
+  },
+  {
+    "id": "Forget_password",
+    "translation": "Contraseña olvidada"
+  },
+  {
+    "id": "Names_set",
+    "translation": "Nombres establecidos"
+  },
+  {
+    "id": "Total",
+    "translation": "Total"
+  },
+  {
+    "id": "Delete_Account",
+    "translation": "Borrar Cuenta"
+  }
+]

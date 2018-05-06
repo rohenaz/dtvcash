@@ -3,22 +3,22 @@
 {{ template "posts/header.html" dict "Page" "archive" "Username" .Username }}
 
 <div class="bottom10">
-    <a class="btn" href="posts/archive?day={{ .PrevDay }}">Prev Day</a>
+    <a class="btn" href="posts/archive?day={{ .PrevDay }}">{{ T "previous_day" }}</a>
     <span class="page">{{ .Day }}</span>
-    <a class="btn {{ if .Today }}disabled{{ end }}" href="posts/archive?day={{ .NextDay }}">Next Day</a>
+    <a class="btn {{ if .Today }}disabled{{ end }}" href="posts/archive?day={{ .NextDay }}">{{ T "next_day" }}</a>
 </div>
 <div class="bottom10">
-    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; Prev</a>
-    <span class="page">Page {{ .Page }}</span>
-    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .NextOffset }}">Next &gt;</a>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
+    <span class="page">{{ T "page" }} {{ .Page }}</span>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
 </div>
 
 {{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
 
 <p>
-    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; Prev</a>
-    <span class="page">Page {{ .Page }}</span>
-    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .NextOffset }}">Next &gt;</a>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
+    <span class="page">{{ T "page" }} {{ .Page }}</span>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
 </p>
 
 {{ template "snippets/footer.html" . }}
