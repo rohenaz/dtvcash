@@ -78,7 +78,7 @@
         <th>{{ T "actions" }}</th>
         <td>
         {{ if .CanFollow }}
-            <a class="btn" href="memo/follow/{{ .GetAddressString }}">{{ T "follow" }} {{ .Name }}</a>
+            <a class="btn" href="memo/follow/{{ .GetAddressString }}">{{ T "follow" 1 }} {{ .Name }}</a>
         {{ else if .CanUnfollow }}
             <a class="btn" href="memo/unfollow/{{ .GetAddressString }}">{{ T "unfollow" }} {{ .Name }}</a>
         {{ end }}

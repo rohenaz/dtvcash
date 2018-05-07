@@ -43,7 +43,7 @@
                         like{{ if not (eq (len .Post.Likes) 1) }}s{{ end }}</a>
                     (tip: {{ formatBigInt .Post.GetTotalTip }} satoshis)
                 {{- else }}
-                    <a class="like-link" id="like-link-{{ .Post.Memo.GetTransactionHashString }}" href="#">{{ T "like" }}</a>
+                    <a class="like-link" id="like-link-{{ .Post.Memo.GetTransactionHashString }}" href="#">{{ T "like" 1 }}</a>
                 {{- end }}
                 </span>
                 <form class="like-form" id="like-form-{{ .Post.Memo.GetTransactionHashString }}">
