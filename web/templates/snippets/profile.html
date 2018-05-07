@@ -14,7 +14,7 @@
         {{ .GetCashAddressString }}<br>
             <span class="click-for-qr"><a href="#" id="qr-code-link">Show QR code &amp; legacy address</a></span>
             <div id="qr-code">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ .GetCashAddressString }}">
+                <img src="data:image/png;base64,{{ .Qr }}"/>
                 <br/>
                 <span class="click-for-qr">Legacy Address</span> <br>
             {{ .GetAddressString }}

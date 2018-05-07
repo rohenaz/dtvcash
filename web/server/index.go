@@ -47,6 +47,11 @@ var indexRoute = web.Route{
 			r.Error(jerr.Get("error setting follower count for profile", err), http.StatusInternalServerError)
 			return
 		}
+		err = pf.SetQr()
+		if err != nil {
+			r.Error(jerr.Get("error creating qr", err), http.StatusInternalServerError)
+			return
+		}
 		r.Helper["Profile"] = pf
 
 		err = setFeed(r, key.PkHash)
@@ -79,6 +84,14 @@ var introducingMemoRoute = web.Route{
 	Pattern: res.UrlIntroducing,
 	Handler: func(r *web.Response) {
 		r.Helper["Title"] = "Introducing Memo"
+		r.Render()
+	},
+}
+
+var openSourcingMemoRoute = web.Route{
+	Pattern: res.UrlOpenSource,
+	Handler: func(r *web.Response) {
+		r.Helper["Title"] = "Open Sourcing Memo"
 		r.Render()
 	},
 }

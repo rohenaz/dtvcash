@@ -77,9 +77,26 @@ func preHandler(r *web.Response) {
 	r.Helper["TimeZone"] = r.Request.GetCookie("memo_time_zone")
 	r.Helper["Nav"] = ""
 
+	lang := r.Request.GetCookie("memo_language")
+	if lang == "" {
+		lang = r.Request.GetHeader("Accept-Language")
+	}
+	if ! isValidLang(lang) {
+		lang = "en-US"
+	}
+
 	r.SetFuncMap(map[string]interface{}{
-		"T": i18n.MustTfunc(r.Request.GetCookie("memo_language"), r.Request.GetHeader("Accept-Language")),
+		"T": i18n.MustTfunc(lang),
 	})
+}
+
+func isValidLang(lang string) bool {
+	for _, item := range []string{"en-US", "es-LA", "zh-CN", "ja-JP"} {
+		if item == lang {
+			return true
+		}
+	}
+	return false
 }
 
 func Run(sessionCookieInsecure bool) {
@@ -111,6 +128,7 @@ func Run(sessionCookieInsecure bool) {
 				protocolRoute,
 				disclaimerRoute,
 				introducingMemoRoute,
+				openSourcingMemoRoute,
 				aboutRoute,
 				needFundsRoute,
 				newPostsRoute,

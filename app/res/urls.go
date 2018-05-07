@@ -12,6 +12,7 @@ const (
 	UrlProtocol     = "/protocol"
 	UrlDisclaimer   = "/disclaimer"
 	UrlIntroducing  = "/introducing-memo"
+	UrlOpenSource   = "/open-sourcing-memo"
 	UrlNeedFunds    = "/need-funds"
 	UrlNewPosts     = "/new-posts"
 	UrlStats        = "/stats"

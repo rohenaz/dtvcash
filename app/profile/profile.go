@@ -12,6 +12,8 @@ import (
 	"github.com/jchavannes/jgo/jerr"
 	"regexp"
 	"strings"
+	"github.com/skip2/go-qrcode"
+	"encoding/base64"
 )
 
 type Profile struct {
@@ -32,6 +34,7 @@ type Profile struct {
 	Reputation     *Reputation
 	CanFollow      bool
 	CanUnfollow    bool
+	Qr             string
 }
 
 func (p Profile) IsSelf() bool {
@@ -143,6 +146,20 @@ func (p *Profile) SetReputation() error {
 		return jerr.Get("error getting reputation", err)
 	}
 	p.Reputation = reputation
+	return nil
+}
+
+func (p *Profile) SetQr() error {
+	var qr *qrcode.QRCode
+	qr, err := qrcode.New(p.GetCashAddressString(), qrcode.Medium)
+	if err != nil {
+		return jerr.Get("error generating qr", err)
+	}
+	png, err := qr.PNG(250)
+	if err != nil {
+		return jerr.Get("error generating png", err)
+	}
+	p.Qr = base64.StdEncoding.EncodeToString(png)
 	return nil
 }
 

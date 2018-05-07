@@ -42,7 +42,7 @@ var MemoApp = {
                 window.location.reload();
             }
         });
-    }
+    };
 
     var BaseURL = "/";
 

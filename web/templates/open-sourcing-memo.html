@@ -1,0 +1,81 @@
+{{ template "snippets/header.html" . }}
+
+<h2>Open Sourcing Memo</h2>
+
+<p>
+    The main reason I created memo was to have a universal social network.
+    It seems like every month there's a new social network popping up.
+    As my friends jump from one social network to the next,
+    I'm forced to either sign up for another account or be out of the loop.
+    These social networks aggressively track you, have apps that read your text messages,
+    and do a number of other terrible things.
+</p>
+
+<p>
+    I've always wished they worked like email, where I can sign up for a single provider and communicate with anyone.
+    This is why email has been successful for the last 40+ years, basically becoming our main identity,
+    and is the key ingredient social networks are missing.
+</p>
+
+<p>
+    Most people think that because memo is on the blockchain, it's inherently uncensorable.
+    Being on the blockchain does not make memo uncensorable,
+    what will make memo uncensorable is when there are many different implementations.
+</p>
+
+<p>
+    If a bunch of blockchain-based social networks pop up, each copying and using their own version of the protocol,
+    then they won't be censorship proof.
+    For example, suppose one of these social networks started censoring
+    and so people created another implementation of their network.
+    If the incumbent was big enough,
+    they could decide not to display any messages that didn't come through their application.
+    They could even stop writing messages to the blockchain altogether.
+</p>
+
+<p>
+    What really makes a social network uncensorable is for it to be decentralized.
+    This makes the power over the network distributed between the service providers,
+    meaning they'd have to collude to censor information.
+</p>
+
+<p>
+    Memo.cash was intended to be the first implementation and that other implementations would pop up.
+    The second implementation, <a href="https://wewo.cash/">wewo.cash</a>, did just this, which was great.
+    However, the third implementation, Blockpress, decided to unnecessarily break the protocol,
+    throwing out the benefit of decentralization.
+</p>
+
+<p>
+    To encourage others to head in the right direction, I’ve decided to open source the entire Memo.cash codebase.
+    My hope is that people will fork and create their own implementations,
+    giving it the decentralization it needs to be uncensorable.
+</p>
+
+<p>
+    The more implementations there are, the more decentralized the network will be.
+    I’ve even added a feature to Memo.cash to delete your account.
+    This is useful if you prefer to run your own local memo client and don’t want to trust a third party.
+</p>
+
+<p>
+    The memo protocol is simple and extendable.
+    It’s already proven to work for Twitter type communication (the initial release)
+    and chatrooms (the recent “Topics” feature).
+    These are two very different use cases and demonstrate the flexibility of the protocol.
+    The protocol can be extended to handle any social networking use case,
+    whether it’s images, videos, long blogs, voting, or whatever other ideas people come up with.
+</p>
+
+<p>
+    I hope this is the beginning of decentralized social networking.
+    Thanks for reading.
+</p>
+
+<p>
+    <a href="https://github.com/memocash/memo">https://github.com/memocash/memo</a>
+</p>
+
+<br/>
+
+{{ template "snippets/footer.html" . }}

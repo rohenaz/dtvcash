@@ -2,10 +2,10 @@ package transaction
 
 import (
 	"bytes"
-	"github.com/memocash/memo/app/cache"
-	"github.com/memocash/memo/app/db"
 	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/cache"
+	"github.com/memocash/memo/app/db"
 )
 
 func ConditionallySaveTransaction(msg *wire.MsgTx, dbBlock *db.Block) (bool, bool, error) {

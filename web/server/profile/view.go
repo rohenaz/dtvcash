@@ -73,6 +73,12 @@ var viewRoute = web.Route{
 				return
 			}
 		}
+		err = pf.SetQr()
+		if err != nil {
+			r.Error(jerr.Get("error creating qr", err), http.StatusInternalServerError)
+			return
+		}
+
 		r.Helper["Profile"] = pf
 
 		memoLikes, err := profile.GetLikesForPkHash(pkHash)
