@@ -60,7 +60,7 @@
     <p class="actions">
     {{ if .Post.IsLoggedIn }}
         <a class="btn" href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">{{ T "reply" }}</a>
-        <a class="btn" href="memo/like/{{ .Post.Memo.GetTransactionHashString }}">{{ T "like" }}</a>
+        <a class="btn" href="memo/like/{{ .Post.Memo.GetTransactionHashString }}">{{ T "like" 1 }}</a>
     {{ end }}
         <a class="btn btn-leave" target="_blank"
            href="https://explorer.bitcoin.com/bch/tx/{{ .Post.Memo.GetTransactionHashString }}">
