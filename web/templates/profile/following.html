@@ -11,13 +11,13 @@
 {{ end }}
 
 {{ if and (eq .NextOffset 25) (lt (len .Following) 25) }}{{ else }}
-<div>
+<p class="pagination">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .PrevOffset }}">
         &lt; {{ T "previous" }}</a>
     <span class="page">{{ T "page" }} {{ .Page }}</span>
     <a class="{{ if lt (len .Following) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .NextOffset }}">
     {{ T "next" }} &gt;</a>
-</div>
+</p>
 {{ end }}
 
 {{ if .Following }}
@@ -58,13 +58,13 @@
 {{ end }}
 
 {{ if and (eq .NextOffset 25) (lt (len .Following) 25) }}{{ else }}
-<div>
+<p class="pagination">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .PrevOffset }}">
         &lt; {{ T "previous" }}</a>
     <span class="page">{{ T "page" }} {{ .Page }}</span>
     <a class="{{ if lt (len .Following) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}?offset={{ .NextOffset }}">
     {{ T "next" }} &gt;</a>
-</div>
+</p>
 {{ end }}
 
 <br/>

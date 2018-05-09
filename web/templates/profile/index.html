@@ -42,21 +42,21 @@
 {{ end }}
 
 {{ if and (eq .NextOffset 25) (lt (len .Posts) 25) }}{{ else }}
-<div class="bottom10">
+<p class="pagination">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
     <span class="page">{{ T "page" }} {{ .Page }}</span>
     <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
-</div>
+</p>
 {{ end }}
 
 {{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
 
 {{ if and (eq .NextOffset 25) (lt (len .Posts) 25) }}{{ else }}
-<div class="bottom10">
+<p class="pagination">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
     <span class="page">{{ T "page" }} {{ .Page }}</span>
     <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
-</div>
+</p>
 {{ end }}
 
 <br/>

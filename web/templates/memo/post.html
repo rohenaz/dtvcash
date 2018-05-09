@@ -44,21 +44,21 @@
 <h3>Replies</h3>
 
 {{ if and (eq .NextOffset 25) (lt (len .Post.Replies) 25) }}{{ else }}
-<div class="bottom10">
+<p class="pagination">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="post/{{ .Post.Memo.GetTransactionHashString }}?offset={{ .PrevOffset }}">&lt; Prev</a>
     <span class="page">Page {{ .Page }}</span>
     <a class="{{ if lt (len .Post.Replies) 25 }}disabled{{ end }}" href="post/{{ .Post.Memo.GetTransactionHashString }}?offset={{ .NextOffset }}">Next &gt;</a>
-</div>
+</p>
 {{ end }}
 
 {{ template "snippets/posts.html" dict "Posts" .Post.Replies "TimeZone" .TimeZone }}
 
 {{ if and (eq .NextOffset 25) (lt (len .Post.Replies) 25) }}{{ else }}
-<div class="bottom10">
+<p class="pagination">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="post/{{ .Post.Memo.GetTransactionHashString }}?offset={{ .PrevOffset }}">&lt; Prev</a>
     <span class="page">Page {{ .Page }}</span>
     <a class="{{ if lt (len .Post.Replies) 25 }}disabled{{ end }}" href="post/{{ .Post.Memo.GetTransactionHashString }}?offset={{ .NextOffset }}">Next &gt;</a>
-</div>
+</p>
 {{ end }}
 
 {{ end }}

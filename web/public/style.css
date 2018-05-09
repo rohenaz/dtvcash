@@ -12,7 +12,7 @@ html {
 }
 
 a {
-    color: #487521;
+    color: #426b1e;
 }
 
 h1 {
@@ -140,7 +140,7 @@ a.btn.disabled {
 
 a.disabled {
     pointer-events:none;
-    color:#888;
+    color: #888;
     text-decoration: none;
 }
 
@@ -318,8 +318,11 @@ span.page {
     margin: 0 10px;
 }
 
-.bottom10 {
-    margin-bottom: 10px;
+.pagination a {
+    color: #000;
+}
+.pagination a.disabled {
+    color: #888;
 }
 
 #about h3 {

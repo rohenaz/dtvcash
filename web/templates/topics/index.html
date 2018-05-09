@@ -5,11 +5,11 @@
 <h3>{{ T "Existing_Topics" }}</h3>
 
 {{ if and (eq .NextOffset 25) (lt (len .Topics) 25) }}{{ else }}
-<div class="bottom10">
+<p class="pagination">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="topics?offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
     <span class="page">{{ T "page" }} {{ .Page }}</span>
     <a class="{{ if lt (len .Topics) 25 }}disabled{{ end }}" href="topics?offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
-</div>
+</p>
 {{ end }}
 
 <table class="table left">
@@ -34,11 +34,11 @@
 <br/>
 
 {{ if and (eq .NextOffset 25) (lt (len .Topics) 25) }}{{ else }}
-<div class="bottom10">
+<p class="pagination">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="topics?offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
     <span class="page">{{ T "page" }} {{ .Page }}</span>
     <a class="{{ if lt (len .Topics) 25 }}disabled{{ end }}" href="topics?offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
-</div>
+</p>
 {{ end }}
 
 <br/>

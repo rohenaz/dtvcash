@@ -2,7 +2,7 @@
 
 {{ template "posts/header.html" dict "Page" "new" "Username" .Username }}
 
-<p style="margin:0">
+<p class="pagination">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="posts/new?offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
     <span class="page">{{ T "page" }} {{ .Page }}</span>
     <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="posts/new?offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
@@ -10,7 +10,7 @@
 
 {{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
 
-<p>
+<p class="pagination">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="posts/new?offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
     <span class="page">{{ T "page" }} {{ .Page }}</span>
     <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="posts/new?offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
