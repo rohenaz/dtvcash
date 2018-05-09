@@ -7,6 +7,11 @@ var urlTopicName = web.UrlParam{
 	Type: web.UrlParamAny,
 }
 
+var urlTxHash = web.UrlParam{
+	Id:   "tx-hash",
+	Type: web.UrlParamString,
+}
+
 func GetRoutes() []web.Route {
 	return []web.Route{
 		indexRoute,
@@ -15,6 +20,7 @@ func GetRoutes() []web.Route {
 		viewRoute,
 		socketRoute,
 		postsMoreRoute,
+		postAjaxRoute,
 	}
 }
 

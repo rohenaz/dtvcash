@@ -137,7 +137,7 @@
                     return;
                 }
                 $.ajax({
-                    url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostAjax + "/" + txHash,
+                    url: MemoApp.GetBaseUrl() + MemoApp.URL.TopicsPostAjax + "/" + txHash,
                     success: function (html) {
                         if ($post.length) {
                             $post.replaceWith(html);

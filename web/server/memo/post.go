@@ -2,13 +2,13 @@ package memo
 
 import (
 	"fmt"
+	"github.com/jchavannes/btcd/chaincfg/chainhash"
+	"github.com/jchavannes/jgo/jerr"
+	"github.com/jchavannes/jgo/web"
 	"github.com/memocash/memo/app/auth"
 	"github.com/memocash/memo/app/db"
 	"github.com/memocash/memo/app/profile"
 	"github.com/memocash/memo/app/res"
-	"github.com/jchavannes/btcd/chaincfg/chainhash"
-	"github.com/jchavannes/jgo/jerr"
-	"github.com/jchavannes/jgo/web"
 	"net/http"
 )
 
@@ -106,6 +106,6 @@ var postAjaxRoute = web.Route{
 			return
 		}
 		r.Helper["Post"] = post
-		r.RenderTemplate(res.TmplTopicPost)
+		r.RenderTemplate(res.TmplSnippetsPost)
 	},
 }

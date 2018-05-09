@@ -123,6 +123,9 @@ a.btn, input[type=submit].btn {
     border: 1px solid rgba(84,141,29,0.0);
     margin: 5px 0;
 }
+a.btn.right {
+    float: right;
+}
 a.btn-leave {
     color: #888;
     background: rgba(84,141,29,0.085);
@@ -222,6 +225,43 @@ a.disabled {
 }
 .post .likes {
     margin: 10px 0;
+}
+.post .like {
+    font-size: 12px;
+    display: inline;
+}
+.post .like-form {
+    display: none;
+    font-size: 12px;
+    margin: 0;
+}
+.post .like-form a {
+    display: inline-block;
+}
+.post .like-form label {
+    min-width: unset;
+    vertical-align: middle;
+    margin: 0 5px 0 15px;
+}
+.post .like-form input {
+    width: 50px;
+    margin: 5px 0;
+    height: 28px;
+    min-width: unset;
+}
+.post .like-form .like-cancel {
+    margin-left: 10px;
+    display: inline-block;
+}
+.post .like-form input[type=checkbox] {
+    width: unset;
+}
+.post .like .broadcasting {
+    display: none;
+    margin-left: 15px;
+}
+.post .like .broadcasting.show {
+    display: inline-block;
 }
 .post .actions {
     margin: 10px 0;
