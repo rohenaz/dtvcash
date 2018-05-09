@@ -371,6 +371,12 @@ span.page {
     max-height: 50%;
     overflow-y: scroll;
 }
+.topics-table tr td:nth-child(1) {
+    max-width: 400px;
+}
+.topics-table a {
+    color: #000;
+}
 .topic-post {
     border-radius: 8px;
     padding: 5px 10px;
