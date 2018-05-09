@@ -76,6 +76,10 @@ func (m MemoPost) GetMessage() string {
 	return m.Message
 }
 
+func (m MemoPost) GetUrlEncodedTopic() string {
+	return url.QueryEscape(m.Topic)
+}
+
 func (m MemoPost) GetTimeString() string {
 	if m.BlockId != 0 {
 		if m.Block != nil {
