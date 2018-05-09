@@ -357,7 +357,7 @@ func AttachParentToPosts(posts []*Post) error {
 		parentPost, err := db.GetMemoPost(post.Memo.ParentTxHash)
 		if err != nil {
 			jerr.Get("error getting memo post parent", err).Print()
-			return nil
+			continue
 		}
 		setName, err := db.GetNameForPkHash(parentPost.PkHash)
 		if err != nil {
