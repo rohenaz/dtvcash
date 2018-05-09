@@ -89,9 +89,7 @@
         </form>
         <span class="broadcasting">Broadcasting...</span>
         <script type="text/javascript">
-            $(function () {
-                MemoApp.Form.NewLike($("#like-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}");
-            });
+            MemoApp.Form.NewLike($("#like-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}");
         </script>
         </div>
     {{ end }}
