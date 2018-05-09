@@ -1,4 +1,4 @@
-<p>
+<p class="pagination">
 
     <a class="{{ if (eq .Offset 0) }}disabled{{ end }}" href="feed?offset={{ .PrevOffset }}">< {{ T "previous" }}</a>
     <span class="page">{{ T "page" }} {{ .Page }}</span>
@@ -7,7 +7,7 @@
 
 {{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
 
-<p>
+<p class="pagination">
     <a class="{{ if (eq .Offset 0) }}disabled{{ end }}" href="feed?offset={{ .PrevOffset }}">< {{ T "previous" }}</a>
     <span class="page">{{ T "page" }} {{ .Page }}</span>
     <a class="{{ if lt (len .Posts) 25 }}disabled{{end}}" href="feed?offset={{ .NextOffset }}">{{ T "next" }} ></a>

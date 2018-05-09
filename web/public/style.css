@@ -6,14 +6,13 @@ body {
     max-height: 1000000px;
     padding: 0;
     margin: 0;
-    background: rgba(0,0,0,0.03);
 }
 html {
     font-family: sans-serif;
 }
 
 a {
-    color: #005;
+    color: #487521;
 }
 
 h1 {
@@ -117,15 +116,18 @@ a.btn, input[type=submit].btn {
     font-size: 14px;
     color: #000;
     text-decoration: none;
-    background: rgba(84,141,29,0.2);
-    box-shadow: 1px 1px 0px rgba(0,0,0,0.3);
+    background: #ddd;
+    box-shadow: 1px 1px 0 rgba(0,0,0,0.3);
     border-radius: 11px;
     border: 1px solid rgba(84,141,29,0.0);
     margin: 5px 0;
 }
+a.btn.right {
+    float: right;
+}
 a.btn-leave {
     color: #888;
-    background: rgba(84,141,29,0.085);
+    background: #eee;
 }
 a.btn.sel {
     border: 1px solid rgba(0,0,0,0.5);
@@ -138,12 +140,12 @@ a.btn.disabled {
 
 a.disabled {
     pointer-events:none;
-    color:#888;
+    color: #888;
     text-decoration: none;
 }
 
 .wrapper {
-    background: #fff;
+    background: #f4f4f4;
     padding: 1px 0;
 }
 .container {
@@ -193,23 +195,30 @@ a.disabled {
 }
 
 .post {
-    border: 1px solid rgba(0,0,0,0.3);
+    border: 1px solid rgba(0,0,0,0.5);
     box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
     padding: 1px 10px;
     max-width: 775px;
     margin: 12px 0;
     border-radius: 11px;
-    background: #dde8d4;
+    background: #f8f8f8;
     word-wrap: break-word;
 }
 .post .post-header {
-    background: #e4efdb;
+    background: #d0d0d0;
     margin: 0 -10px 0 -10px;
     padding: 1px 10px 1px 10px;
     border-radius: 11px 11px 0 0;
 }
-.post .reply-header {
+.post .reply {
     margin: 5px 0 10px;
+    border: 2px solid #aaa;
+    background: #f0f0f0;
+    padding: 10px;
+    border-radius: 11px;
+}
+.post .reply p {
+    margin: 12px 0 5px;
 }
 .post .name {
     margin: 5px 0;
@@ -222,6 +231,43 @@ a.disabled {
 }
 .post .likes {
     margin: 10px 0;
+}
+.post .like {
+    font-size: 12px;
+    display: inline;
+}
+.post .like-form {
+    display: none;
+    font-size: 12px;
+    margin: 0;
+}
+.post .like-form a {
+    display: inline-block;
+}
+.post .like-form label {
+    min-width: unset;
+    vertical-align: middle;
+    margin: 0 5px 0 15px;
+}
+.post .like-form input {
+    width: 50px;
+    margin: 5px 0;
+    height: 28px;
+    min-width: unset;
+}
+.post .like-form .like-cancel {
+    margin-left: 10px;
+    display: inline-block;
+}
+.post .like-form input[type=checkbox] {
+    width: unset;
+}
+.post .like .broadcasting {
+    display: none;
+    margin-left: 15px;
+}
+.post .like .broadcasting.show {
+    display: inline-block;
 }
 .post .actions {
     margin: 10px 0;
@@ -272,8 +318,11 @@ span.page {
     margin: 0 10px;
 }
 
-.bottom10 {
-    margin-bottom: 10px;
+.pagination a {
+    color: #000;
+}
+.pagination a.disabled {
+    color: #888;
 }
 
 #about h3 {
@@ -321,6 +370,12 @@ span.page {
 #all-posts {
     max-height: 50%;
     overflow-y: scroll;
+}
+.topics-table tr td:nth-child(1) {
+    max-width: 400px;
+}
+.topics-table a {
+    color: #000;
 }
 .topic-post {
     border-radius: 8px;

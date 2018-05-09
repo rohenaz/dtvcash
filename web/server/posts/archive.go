@@ -1,14 +1,13 @@
 package posts
 
 import (
-	"bytes"
 	"fmt"
+	"github.com/jchavannes/jgo/jerr"
+	"github.com/jchavannes/jgo/web"
 	"github.com/memocash/memo/app/auth"
 	"github.com/memocash/memo/app/db"
 	"github.com/memocash/memo/app/profile"
 	"github.com/memocash/memo/app/res"
-	"github.com/jchavannes/jgo/jerr"
-	"github.com/jchavannes/jgo/web"
 	"net/http"
 	"strings"
 	"time"
@@ -56,12 +55,10 @@ var archiveRoute = web.Route{
 			r.Error(jerr.Get("error getting recent posts", err), http.StatusInternalServerError)
 			return
 		}
-		for i := 0; i < len(posts); i++ {
-			post := posts[i]
-			if strings.ToLower(post.Name) == "memo" && ! bytes.Equal(post.Memo.PkHash, []byte{0x9a, 0x60, 0xa8, 0x54, 0x27, 0xc, 0x2f, 0xc2, 0xdd, 0x4d, 0xd4, 0xd3, 0xba, 0x0, 0xf2, 0x6, 0x8f, 0xd, 0x75, 0xd6}) {
-				posts = append(posts[:i], posts[i+1:]...)
-				i--
-			}
+		err = profile.AttachParentToPosts(posts)
+		if err != nil {
+			r.Error(jerr.Get("error attaching parent to posts", err), http.StatusInternalServerError)
+			return
 		}
 		err = profile.AttachLikesToPosts(posts)
 		if err != nil {

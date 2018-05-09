@@ -36,6 +36,11 @@ var newRoute = web.Route{
 			r.Error(jerr.Get("error getting recent posts", err), http.StatusInternalServerError)
 			return
 		}
+		err = profile.AttachParentToPosts(posts)
+		if err != nil {
+			r.Error(jerr.Get("error attaching parent to posts", err), http.StatusInternalServerError)
+			return
+		}
 		for i := 0; i < len(posts); i++ {
 			post := posts[i]
 			if strings.ToLower(post.Name) == "memo" && ! bytes.Equal(post.Memo.PkHash, []byte{0x9a, 0x60, 0xa8, 0x54, 0x27, 0xc, 0x2f, 0xc2, 0xdd, 0x4d, 0xd4, 0xd3, 0xba, 0x0, 0xf2, 0x6, 0x8f, 0xd, 0x75, 0xd6}) {

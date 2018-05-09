@@ -155,6 +155,7 @@ var MemoApp = {
         KeyDeleteAccountSubmit: "key/delete-account-submit",
         TopicsSocket: "topics/socket",
         TopicsMorePosts: "topics/more-posts",
+        TopicsPostAjax: "topics/post-ajax",
         TopicsCreateSubmit: "topics/create-submit"
     };
 })();

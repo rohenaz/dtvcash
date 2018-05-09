@@ -39,6 +39,11 @@ var viewRoute = web.Route{
 			r.Error(jerr.Get("error getting posts for hash", err), http.StatusInternalServerError)
 			return
 		}
+		err = profile.AttachParentToPosts(posts)
+		if err != nil {
+			r.Error(jerr.Get("error attaching parent to post", err), http.StatusInternalServerError)
+			return
+		}
 		err = profile.AttachLikesToPosts(posts)
 		if err != nil {
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
