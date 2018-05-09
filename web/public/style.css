@@ -289,7 +289,7 @@ img.identicon {
 .profile .name {
     word-break: break-all;
 }
-.profile .address {
+.profile td:nth-child(2) {
     word-break: break-all;
 }
 .profile #qr-code {
