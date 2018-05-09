@@ -12,7 +12,7 @@ html {
 }
 
 a {
-    color: #426b1e;
+    color: #487521;
 }
 
 h1 {
@@ -205,7 +205,7 @@ a.disabled {
     word-wrap: break-word;
 }
 .post .post-header {
-    background: #dadada;
+    background: #d0d0d0;
     margin: 0 -10px 0 -10px;
     padding: 1px 10px 1px 10px;
     border-radius: 11px 11px 0 0;
