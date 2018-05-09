@@ -41,6 +41,11 @@ var postRoute = web.Route{
 			r.Error(jerr.Get("error getting post", err), http.StatusInternalServerError)
 			return
 		}
+		err = profile.AttachParentToPosts([]*profile.Post{post})
+		if err != nil {
+			r.Error(jerr.Get("error attaching parent to post", err), http.StatusInternalServerError)
+			return
+		}
 		err = profile.AttachLikesToPosts(append(post.Replies, post))
 		if err != nil {
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
@@ -91,6 +96,11 @@ var postAjaxRoute = web.Route{
 		post, err := profile.GetPostByTxHash(txHash.CloneBytes(), pkHash, uint(offset))
 		if err != nil {
 			r.Error(jerr.Get("error getting post", err), http.StatusInternalServerError)
+			return
+		}
+		err = profile.AttachParentToPosts([]*profile.Post{post})
+		if err != nil {
+			r.Error(jerr.Get("error attaching parent to post", err), http.StatusInternalServerError)
 			return
 		}
 		if len(pkHash) > 0 {

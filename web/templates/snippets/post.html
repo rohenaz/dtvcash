@@ -1,15 +1,5 @@
 <div class="post" id="post-{{ .Post.Memo.GetTransactionHashString }}">
     <div class="post-header">
-    {{ if .Post.Parent }}
-        <p class="reply-header">
-            Replying to
-            <span class="identicon-{{ .Post.Parent.Memo.GetAddressString }}">
-                <img class="identicon"/>
-            </span>
-            <a href="post/{{ .Post.Parent.Memo.GetTransactionHashString }}">{{ .Post.Parent.Name }}'s
-                post</a>
-        </p>
-    {{ end }}
         <p class="name">
         <span class="identicon-{{ .Post.Memo.GetAddressString }}">
             <img class="identicon"/>
@@ -47,6 +37,17 @@
     <p class="message">
     {{ .Post.GetMessage }}
     </p>
+{{ if .Post.Parent }}
+    <div class="reply">
+        Replying to
+        <span class="identicon-{{ .Post.Parent.Memo.GetAddressString }}">
+                <img class="identicon"/>
+            </span>
+        <a href="post/{{ .Post.Parent.Memo.GetTransactionHashString }}">{{ .Post.Parent.Name }}'s
+            post</a>
+        <p>{{ .Post.Parent.GetMessage }}</p>
+    </div>
+{{ end }}
     <p class="likes">
         <i>
             <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ len .Post.Likes }} {{ T "likes" }}</a>

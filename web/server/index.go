@@ -129,6 +129,10 @@ func setFeed(r *web.Response, selfPkHash []byte) error {
 	if err != nil {
 		return jerr.Get("error getting posts for hashes", err)
 	}
+	err = profile.AttachParentToPosts(posts)
+	if err != nil {
+		return jerr.Get("error attaching parent to posts", err)
+	}
 	err = profile.AttachLikesToPosts(posts)
 	if err != nil {
 		return jerr.Get("error attaching likes to posts", err)

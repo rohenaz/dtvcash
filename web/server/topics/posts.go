@@ -87,6 +87,11 @@ var postAjaxRoute = web.Route{
 			r.Error(jerr.Get("error getting post", err), http.StatusInternalServerError)
 			return
 		}
+		err = profile.AttachParentToPosts([]*profile.Post{post})
+		if err != nil {
+			r.Error(jerr.Get("error attaching parent to post", err), http.StatusInternalServerError)
+			return
+		}
 		if len(pkHash) > 0 {
 			err = profile.AttachReputationToPosts([]*profile.Post{post})
 			if err != nil {

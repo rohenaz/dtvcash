@@ -2,8 +2,8 @@ package profile
 
 import (
 	"bytes"
-	"github.com/memocash/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/db"
 	"regexp"
 	"strings"
 	"time"
@@ -158,26 +158,6 @@ func GetPostByTxHash(txHash []byte, selfPkHash []byte, offset uint) (*Post, erro
 	if err != nil {
 		return nil, jerr.Get("error getting memo post", err)
 	}
-	var parent *Post
-	if len(memoPost.ParentTxHash) > 0 {
-		parentPost, err := db.GetMemoPost(memoPost.ParentTxHash)
-		if err != nil {
-			return nil, jerr.Get("error getting memo post parent", err)
-		}
-		setName, err := db.GetNameForPkHash(parentPost.PkHash)
-		if err != nil {
-			return nil, jerr.Get("error getting name for reply hash", err)
-		}
-		var name = ""
-		if setName != nil {
-			name = setName.Name
-		}
-		parent = &Post{
-			Name:       name,
-			Memo:       parentPost,
-			SelfPkHash: selfPkHash,
-		}
-	}
 	replies, err := db.GetPostReplies(txHash, offset)
 	if err != nil {
 		return nil, jerr.Get("error getting post replies", err)
@@ -218,7 +198,6 @@ func GetPostByTxHash(txHash []byte, selfPkHash []byte, offset uint) (*Post, erro
 	post := &Post{
 		Name:       name,
 		Memo:       memoPost,
-		Parent:     parent,
 		SelfPkHash: selfPkHash,
 		Replies:    replyPosts,
 		ReplyCount: cnt,
@@ -368,4 +347,30 @@ func GetOlderPostsForTopic(tag string, selfPkHash []byte, firstPostId uint) ([]*
 		posts = append(posts, post)
 	}
 	return posts, nil
+}
+
+func AttachParentToPosts(posts []*Post) error {
+	for _, post := range posts {
+		if len(post.Memo.ParentTxHash) == 0 {
+			continue
+		}
+		parentPost, err := db.GetMemoPost(post.Memo.ParentTxHash)
+		if err != nil {
+			return jerr.Get("error getting memo post parent", err)
+		}
+		setName, err := db.GetNameForPkHash(parentPost.PkHash)
+		if err != nil {
+			return jerr.Get("error getting name for reply hash", err)
+		}
+		var name = ""
+		if setName != nil {
+			name = setName.Name
+		}
+		post.Parent = &Post{
+			Name:       name,
+			Memo:       parentPost,
+			SelfPkHash: post.SelfPkHash,
+		}
+	}
+	return nil
 }
