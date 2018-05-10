@@ -722,4 +722,29 @@
             }
         });
     };
+
+    /**
+     * @param {jQuery} $moreReplies
+     * @param {string} txHash
+     * @param {number} offset
+     */
+    MemoApp.Form.LoadMoreReplies = function ($moreReplies, txHash, offset) {
+        var $link = $moreReplies.find("a");
+        $link.click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostThreadedAjax,
+                data: {
+                    txHash: txHash,
+                    offset: offset + 25
+                },
+                success: function (html) {
+                    $moreReplies.replaceWith(html);
+                },
+                error: function () {
+                    console.log("Error loading more replies.");
+                }
+            });
+        });
+    };
 })();

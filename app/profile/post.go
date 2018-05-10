@@ -158,31 +158,6 @@ func GetPostByTxHash(txHash []byte, selfPkHash []byte, offset uint) (*Post, erro
 	if err != nil {
 		return nil, jerr.Get("error getting memo post", err)
 	}
-	replies, err := db.GetPostReplies(txHash, offset)
-	if err != nil {
-		return nil, jerr.Get("error getting post replies", err)
-	}
-	var replyPosts []*Post
-	for _, reply := range replies {
-		setName, err := db.GetNameForPkHash(reply.PkHash)
-		if err != nil {
-			return nil, jerr.Get("error getting name for reply hash", err)
-		}
-		var name = ""
-		if setName != nil {
-			name = setName.Name
-		}
-		cnt, err := db.GetPostReplyCount(reply.TxHash)
-		if err != nil {
-			return nil, jerr.Get("error getting post reply count", err)
-		}
-		replyPosts = append(replyPosts, &Post{
-			Name:       name,
-			Memo:       reply,
-			SelfPkHash: selfPkHash,
-			ReplyCount: cnt,
-		})
-	}
 	setName, err := db.GetNameForPkHash(memoPost.PkHash)
 	if err != nil {
 		return nil, jerr.Get("error getting name for hash", err)
@@ -199,10 +174,43 @@ func GetPostByTxHash(txHash []byte, selfPkHash []byte, offset uint) (*Post, erro
 		Name:       name,
 		Memo:       memoPost,
 		SelfPkHash: selfPkHash,
-		Replies:    replyPosts,
 		ReplyCount: cnt,
 	}
+	err = AttachRepliesToPost(post, offset)
+	if err != nil {
+		return nil, jerr.Get("error attaching replies to post", err)
+	}
 	return post, nil
+}
+
+func AttachRepliesToPost(post *Post, offset uint) error {
+	replyMemoPosts, err := db.GetPostReplies(post.Memo.TxHash, offset)
+	if err != nil {
+		return jerr.Get("error getting post replies", err)
+	}
+	var replies []*Post
+	for _, reply := range replyMemoPosts {
+		setName, err := db.GetNameForPkHash(reply.PkHash)
+		if err != nil {
+			return jerr.Get("error getting name for reply hash", err)
+		}
+		var name = ""
+		if setName != nil {
+			name = setName.Name
+		}
+		cnt, err := db.GetPostReplyCount(reply.TxHash)
+		if err != nil {
+			return jerr.Get("error getting post reply count", err)
+		}
+		replies = append(replies, &Post{
+			Name:       name,
+			Memo:       reply,
+			SelfPkHash: post.SelfPkHash,
+			ReplyCount: cnt,
+		})
+	}
+	post.Replies = replies
+	return nil
 }
 
 func GetRecentPosts(selfPkHash []byte, offset uint) ([]*Post, error) {

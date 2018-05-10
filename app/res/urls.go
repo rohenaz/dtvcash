@@ -39,6 +39,8 @@ const (
 	UrlMemoUnfollow         = "/memo/unfollow"
 	UrlMemoUnfollowSubmit   = "/memo/unfollow-submit"
 	UrlMemoPost             = "/post"
+	UrlMemoPostThreaded     = "/post-threaded"
+	UrlMemoPostThreadedAjax = "/post-threaded-ajax"
 	UrlMemoPostAjax         = "/post-ajax"
 	UrlMemoLike             = "/memo/like"
 	UrlMemoLikeSubmit       = "/memo/like-submit"
@@ -49,7 +51,8 @@ const (
 	UrlMemoSetProfile       = "/memo/set-profile"
 	UrlMemoSetProfileSubmit = "/memo/set-profile-submit"
 
-	TmplMemoPost = "/memo/post"
+	TmplMemoPost         = "/memo/post"
+	TmplMemoPostThreaded = "/memo/post-threaded"
 )
 
 const (
@@ -83,7 +86,9 @@ const (
 )
 
 const (
-	TmplSnippetsPost = "/snippets/post"
+	TmplSnippetsPost                 = "/snippets/post"
+	TmplSnippetsPostThreaded         = "/snippets/post-threaded"
+	TmplSnippetsPostThreadedLoadMore = "/snippets/post-threaded-load-more"
 )
 
 func GetBaseUrl(r *web.Response) string {

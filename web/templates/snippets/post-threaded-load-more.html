@@ -1,0 +1,8 @@
+{{ if eq (len .Post.Replies) 25 }}
+<p id="more-replies-{{ .Post.Memo.GetTransactionHashString }}">
+    <a class="btn" href="#">Load more {{ T "replies" }}</a>
+    <script type="text/javascript">
+        MemoApp.Form.LoadMoreReplies($("#more-replies-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}", {{ .Offset }});
+    </script>
+</p>
+{{ end }}

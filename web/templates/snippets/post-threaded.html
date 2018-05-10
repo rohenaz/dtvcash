@@ -1,0 +1,154 @@
+{{ $tz := .TimeZone }}
+<div class="post" id="post-{{ .Post.Memo.GetTransactionHashString }}">
+    <div class="post-header">
+        <p class="name">
+        <span class="identicon-{{ .Post.Memo.GetAddressString }}">
+            <img class="identicon"/>
+        </span>
+            <a href="profile/{{ .Post.Memo.GetAddressString }}">{{ $len := len .Post.Name }}
+        {{- if gt $len 0 -}}
+            {{ .Post.Name }}
+        {{- else -}}
+            {{ .Post.Memo.GetAddressString }}
+        {{- end -}}
+            </a>
+        {{ if .Post.Reputation }}
+            <span class="reputation-tooltip">
+                (
+            {{- if .Post.Reputation.IsDirectFollow -}}Following, {{ end -}}
+            {{ .Post.Reputation.GetPercentStringIncludingDirect -}}
+                )
+                <span>
+                    Shared Connections is the percentage of people you follow who are following this person.
+                    For more info visit the <a href="about#connectivity">about page</a>.
+                </span>
+            </span>
+        {{ end }}
+        {{ if .Post.Memo.ParentTxHash }}
+            replied to <a href="post/{{ .Post.Memo.GetParentTransactionHashString }}">post</a> at
+        {{ else }}
+            {{ T "posted_at" }}
+        {{ end }}
+            <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeString .TimeZone }}</a>
+        {{- if .Post.Memo.Topic }}
+            in <a href="topic/{{ .Post.Memo.GetUrlEncodedTopic }}">{{ .Post.Memo.Topic }}</a>
+        {{ end }}
+        </p>
+    </div>
+    <p class="message">
+    {{ .Post.GetMessage }}
+    </p>
+    <div class="actions">
+    {{ if .Post.IsLoggedIn }}
+        <a class="btn" href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">{{ T "reply" }}</a>
+        <div class="like" id="like-{{ .Post.Memo.GetTransactionHashString }}">
+        <span class="like-info" id="like-info-{{ .Post.Memo.GetTransactionHashString }}">
+            <a class="btn like-link" id="like-link-{{ .Post.Memo.GetTransactionHashString }}"
+               href="#">{{ T "like" 1 }}</a>
+        </span>
+            <form class="like-form" id="like-form-{{ .Post.Memo.GetTransactionHashString }}">
+                <input id="tx-hash-{{ .Post.Memo.GetTransactionHashString }}" type="hidden" name="tx-hash"
+                       value="{{ .Post.Memo.GetTransactionHashString }}"/>
+                <label for="tip-{{ .Post.Memo.GetTransactionHashString }}">Tip</label>
+                <input id="tip-{{ .Post.Memo.GetTransactionHashString }}" type="text" name="tip"
+                       class="form-control"
+                       placeholder="0">
+                <span class="password-area">
+                    <label for="password-{{ .Post.Memo.GetTransactionHashString }}">Password</label>
+                    <input id="password-{{ .Post.Memo.GetTransactionHashString }}" type="password" name="password"
+                           class="form-control" placeholder="Password"
+                           autocomplete="on" required>
+                    <label for="save-password-{{ .Post.Memo.GetTransactionHashString }}">
+                        Save<br/>Password
+                    </label>
+                    <input id="save-password-{{ .Post.Memo.GetTransactionHashString }}" name="save-password"
+                           type="checkbox"/>
+                </span>
+                <input class="btn btn-lg btn-primary btn-block" type="submit" value="Like">
+                <a href="#" class="like-cancel" id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
+            </form>
+            <span class="broadcasting">Broadcasting...</span>
+            <script type="text/javascript">
+                MemoApp.Form.NewLike($("#like-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}");
+            </script>
+        </div>
+    {{ end }}
+        <a class="btn btn-leave right" target="_blank"
+           href="https://explorer.bitcoin.com/bch/tx/{{ .Post.Memo.GetTransactionHashString }}">
+        {{ T "view_on_block_explorer" }}</a>
+        <div style="clear:both"></div>
+    </div>
+
+{{ if .Post.Likes }}
+
+    <p>
+    {{ len .Post.Likes }} likes -
+        <a href="#" id="show-hide-likes-{{ .Post.Memo.GetTransactionHashString }}">Show</a>
+        (tip: {{ formatBigInt .Post.GetTotalTip }} satoshis), {{ .Post.ReplyCount }} {{ T "replies" }}
+    </p>
+
+    <div id="likes-{{ .Post.Memo.GetTransactionHashString }}" style="display:none">
+        <h3>Likes</h3>
+
+        <ul>
+        {{ range .Post.Likes }}
+            <li>
+                Liked by <a href="profile/{{ .GetAddressString }}">{{ $len := len .Name }}{{ if gt $len 0 -}}
+            {{ .Name }}
+        {{- else -}}
+            {{ .GetAddressString }}
+        {{- end }}</a> - {{ formatBigInt .Amount }} satoshis
+                ({{ .GetTimeString $tz }})
+                <a target="_blank"
+                   href="https://explorer.bitcoin.com/bch/tx/{{ .GetTransactionHashString }}">View on Block Explorer</a>
+            </li>
+        {{ end }}
+        </ul>
+    </div>
+
+    <script type="text/javascript">
+        $(function () {
+            MemoApp.Form.LikesToggle($("#show-hide-likes-{{ .Post.Memo.GetTransactionHashString }}"), $("#likes-{{ .Post.Memo.GetTransactionHashString }}"));
+        });
+    </script>
+{{ else }}
+    <p class="likes">
+        <i>
+            <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ len .Post.Likes }} {{ T "likes" }}</a>
+            <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.ReplyCount }} {{ T "replies" }}</a>
+        </i>
+    </p>
+{{ end }}
+
+
+{{ if .Post.Replies }}
+
+{{ range .Post.Replies }}
+{{ template "snippets/post-threaded.html" dict "Post" . "Compress" false "TimeZone" $tz }}
+{{ end }}
+
+{{ if eq (len .Post.Replies) 25 }}
+    {{ template "snippets/post-threaded-load-more.html" dict "Post" .Post "Offset" .Offset }}
+{{ end }}
+
+{{ end }}
+</div>
+
+<script type="text/javascript">
+    var data = new Identicon('{{ .Post.Memo.GetAddressString }}', {
+        foreground: [255, 255, 255, 0],
+        background: [0, 0, 0, 255],
+        size: 18,
+        margin: 0
+    }).toString();
+    $(".identicon-{{ .Post.Memo.GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
+    {{ if .Post.Parent }}
+    data = new Identicon('{{ .Post.Parent.Memo.GetAddressString }}', {
+        foreground: [255, 255, 255, 0],
+        background: [0, 0, 0, 255],
+        size: 18,
+        margin: 0
+    }).toString();
+    $(".identicon-{{ .Post.Parent.Memo.GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
+    {{ end }}
+</script>
