@@ -2,6 +2,7 @@ package db
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/memocash/memo/app/bitcoin/script"
 	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
@@ -411,21 +412,25 @@ func (t Topic) GetUrlEncoded() string {
 	return url.QueryEscape(t.Name)
 }
 
-func GetUniqueTopics(offset uint) ([]*Topic, error) {
+func GetUniqueTopics(offset uint, searchString string) ([]*Topic, error) {
 	db, err := getDb()
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
 	}
-	rows, err := db.
+	query := db.
 		Table("memo_posts").
 		Select("topic, MAX(memo_posts.created_at) AS max_time, COUNT(*)").
 		Joins("LEFT OUTER JOIN blocks ON (memo_posts.block_id = blocks.id)").
-		Where("topic IS NOT NULL AND topic != ''").
 		Group("topic").
 		Order("max_time DESC").
 		Limit(25).
-		Offset(offset).
-		Rows()
+		Offset(offset)
+	if searchString != "" {
+		query = query.Where("topic LIKE ?", fmt.Sprintf("%%%s%%", searchString))
+	} else {
+		query = query.Where("topic IS NOT NULL AND topic != ''")
+	}
+	rows, err := query.Rows()
 	if err != nil {
 		return nil, jerr.Get("error getting distinct topics", err)
 	}

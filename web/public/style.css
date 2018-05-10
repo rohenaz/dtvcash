@@ -116,7 +116,7 @@ a.btn, input[type=submit].btn {
     font-size: 14px;
     color: #000;
     text-decoration: none;
-    background: #ddd;
+    background: #d7e3cc;
     box-shadow: 1px 1px 0 rgba(0,0,0,0.3);
     border-radius: 11px;
     border: 1px solid rgba(84,141,29,0.0);
@@ -476,4 +476,20 @@ span.page {
 }
 #password-clear a:hover {
     text-decoration: underline;
+}
+#topic-search-form {
+    display: inline;
+    margin-bottom: 0;
+}
+#topic-search-form label {
+    min-width: unset;
+    margin: 5px 0;
+}
+#topic-search-form input {
+    margin: 5px 0;
+}
+a.block-link {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 10px;
 }
