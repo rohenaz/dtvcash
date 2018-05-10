@@ -1,0 +1,9 @@
+{{ template "snippets/header.html" . }}
+
+<br/>
+
+{{ template "snippets/post-threaded.html" dict "Post" .Post "Compress" false "TimeZone" .TimeZone "Offset" .Offset }}
+
+<br/>
+
+{{ template "snippets/footer.html" . }}
