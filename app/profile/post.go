@@ -49,9 +49,9 @@ func (p Post) GetMessage() string {
 }
 
 func addYoutubeVideos(msg string) string {
-	var re = regexp.MustCompile(`(https://youtu\.be/)([A-Za-z0-9_\-]+)`)
+	var re = regexp.MustCompile(`(https://youtu\.be/)([A-Za-z0-9_\-\?=]+)`)
 	msg = re.ReplaceAllString(msg, `<iframe width="420" height="315" src="https://www.youtube.com/embed/$2"></iframe>`)
-	re = regexp.MustCompile(`(https://www\.youtube\.com/watch\?v=)([A-Za-z0-9_\-]+)`)
+	re = regexp.MustCompile(`(https://www\.youtube\.com/watch\?v=)([A-Za-z0-9_\-\?=]+)`)
 	msg = re.ReplaceAllString(msg, `<iframe width="420" height="315" src="https://www.youtube.com/embed/$2"></iframe>`)
 	return msg
 }
