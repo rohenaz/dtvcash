@@ -40,11 +40,32 @@ func (p Post) GetTotalTip() int64 {
 }
 
 func (p Post) GetMessage() string {
-	msg := p.Memo.Message
+	msg := addYoutubeVideos(p.Memo.Message)
+	msg = addImgurImages(msg)
+	if msg == p.Memo.Message {
+		msg = addLinks(msg)
+	}
+	return msg
+}
+
+func addYoutubeVideos(msg string) string {
+	var re = regexp.MustCompile(`(https://youtu\.be/)([A-Za-z0-9_\-]+)`)
+	msg = re.ReplaceAllString(msg, `<iframe width="420" height="315" src="https://www.youtube.com/embed/$2"></iframe>`)
+	re = regexp.MustCompile(`(https://www\.youtube\.com/watch\?v=)([A-Za-z0-9_\-]+)`)
+	msg = re.ReplaceAllString(msg, `<iframe width="420" height="315" src="https://www.youtube.com/embed/$2"></iframe>`)
+	return msg
+}
+
+func addImgurImages(msg string) string {
+	var re = regexp.MustCompile(`(https://i.imgur\.com/[^\s]*)`)
+	msg = re.ReplaceAllString(msg, `<img class="imgur" src="$1"/>`)
+	return msg
+}
+
+func addLinks(msg string) string {
 	var re = regexp.MustCompile(`(http[s]?://[^\s]*)`)
 	s := re.ReplaceAllString(msg, `<a href="$1" target="_blank">$1</a>`)
-	s = strings.Replace(s, "\n", "<br/>", -1)
-	return s
+	return strings.Replace(s, "\n", "<br/>", -1)
 }
 
 func (p Post) GetTimeString(timezone string) string {

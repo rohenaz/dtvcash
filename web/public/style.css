@@ -58,6 +58,10 @@ label {
     vertical-align: top;
     cursor: pointer;
 }
+iframe {
+    display: block;
+    margin: 10px auto;
+}
 
 hr.no-margin {
     margin: 0;
@@ -506,4 +510,7 @@ a.block-link {
 }
 .topics-index-head {
     margin-bottom: 10px;
+}
+img.imgur {
+    max-width: 100%;
 }
