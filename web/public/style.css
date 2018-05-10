@@ -253,7 +253,7 @@ a.disabled {
     display: inline-block;
 }
 .post .like-form label {
-    min-width: unset;
+    width: unset;
     vertical-align: middle;
     margin: 0 5px 0 15px;
 }
