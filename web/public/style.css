@@ -79,6 +79,7 @@ select {
 
 table.table {
     width: 100%;
+    background: rgba(0, 0, 0, 0.01);
 }
 table.table,
 table.table th,
@@ -88,8 +89,11 @@ table.table td {
     border-radius: 8px;
 }
 
-table.table tbody tr:nth-child(2n-1) {
-    background: rgba(0, 0, 0, 0.075);
+table.table thead tr:nth-child(2n+1) {
+    background: rgba(0, 0, 0, 0.1);
+}
+table.table tbody tr:nth-child(2n+1) {
+    background: rgba(0, 0, 0, 0.05);
 }
 table.table th,
 table.table td {
@@ -120,7 +124,7 @@ a.btn, input[type=submit].btn {
     font-size: 14px;
     color: #000;
     text-decoration: none;
-    background: #d7e3cc;
+    background: #d2d9cc;
     box-shadow: 1px 1px 0 rgba(0,0,0,0.3);
     border-radius: 11px;
     border: 1px solid rgba(84,141,29,0.0);
@@ -205,7 +209,7 @@ a.disabled {
     max-width: 775px;
     margin: 12px 0;
     border-radius: 11px;
-    background: #f8f8f8;
+    background: #f4f4f4;
     word-wrap: break-word;
 }
 .post .post-header {
@@ -495,5 +499,5 @@ span.page {
 a.block-link {
     display: inline-block;
     vertical-align: middle;
-    padding: 10px;
+    padding: 10px 0;
 }

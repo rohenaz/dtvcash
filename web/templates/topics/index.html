@@ -5,10 +5,11 @@
         <input id="topic-search" type="text" name="s" placeholder="Topic name" value="{{ .SearchString }}" autofocus/>
         <input class="btn" type="submit" value="Search"/>
     </form>
+    &nbsp;
     <a class="block-link" href="topics/create">{{ T "Create_new_topic" }}</a>
 </div>
 
-<h3>{{ T "Existing_Topics" }}</h3>
+<!--<h3>{{ T "Existing_Topics" }}</h3>-->
 
 {{ if and (eq .NextOffset 25) (lt (len .Topics) 25) }}{{ else }}
 <p class="pagination">
