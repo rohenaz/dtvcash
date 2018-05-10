@@ -684,7 +684,7 @@
                         error: function () {
                             submitting = false;
                             $broadcasting.removeClass("show");
-                            alert("Error waiting for transaction to broadcast.");
+                            console.log("Error waiting for transaction to broadcast.");
                         }
                     });
                 },

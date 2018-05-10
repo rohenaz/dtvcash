@@ -212,6 +212,9 @@ a.disabled {
     background: #f4f4f4;
     word-wrap: break-word;
 }
+.post .post {
+    margin: 10px -8px 5px -4px;
+}
 .post .post-header {
     background: #d0d0d0;
     margin: 0 -10px 0 -10px;
