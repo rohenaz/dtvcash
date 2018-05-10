@@ -371,6 +371,11 @@ span.page {
     max-height: 50%;
     overflow-y: scroll;
 }
+@-moz-document url-prefix() {
+    #all-posts {
+        height: 50%;
+    }
+}
 .topics-table tr td:nth-child(1) {
     max-width: 400px;
 }
