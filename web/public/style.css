@@ -480,6 +480,10 @@ span.page {
 .topic-post .like .broadcasting.show {
     display: inline-block;
 }
+.topic-post img.imgur {
+    max-width: 50%;
+    max-height: 200px;
+}
 #password-clear {
     display: none;
 }
