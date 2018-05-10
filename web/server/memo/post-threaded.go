@@ -76,7 +76,7 @@ func getPostWithThreads(r *web.Response, txHashString string, offset int) (*prof
 	if err != nil {
 		return nil, jerr.Get("error getting post", err)
 	}
-	allPosts := append(post.Replies, post)
+	allPosts := []*profile.Post{post}
 	needsReplies := post.Replies
 	for len(needsReplies) != 0 {
 		needsRepliesPost := needsReplies[0]
@@ -85,7 +85,7 @@ func getPostWithThreads(r *web.Response, txHashString string, offset int) (*prof
 		if err != nil {
 			return nil, jerr.Get("error attaching replies to reply", err)
 		}
-		allPosts = append(allPosts, needsRepliesPost.Replies...)
+		allPosts = append(allPosts, needsRepliesPost)
 		needsReplies = append(needsReplies, needsRepliesPost.Replies...)
 		if len(allPosts) > 250 {
 			jerr.New("Nested replies over 250, breaking out!").Print()
