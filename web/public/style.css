@@ -63,6 +63,11 @@ iframe {
     width: 100%;
     margin: 10px auto;
 }
+video {
+    display: block;
+    width: 100%;
+    margin: 10px auto;
+}
 .video-container {
     position:relative;
     padding-bottom:56.25%;
@@ -70,7 +75,8 @@ iframe {
     height:0;
     overflow:hidden;
 }
-.video-container iframe {
+.video-container iframe,
+.video-container video {
     position:absolute;
     top:0;
     left:0;

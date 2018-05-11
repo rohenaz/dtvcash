@@ -60,7 +60,7 @@ func addYoutubeVideos(msg string) string {
 func addImgurImages(msg string) string {
 	if strings.Contains(msg, ".mp4") {
 		var re = regexp.MustCompile(`(http[s]?://(i\.)?imgur\.com/)([^\s]*)`)
-		msg = re.ReplaceAllString(msg, `<div class="video-container"><iframe frameborder="0" src="https://i.imgur.com/$3"></iframe></div>`)
+		msg = re.ReplaceAllString(msg, `<div class="video-container"><video controls><source src="https://i.imgur.com/$3" type="video/mp4"></video></iframe></div>`)
 	} else {
 		var re = regexp.MustCompile(`(http[s]?://(i\.)?imgur\.com/)([^\s]*)`)
 		msg = re.ReplaceAllString(msg, `<img class="imgur" src="https://i.imgur.com/$3"/>`)
