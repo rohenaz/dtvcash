@@ -556,3 +556,33 @@ img.imgur {
     display: block;
     margin: 10px auto;
 }
+#private-key-field {
+    display: none;
+}
+.notice {
+    font-weight: bold;
+    font-style: italic;
+    text-align: center;
+    margin: 10px 0;
+}
+.signup-notice {
+    display: block;
+    font-size: 12px;
+    font-style: italic;
+    margin: 5px 0;
+}
+.disclaimer {
+    padding-left: 25px;
+}
+.disclaimer input {
+    display: block;
+    width: 13px;
+    margin-left: -21px;
+    float: left;
+}
+.disclaimer label {
+    display: block;
+    width: 100%;
+    float: right;
+    font-size: 12px;
+}

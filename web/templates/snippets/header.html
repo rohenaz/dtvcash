@@ -57,7 +57,7 @@
         {{ with .Username }}
             <a id="header-logout" href="logout">{{ T "logout" $user }}</a>
         {{ else }}
-            <a {{ if eq $nav "login" }}class="sel"{{ end }} href="login">{{ T "login" }}</a>
+            <a {{ if eq $nav "signup" }}class="sel"{{ end }} href="signup">Signup</a>
         {{ end }}
         </div>
     </div>
@@ -66,14 +66,3 @@
 <div class="wrapper">
 
     <div class="container">
-
-        <p class="notice">
-        </p>
-
-        <style type="text/css">
-            .notice {
-                font-weight: bold;
-                font-style: italic;
-                font-size: 14px;
-            }
-        </style>
