@@ -515,6 +515,11 @@ span.page {
     max-width: 50%;
     max-height: 200px;
 }
+.topic-post .video-container {
+    border-width: 0 25px 10px 25px;
+    border-style: solid;
+    border-color: transparent;
+}
 #password-clear {
     display: none;
 }
