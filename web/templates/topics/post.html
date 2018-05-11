@@ -4,6 +4,7 @@
         <img class="identicon"/>
     </span>
     </a>
+    <div class="post-wrapper">
     <div class="post-header">
     {{ if .Post.Parent }}
         <p class="reply-header">
@@ -45,6 +46,9 @@
                 {{- else }}
                     <a class="like-link" id="like-link-{{ .Post.Memo.GetTransactionHashString }}" href="#">{{ T "like" 1 }}</a>
                 {{- end }}
+                {{- if not (eq .Post.ReplyCount 0) }}
+                    <a class="reply-count" href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.ReplyCount }} {{ T "replies" }}</a>
+                {{ end }}
                 </span>
                 <form class="like-form" id="like-form-{{ .Post.Memo.GetTransactionHashString }}">
                     <input id="tx-hash-{{ .Post.Memo.GetTransactionHashString }}" type="hidden" name="tx-hash"
@@ -78,6 +82,7 @@
     </div>
     <div class="message">
     {{ .Post.GetMessage }}
+    </div>
     </div>
     <script type="text/javascript">
         var data = new Identicon('{{ .Post.Memo.GetAddressString }}', {

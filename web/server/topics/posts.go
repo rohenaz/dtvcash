@@ -52,6 +52,11 @@ var postsMoreRoute = web.Route{
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
 		}
+		err = profile.AttachReplyCountToPosts(posts)
+		if err != nil {
+			r.Error(jerr.Get("error attaching reply counts to posts", err), http.StatusInternalServerError)
+			return
+		}
 		r.Helper["Posts"] = posts
 		r.Helper["FirstPostId"] = posts[0].Memo.Id
 		r.Render()

@@ -349,15 +349,10 @@ func GetPostsForTopic(tag string, selfPkHash []byte, offset uint) ([]*Post, erro
 		if setName != nil {
 			name = setName.Name
 		}
-		cnt, err := db.GetPostReplyCount(dbPost.TxHash)
-		if err != nil {
-			return nil, jerr.Get("error getting post reply count", err)
-		}
 		post := &Post{
 			Name:       name,
 			Memo:       dbPost,
 			SelfPkHash: selfPkHash,
-			ReplyCount: cnt,
 		}
 		posts = append(posts, post)
 	}
@@ -379,19 +374,33 @@ func GetOlderPostsForTopic(tag string, selfPkHash []byte, firstPostId uint) ([]*
 		if setName != nil {
 			name = setName.Name
 		}
-		cnt, err := db.GetPostReplyCount(dbPost.TxHash)
-		if err != nil {
-			return nil, jerr.Get("error getting post reply count", err)
-		}
 		post := &Post{
 			Name:       name,
 			Memo:       dbPost,
 			SelfPkHash: selfPkHash,
-			ReplyCount: cnt,
 		}
 		posts = append(posts, post)
 	}
 	return posts, nil
+}
+
+func AttachReplyCountToPosts(posts []*Post) error {
+	var txHashes [][]byte
+	for _, post := range posts {
+		txHashes = append(txHashes, post.Memo.TxHash)
+	}
+	txHashCounts, err := db.GetPostReplyCounts(txHashes)
+	if err != nil {
+		return jerr.Get("error getting post reply counts", err)
+	}
+	for _, txHashCount := range txHashCounts {
+		for _, post := range posts {
+			if bytes.Equal(post.Memo.TxHash, txHashCount.TxHash) {
+				post.ReplyCount = txHashCount.Count
+			}
+		}
+	}
+	return nil
 }
 
 func AttachParentToPosts(posts []*Post) error {

@@ -209,7 +209,7 @@ func GetPersonalizedRecentTopLikedTxHashes(selfPkHash []byte, offset uint, timeS
 		Table("memo_likes").
 		Select("like_tx_hash, COUNT(DISTINCT pk_hash) AS count").
 		Joins("LEFT OUTER JOIN blocks ON (memo_likes.block_id = blocks.id)").
-		Joins("JOIN (" + joinSelect + ") fsq ON (memo_likes.pk_hash = fsq.follow_pk_hash)", selfPkHash).
+		Joins("JOIN ("+joinSelect+") fsq ON (memo_likes.pk_hash = fsq.follow_pk_hash)", selfPkHash).
 		Group("like_tx_hash").
 		Order("count DESC, memo_likes.id DESC").
 		Limit(25).

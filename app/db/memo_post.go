@@ -3,10 +3,10 @@ package db
 import (
 	"bytes"
 	"fmt"
-	"github.com/memocash/memo/app/bitcoin/script"
-	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/script"
+	"github.com/memocash/memo/app/bitcoin/wallet"
 	"html"
 	"net/url"
 	"sort"
@@ -124,6 +124,42 @@ func GetPostReplyCount(txHash []byte) (uint, error) {
 		return 0, jerr.Get("error running count query", err)
 	}
 	return cnt, nil
+}
+
+type TxHashCount struct {
+	TxHash []byte
+	Count  uint
+}
+
+func GetPostReplyCounts(txHashes [][]byte) ([]TxHashCount, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	query := db.
+		Table("memo_posts").
+		Select("parent_tx_hash, COUNT(*) AS count").
+		Where("parent_tx_hash IN (?)", txHashes).
+		Group("parent_tx_hash")
+	rows, err := query.Rows()
+	if err != nil {
+		return nil, jerr.Get("error running query", err)
+	}
+	defer rows.Close()
+	var txHashCounts []TxHashCount
+	for rows.Next() {
+		var txHash []byte
+		var count uint
+		err := rows.Scan(&txHash, &count)
+		if err != nil {
+			return nil, jerr.Get("error scanning rows", err)
+		}
+		txHashCounts = append(txHashCounts, TxHashCount{
+			TxHash: txHash,
+			Count: count,
+		})
+	}
+	return txHashCounts, nil
 }
 
 func GetPostReplies(txHash []byte, offset uint) ([]*MemoPost, error) {

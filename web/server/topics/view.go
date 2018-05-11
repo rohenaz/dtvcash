@@ -56,6 +56,11 @@ var viewRoute = web.Route{
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
 		}
+		err = profile.AttachReplyCountToPosts(topicPosts)
+		if err != nil {
+			r.Error(jerr.Get("error attaching reply counts to posts", err), http.StatusInternalServerError)
+			return
+		}
 		var lastLikeId uint
 		for _, topicPost := range topicPosts {
 			for _, like := range topicPost.Likes {

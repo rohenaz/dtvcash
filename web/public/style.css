@@ -421,16 +421,22 @@ span.page {
 }
 .topic-post {
     border-radius: 8px;
-    padding: 5px 10px;
+    padding: 5px 10px 5px 40px;
 }
 .topic-post:nth-of-type(2n) {
     background: rgba(0,0,0,0.1);
 }
 .topic-post .identicon {
     float: left;
+    display: block;
     width: 24px;
     height: 24px;
-    margin-right: 10px;
+    margin-top: 3px;
+    margin-left: -32px;
+}
+.topic-post .post-wrapper {
+    float: right;
+    width: 100%;
 }
 .topic-post .post-header,
 .topic-post .post-header p {
@@ -467,6 +473,9 @@ span.page {
 .topic-post .like-info {
     font-style: italic;
 }
+.topic-post .reply-count {
+    font-weight: normal;
+}
 .topic-post a.like-link {
     font-weight: normal;
     color: #888;
@@ -480,7 +489,7 @@ span.page {
     padding-top: 4px;
 }
 .topic-post .like-form label {
-    min-width: unset;
+    width: unset;
     padding-top: 4px;
 }
 .topic-post .like-form input {
