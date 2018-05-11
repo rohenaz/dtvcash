@@ -64,17 +64,17 @@ func addImgurImages(msg string) string {
 		msg = re.ReplaceAllString(msg, `<div class="video-container"><video controls><source src="https://i.imgur.com/$3" type="video/mp4"></video></iframe></div>`)
 	} else if !containsRex.MatchString(msg) {
 		var re = regexp.MustCompile(`(http[s]?://([a-z]+\.)?imgur\.com/)([^\s]*)`)
-		msg = re.ReplaceAllString(msg, `<img class="imgur" src="https://i.imgur.com/$3.jpg"/>`)
+		msg = re.ReplaceAllString(msg, `<a href="https://i.imgur.com/$3.jpg" target="_blank"><img class="imgur" src="https://i.imgur.com/$3.jpg"/></a>`)
 	} else {
 		var re = regexp.MustCompile(`(http[s]?://([a-z]+\.)?imgur\.com/)([^\s]*)`)
-		msg = re.ReplaceAllString(msg, `<img class="imgur" src="https://i.imgur.com/$3"/>`)
+		msg = re.ReplaceAllString(msg, `<a href="https://i.imgur.com/$3.jpg" target="_blank"><img class="imgur" src="https://i.imgur.com/$3"/></a>`)
 	}
 	return msg
 }
 
 func addGiphyImages(msg string) string {
 	var re = regexp.MustCompile(`(http[s]?://([a-z]+\.)?giphy\.com/)([^\s]*)`)
-	msg = re.ReplaceAllString(msg, `<img class="imgur" src="https://i.giphy.com/$3"/>`)
+	msg = re.ReplaceAllString(msg, `<a href="https://i.giphy.com/$3.jpg" target="_blank"><img class="imgur" src="https://i.giphy.com/$3"/></a>`)
 	return msg
 }
 
