@@ -42,6 +42,7 @@ func (p Post) GetTotalTip() int64 {
 func (p Post) GetMessage() string {
 	msg := addYoutubeVideos(p.Memo.Message)
 	msg = addImgurImages(msg)
+	msg = addGiphyImages(msg)
 	if msg == p.Memo.Message {
 		msg = addLinks(msg)
 	}
@@ -59,6 +60,12 @@ func addYoutubeVideos(msg string) string {
 func addImgurImages(msg string) string {
 	var re = regexp.MustCompile(`(http[s]?://(i\.)?imgur\.com/)([^\s]*)`)
 	msg = re.ReplaceAllString(msg, `<img class="imgur" src="https://i.imgur.com/$3"/>`)
+	return msg
+}
+
+func addGiphyImages(msg string) string {
+	var re = regexp.MustCompile(`(http[s]?://([a-z]+\.)?giphy\.com/)([^\s]*)`)
+	msg = re.ReplaceAllString(msg, `<img class="imgur" src="https://i.giphy.com/$3"/>`)
 	return msg
 }
 
