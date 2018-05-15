@@ -11,7 +11,6 @@ import (
 var loginRoute = web.Route{
 	Pattern: res.UrlLogin,
 	Handler: func(r *web.Response) {
-		r.Helper["Nav"] = "home"
 		if auth.IsLoggedIn(r.Session.CookieId) {
 			r.SetRedirect(res.GetUrlWithBaseUrl(res.UrlIndex, r))
 			return

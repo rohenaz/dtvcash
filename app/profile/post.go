@@ -50,14 +50,20 @@ func (p Post) GetMessage() string {
 }
 
 func addYoutubeVideos(msg string) string {
-	var re = regexp.MustCompile(`(https://youtu\.be/)([A-Za-z0-9_\-\?=]+)`)
+	var re = regexp.MustCompile(`(http[s]?://youtu\.be/)([A-Za-z0-9_\-\?=]+)`)
 	msg = re.ReplaceAllString(msg, `<div class="video-container"><iframe frameborder="0" src="https://www.youtube.com/embed/$2"></iframe></div>`)
-	re = regexp.MustCompile(`(https://(www\.)?youtube\.com/watch\?v=)([A-Za-z0-9_\-\?=]+)`)
+	re = regexp.MustCompile(`(http[s]?://y2u\.be/)([A-Za-z0-9_\-\?=]+)`)
+	msg = re.ReplaceAllString(msg, `<div class="video-container"><iframe frameborder="0" src="https://www.youtube.com/embed/$2"></iframe></div>`)
+	re = regexp.MustCompile(`(http[s]?://(www\.)?youtube\.com/watch\?v=)([A-Za-z0-9_\-\?=]+)`)
 	msg = re.ReplaceAllString(msg, `<div class="video-container"><iframe frameborder="0" src="https://www.youtube.com/embed/$3"></iframe></div>`)
 	return msg
 }
 
 func addImgurImages(msg string) string {
+	// Album link
+	if strings.Contains(msg, "imgur.com/a/") {
+		return msg
+	}
 	containsRex := regexp.MustCompile(`\.jpg|\.jpeg|\.png|\.gif|\.gifv`)
 	if strings.Contains(msg, ".mp4") {
 		var re = regexp.MustCompile(`(http[s]?://([a-z]+\.)?imgur\.com/)([^\s]*)`)
@@ -73,8 +79,13 @@ func addImgurImages(msg string) string {
 }
 
 func addGiphyImages(msg string) string {
-	var re = regexp.MustCompile(`(http[s]?://([a-z]+\.)?giphy\.com/)([^\s]*)`)
-	msg = re.ReplaceAllString(msg, `<a href="https://i.giphy.com/$3.jpg" target="_blank"><img class="imgur" src="https://i.giphy.com/$3"/></a>`)
+	if strings.Contains(msg, "giphy.com/gifs/") {
+		var re = regexp.MustCompile(`(http[s]?://([a-z]+\.)?giphy.com/gifs/[a-z-]*-([A-Za-z0-9]+))`)
+		msg = re.ReplaceAllString(msg, `<a href="https://i.giphy.com/$3.gif" target="_blank"><img class="imgur" src="https://i.giphy.com/$3.gif"/></a>`)
+	} else {
+		var re = regexp.MustCompile(`(http[s]?://([a-z]+\.)?giphy\.com/)([^\s]*)`)
+		msg = re.ReplaceAllString(msg, `<a href="https://i.giphy.com/$3" target="_blank"><img class="imgur" src="https://i.giphy.com/$3"/></a>`)
+	}
 	return msg
 }
 

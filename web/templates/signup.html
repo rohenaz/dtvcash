@@ -1,19 +1,15 @@
 {{ template "snippets/header.html" . }}
 
-<h2>Sign Up</h2>
-
-<p>
-    <i>
-        NOTE: This username is used for login purposes only and is not visible by anyone else.
-        Memo usernames are separate and require on-chain transactions using BCH.
-    </i>
-</p>
+<h2>Account Signup</h2>
 
 <form id="form-signup" method="post">
     <p>
-        <label for="username">Username</label>
+        <label for="username">Username*</label>
         <input id="username" type="text" name="username" class="form-control" placeholder="Username" autocomplete="on"
                required autofocus>
+        <span class="signup-notice">
+            * Your username is only used for logging in and will not be visible to anyone else
+        </span>
     </p>
     <p>
         <label for="password">Password</label>
@@ -37,25 +33,20 @@
         <label for="private-key">Private Key (WIF)</label>
         <input id="private-key" type="password" name="private-key"/>
     </p>
-    <p>
+    <p class="disclaimer">
         <input id="accept" name="accept" type="checkbox"/>
-        <label for="accept" style="max-width:500px;font-size:12px;">
+        <label for="accept">
             Disclaimer: {{ template "snippets/disclaimer.html" }}
         </label>
     </p>
+    <div style="clear:both;"></div>
     <p>
-        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign up"/>
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Signup"/>
     </p>
-    <p>
+    <p class="other-link">
         Already have an account? <a href="login">Login here</a>.
     </p>
 </form>
-
-<style type="text/css">
-    #private-key-field {
-        display: none;
-    }
-</style>
 
 <script type="text/javascript">
     $(function () {

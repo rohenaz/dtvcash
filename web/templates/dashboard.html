@@ -1,5 +1,19 @@
 {{ template "snippets/header.html" . }}
 
+{{ if eq .Profile.Balance 0 }}
+<h3>
+    You need some Bitcoin Cash (BCH) to get started
+</h3>
+<p>
+    <b>Step 1.</b> Copy your address below<br/>
+</p>
+<p>
+    <b>Step 2.</b> Paste your address into your bitcoin cash wallet to send yourself some funds.
+    If you don't have any BCH <a target="_blank" href="https://free.bitcoin.com">visit the bitcoin.com faucet</a> to get
+    some for free!
+</p>
+{{ end }}
+
 <br/>
 
 {{ template "snippets/profile.html" .Profile }}
@@ -13,18 +27,14 @@
     <a class="btn" href="key/delete-account">{{ T "Delete_Account" }}</a>
 </p>
 
-{{ if not .Posts }}
+{{ if and (not .Posts) (not (eq .Profile.Balance 0)) }}
 <h3>Feed Empty</h3>
 <p>Start following others to see their posts here</p>
-{{ else }}
-<h3>Feed</h3>
-{{ template "snippets/feed.html" . }}
 {{ end }}
 
-{{ if eq .Profile.Balance 0 }}
-<p>
-    Send yourself some BCH to start posting.
-</p>
+{{ if .Posts }}
+<h3>Feed</h3>
+{{ template "snippets/feed.html" . }}
 {{ end }}
 
 {{ template "snippets/footer.html" . }}
