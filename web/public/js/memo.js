@@ -2,7 +2,7 @@
 
     var maxPostBytes = 207;
     var maxReplyBytes = 175;
-    var maxNameBytes = 207;
+    var maxNameBytes = 77;
     var maxProfileTextBytes = 207;
 
     /**
