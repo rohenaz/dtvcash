@@ -97,7 +97,7 @@ var followSubmitRoute = web.Route{
 
 		address := key.GetAddress()
 
-		var fee = int64(283 - memo.MaxPostSize + len(address.GetScriptAddress()))
+		var fee = int64(413 - memo.MaxPostSize + len(address.GetScriptAddress()))
 		var minInput = fee + transaction.DustMinimumOutput
 
 		txOut, err := db.GetSpendableTxOut(key.PkHash, minInput)

@@ -47,7 +47,7 @@ var createSubmitRoute = web.Route{
 		}
 
 		address := key.GetAddress()
-		var fee = int64(284 - memo.MaxTagMessageSize + len([]byte(message)) + len([]byte(topicName)))
+		var fee = int64(414 - memo.MaxTagMessageSize + len([]byte(message)) + len([]byte(topicName)))
 		var minInput = fee + transaction.DustMinimumOutput
 
 		txOut, err := db.GetSpendableTxOut(key.PkHash, minInput)
