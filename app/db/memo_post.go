@@ -22,13 +22,13 @@ type MemoPost struct {
 	TxHash       []byte      `gorm:"unique;size:50"`
 	ParentHash   []byte
 	PkHash       []byte      `gorm:"index:pk_hash"`
-	PkScript     []byte
+	PkScript     []byte      `gorm:"size:300"`
 	Address      string
 	ParentTxHash []byte      `gorm:"index:parent_tx_hash"`
 	Parent       *MemoPost
 	Replies      []*MemoPost `gorm:"foreignkey:ParentTxHash"`
-	Topic        string      `gorm:"index:tag"`
-	Message      string
+	Topic        string      `gorm:"index:tag;size:300"`
+	Message      string      `gorm:"size:300"`
 	BlockId      uint
 	Block        *Block
 	CreatedAt    time.Time
@@ -156,7 +156,7 @@ func GetPostReplyCounts(txHashes [][]byte) ([]TxHashCount, error) {
 		}
 		txHashCounts = append(txHashCounts, TxHashCount{
 			TxHash: txHash,
-			Count: count,
+			Count:  count,
 		})
 	}
 	return txHashCounts, nil

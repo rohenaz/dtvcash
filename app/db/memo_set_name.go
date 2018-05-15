@@ -2,11 +2,11 @@ package db
 
 import (
 	"bytes"
-	"github.com/memocash/memo/app/bitcoin/script"
-	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/script"
+	"github.com/memocash/memo/app/bitcoin/wallet"
 	"html"
 	"sort"
 	"time"
@@ -17,9 +17,9 @@ type MemoSetName struct {
 	TxHash     []byte `gorm:"unique;size:50"`
 	ParentHash []byte
 	PkHash     []byte `gorm:"index:pk_hash"`
-	PkScript   []byte
+	PkScript   []byte `gorm:"size:300"`
 	Address    string
-	Name       string
+	Name       string `gorm:"size:300"`
 	BlockId    uint
 	Block      *Block
 	CreatedAt  time.Time
