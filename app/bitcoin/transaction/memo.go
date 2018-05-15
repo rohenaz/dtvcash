@@ -2,15 +2,15 @@ package transaction
 
 import (
 	"bytes"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
+	"github.com/btcsuite/btcutil"
+	"github.com/jchavannes/btcd/txscript"
+	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/bitcoin/memo"
 	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
 	"github.com/memocash/memo/app/html-parser"
-	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/btcsuite/btcutil"
-	"github.com/jchavannes/btcd/txscript"
-	"github.com/jchavannes/jgo/jerr"
 )
 
 func GetMemoOutputIfExists(txn *db.Transaction) (*db.TransactionOut, error) {
@@ -140,12 +140,14 @@ func saveMemoPost(txn *db.Transaction, out *db.TransactionOut, blockId uint, inp
 		}
 		return nil
 	}
-	var message string
-	if len(out.PkScript) > 81 {
-		message = string(out.PkScript[6:])
-	} else {
-		message = string(out.PkScript[5:])
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from message", err)
 	}
+	if len(pushData) != 2 {
+		return jerr.Newf("invalid message, incorrect push data (%d)", len(pushData))
+	}
+	var message = string(pushData[1])
 	memoPost = &db.MemoPost{
 		TxHash:     txn.Hash,
 		PkHash:     inputAddress.ScriptAddress(),
@@ -178,12 +180,14 @@ func saveMemoSetName(txn *db.Transaction, out *db.TransactionOut, blockId uint, 
 		}
 		return nil
 	}
-	var name string
-	if len(out.PkScript) > 81 {
-		name = string(out.PkScript[6:])
-	} else {
-		name = string(out.PkScript[5:])
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from set name", err)
 	}
+	if len(pushData) != 2 {
+		return jerr.Newf("invalid set name, incorrect push data (%d)", len(pushData))
+	}
+	var name = string(pushData[1])
 	memoSetName = &db.MemoSetName{
 		TxHash:     txn.Hash,
 		PkHash:     inputAddress.ScriptAddress(),
@@ -308,11 +312,19 @@ func saveMemoReply(txn *db.Transaction, out *db.TransactionOut, blockId uint, in
 		}
 		return nil
 	}
-
 	if len(out.PkScript) < 38 {
 		return jerr.Newf("invalid reply, length too short (%d)", len(out.PkScript))
 	}
-	txHash, err := chainhash.NewHash(out.PkScript[5:37])
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from memo reply message", err)
+	}
+	if len(pushData) != 3 {
+		return jerr.Newf("invalid reply message, incorrect push data (%d)", len(pushData))
+	}
+	var replyTxHash = pushData[1]
+	var messageRaw = pushData[2]
+	txHash, err := chainhash.NewHash(replyTxHash)
 	if err != nil {
 		return jerr.Get("error parsing transaction hash", err)
 	}
@@ -323,7 +335,7 @@ func saveMemoReply(txn *db.Transaction, out *db.TransactionOut, blockId uint, in
 		ParentHash:   parentHash,
 		Address:      inputAddress.EncodeAddress(),
 		ParentTxHash: txHash.CloneBytes(),
-		Message:      html_parser.EscapeWithEmojis(string(out.PkScript[38:])),
+		Message:      html_parser.EscapeWithEmojis(string(messageRaw)),
 		BlockId:      blockId,
 	}
 	err = memoPost.Save()
@@ -397,13 +409,14 @@ func saveMemoSetProfile(txn *db.Transaction, out *db.TransactionOut, blockId uin
 		}
 		return nil
 	}
-
-	var profile string
-	if len(out.PkScript) > 81 {
-		profile = string(out.PkScript[6:])
-	} else {
-		profile = string(out.PkScript[5:])
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from profile text", err)
 	}
+	if len(pushData) != 2 {
+		return jerr.Newf("invalid profile text, incorrect push data (%d)", len(pushData))
+	}
+	var profile = string(pushData[1])
 	memoSetProfile = &db.MemoSetProfile{
 		TxHash:     txn.Hash,
 		PkHash:     inputAddress.ScriptAddress(),

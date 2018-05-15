@@ -2,10 +2,10 @@ package main_node
 
 import (
 	"fmt"
-	"github.com/memocash/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/db"
 )
 
 func sendGetHeaders(n *Node, startingBlock *chainhash.Hash) {

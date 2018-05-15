@@ -15,7 +15,7 @@ type MemoTest struct {
 	Id        uint   `gorm:"primary_key"`
 	TxHash    []byte `gorm:"unique;size:50"`
 	PkHash    []byte
-	PkScript  []byte
+	PkScript  []byte `gorm:"size:500"`
 	Address   string
 	BlockId   uint
 	Block     *Block

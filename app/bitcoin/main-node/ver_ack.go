@@ -2,9 +2,9 @@ package main_node
 
 import (
 	"fmt"
-	"github.com/memocash/memo/app/db"
 	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/db"
 )
 
 func onVerAck(n *Node, msg *wire.MsgVerAck) {
