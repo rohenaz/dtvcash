@@ -104,7 +104,7 @@ var likeSubmitRoute = web.Route{
 
 		var tx *wire.MsgTx
 
-		var fee = int64(413 - memo.MaxPostSize + len(txHash.CloneBytes()))
+		var fee = int64(423 - memo.MaxPostSize + len(txHash.CloneBytes()))
 		tip := int64(r.Request.GetFormValueInt("tip"))
 		var minInput = fee + transaction.DustMinimumOutput + tip
 

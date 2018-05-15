@@ -1,9 +1,9 @@
 (function () {
 
-    var maxPostBytes = 207;
-    var maxReplyBytes = 175;
+    var maxPostBytes = 217;
+    var maxReplyBytes = 185;
     var maxNameBytes = 77;
-    var maxProfileTextBytes = 207;
+    var maxProfileTextBytes = 217;
 
     /**
      * @param {jQuery} $ele
