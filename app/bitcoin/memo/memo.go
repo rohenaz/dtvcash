@@ -2,6 +2,6 @@ package memo
 
 const (
 	MaxPostSize       = 217
-	MaxReplySize      = 175
+	MaxReplySize      = 185
 	MaxTagMessageSize = 217
 )
