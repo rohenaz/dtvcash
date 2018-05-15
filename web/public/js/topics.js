@@ -1,6 +1,6 @@
 (function () {
 
-    var maxNewTopicBytes = 74;
+    var maxNewTopicBytes = 204;
 
     /**
      * @param {jQuery} $form
