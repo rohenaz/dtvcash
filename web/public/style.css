@@ -422,6 +422,7 @@ span.page {
 .topic-post {
     border-radius: 8px;
     padding: 5px 10px 5px 40px;
+    word-break: break-word;
 }
 .topic-post:nth-of-type(2n) {
     background: rgba(0,0,0,0.1);

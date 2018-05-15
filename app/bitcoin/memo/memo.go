@@ -5,3 +5,7 @@ const (
 	MaxReplySize      = 184
 	MaxTagMessageSize = 217
 )
+
+const (
+	MaxTxFee = 424
+)

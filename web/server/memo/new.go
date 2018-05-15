@@ -2,13 +2,13 @@ package memo
 
 import (
 	"fmt"
-	"github.com/memocash/memo/app/bitcoin/memo"
+	"github.com/jchavannes/jgo/jerr"
+	"github.com/jchavannes/jgo/web"
 	"github.com/memocash/memo/app/auth"
+	"github.com/memocash/memo/app/bitcoin/memo"
 	"github.com/memocash/memo/app/bitcoin/transaction"
 	"github.com/memocash/memo/app/db"
 	"github.com/memocash/memo/app/res"
-	"github.com/jchavannes/jgo/jerr"
-	"github.com/jchavannes/jgo/web"
 	"net/http"
 )
 
@@ -65,7 +65,7 @@ var newSubmitRoute = web.Route{
 		}
 
 		address := key.GetAddress()
-		var fee = int64(423 - memo.MaxPostSize + len([]byte(message)))
+		var fee = int64(memo.MaxTxFee - memo.MaxPostSize + len([]byte(message)))
 		var minInput = fee + transaction.DustMinimumOutput
 
 		txOut, err := db.GetSpendableTxOut(key.PkHash, minInput)
