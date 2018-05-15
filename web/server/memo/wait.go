@@ -1,13 +1,13 @@
 package memo
 
 import (
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
+	"github.com/jchavannes/jgo/jerr"
+	"github.com/jchavannes/jgo/web"
 	"github.com/memocash/memo/app/bitcoin/memo"
 	"github.com/memocash/memo/app/bitcoin/transaction"
 	"github.com/memocash/memo/app/db"
 	"github.com/memocash/memo/app/res"
-	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/jchavannes/jgo/jerr"
-	"github.com/jchavannes/jgo/web"
 	"net/http"
 	"strings"
 )

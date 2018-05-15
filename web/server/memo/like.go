@@ -139,7 +139,7 @@ var likeSubmitRoute = web.Route{
 				r.Error(jerr.New("not enough funds"), http.StatusUnprocessableEntity)
 				return
 			}
-			fee += 34
+			fee += memo.AdditionalOutputFee
 		}
 		transactions = append(transactions, transaction.SpendOutput{
 			Type:    transaction.SpendOutputTypeP2PK,

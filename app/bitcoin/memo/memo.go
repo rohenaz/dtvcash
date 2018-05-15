@@ -7,5 +7,6 @@ const (
 )
 
 const (
-	MaxTxFee = 424
+	MaxTxFee            = 424
+	AdditionalOutputFee = 34
 )
