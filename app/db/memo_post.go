@@ -22,13 +22,13 @@ type MemoPost struct {
 	TxHash       []byte      `gorm:"unique;size:50"`
 	ParentHash   []byte
 	PkHash       []byte      `gorm:"index:pk_hash"`
-	PkScript     []byte      `gorm:"size:300"`
+	PkScript     []byte      `gorm:"size:500"`
 	Address      string
 	ParentTxHash []byte      `gorm:"index:parent_tx_hash"`
 	Parent       *MemoPost
 	Replies      []*MemoPost `gorm:"foreignkey:ParentTxHash"`
-	Topic        string      `gorm:"index:tag;size:300"`
-	Message      string      `gorm:"size:300"`
+	Topic        string      `gorm:"index:tag;size:500"`
+	Message      string      `gorm:"size:500"`
 	BlockId      uint
 	Block        *Block
 	CreatedAt    time.Time

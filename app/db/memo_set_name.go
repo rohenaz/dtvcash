@@ -17,9 +17,9 @@ type MemoSetName struct {
 	TxHash     []byte `gorm:"unique;size:50"`
 	ParentHash []byte
 	PkHash     []byte `gorm:"index:pk_hash"`
-	PkScript   []byte `gorm:"size:300"`
+	PkScript   []byte `gorm:"size:500"`
 	Address    string
-	Name       string `gorm:"size:300"`
+	Name       string `gorm:"size:500"`
 	BlockId    uint
 	Block      *Block
 	CreatedAt  time.Time
