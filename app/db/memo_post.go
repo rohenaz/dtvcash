@@ -9,7 +9,6 @@ import (
 	"github.com/memocash/memo/app/bitcoin/wallet"
 	"html"
 	"net/url"
-	"sort"
 	"time"
 )
 
@@ -189,81 +188,6 @@ func GetPostReplies(txHash []byte, offset uint) ([]*MemoPost, error) {
 	return posts, nil
 }
 
-type memoPostSortByDate []*MemoPost
-
-func (txns memoPostSortByDate) Len() int      { return len(txns) }
-func (txns memoPostSortByDate) Swap(i, j int) { txns[i], txns[j] = txns[j], txns[i] }
-func (txns memoPostSortByDate) Less(i, j int) bool {
-	if bytes.Equal(txns[i].ParentHash, txns[j].TxHash) {
-		return true
-	}
-	if bytes.Equal(txns[i].TxHash, txns[j].ParentHash) {
-		return false
-	}
-	if txns[i].Block == nil && txns[j].Block == nil {
-		return txns[i].Id > txns[j].Id
-	}
-	if txns[i].Block == nil {
-		return true
-	}
-	if txns[j].Block == nil {
-		return false
-	}
-	if txns[i].Block.Height == txns[j].Block.Height {
-		return txns[i].Id > txns[j].Id
-	}
-	return txns[i].Block.Height > txns[j].Block.Height
-}
-
-type memoPostSortByDateAsc []*MemoPost
-
-func (txns memoPostSortByDateAsc) Len() int      { return len(txns) }
-func (txns memoPostSortByDateAsc) Swap(i, j int) { txns[i], txns[j] = txns[j], txns[i] }
-func (txns memoPostSortByDateAsc) Less(i, j int) bool {
-	if bytes.Equal(txns[i].ParentHash, txns[j].TxHash) {
-		return false
-	}
-	if bytes.Equal(txns[i].TxHash, txns[j].ParentHash) {
-		return true
-	}
-	if txns[i].Block == nil && txns[j].Block == nil {
-		return txns[i].Id < txns[j].Id
-	}
-	if txns[i].Block == nil {
-		return false
-	}
-	if txns[j].Block == nil {
-		return true
-	}
-	if txns[i].Block.Height == txns[j].Block.Height {
-		return txns[i].Id < txns[j].Id
-	}
-	return txns[i].Block.Height < txns[j].Block.Height
-}
-
-func GetPostsForPkHashes(pkHashes [][]byte, offset uint) ([]*MemoPost, error) {
-	if len(pkHashes) == 0 {
-		return nil, nil
-	}
-	var memoPosts []*MemoPost
-	db, err := getDb()
-	if err != nil {
-		return nil, jerr.Get("error getting db", err)
-	}
-	result := db.
-		Limit(25).
-		Offset(offset).
-		Preload(BlockTable).
-		Where("pk_hash in (?)", pkHashes).
-		Order("id DESC").
-		Find(&memoPosts)
-	if result.Error != nil {
-		return nil, jerr.Get("error getting memo posts", result.Error)
-	}
-	sort.Sort(memoPostSortByDate(memoPosts))
-	return memoPosts, nil
-}
-
 func GetPostsFeedForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 	var memoPosts []*MemoPost
 	db, err := getDb()
@@ -290,7 +214,6 @@ func GetPostsFeedForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
 	}
-	sort.Sort(memoPostSortByDate(memoPosts))
 	return memoPosts, nil
 }
 
@@ -314,7 +237,6 @@ func GetPostsForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
 	}
-	sort.Sort(memoPostSortByDate(memoPosts))
 	return memoPosts, nil
 }
 
@@ -356,7 +278,6 @@ func GetRecentPosts(offset uint) ([]*MemoPost, error) {
 	if result.Error != nil {
 		return nil, jerr.Get("error running query", result.Error)
 	}
-	sort.Sort(memoPostSortByDate(memoPosts))
 	return memoPosts, nil
 }
 
@@ -504,7 +425,9 @@ func GetPostsForTopic(topic string, offset uint) ([]*MemoPost, error) {
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
 	}
-	sort.Sort(memoPostSortByDateAsc(memoPosts))
+	for i, j := 0, len(memoPosts)-1; i < j; i, j = i+1, j-1 {
+		memoPosts[i], memoPosts[j] = memoPosts[j], memoPosts[i]
+	}
 	return memoPosts, nil
 }
 
@@ -528,6 +451,8 @@ func GetOlderPostsForTopic(topic string, firstPostId uint) ([]*MemoPost, error) 
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
 	}
-	sort.Sort(memoPostSortByDateAsc(memoPosts))
+	for i, j := 0, len(memoPosts)-1; i < j; i, j = i+1, j-1 {
+		memoPosts[i], memoPosts[j] = memoPosts[j], memoPosts[i]
+	}
 	return memoPosts, nil
 }

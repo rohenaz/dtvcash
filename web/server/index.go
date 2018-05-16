@@ -2,12 +2,12 @@ package server
 
 import (
 	"bytes"
+	"github.com/jchavannes/jgo/jerr"
+	"github.com/jchavannes/jgo/web"
 	"github.com/memocash/memo/app/auth"
 	"github.com/memocash/memo/app/db"
 	"github.com/memocash/memo/app/profile"
 	"github.com/memocash/memo/app/res"
-	"github.com/jchavannes/jgo/jerr"
-	"github.com/jchavannes/jgo/web"
 	"net/http"
 	"strings"
 )
