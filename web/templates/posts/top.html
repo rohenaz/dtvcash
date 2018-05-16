@@ -10,8 +10,6 @@
     <a class="btn {{ if eq .Range "all" }}sel{{ end }}" href="posts/top?range=all">{{ T "all_time" }}</a>
 </div>
 
-<br/>
-
 <p class="pagination">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}"
        href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>

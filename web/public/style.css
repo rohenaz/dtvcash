@@ -102,6 +102,9 @@ select {
     width: 150px;
     max-width: 100%;
 }
+.center {
+    text-align: center;
+}
 
 table.table {
     width: 100%;
@@ -316,6 +319,9 @@ img.identicon {
 .message-byte-count.red {
     color: red;
 }
+.posts-nav {
+    text-align: center;
+}
 .posts-nav a {
     text-decoration: none;
     color: #000;
@@ -331,6 +337,10 @@ span.page {
     margin: 0 10px;
 }
 
+.pagination {
+    display: block;
+    text-align: center;
+}
 .pagination a {
     color: #000;
 }
@@ -383,6 +393,9 @@ span.page {
 #all-posts {
     max-height: 50%;
     overflow-y: scroll;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+    margin-bottom: 12px;
+    border: 1px solid #fafafa;
 }
 @-moz-document url-prefix() {
     #all-posts {
@@ -396,10 +409,12 @@ span.page {
     color: #000;
 }
 .topic-post {
-    border-radius: 8px;
     padding: 5px 10px 5px 40px;
     word-break: break-word;
     border-bottom: 1px solid #aaa;
+}
+.topic-post:nth-of-type(odd) {
+    background: #f9f9f9;
 }
 .topic-post:last-of-type {
     border-bottom: none;
