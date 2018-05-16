@@ -29,28 +29,6 @@ h1 a img {
     height: 40px;
 }
 
-input, textarea, select {
-    padding: 5px 7px;
-    border: 1px solid #000;
-    font-size: 14px;
-    vertical-align: top;
-}
-
-input[type=text],
-input[type=password] {
-    width: 350px;
-    max-width: 100%;
-    border-radius: 8px;
-}
-
-textarea {
-    font-family: sans-serif;
-    width: 350px;
-    max-width: 100%;
-    min-height: 70px;
-    border-radius: 8px;
-}
-
 label {
     display: inline-block;
     width: 175px;
@@ -171,6 +149,7 @@ a.disabled {
 .navbar-brand {
     margin-right: 25px;
     padding: 10px 15px 20px;
+    font-weight: bold;
 }
 .footer {
     padding: 10px 0;
@@ -199,7 +178,7 @@ a.disabled {
 .post {
     background: #fff;
     padding: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     word-wrap: break-word;
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
 }
@@ -217,8 +196,8 @@ a.disabled {
 }*/
 
 .post .post {
-    border: 1px solid #999;
-    margin-bottom: 0;
+    border: 1px solid #ccc;
+    margin: 0 -9px -9px -9px;
 }
 .post .reply {
     margin: 5px 0 10px;
