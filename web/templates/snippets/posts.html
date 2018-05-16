@@ -1,4 +1,10 @@
-{{ $tz := .TimeZone }}
+</div>
+<div class="posts">
+    <div class="container">
+    {{ $tz := .TimeZone }}
 {{ range .Posts }}
 {{ template "snippets/post.html" dict "Post" . "Compress" false "TimeZone" $tz }}
 {{ end }}
+    </div>
+</div>
+<div class="container">

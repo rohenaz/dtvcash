@@ -1,4 +1,4 @@
-<div class="post" id="post-{{ .Post.Memo.GetTransactionHashString }}">
+<div class="post rounded box-shadow" id="post-{{ .Post.Memo.GetTransactionHashString }}">
     <div class="post-header">
         <p class="name">
         <span class="identicon-{{ .Post.Memo.GetAddressString }}">
@@ -60,10 +60,10 @@
 {{ if not .Compress }}
     <div class="actions">
     {{ if .Post.IsLoggedIn }}
-        <a class="btn" href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">{{ T "reply" }}</a>
+        <a class="btn btn-default" href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">{{ T "reply" }}</a>
         <div class="like" id="like-{{ .Post.Memo.GetTransactionHashString }}">
         <span class="like-info" id="like-info-{{ .Post.Memo.GetTransactionHashString }}">
-            <a class="btn like-link" id="like-link-{{ .Post.Memo.GetTransactionHashString }}"
+            <a class="btn btn-default like-link" id="like-link-{{ .Post.Memo.GetTransactionHashString }}"
                href="#">{{ T "like" 1 }}</a>
         </span>
         <form class="like-form" id="like-form-{{ .Post.Memo.GetTransactionHashString }}">
@@ -84,7 +84,7 @@
                     <input id="save-password-{{ .Post.Memo.GetTransactionHashString }}" name="save-password"
                            type="checkbox"/>
                 </span>
-            <input class="btn btn-lg btn-primary btn-block" type="submit" value="Like">
+            <input class="btn btn-sm btn-default" type="submit" value="Like">
             <a href="#" class="like-cancel" id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
         </form>
         <span class="broadcasting">Broadcasting...</span>

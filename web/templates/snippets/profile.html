@@ -1,4 +1,4 @@
-<table class="table left profile">
+<table class="table left profile table-striped">
     <tr>
         <th>{{ T "name" }}</th>
         <td class="name">
@@ -54,7 +54,7 @@
             users you follow are following this person
             ({{ .Reputation.GetPercentString }}).
         {{ end }}
-                <span>
+            <span>
                     Shared Connections is the percentage of people you follow who are following this person.
                     For more info visit the <a href="about#connectivity">about page</a>.
                 </span>
@@ -77,21 +77,28 @@
     <tr>
         <th>{{ T "actions" }}</th>
         <td>
-        {{ if .CanFollow }}
-            <a class="btn" href="memo/follow/{{ .GetAddressString }}">{{ T "follow" 1 }} {{ .Name }}</a>
-        {{ else if .CanUnfollow }}
-            <a class="btn" href="memo/unfollow/{{ .GetAddressString }}">{{ T "unfollow" }} {{ .Name }}</a>
-        {{ end }}
-            <a class="btn btn-leave" target="_blank"
-               href="https://explorer.bitcoin.com/bch/address/{{ .GetAddressString }}">
-            {{ T "view_address_on_block_explorer" }}
-            </a>
-        {{ if .NameSet }}
-            <a class="btn btn-leave" target="_blank"
-               href="https://explorer.bitcoin.com/bch/tx/{{ .GetNameTx }}">
-            {{ T "view_name_on_block_explorer" }}
-            </a>
-        {{ end }}
+            <ul class="nav nav-pills">
+            {{ if .CanFollow }}
+                <li><a href="memo/follow/{{ .GetAddressString }}">{{ T "follow" 1 }} {{ .Name }}</a></li>
+            {{ else if .CanUnfollow }}
+                <li><a href="memo/unfollow/{{ .GetAddressString }}">{{ T "unfollow" }} {{ .Name }}</a></li>
+            {{ end }}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Block Explorer</a>
+                    <ul class="dropdown-menu dropdown-menu-center">
+                        <li><a target="_blank"
+                               href="https://explorer.bitcoin.com/bch/address/{{ .GetAddressString }}">
+                        {{ T "view_address_on_block_explorer" }}
+                        </a></li>
+                    {{ if .NameSet }}
+                        <li><a target="_blank"
+                               href="https://explorer.bitcoin.com/bch/tx/{{ .GetNameTx }}">
+                        {{ T "view_name_on_block_explorer" }}
+                        </a></li>
+                    {{ end }}
+                    </ul>
+                </li>
+            </ul>
         </td>
     </tr>
 </table>

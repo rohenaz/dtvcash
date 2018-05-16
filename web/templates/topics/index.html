@@ -1,5 +1,7 @@
 {{ template "snippets/header.html" . }}
 
+<br/>
+
 <div class="topics-index-head">
     <form id="topic-search-form">
         <input id="topic-search" type="text" name="s" placeholder="Topic name" value="{{ .SearchString }}" autofocus/>
@@ -21,7 +23,7 @@
 </p>
 {{ end }}
 
-<table class="table left topics-table">
+<table class="table left topics-table table-striped">
     <thead>
     <tr>
         <th>{{ T "Topic" }}</th>
