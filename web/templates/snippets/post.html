@@ -66,18 +66,17 @@
             <a class="btn btn-default like-link" id="like-link-{{ .Post.Memo.GetTransactionHashString }}"
                href="#">{{ T "like" 1 }}</a>
         </span>
-        <form class="like-form" id="like-form-{{ .Post.Memo.GetTransactionHashString }}">
+        <form class="like-form hidden form-inline" id="like-form-{{ .Post.Memo.GetTransactionHashString }}">
             <input id="tx-hash-{{ .Post.Memo.GetTransactionHashString }}" type="hidden" name="tx-hash"
                    value="{{ .Post.Memo.GetTransactionHashString }}"/>
             <label for="tip-{{ .Post.Memo.GetTransactionHashString }}">Tip</label>
             <input id="tip-{{ .Post.Memo.GetTransactionHashString }}" type="text" name="tip"
-                   class="form-control"
+                   class="form-control input-sm"
                    placeholder="0">
             <span class="password-area">
                     <label for="password-{{ .Post.Memo.GetTransactionHashString }}">Password</label>
                     <input id="password-{{ .Post.Memo.GetTransactionHashString }}" type="password" name="password"
-                           class="form-control" placeholder="Password"
-                           autocomplete="on" required>
+                           class="form-control input-sm" placeholder="Password"/>
                     <label for="save-password-{{ .Post.Memo.GetTransactionHashString }}">
                         Save<br/>Password
                     </label>

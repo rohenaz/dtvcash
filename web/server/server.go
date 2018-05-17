@@ -5,6 +5,7 @@ import (
 	"github.com/jchavannes/jgo/web"
 	"github.com/memocash/memo/app/auth"
 	"github.com/memocash/memo/app/bitcoin/queuer"
+	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
 	"github.com/memocash/memo/app/res"
 	auth2 "github.com/memocash/memo/web/server/auth"
@@ -67,6 +68,12 @@ func preHandler(r *web.Response) {
 			return
 		}
 		r.Helper["Username"] = user.Username
+		userAddress, err := cache.GetUserAddress(user.Id)
+		if err != nil {
+			r.Error(jerr.Get("error getting user address from cache", err), http.StatusInternalServerError)
+			return
+		}
+		r.Helper["UserAddress"] = userAddress.GetEncoded()
 	}
 	if UseMinJS {
 		r.Helper["jsFiles"] = res.GetMinJsFiles()

@@ -199,7 +199,7 @@ a.disabled {
 }*/
 
 .post .post {
-    margin: 0 -9px 1px -9px;
+    margin: 0 -9px 3px -7px;
 }
 .post .reply {
     margin: 5px 0 10px;
@@ -227,7 +227,13 @@ a.disabled {
     font-size: 12px;
     display: inline;
 }
+.post .like-form.hidden {
+    display: none;
+}
 .post .like-form {
+    display: inline-block;
+}
+/*.post .like-form {
     display: none;
     font-size: 12px;
     margin: 0;
@@ -241,9 +247,6 @@ a.disabled {
     margin: 0 5px 0 15px;
 }
 .post .like-form input {
-    display: inline-block;
-    width: 50px;
-    margin: 5px 0;
     height: 28px;
     min-width: unset;
 }
@@ -253,7 +256,7 @@ a.disabled {
 }
 .post .like-form input[type=checkbox] {
     width: unset;
-}
+}*/
 .post .like .broadcasting {
     display: none;
     margin-left: 15px;
@@ -376,7 +379,7 @@ span.page {
     overflow-y: scroll;
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
     margin-bottom: 12px;
-    border: 1px solid #fafafa;
+    border: 1px solid #ccc;
 }
 @-moz-document url-prefix() {
     #all-posts {
@@ -392,7 +395,7 @@ span.page {
 .topic-post {
     padding: 5px 10px 5px 40px;
     word-break: break-word;
-    border-bottom: 1px solid #aaa;
+    border-bottom: 1px solid #ccc;
 }
 .topic-post:nth-of-type(odd) {
     background: #f9f9f9;

@@ -3,9 +3,9 @@ package cache
 import (
 	"bytes"
 	"encoding/gob"
-	"github.com/memocash/memo/app/config"
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/config"
 )
 
 var conn *memcache.Client

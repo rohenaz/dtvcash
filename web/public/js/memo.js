@@ -586,18 +586,18 @@
 
     /**
      * @param {jQuery} $like
-     * @param {string} txHash
+     * @param {string} postTxHash
      */
     MemoApp.Form.NewLike = function ($like, postTxHash) {
         $like.find("#like-link-" + postTxHash).click(function (e) {
             e.preventDefault();
             $("#like-info-" + postTxHash).hide();
-            $("#like-form-" + postTxHash).css({"display": "inline"});
+            $("#like-form-" + postTxHash).removeClass("hidden");
         });
         $like.find("#like-cancel-" + postTxHash).click(function (e) {
             e.preventDefault();
             $("#like-info-" + postTxHash).show();
-            $("#like-form-" + postTxHash).css({"display": "none"});
+            $("#like-form-" + postTxHash).addClass("hidden");
         });
         var $form = $like.find("form");
 
