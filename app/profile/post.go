@@ -14,6 +14,7 @@ type Post struct {
 	Memo       *db.MemoPost
 	Parent     *Post
 	Likes      []*Like
+	HasLiked   bool
 	SelfPkHash []byte
 	ReplyCount uint
 	Replies    []*Post

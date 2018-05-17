@@ -5,11 +5,6 @@
                   required autofocus></textarea>
     </p>
     <p>
-        <label for="reply-password-{{ .Post.Memo.GetTransactionHashString }}">Password</label>
-        <input id="reply-password-{{ .Post.Memo.GetTransactionHashString }}" type="password" name="password" class="form-control" placeholder="Password"
-               autocomplete="on" required>
-    </p>
-    <p>
         <input class="btn btn-primary" type="submit" value="Post Reply">
         <a href="#" id="reply-cancel-{{ .Post.Memo.GetTransactionHashString }}" class="btn btn-default">Cancel</a>
     </p>

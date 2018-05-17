@@ -60,24 +60,21 @@
 {{ if not .Compress }}
     <div class="actions">
     {{ if .Post.IsLoggedIn }}
-        <a id="reply-link-{{ .Post.Memo.GetTransactionHashString }}" class="btn btn-default" href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">{{ T "reply" }}</a>
+        <a id="reply-link-{{ .Post.Memo.GetTransactionHashString }}" class="btn btn-default" href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">
+            <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>{{ T "reply" }}
+        </a>
         <div class="like" id="like-{{ .Post.Memo.GetTransactionHashString }}">
         <span class="like-info" id="like-info-{{ .Post.Memo.GetTransactionHashString }}">
             <a class="btn btn-default like-link" id="like-link-{{ .Post.Memo.GetTransactionHashString }}"
-               href="#">{{ T "like" 1 }}</a>
+               href="#"><span class="glyphicon glyphicon-heart{{ if not .Post.HasLiked }}-empty{{ end }}" aria-hidden="true"></span>{{ T "like" 1 }}</a>
         </span>
             <form class="like-form hidden form-inline" id="like-form-{{ .Post.Memo.GetTransactionHashString }}">
                 <label for="tip-{{ .Post.Memo.GetTransactionHashString }}">Tip</label>
                 <input id="tip-{{ .Post.Memo.GetTransactionHashString }}" type="text" name="tip"
                        class="form-control input-sm"
                        placeholder="0">
-                <span class="password-area">
-                    <label for="like-password-{{ .Post.Memo.GetTransactionHashString }}">Password</label>
-                    <input id="like-password-{{ .Post.Memo.GetTransactionHashString }}" type="password" name="password"
-                           class="form-control input-sm" placeholder="Password"/>
-                </span>
-                <input class="btn btn-sm btn-default" type="submit" value="Like">
-                <a href="#" class="like-cancel" id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
+                <input class="btn btn-sm btn-primary" type="submit" value="Like">
+                <a href="#" class="like-cancel btn btn-sm btn-default" id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
             </form>
             <span class="broadcasting">Broadcasting...</span>
         </div>

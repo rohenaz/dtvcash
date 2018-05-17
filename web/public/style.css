@@ -234,6 +234,27 @@ a.disabled {
 }
 .post .like-form {
     display: inline-block;
+    margin: 2px 0;
+}
+@media (max-width: 991px) {
+    .post .like-form {
+        margin-bottom: 10px;
+    }
+    .post .like-form input[type=text] {
+        display: inline-block;
+    }
+}
+.post .like-form label {
+    width: unset;
+    padding: 2px 5px;
+    margin-left: 10px;
+    vertical-align: bottom;
+}
+.post .like-form input[type=text] {
+    width: 100px;
+}
+.post .actions .glyphicon {
+    margin-right: 10px;
 }
 /*.post .like-form {
     display: none;
@@ -580,4 +601,22 @@ img.imgur {
     .text-right-large {
         text-align: left;
     }
+}
+.home-list .glyphicon {
+    margin-right: 15px;
+}
+.home-list p {
+    text-align: center;
+    margin: 20px 0;
+}
+.home-protocol-image img {
+    width: 100%;
+    border: 1px solid black;
+    max-width: 450px;
+}
+.home-list .list-group-item {
+    border-width: 1px 0 0 0;
+}
+.home-list .list-group-item:first-of-type {
+    border-width: 0;
 }

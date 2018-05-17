@@ -665,9 +665,9 @@
                     tip: tip,
                     password: password
                 },
-                success: function (txHash) {
+                success: function (likeTxHash) {
                     submitting = false;
-                    if (!txHash || txHash.length === 0) {
+                    if (!likeTxHash || likeTxHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
@@ -677,7 +677,7 @@
                         type: "POST",
                         url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoWaitSubmit,
                         data: {
-                            txHash: txHash
+                            txHash: likeTxHash
                         },
                         success: function () {
                             submitting = false;
