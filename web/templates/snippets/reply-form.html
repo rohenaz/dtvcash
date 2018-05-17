@@ -1,8 +1,8 @@
 <form {{ if .Hidden }}class="hidden"{{ end }} id="reply-form-{{ .Post.Memo.GetTransactionHashString }}" method="post">
     <p>
         <label for="message-{{ .Post.Memo.GetTransactionHashString }}">Message <span class="message-byte-count"></span></label>
-        <textarea id="message-{{ .Post.Memo.GetTransactionHashString }}" type="text" name="message" class="form-control" placeholder="Message" autocomplete="on"
-                  required autofocus></textarea>
+        <textarea id="message-{{ .Post.Memo.GetTransactionHashString }}" type="text" name="message" class="form-control"
+                  placeholder="Message"></textarea>
     </p>
     <p>
         <input class="btn btn-primary" type="submit" value="Post Reply">

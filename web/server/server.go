@@ -111,6 +111,20 @@ func isValidLang(lang string) bool {
 	return false
 }
 
+var allowedExtensions = []string{
+	"js",
+	"css",
+	"jpg",
+	"png",
+	"ico",
+	"gif",
+	"woff",
+	"woff2",
+	"ttf",
+	"svg",
+	"eot",
+}
+
 func Run(sessionCookieInsecure bool) {
 	go func() {
 		queuer.StartAndKeepAlive()
@@ -128,13 +142,14 @@ func Run(sessionCookieInsecure bool) {
 
 	// Start web server
 	ws := web.Server{
-		CookiePrefix:    "memo",
-		InsecureCookie:  sessionCookieInsecure,
-		IsLoggedIn:      isLoggedIn,
-		Port:            8261,
-		NotFoundHandler: notFoundHandler,
-		PreHandler:      preHandler,
-		GetCsrfToken:    getCsrfToken,
+		CookiePrefix:      "memo",
+		InsecureCookie:    sessionCookieInsecure,
+		AllowedExtensions: allowedExtensions,
+		IsLoggedIn:        isLoggedIn,
+		Port:              8261,
+		NotFoundHandler:   notFoundHandler,
+		PreHandler:        preHandler,
+		GetCsrfToken:      getCsrfToken,
 		Routes: web.Routes(
 			[]web.Route{
 				indexRoute,
