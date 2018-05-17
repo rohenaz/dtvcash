@@ -3,11 +3,11 @@
 {{ template "posts/header.html" dict "Page" "top" "Username" .Username }}
 
 
-<div class="pagination">
-    <a class="btn {{ if eq .Range "1h" }}sel{{ end }}" href="posts/top?range=1h">{{ T "last_hour" }}</a>
-    <a class="btn {{ if eq .Range "24h" }}sel{{ end }}" href="posts/top?range=24h">{{ T "last_24_hours" }}</a>
-    <a class="btn {{ if eq .Range "7d" }}sel{{ end }}" href="posts/top?range=7d">{{ T "last_7_days" }}</a>
-    <a class="btn {{ if eq .Range "all" }}sel{{ end }}" href="posts/top?range=all">{{ T "all_time" }}</a>
+<div class="pagination posts-nav">
+    <a class="{{ if eq .Range "1h" }}sel{{ end }}" href="posts/top?range=1h">{{ T "last_hour" }}</a>
+    <a class="{{ if eq .Range "24h" }}sel{{ end }}" href="posts/top?range=24h">{{ T "last_24_hours" }}</a>
+    <a class="{{ if eq .Range "7d" }}sel{{ end }}" href="posts/top?range=7d">{{ T "last_7_days" }}</a>
+    <a class="{{ if eq .Range "all" }}sel{{ end }}" href="posts/top?range=all">{{ T "all_time" }}</a>
 </div>
 
 <p class="pagination">

@@ -17,17 +17,14 @@
 <br/>
 
 {{ template "snippets/profile.html" .Profile }}
-<div>
-    <ul class="nav navbar-nav">
-        <li><a href="profile/{{ .Profile.GetAddressString }}">{{ T "view_your_profile" }}</a></li>
-        <!--<li><a href="memo/new">{{ T "new_memo" }}</a></li>-->
-        <li><a href="memo/set-name">{{ T "set_name" }}</a></li>
-        <li><a href="memo/set-profile">{{ T "set_profile" }}</a></li>
-        <li><a href="key/export">{{ T "export_key" }}</a></li>
-        <li><a href="key/change-password">{{ T "change_password" }}</a></li>
-        <li><a href="key/delete-account">{{ T "Delete_Account" }}</a></li>
-    </ul>
-    <div style="clear:both;"></div>
+<div class="center">
+    <a class="btn btn-default" href="profile/{{ .Profile.GetAddressString }}">{{ T "view_your_profile" }}</a>
+    <!--<a href="memo/new">{{ T "new_memo" }}</a>-->
+    <a class="btn btn-default" href="memo/set-name">{{ T "set_name" }}</a>
+    <a class="btn btn-default" href="memo/set-profile">{{ T "set_profile" }}</a>
+    <a class="btn btn-default" href="key/export">{{ T "export_key" }}</a>
+    <a class="btn btn-default" href="key/change-password">{{ T "change_password" }}</a>
+    <a class="btn btn-default" href="key/delete-account">{{ T "Delete_Account" }}</a>
 </div>
 
 {{ if and (not .Posts) (not (eq .Profile.Balance 0)) }}

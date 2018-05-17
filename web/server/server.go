@@ -1,6 +1,8 @@
 package server
 
 import (
+	"github.com/jchavannes/jgo/jerr"
+	"github.com/jchavannes/jgo/web"
 	"github.com/memocash/memo/app/auth"
 	"github.com/memocash/memo/app/bitcoin/queuer"
 	"github.com/memocash/memo/app/db"
@@ -11,8 +13,6 @@ import (
 	"github.com/memocash/memo/web/server/posts"
 	"github.com/memocash/memo/web/server/profile"
 	"github.com/memocash/memo/web/server/topics"
-	"github.com/jchavannes/jgo/jerr"
-	"github.com/jchavannes/jgo/web"
 	"github.com/nicksnyder/go-i18n/i18n"
 	"io/ioutil"
 	"log"
@@ -90,6 +90,11 @@ func preHandler(r *web.Response) {
 	})
 }
 
+func notFoundHandler(r *web.Response) {
+	r.SetResponseCode(http.StatusNotFound)
+	r.RenderTemplate(res.UrlNotFound)
+}
+
 func isValidLang(lang string) bool {
 	for _, item := range []string{"en-US", "es-LA", "zh-CN", "ja-JP"} {
 		if item == lang {
@@ -116,12 +121,13 @@ func Run(sessionCookieInsecure bool) {
 
 	// Start web server
 	ws := web.Server{
-		CookiePrefix:   "memo",
-		InsecureCookie: sessionCookieInsecure,
-		IsLoggedIn:     isLoggedIn,
-		Port:           8261,
-		PreHandler:     preHandler,
-		GetCsrfToken:   getCsrfToken,
+		CookiePrefix:    "memo",
+		InsecureCookie:  sessionCookieInsecure,
+		IsLoggedIn:      isLoggedIn,
+		Port:            8261,
+		NotFoundHandler: notFoundHandler,
+		PreHandler:      preHandler,
+		GetCsrfToken:    getCsrfToken,
 		Routes: web.Routes(
 			[]web.Route{
 				indexRoute,

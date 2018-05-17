@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
+	"github.com/memocash/memo/app/db"
 	"github.com/memocash/memo/app/res"
 	"net/http"
 )
@@ -15,6 +16,11 @@ var postRoute = web.Route{
 		txHashString := r.Request.GetUrlNamedQueryVariable(urlTxHash.Id)
 		post, err := getPostWithThreads(r, txHashString, offset)
 		if err != nil {
+			if db.IsRecordNotFoundError(err) {
+				r.Error(jerr.Get("error post not found", err), http.StatusNotFound)
+				r.RenderTemplate(res.UrlNotFound)
+				return
+			}
 			r.Error(jerr.Get("error getting post with threads", err), http.StatusInternalServerError)
 			return
 		}

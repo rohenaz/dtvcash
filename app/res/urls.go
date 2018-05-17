@@ -18,6 +18,7 @@ const (
 	UrlStats        = "/stats"
 	UrlFeed         = "/feed"
 	UrlAbout        = "/about"
+	UrlNotFound     = "/404"
 )
 
 const (

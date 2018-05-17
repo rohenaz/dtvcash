@@ -155,10 +155,12 @@ a.disabled {
     padding: 10px 0;
     border-top: 1px solid rgba(0,0,0,0.2);
 }
-.footer .nav {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0px 10px 10px 10px;
+.footer div {
+    padding: 5px 0;
+}
+.footer div a {
+    display: inline-block;
+    margin: 0 10px;
 }
 
 /*.post {
@@ -177,9 +179,10 @@ a.disabled {
 }
 .post {
     background: #fff;
-    padding: 10px;
+    padding: 10px 10px 0 10px;
     margin-bottom: 15px;
     word-wrap: break-word;
+    border: 1px solid #ccc;
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
 }
 .post .name a:nth-of-type(1) {
@@ -196,8 +199,7 @@ a.disabled {
 }*/
 
 .post .post {
-    border: 1px solid #ccc;
-    margin: 0 -9px -9px -9px;
+    margin: 0 -9px 1px -9px;
 }
 .post .reply {
     margin: 5px 0 10px;
@@ -260,7 +262,7 @@ a.disabled {
     display: inline-block;
 }
 .post .actions {
-    margin: 10px 0 0;
+    margin: 10px 0;
 }
 #notify {
     color: red;
@@ -564,4 +566,13 @@ img.imgur {
     right: auto !important;
     text-align: center !important;
     transform: translate(-50%, 0) !important;
+}
+
+.text-right-large {
+    text-align: right;
+}
+@media (max-width: 991px) {
+    .text-right-large {
+        text-align: left;
+    }
 }
