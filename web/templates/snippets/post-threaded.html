@@ -98,7 +98,8 @@
                        class="form-control"
                        placeholder="0">
                 <input class="btn btn-sm btn-primary" type="submit" value="Like">
-                <a href="#" class="like-cancel btn btn-sm btn-default" id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
+                <a href="#" class="like-cancel btn btn-sm btn-default"
+                   id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
             </form>
             <span class="broadcasting">Broadcasting...</span>
         </div>
@@ -142,9 +143,7 @@
     $(".identicon-{{ .Post.Parent.Memo.GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
     {{ end }}
     {{ if .Post.IsLoggedIn }}
-    $(function () {
-        MemoApp.Form.ReplyLink("{{ .Post.Memo.GetTransactionHashString }}");
-        MemoApp.Form.NewLike($("#like-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}");
-    });
+    MemoApp.Form.ReplyLink("{{ .Post.Memo.GetTransactionHashString }}");
+    MemoApp.Form.NewLike($("#like-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}");
     {{ end }}
 </script>

@@ -108,9 +108,7 @@
     $(".identicon-{{ .Post.Parent.Memo.GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
     {{ end }}
     {{ if .Post.IsLoggedIn }}
-    $(function() {
-        MemoApp.Form.ReplyLink("{{ .Post.Memo.GetTransactionHashString }}");
-        MemoApp.Form.NewLike($("#like-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}");
-    });
+    MemoApp.Form.ReplyLink("{{ .Post.Memo.GetTransactionHashString }}");
+    MemoApp.Form.NewLike($("#like-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}");
     {{ end }}
 </script>
