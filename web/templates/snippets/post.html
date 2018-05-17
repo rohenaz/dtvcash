@@ -34,9 +34,6 @@
         {{ end }}
         </p>
     </div>
-    <p class="message">
-    {{ .Post.GetMessage }}
-    </p>
 {{ if .Post.Parent }}
     <div class="reply">
         Replying to
@@ -48,6 +45,9 @@
         <p>{{ .Post.Parent.GetMessage }}</p>
     </div>
 {{ end }}
+    <p class="message">
+    {{ .Post.GetMessage }}
+    </p>
     <p class="likes">
         <i>
             <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ len .Post.Likes }} {{ T "likes" }}</a>

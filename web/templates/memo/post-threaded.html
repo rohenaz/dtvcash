@@ -6,14 +6,6 @@
 </h3>
 {{ end }}
 
-</div>
-<div class="posts">
-    <div class="container">
-    {{ template "snippets/post-threaded.html" dict "Post" .Post "Compress" false "TimeZone" .TimeZone "Offset" .Offset }}
-    </div>
-</div>
-<div class="container">
-
-    <br/>
+{{ template "snippets/post-threaded.html" dict "Post" .Post "Compress" false "TimeZone" .TimeZone "Offset" .Offset }}
 
 {{ template "snippets/footer.html" . }}
