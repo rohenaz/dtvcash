@@ -447,9 +447,11 @@
         });
     };
     /**
-     * @param {jQuery} $form
+     * @param {string} txHash
      */
-    MemoApp.Form.ReplyMemo = function ($form) {
+    MemoApp.Form.ReplyMemo = function (txHash) {
+        var $form = $("#reply-form-" + txHash);
+        var $replyCancel = $("#reply-cancel-" + txHash);
         var $message = $form.find("[name=message]");
         var $msgByteCount = $form.find(".message-byte-count");
         $message.on("input", function () {
@@ -465,6 +467,11 @@
                 $msgByteCount.removeClass("red");
             }
         }
+
+        $replyCancel.click(function(e) {
+            e.preventDefault();
+            $form.addClass("hidden");
+        });
 
         setMsgByteCount();
         MemoApp.CheckLoadPassword($form);
@@ -484,12 +491,6 @@
 
             if (message.length === 0) {
                 alert("Must enter a message.");
-                return;
-            }
-
-            var txHash = $form.find("[name=tx-hash]").val();
-            if (txHash.length === 0) {
-                alert("Form error, tx hash not set.");
                 return;
             }
 
@@ -585,26 +586,41 @@
     };
 
     /**
-     * @param {jQuery} $like
-     * @param {string} postTxHash
+     * @param {string} txHash
      */
-    MemoApp.Form.NewLike = function ($like, postTxHash) {
-        $like.find("#like-link-" + postTxHash).click(function (e) {
+    MemoApp.Form.ReplyLink = function(txHash) {
+        var $replyLink = $("#reply-link-" + txHash);
+        var $replyForm = $("#reply-form-" + txHash);
+        $replyLink.click(function(e) {
             e.preventDefault();
-            $("#like-info-" + postTxHash).hide();
-            $("#like-form-" + postTxHash).removeClass("hidden");
+            $replyForm.removeClass("hidden");
         });
-        $like.find("#like-cancel-" + postTxHash).click(function (e) {
+    };
+
+    /**
+     * @param {jQuery} $like
+     * @param {string} txHash
+     */
+    MemoApp.Form.NewLike = function ($like, txHash) {
+        var $likeLink = $("#like-link-" + txHash);
+        var $likeCancel = $("#like-cancel-" + txHash);
+        var $likeInfo = $("#like-info-" + txHash);
+        var $likeForm = $("#like-form-" + txHash);
+        $likeLink.click(function (e) {
             e.preventDefault();
-            $("#like-info-" + postTxHash).show();
-            $("#like-form-" + postTxHash).addClass("hidden");
+            $likeInfo.hide();
+            $likeForm.removeClass("hidden");
         });
-        var $form = $like.find("form");
+        $likeCancel.click(function (e) {
+            e.preventDefault();
+            $likeInfo.show();
+            $likeForm.addClass("hidden");
+        });
 
         var $passwordArea = $like.find(".password-area");
         var $passwordClear = $like.find(".password-clear");
 
-        MemoApp.CheckLoadPassword($form);
+        MemoApp.CheckLoadPassword($likeForm);
         if (localStorage.WalletPassword) {
             $passwordArea.hide();
             $passwordClear.addClass("show");
@@ -613,38 +629,32 @@
             if (this.checked) {
                 $passwordArea.hide();
                 $passwordClear.addClass("show");
-                MemoApp.CheckSavePassword($form);
+                MemoApp.CheckSavePassword($likeForm);
             }
         });
 
         var $broadcasting = $like.find(".broadcasting");
 
         var submitting = false;
-        $form.submit(function (e) {
+        $likeForm.submit(function (e) {
             e.preventDefault();
             if (submitting) {
                 return
             }
 
-            var txHash = $form.find("[name=tx-hash]").val();
-            if (txHash.length === 0) {
-                alert("Form error, tx hash not set.");
-                return;
-            }
-
-            var tip = $form.find("[name=tip]").val();
+            var tip = $likeForm.find("[name=tip]").val();
             if (tip.length !== 0 && tip < 546) {
                 alert("Must enter a tip greater than 546 (the minimum dust limit).");
                 return;
             }
 
-            var password = $form.find("[name=password]").val();
+            var password = $likeForm.find("[name=password]").val();
             if (password.length === 0) {
                 alert("Must enter a password.");
                 return;
             }
 
-            MemoApp.CheckSavePassword($form);
+            MemoApp.CheckSavePassword($likeForm);
 
             submitting = true;
             $.ajax({
@@ -662,7 +672,7 @@
                         return
                     }
                     $broadcasting.addClass("show");
-                    $form.hide();
+                    $likeForm.hide();
                     $.ajax({
                         type: "POST",
                         url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoWaitSubmit,
@@ -672,9 +682,9 @@
                         success: function () {
                             submitting = false;
                             $.ajax({
-                                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostAjax + "/" + postTxHash,
+                                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostAjax + "/" + txHash,
                                 success: function (html) {
-                                    $("#post-" + postTxHash).replaceWith(html);
+                                    $("#post-" + txHash).replaceWith(html);
                                 },
                                 error: function (xhr) {
                                     alert("error getting post via ajax (status: " + xhr.status + ")");

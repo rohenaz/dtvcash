@@ -3,9 +3,9 @@
 {{ template "posts/header.html" dict "Page" "archive" "Username" .Username }}
 
 <div class="pagination">
-    <a class="btn" href="posts/archive?day={{ .PrevDay }}">{{ T "previous_day" }}</a>
+    <a href="posts/archive?day={{ .PrevDay }}">{{ T "previous_day" }}</a>
     <span class="page">{{ .Day }}</span>
-    <a class="btn {{ if .Today }}disabled{{ end }}" href="posts/archive?day={{ .NextDay }}">{{ T "next_day" }}</a>
+    <a class="{{ if .Today }}disabled{{ end }}" href="posts/archive?day={{ .NextDay }}">{{ T "next_day" }}</a>
 </div>
 
 <p class="pagination">

@@ -83,8 +83,11 @@ select {
 .center {
     text-align: center;
 }
+.clear {
+    clear: both;
+}
 
-table.table {
+/*table.table {
     width: 100%;
     background: rgba(0, 0, 0, 0.01);
 }
@@ -100,7 +103,7 @@ table.table th,
 table.table td {
     padding: 5px 7px;
     height: 38px;
-}
+}*/
 table.sortable td.bars span {
     display: block;
     width: 20px;

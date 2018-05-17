@@ -1,7 +1,7 @@
 {{ $tz := .TimeZone }}
 {{ template "snippets/header.html" . }}
 
-<h2>{{ T "profile" }}</h2>
+<br/>
 
 {{ template "snippets/profile.html" .Profile }}
 
@@ -39,7 +39,7 @@
 {{ if not .Posts }}
     <h3>No Posts Yet</h3>
 {{ else }}
-    <h3>{{ T "posts" }}</h3>
+    <h3>{{ T "posts" }} by {{ .Profile.Name }}</h3>
 {{ end }}
 </div>
 
