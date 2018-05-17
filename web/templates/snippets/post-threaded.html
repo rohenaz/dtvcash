@@ -90,18 +90,18 @@
                href="#"><span class="glyphicon glyphicon-heart{{ if not .Post.HasLiked }}-empty{{ end }}"
                               aria-hidden="true"></span>{{ T "like" 1 }}</a>
         </span>
-            <form class="like-form hidden" id="like-form-{{ .Post.Memo.GetTransactionHashString }}">
+            <form class="like-form hidden form-inline" id="like-form-{{ .Post.Memo.GetTransactionHashString }}">
                 <input id="tx-hash-{{ .Post.Memo.GetTransactionHashString }}" type="hidden" name="tx-hash"
                        value="{{ .Post.Memo.GetTransactionHashString }}"/>
                 <label for="tip-{{ .Post.Memo.GetTransactionHashString }}">Tip</label>
                 <input id="tip-{{ .Post.Memo.GetTransactionHashString }}" type="text" name="tip"
-                       class="form-control"
+                       class="form-control input-sm"
                        placeholder="0">
                 <input class="btn btn-sm btn-primary" type="submit" value="Like">
                 <a href="#" class="like-cancel btn btn-sm btn-default"
                    id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
             </form>
-            <span class="broadcasting">Broadcasting...</span>
+            <span class="broadcasting hidden">Broadcasting...</span>
         </div>
     {{ end }}
         <a class="btn btn-leave right" target="_blank"

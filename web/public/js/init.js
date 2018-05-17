@@ -100,6 +100,17 @@ var MemoApp = {
         localStorage.WalletPassword = password;
     };
 
+    MemoApp.GetPassword = function() {
+        return localStorage.WalletPassword;
+    };
+
+    /**
+     * @param {string} password
+     */
+    MemoApp.SetPassword = function(password) {
+        localStorage.WalletPassword = password;
+    };
+
     /**
      * @param {XMLHttpRequest} xhr
      */

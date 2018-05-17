@@ -70,7 +70,7 @@
                     <input class="btn btn-sm btn-default" type="submit" value="Like">
                     <a href="#" id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
                 </form>
-                <span class="broadcasting">Broadcasting...</span>
+                <span class="broadcasting hidden">Broadcasting...</span>
                 <script type="text/javascript">
                     $(function () {
                         MemoApp.Form.NewTopicLike($("#like-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}");

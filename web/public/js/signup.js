@@ -62,6 +62,7 @@
                     wif: privateKey
                 },
                 success: function () {
+                    MemoApp.SetPassword(password);
                     window.location = MemoApp.GetBaseUrl() + MemoApp.URL.Index
                 },
                 /**

@@ -34,7 +34,6 @@
         }
 
         setMsgByteCount();
-        MemoApp.CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -54,21 +53,13 @@
                 return;
             }
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
-                return;
-            }
-
-            MemoApp.CheckSavePassword($form);
-
             submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoNewSubmit,
                 data: {
                     message: message,
-                    password: password
+                    password: MemoApp.GetPassword()
                 },
                 success: function (txHash) {
                     submitting = false;
@@ -116,7 +107,6 @@
         }
 
         setMsgByteCount();
-        MemoApp.CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -136,21 +126,13 @@
                 return;
             }
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
-                return;
-            }
-
-            MemoApp.CheckSavePassword($form);
-
             submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoSetNameSubmit,
                 data: {
                     name: name,
-                    password: password
+                    password: MemoApp.GetPassword()
                 },
                 success: function (txHash) {
                     submitting = false;
@@ -199,7 +181,6 @@
 
         setMsgByteCount();
 
-        MemoApp.CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -220,21 +201,13 @@
                 }
             }
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
-                return;
-            }
-
-            MemoApp.CheckSavePassword($form);
-
             submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoSetProfileSubmit,
                 data: {
                     profile: profile,
-                    password: password
+                    password: MemoApp.GetPassword()
                 },
                 success: function (txHash) {
                     submitting = false;
@@ -265,7 +238,6 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.Follow = function ($form) {
-        MemoApp.CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -279,21 +251,13 @@
                 return;
             }
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
-                return;
-            }
-
-            MemoApp.CheckSavePassword($form);
-
             submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoFollowSubmit,
                 data: {
                     address: address,
-                    password: password
+                    password: MemoApp.GetPassword()
                 },
                 success: function (txHash) {
                     submitting = false;
@@ -325,7 +289,6 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.Unfollow = function ($form) {
-        MemoApp.CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -339,21 +302,13 @@
                 return;
             }
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
-                return;
-            }
-
-            MemoApp.CheckSavePassword($form);
-
             submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoUnfollowSubmit,
                 data: {
                     address: address,
-                    password: password
+                    password: MemoApp.GetPassword()
                 },
                 success: function (txHash) {
                     submitting = false;
@@ -384,7 +339,6 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.Like = function ($form) {
-        MemoApp.CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -404,14 +358,6 @@
                 return;
             }
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
-                return;
-            }
-
-            MemoApp.CheckSavePassword($form);
-
             submitting = true;
             $.ajax({
                 type: "POST",
@@ -419,7 +365,7 @@
                 data: {
                     txHash: txHash,
                     tip: tip,
-                    password: password
+                    password: MemoApp.GetPassword()
                 },
                 success: function (txHash) {
                     submitting = false;
@@ -474,7 +420,6 @@
         });
 
         setMsgByteCount();
-        MemoApp.CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -494,13 +439,6 @@
                 return;
             }
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
-                return;
-            }
-            MemoApp.CheckSavePassword($form);
-
             submitting = true;
             $.ajax({
                 type: "POST",
@@ -508,7 +446,7 @@
                 data: {
                     txHash: txHash,
                     message: message,
-                    password: password
+                    password: MemoApp.GetPassword()
                 },
                 success: function (txHash) {
                     submitting = false;
@@ -606,6 +544,8 @@
         var $likeCancel = $("#like-cancel-" + txHash);
         var $likeInfo = $("#like-info-" + txHash);
         var $likeForm = $("#like-form-" + txHash);
+        var $broadcasting = $like.find(".broadcasting");
+
         $likeLink.click(function (e) {
             e.preventDefault();
             $likeInfo.hide();
@@ -616,24 +556,6 @@
             $likeInfo.show();
             $likeForm.addClass("hidden");
         });
-
-        var $passwordArea = $like.find(".password-area");
-        var $passwordClear = $like.find(".password-clear");
-
-        MemoApp.CheckLoadPassword($likeForm);
-        if (localStorage.WalletPassword) {
-            $passwordArea.hide();
-            $passwordClear.addClass("show");
-        }
-        $passwordArea.find("[name=save-password]").change(function () {
-            if (this.checked) {
-                $passwordArea.hide();
-                $passwordClear.addClass("show");
-                MemoApp.CheckSavePassword($likeForm);
-            }
-        });
-
-        var $broadcasting = $like.find(".broadcasting");
 
         var submitting = false;
         $likeForm.submit(function (e) {
@@ -648,14 +570,6 @@
                 return;
             }
 
-            var password = $likeForm.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
-                return;
-            }
-
-            MemoApp.CheckSavePassword($likeForm);
-
             submitting = true;
             $.ajax({
                 type: "POST",
@@ -663,7 +577,7 @@
                 data: {
                     txHash: txHash,
                     tip: tip,
-                    password: password
+                    password: MemoApp.GetPassword()
                 },
                 success: function (likeTxHash) {
                     submitting = false;
@@ -671,7 +585,7 @@
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
-                    $broadcasting.addClass("show");
+                    $broadcasting.removeClass("hidden");
                     $likeForm.hide();
                     $.ajax({
                         type: "POST",
@@ -693,7 +607,7 @@
                         },
                         error: function () {
                             submitting = false;
-                            $broadcasting.removeClass("show");
+                            $broadcasting.addClass("hidden");
                             console.log("Error waiting for transaction to broadcast.");
                         }
                     });

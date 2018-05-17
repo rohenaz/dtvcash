@@ -326,7 +326,7 @@
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
-                    $broadcasting.addClass("show");
+                    $broadcasting.removeClass("hidden");
                     $.ajax({
                         type: "POST",
                         url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoWaitSubmit,
@@ -335,14 +335,14 @@
                         },
                         success: function () {
                             submitting = false;
-                            $broadcasting.removeClass("show");
+                            $broadcasting.addClass("hidden");
                             $message.val("");
                             setMsgByteCount();
                         },
                         error: function () {
                             submitting = false;
                             alert("Error waiting for transaction to broadcast.");
-                            $broadcasting.removeClass("show");
+                            $broadcasting.addClass("hidden");
                             $message.val("");
                         }
                     });
@@ -442,7 +442,7 @@
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
-                    $broadcasting.addClass("show");
+                    $broadcasting.removeClass("hidden");
                     $form.hide();
                     $.ajax({
                         type: "POST",
@@ -452,12 +452,12 @@
                         },
                         success: function () {
                             submitting = false;
-                            $broadcasting.removeClass("show");
+                            $broadcasting.addClass("hidden");
                         },
                         error: function () {
                             submitting = false;
                             alert("Error waiting for transaction to broadcast.");
-                            $broadcasting.removeClass("show");
+                            $broadcasting.addClass("hidden");
                         }
                     });
                 },

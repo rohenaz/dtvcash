@@ -205,10 +205,10 @@ a.disabled {
 }
 .post .reply {
     margin: 5px 0 10px;
-    border: 2px solid #aaa;
-    background: #f0f0f0;
+    border: 1px solid #ccc;
+    background: #fafafa;
     padding: 10px;
-    border-radius: 11px;
+    color: #888;
 }
 .post .reply p {
     margin: 12px 0 5px;
@@ -281,11 +281,11 @@ a.disabled {
     width: unset;
 }*/
 .post .like .broadcasting {
-    display: none;
+    display: inline-block;
     margin-left: 15px;
 }
-.post .like .broadcasting.show {
-    display: inline-block;
+.post .like .broadcasting.hidden {
+    display: none;
 }
 .post .actions {
     margin: 10px 0;
@@ -506,10 +506,10 @@ span.page {
     background: rgba(0,0,0,0.05);
 }
 .topic-post .like .broadcasting {
-    display: none;
-}
-.topic-post .like .broadcasting.show {
     display: inline-block;
+}
+.topic-post .like .broadcasting.hidden {
+    display: none;
 }
 .topic-post img.imgur {
     max-width: 50%;

@@ -71,6 +71,7 @@
                     newPassword: newPassword
                 },
                 success: function (keyHtml) {
+                    MemoApp.SetPassword(newPassword);
                     $outDiv.html(keyHtml);
                 },
                 /**
