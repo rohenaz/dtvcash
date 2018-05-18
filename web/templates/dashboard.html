@@ -18,7 +18,7 @@
 
 {{ template "snippets/profile.html" .Profile }}
 
-<div class="center">
+<div class="dashboard-actions">
     <a class="btn btn-default" href="profile/{{ .Profile.GetAddressString }}">{{ T "view_your_profile" }}</a>
     <!--<a href="memo/new">{{ T "new_memo" }}</a>-->
     <a class="btn btn-default" href="memo/set-name">{{ T "set_name" }}</a>

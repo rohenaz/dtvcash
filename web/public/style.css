@@ -622,3 +622,9 @@ img.imgur {
 #new-memo-form textarea {
     height: 100px;
 }
+.dashboard-actions {
+    text-align: center;
+}
+.dashboard-actions a {
+    margin: 5px 0;
+}
