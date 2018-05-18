@@ -30,7 +30,7 @@
         });
     </script>
 </head>
-<body>
+<body {{ if eq .UserSettings.Theme "dark" }}class="dark"{{ end }}>
 <nav class="navbar navbar-default">
     <div class="container">
         <div class="navbar-header">

@@ -225,7 +225,8 @@ a.disabled {
 }
 .post .like {
     font-size: 12px;
-    display: inline;
+    display: inline-block;
+    vertical-align: bottom;
 }
 .post .like-form.hidden {
     display: none;
@@ -253,6 +254,8 @@ a.disabled {
 }
 .post .actions .glyphicon {
     margin-right: 10px;
+    margin-top: -4px;
+    vertical-align: middle;
 }
 /*.post .like-form {
     display: none;
@@ -644,4 +647,101 @@ h1.home-header {
 }
 .dashboard-actions a {
     margin: 5px 0;
+}
+
+
+body.dark {
+    background: #2b3e50;
+    color: #bbb;
+}
+body.dark .post {
+    background: #2b3e50;
+    border-color: #666;
+}
+body.dark .table-striped>tbody>tr:nth-of-type(odd) {
+    background: #304559;
+}
+body.dark .table>tbody>tr>td,
+body.dark .table>tbody>tr>th,
+body.dark .table>tfoot>tr>td,
+body.dark .table>tfoot>tr>th,
+body.dark .table>thead>tr>td,
+body.dark .table>thead>tr>th {
+    border-color: #666;
+}
+body.dark .post .reply {
+    background-color: rgb(53, 72, 90);
+    border-color: #666;
+}
+body.dark .btn-default {
+    color: #ccc;
+    border-color: #666;
+    background-color: rgb(53, 72, 90);
+}
+body.dark a.btn-leave {
+    color: #888;
+    border-color: #666;
+    background-color: transparent;
+}
+body.dark a {
+    color: #5e992b;
+}
+body.dark .pagination a {
+    color: #bbb;
+}
+body.dark .pagination a.disabled {
+    color: #777;
+}
+body.dark .navbar-default {
+    background: #2b3e50;
+    border-color: #666;
+}
+body.dark .navbar-default .navbar-nav>li>a {
+    color: #bbb;
+}
+body.dark .navbar-default .navbar-nav>.active>a,
+body.dark .navbar-default .navbar-nav>.active>a:focus,
+body.dark .navbar-default .navbar-nav>.active>a:hover {
+    color: #bbb;
+    background: #374f66;
+}
+body.dark .nav>li>a:focus,
+body.dark .nav>li>a:hover {
+    background: #374f66;
+}
+body.dark .form-control {
+    color: #bbb;
+    background: #374f66;
+}
+body.dark .topic-post:nth-of-type(odd) {
+    background: #304559;
+}
+body.dark .topic-post {
+    border-color: #666;
+}
+body.dark #all-posts {
+    border-color: #666;
+}
+body.dark .topic-post .name a {
+    color: #bbb;
+}
+body.dark .navbar-default .navbar-nav>.open>a,
+body.dark .navbar-default .navbar-nav>.open>a:focus,
+body.dark .navbar-default .navbar-nav>.open>a:hover {
+    color: #bbb;
+    background: #374f66;
+}
+body.dark .dropdown-menu {
+    background: #374f66;
+}
+body.dark .dropdown-menu .divider {
+    background: #666;
+}
+body.dark .dropdown-menu>li>a:focus,
+body.dark .dropdown-menu>li>a:hover {
+    color: #5e992b;
+    background: #2b3e50;
+}
+body.dark .navbar-default .navbar-brand {
+    color: #5e992b;
 }

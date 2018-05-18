@@ -3,11 +3,12 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.Settings = function ($form) {
+        var $saved = $form.find("#saved");
         $form.submit(function (e) {
             e.preventDefault();
             var defaultTip = $form.find("[name=default-tip]").val();
-            var integrations = $form.find("[name=integrations]").val();
-            var theme = $form.find("[name=theme]").val();
+            var integrations = $form.find("[name=integrations]:checked").val();
+            var theme = $form.find("[name=theme]:checked").val();
 
             if (defaultTip.length > 0) {
                 if (isNaN(defaultTip)) {
@@ -32,7 +33,10 @@
                     theme: theme
                 },
                 success: function () {
-                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.Index
+                    $saved.removeClass("hidden");
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 500);
                 },
                 /**
                  * @param {XMLHttpRequest} xhr
