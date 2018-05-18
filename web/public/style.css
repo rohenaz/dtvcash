@@ -401,7 +401,7 @@ span.page {
     overflow-y: scroll;
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
     margin-bottom: 12px;
-    border: 1px solid #ccc;
+    border: 1px solid #eee;
 }
 @-moz-document url-prefix() {
     #all-posts {
@@ -417,7 +417,7 @@ span.page {
 .topic-post {
     padding: 5px 10px 5px 40px;
     word-break: break-word;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #eee;
 }
 .topic-post:nth-of-type(odd) {
     background: #f9f9f9;
@@ -618,4 +618,7 @@ img.imgur {
 }
 .home-list .list-group-item:first-of-type {
     border-width: 0;
+}
+#new-memo-form textarea {
+    height: 100px;
 }
