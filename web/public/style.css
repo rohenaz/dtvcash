@@ -234,14 +234,11 @@ a.disabled {
 }
 .post .like-form {
     display: inline-block;
-    margin: 2px 0;
+    margin: 0;
 }
-@media (max-width: 991px) {
+@media (max-width: 562px) {
     .post .like-form {
         margin-bottom: 10px;
-    }
-    .post .like-form input[type=text] {
-        display: inline-block;
     }
 }
 .post .like-form label {
@@ -252,6 +249,7 @@ a.disabled {
 }
 .post .like-form input[type=text] {
     width: 100px;
+    display: inline-block;
 }
 .post .actions .glyphicon {
     margin-right: 10px;
@@ -282,10 +280,12 @@ a.disabled {
 .post .like-form input[type=checkbox] {
     width: unset;
 }*/
-.post .like .broadcasting {
+.post .creating,
+.post .broadcasting {
     display: inline-block;
 }
-.post .like .broadcasting.hidden {
+.post .broadcasting.creating,
+.post .broadcasting.hidden {
     display: none;
 }
 .post .actions {

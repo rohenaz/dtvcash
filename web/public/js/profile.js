@@ -6,11 +6,12 @@
         var $saved = $form.find("#saved");
         $form.submit(function (e) {
             e.preventDefault();
-            var defaultTip = $form.find("[name=default-tip]").val();
+            var defaultTipRaw = $form.find("[name=default-tip]").val();
+            var defaultTip = parseInt(defaultTipRaw);
             var integrations = $form.find("[name=integrations]:checked").val();
             var theme = $form.find("[name=theme]:checked").val();
 
-            if (defaultTip.length > 0) {
+            if (defaultTipRaw.length > 0) {
                 if (isNaN(defaultTip)) {
                     alert("Must enter a numeric default tip.");
                     return;

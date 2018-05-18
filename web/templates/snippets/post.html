@@ -63,6 +63,7 @@
         <a id="reply-link-{{ .Post.Memo.GetTransactionHashString }}" class="btn btn-default" href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">
             <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>{{ T "reply" }}
         </a>
+        <span class="creating hidden btn btn-warning">Creating...</span>
         <span class="broadcasting hidden btn btn-warning">Broadcasting...</span>
         <div class="like" id="like-{{ .Post.Memo.GetTransactionHashString }}">
             <span class="like-info" id="like-info-{{ .Post.Memo.GetTransactionHashString }}">

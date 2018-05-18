@@ -397,12 +397,14 @@
      * @param {boolean} threaded
      */
     MemoApp.Form.ReplyMemo = function (txHash, threaded) {
+        var $post = $("#post-" + txHash);
         var $form = $("#reply-form-" + txHash);
         var $replyCancel = $("#reply-cancel-" + txHash);
         var $message = $form.find("[name=message]");
         var $msgByteCount = $form.find(".message-byte-count");
         var $replyLink = $("#reply-link-" + txHash);
-        var $broadcasting = $("#post-" + txHash).find(".broadcasting");
+        var $broadcasting = $post.find(".broadcasting:eq(0)");
+        var $creating = $post.find(".creating:eq(0)");
         $message.on("input", function () {
             setMsgByteCount();
         });
@@ -442,6 +444,10 @@
                 return;
             }
 
+            $creating.removeClass("hidden");
+            $replyLink.hide();
+            $form.hide();
+
             submitting = true;
             $.ajax({
                 type: "POST",
@@ -457,9 +463,8 @@
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
+                    $creating.addClass("hidden");
                     $broadcasting.removeClass("hidden");
-                    $replyLink.hide();
-                    $form.hide();
                     $.ajax({
                         type: "POST",
                         url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoWaitSubmit,
@@ -578,7 +583,8 @@
         var $likeCancel = $("#like-cancel-" + txHash);
         var $likeInfo = $("#like-info-" + txHash);
         var $likeForm = $("#like-form-" + txHash);
-        var $broadcasting = $like.parent().find(".broadcasting");
+        var $creating = $like.parent().find(".creating:eq(0)");
+        var $broadcasting = $like.parent().find(".broadcasting:eq(0)");
 
         $likeLink.click(function (e) {
             e.preventDefault();
@@ -603,6 +609,8 @@
                 alert("Must enter a tip greater than 546 (the minimum dust limit).");
                 return;
             }
+            $creating.removeClass("hidden");
+            $likeForm.hide();
 
             submitting = true;
             $.ajax({
@@ -619,8 +627,8 @@
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
+                    $creating.addClass("hidden");
                     $broadcasting.removeClass("hidden");
-                    $likeForm.hide();
                     $.ajax({
                         type: "POST",
                         url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoWaitSubmit,
