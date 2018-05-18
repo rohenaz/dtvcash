@@ -20,7 +20,7 @@
                        class="form-check-input"
                        value="all" {{ if eq .UserSettings.Integrations "all" }}checked{{ end }}/>
                 <label for="integrations-all" class="form-check-label">
-                    Display external images and videos
+                    Allow external images and videos (e.g. Imgur, Youtube)
                 </label>
             </div>
             <div class="checkbox">
@@ -28,7 +28,7 @@
                        class="form-check-input"
                        value="hide" {{ if eq .UserSettings.Integrations "hide" }}checked{{ end }}/>
                 <label for="integrations-hide" class="form-check-label">
-                    Hide external images and videos
+                    Disable external images and videos
                 </label>
             </div>
             <div class="checkbox">

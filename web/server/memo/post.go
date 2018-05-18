@@ -48,6 +48,7 @@ var postAjaxRoute = web.Route{
 			 return
 		}
 		var pkHash []byte
+		var userId uint
 		if auth.IsLoggedIn(r.Session.CookieId) {
 			user, err := auth.GetSessionUser(r.Session.CookieId)
 			if err != nil {
@@ -60,6 +61,7 @@ var postAjaxRoute = web.Route{
 				return
 			}
 			pkHash = key.PkHash
+			userId = user.Id
 		}
 		post, err := profile.GetPostByTxHash(txHash.CloneBytes(), pkHash)
 		if err != nil {
@@ -74,6 +76,11 @@ var postAjaxRoute = web.Route{
 		err = profile.AttachLikesToPosts([]*profile.Post{post})
 		if err != nil {
 			r.Error(jerr.Get("error attaching likes to post", err), http.StatusInternalServerError)
+			return
+		}
+		err = profile.SetShowMediaForPosts([]*profile.Post{post}, userId)
+		if err != nil {
+			r.Error(jerr.Get("error setting show media for posts", err), http.StatusInternalServerError)
 			return
 		}
 		r.Helper["Post"] = post

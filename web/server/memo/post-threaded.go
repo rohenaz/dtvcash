@@ -61,6 +61,7 @@ func getPostWithThreads(r *web.Response, txHashString string, offset int) (*prof
 		return nil, jerr.Get("error getting transaction hash", err)
 	}
 	var pkHash []byte
+	var userId uint
 	if auth.IsLoggedIn(r.Session.CookieId) {
 		user, err := auth.GetSessionUser(r.Session.CookieId)
 		if err != nil {
@@ -71,6 +72,7 @@ func getPostWithThreads(r *web.Response, txHashString string, offset int) (*prof
 			return nil, jerr.Get("error getting key for user", err)
 		}
 		pkHash = key.PkHash
+		userId = user.Id
 	}
 	post, err := profile.GetPostByTxHashWithReplies(txHash.CloneBytes(), pkHash, uint(offset))
 	if err != nil {
@@ -101,6 +103,10 @@ func getPostWithThreads(r *web.Response, txHashString string, offset int) (*prof
 		if err != nil {
 			return nil, jerr.Get("error attaching reputation to posts", err)
 		}
+	}
+	err = profile.SetShowMediaForPosts(allPosts, userId)
+	if err != nil {
+		return nil, jerr.Get("error setting show media for posts", err)
 	}
 	return post, nil
 }

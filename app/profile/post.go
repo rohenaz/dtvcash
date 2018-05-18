@@ -3,6 +3,7 @@ package profile
 import (
 	"bytes"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
 	"regexp"
 	"strings"
@@ -19,6 +20,7 @@ type Post struct {
 	ReplyCount uint
 	Replies    []*Post
 	Reputation *Reputation
+	ShowMedia  bool
 }
 
 func (p Post) IsSelf() bool {
@@ -41,9 +43,12 @@ func (p Post) GetTotalTip() int64 {
 }
 
 func (p Post) GetMessage() string {
-	msg := addYoutubeVideos(p.Memo.Message)
-	msg = addImgurImages(msg)
-	msg = addGiphyImages(msg)
+	var msg = p.Memo.Message
+	if p.ShowMedia {
+		msg = addYoutubeVideos(msg)
+		msg = addImgurImages(msg)
+		msg = addGiphyImages(msg)
+	}
 	if msg == p.Memo.Message {
 		msg = addLinks(msg)
 	}
@@ -463,6 +468,25 @@ func AttachParentToPosts(posts []*Post) error {
 			Name:       name,
 			Memo:       parentPost,
 			SelfPkHash: post.SelfPkHash,
+		}
+	}
+	return nil
+}
+
+func SetShowMediaForPosts(posts []*Post, userId uint) error {
+	if userId == 0 {
+		for _, post := range posts {
+			post.ShowMedia = true
+		}
+		return nil
+	}
+	settings, err := cache.GetUserSettings(userId)
+	if err != nil {
+		return jerr.Get("error getting user settings", err)
+	}
+	if settings.Integrations == db.SettingIntegrationsAll {
+		for _, post := range posts {
+			post.ShowMedia = true
 		}
 	}
 	return nil

@@ -22,6 +22,7 @@ var viewRoute = web.Route{
 			return
 		}
 		var userPkHash []byte
+		var userId uint
 		if auth.IsLoggedIn(r.Session.CookieId) {
 			user, err := auth.GetSessionUser(r.Session.CookieId)
 			if err != nil {
@@ -34,6 +35,7 @@ var viewRoute = web.Route{
 				return
 			}
 			userPkHash = key.PkHash
+			userId = user.Id
 		}
 		topicPosts, err := profile.GetPostsForTopic(unescaped, userPkHash, 0)
 		if err != nil {
@@ -68,6 +70,11 @@ var viewRoute = web.Route{
 					lastLikeId = like.Id
 				}
 			}
+		}
+		err = profile.SetShowMediaForPosts(topicPosts, userId)
+		if err != nil {
+			r.Error(jerr.Get("error setting show media for posts", err), http.StatusInternalServerError)
+			return
 		}
 		r.Helper["Topic"] = topicPosts[0].Memo.Topic
 		r.Helper["Posts"] = topicPosts

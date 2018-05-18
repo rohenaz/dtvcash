@@ -19,6 +19,7 @@ var postsMoreRoute = web.Route{
 		topicRaw := r.Request.GetUrlParameter("topic")
 		topic := html_parser.EscapeWithEmojis(topicRaw)
 		var userPkHash []byte
+		var userId uint
 		if auth.IsLoggedIn(r.Session.CookieId) {
 			user, err := auth.GetSessionUser(r.Session.CookieId)
 			if err != nil {
@@ -31,6 +32,7 @@ var postsMoreRoute = web.Route{
 				return
 			}
 			userPkHash = key.PkHash
+			userId = user.Id
 		}
 		posts, err := profile.GetOlderPostsForTopic(topic, userPkHash, firstPostId)
 		if err != nil {
@@ -55,6 +57,11 @@ var postsMoreRoute = web.Route{
 		err = profile.AttachReplyCountToPosts(posts)
 		if err != nil {
 			r.Error(jerr.Get("error attaching reply counts to posts", err), http.StatusInternalServerError)
+			return
+		}
+		err = profile.SetShowMediaForPosts(posts, userId)
+		if err != nil {
+			r.Error(jerr.Get("error setting show media for posts", err), http.StatusInternalServerError)
 			return
 		}
 		r.Helper["Posts"] = posts
