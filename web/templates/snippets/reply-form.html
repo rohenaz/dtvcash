@@ -2,7 +2,7 @@
     <p>
         <label for="message-{{ .Post.Memo.GetTransactionHashString }}">Message <span class="message-byte-count"></span></label>
         <textarea id="message-{{ .Post.Memo.GetTransactionHashString }}" type="text" name="message" class="form-control"
-                  placeholder="Message"></textarea>
+                  placeholder="Message" required></textarea>
     </p>
     <p>
         <input class="btn btn-primary" type="submit" value="Post Reply">

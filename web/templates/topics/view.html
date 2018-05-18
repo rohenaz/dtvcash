@@ -14,20 +14,8 @@
     <p>
         <label for="message">{{ T "message" }} <span class="message-byte-count"></span></label>
         <input id="message" type="text" name="message" class="form-control" placeholder="{{ T "message" }}"
-               required autofocus/>
+               required/>
     </p>
-    <div id="password-area">
-        <p>
-            <label for="password">{{ T "password" }}</label>
-            <input id="password" type="password" name="password" class="form-control" placeholder="Password"/>
-        </p>
-        <p>
-            <label for="save-password">
-            {{ T "save_password" }}
-            </label>
-            <input id="save-password" name="save-password" type="checkbox"/>
-        </p>
-    </div>
     <p>
         <input class="btn btn-primary" type="submit" value="{{ T "Send" }}"/>
         <span id="broadcasting" class="hidden">
