@@ -17,6 +17,7 @@
 <br/>
 
 {{ template "snippets/profile.html" .Profile }}
+
 <div class="center">
     <a class="btn btn-default" href="profile/{{ .Profile.GetAddressString }}">{{ T "view_your_profile" }}</a>
     <!--<a href="memo/new">{{ T "new_memo" }}</a>-->
@@ -36,5 +37,7 @@
 <h3 class="center">Feed</h3>
 {{ template "snippets/feed.html" . }}
 {{ end }}
+
+<br/>
 
 {{ template "snippets/footer.html" . }}

@@ -1,28 +1,22 @@
 {{ template "snippets/header.html" . }}
 
-<h2>Set Name</h2>
+<div class="col-md-6 col-md-offset-3">
 
-<form id="form-memo-set-name" method="post">
-    <p>
-        <label for="name">Name <span class="message-byte-count"></span></label>
-        <input id="name" type="text" name="name" class="form-control" placeholder="Name" autocomplete="on"
-               required autofocus>
-    </p>
-    <p>
-        <label for="password">Password</label>
-        <input id="password" type="password" name="password" class="form-control" placeholder="Password"
-               autocomplete="on" required>
-    </p>
-    <p>
-        <label for="save-password">
-            Save password
-        </label>
-        <input id="save-password" name="save-password" type="checkbox"/>
-    </p>
-    <p>
-        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Set Name">
-    </p>
-</form>
+    <h2>Set Name</h2>
+
+    <form id="form-memo-set-name" method="post">
+        <p>
+            <label for="name">Name <span class="message-byte-count"></span></label>
+            <input id="name" type="text" name="name" class="form-control" placeholder="Name" autocomplete="on"
+                   required autofocus>
+        </p>
+        <p>
+            <input class="btn btn-primary" type="submit" value="Set Name">
+            <a class="btn btn-default" href="/">Cancel</a>
+        </p>
+    </form>
+
+</div>
 
 <script type="text/javascript">
     $(function () {
