@@ -56,7 +56,7 @@
                     <label for="tip-{{ .Post.Memo.GetTransactionHashString }}">Tip</label>
                     <input id="tip-{{ .Post.Memo.GetTransactionHashString }}" type="text" name="tip"
                            class="form-control input-sm"
-                           placeholder="1000" value="{{ .UserSettings.GetDefaultTipString }}"/>
+                           placeholder="0" value="{{ .UserSettings.GetDefaultTipString }}"/>
                     <input class="btn btn-sm btn-default" type="submit" value="Like">
                     <a href="#" id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
                 </form>
