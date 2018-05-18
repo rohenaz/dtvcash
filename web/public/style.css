@@ -154,6 +154,11 @@ a.disabled {
     padding: 10px 15px 20px;
     font-weight: bold;
 }
+@media (max-width: 991px) {
+    .footer {
+        text-align: center;
+    }
+}
 .footer {
     padding: 10px 0;
     border-top: 1px solid rgba(0,0,0,0.2);
@@ -598,8 +603,17 @@ img.imgur {
 }
 @media (max-width: 991px) {
     .text-right-large {
-        text-align: left;
+        text-align: unset;
     }
+}
+.home-list {
+    text-align: center;
+}
+.home-list ul {
+    text-align: left;
+    display: inline-block;
+    width: 100%;
+    max-width: 350px;
 }
 .home-list .glyphicon {
     margin-right: 15px;
@@ -607,6 +621,9 @@ img.imgur {
 .home-list p {
     text-align: center;
     margin: 20px 0;
+}
+.home-protocol-image {
+    text-align: center;
 }
 .home-protocol-image img {
     width: 100%;
@@ -618,6 +635,9 @@ img.imgur {
 }
 .home-list .list-group-item:first-of-type {
     border-width: 0;
+}
+.home-list .signup-login a {
+    margin: 5px 0;
 }
 #new-memo-form textarea {
     height: 100px;
