@@ -58,12 +58,15 @@ const (
 )
 
 const (
-	UrlProfiles         = "/profiles"
-	UrlProfileView      = "/profile"
-	UrlProfileFollowers = "/profile/followers"
-	UrlProfileFollowing = "/profile/following"
+	UrlProfiles              = "/profiles"
+	UrlProfileView           = "/profile"
+	UrlProfileFollowers      = "/profile/followers"
+	UrlProfileFollowing      = "/profile/following"
+	UrlProfileSettings       = "/settings"
+	UrlProfileSettingsSubmit = "/settings-submit"
 
-	TmplProfiles = "/profile/all"
+	TmplProfiles        = "/profile/all"
+	TmplProfileSettings = "/profile/settings"
 )
 
 const (

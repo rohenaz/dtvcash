@@ -1,0 +1,77 @@
+{{ template "snippets/header.html" . }}
+
+<h2>Settings</h2>
+
+<br/>
+
+<form id="settings-form" class="form-horizontal">
+    <div class="form-group row">
+        <label for="default-tip" class="col-sm-2 col-form-label">Default Tip (satoshis)</label>
+        <div class="col-sm-10">
+            <input id="default-tip" type="number" name="default-tip" class="form-control"
+                   value="{{ .UserSettings.GetDefaultTipString }}"/>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-form-label col-sm-2">Integrations</label>
+        <div class="col-sm-10">
+            <div class="checkbox">
+                <input id="integrations-all" type="radio" name="integrations"
+                       class="form-check-input"
+                       value="all" checked/>
+                <label for="integrations-all" class="form-check-label">
+                    Display external images and videos
+                </label>
+            </div>
+            <div class="checkbox">
+                <input id="integrations-hide" type="radio" name="integrations"
+                       class="form-check-input"
+                       value="hide"/>
+                <label for="integrations-hide" class="form-check-label">
+                    Hide external images and videos
+                </label>
+            </div>
+            <div class="checkbox">
+                <input id="integrations-none" type="radio" name="integrations"
+                       class="form-check-input"
+                       value="none"/>
+                <label for="integrations-none" class="form-check-label">
+                    Disable all 3rd party integrations
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-form-label col-sm-2">Theme</label>
+        <div class="col-sm-10">
+            <div class="checkbox">
+                <input id="theme-all" type="radio" name="theme" class="form-check-input" value="default" checked/>
+                <label for="theme-all" class="form-check-label">
+                    Default
+                </label>
+            </div>
+            <div class="checkbox">
+                <input id="theme-hide" type="radio" name="theme" class="form-check-input" value="dark"/>
+                <label for="theme-hide" class="form-check-label">
+                    Dark
+                </label>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <input type="submit" class="btn btn-primary" value="Save"/>
+            &nbsp;
+            <a href="/" class="btn btn-default">Cancel</a>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    MemoApp.Form.Settings($("#settings-form"));
+</script>
+
+<br/>
+
+{{ template "snippets/footer.html" . }}

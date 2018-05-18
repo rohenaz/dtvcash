@@ -3,13 +3,13 @@ package transaction
 import (
 	"bytes"
 	"fmt"
-	"github.com/memocash/memo/app/bitcoin/memo"
-	"github.com/memocash/memo/app/bitcoin/wallet"
-	"github.com/memocash/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/btcd/txscript"
 	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/memo"
+	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/db"
 )
 
 const DustMinimumOutput int64 = 546

@@ -51,7 +51,7 @@
 </p>
 {{ end }}
 
-{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
+{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone "UserSettings" .UserSettings }}
 
 {{ if and (eq .NextOffset 25) (lt (len .Posts) 25) }}{{ else }}
 <p class="pagination">

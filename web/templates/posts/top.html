@@ -18,7 +18,7 @@
        href="{{ .OffsetLink }}&offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
 </p>
 
-{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
+{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone "UserSettings" .UserSettings }}
 
 <p class="pagination">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}"

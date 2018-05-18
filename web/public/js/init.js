@@ -164,6 +164,7 @@ var MemoApp = {
         MemoLikeSubmit: "memo/like-submit",
         MemoWait: "memo/wait",
         MemoWaitSubmit: "memo/wait-submit",
+        ProfileSettingsSubmit: "settings-submit",
         KeyChangePasswordSubmit: "key/change-password-submit",
         KeyDeleteAccountSubmit: "key/delete-account-submit",
         TopicsSocket: "topics/socket",

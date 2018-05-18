@@ -26,7 +26,7 @@ func SetItem(name string, value interface{}) error {
 	return SetItemWithExpiration(name, value, 0)
 }
 
-func SetItemWithExpiration(name string, value interface{}, expiration int32) error {
+func SetItemWithExpiration(name string, value interface{}, expireSeconds int32) error {
 	writer := new(bytes.Buffer)
 	encoder := gob.NewEncoder(writer)
 	encoder.Encode(value)
@@ -34,7 +34,7 @@ func SetItemWithExpiration(name string, value interface{}, expiration int32) err
 	err := mc.Set(&memcache.Item{
 		Key:        name,
 		Value:      writer.Bytes(),
-		Expiration: expiration,
+		Expiration: expireSeconds,
 	})
 	if err != nil {
 		return jerr.Get("error writing memcache item", err)

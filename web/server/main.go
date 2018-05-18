@@ -74,6 +74,12 @@ func preHandler(r *web.Response) {
 			return
 		}
 		r.Helper["UserAddress"] = userAddress.GetEncoded()
+		userSettings, err := cache.GetUserSettings(user.Id)
+		if err != nil {
+			r.Error(jerr.Get("error getting user settings from cache", err), http.StatusInternalServerError)
+			return
+		}
+		r.Helper["UserSettings"] = userSettings
 	}
 	if UseMinJS {
 		r.Helper["jsFiles"] = res.GetMinJsFiles()

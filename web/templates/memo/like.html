@@ -2,7 +2,7 @@
 
 <h2>Like Memo</h2>
 
-{{ template "snippets/post.html" dict "Post" .Post "Compress" true "TimeZone" .TimeZone }}
+{{ template "snippets/post.html" dict "Post" .Post "Compress" true "TimeZone" .TimeZone "UserSettings" .UserSettings }}
 
 <form id="form-memo-like" method="post">
     <p>
@@ -10,7 +10,8 @@
     </p>
     <p>
         <label for="tip">Optional tip (min. 546)</label>
-        <input id="tip" type="text" name="tip" class="form-control" placeholder="0">
+        <input id="tip" type="text" name="tip" class="form-control" placeholder="1000"
+               value="{{ .UserSettings.GetDefaultTipString }}">
     </p>
     <p>
         <input class="btn btn-primary" type="submit" value="Like">

@@ -18,6 +18,7 @@ var JsFiles = []string{
 	"js/key.js",
 	"js/memo.js",
 	"js/topics.js",
+	"js/profile.js",
 }
 
 var CssFiles = []string{

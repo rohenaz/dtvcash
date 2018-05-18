@@ -5,7 +5,7 @@
     <p><a href="topics">{{ T "Back_to_topics" }}</a></p>
 </div>
 <div id="all-posts" style="position:relative;">
-{{ template "topics/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
+{{ template "topics/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone "UserSettings" .UserSettings }}
 </div>
 
 {{ if .Username }}

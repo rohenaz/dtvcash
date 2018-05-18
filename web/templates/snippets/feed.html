@@ -7,7 +7,7 @@
         ></a>
 </p>
 
-{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
+{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone "UserSettings" .UserSettings }}
 
 <p class="pagination">
     <a class="{{ if (eq .Offset 0) }}disabled{{ end }}"

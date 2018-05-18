@@ -20,7 +20,19 @@ func GetUserAddress(userId uint) (wallet.Address, error) {
 	if err != nil {
 		return wallet.Address{}, jerr.Get("error getting key from db", err)
 	}
+	err = SetUserAddress(userId, pkHash)
+	if err != nil {
+		return wallet.Address{}, jerr.Get("error saving cache", err)
+	}
 	return wallet.GetAddressFromPkHash(key.PkHash), nil
+}
+
+func SetUserAddress(userId uint, pkHash []byte) error {
+	err := SetItem(getUserAddressName(userId), pkHash)
+	if err != nil {
+		return jerr.Get("error setting user address cache", err)
+	}
+	return nil
 }
 
 func getUserAddressName(userId uint) string {
