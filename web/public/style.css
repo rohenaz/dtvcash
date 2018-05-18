@@ -383,11 +383,11 @@ span.page {
     display: block;
 }
 #broadcasting {
-    display: none;
+    display: inline-block;
     padding: 12px 10px 0 10px;
 }
-#broadcasting.show {
-    display: inline-block;
+#broadcasting.hidden {
+    display: none;
 }
 #password-clear {
     display: none;
