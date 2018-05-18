@@ -12,6 +12,6 @@
 
 <script type="text/javascript">
     $(function () {
-        MemoApp.Form.ReplyMemo("{{ .Post.Memo.GetTransactionHashString }}");
+        MemoApp.Form.ReplyMemo("{{ .Post.Memo.GetTransactionHashString }}", {{ if .Threaded }}true{{ else }}false{{ end }});
     });
 </script>

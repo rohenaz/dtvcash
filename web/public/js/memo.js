@@ -394,12 +394,15 @@
     };
     /**
      * @param {string} txHash
+     * @param {boolean} threaded
      */
-    MemoApp.Form.ReplyMemo = function (txHash) {
+    MemoApp.Form.ReplyMemo = function (txHash, threaded) {
         var $form = $("#reply-form-" + txHash);
         var $replyCancel = $("#reply-cancel-" + txHash);
         var $message = $form.find("[name=message]");
         var $msgByteCount = $form.find(".message-byte-count");
+        var $replyLink = $("#reply-link-" + txHash);
+        var $broadcasting = $("#post-" + txHash).find(".broadcasting");
         $message.on("input", function () {
             setMsgByteCount();
         });
@@ -448,13 +451,43 @@
                     message: message,
                     password: MemoApp.GetPassword()
                 },
-                success: function (txHash) {
+                success: function (replyTxHash) {
                     submitting = false;
-                    if (!txHash || txHash.length === 0) {
+                    if (!replyTxHash || replyTxHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
-                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
+                    $broadcasting.removeClass("hidden");
+                    $replyLink.hide();
+                    $form.hide();
+                    $.ajax({
+                        type: "POST",
+                        url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoWaitSubmit,
+                        data: {
+                            txHash: replyTxHash
+                        },
+                        success: function () {
+                            submitting = false;
+                            var url = MemoApp.URL.MemoPostAjax;
+                            if (threaded) {
+                                url = MemoApp.URL.MemoPostThreadedAjax
+                            }
+                            $.ajax({
+                                url: MemoApp.GetBaseUrl() + url + "/" + txHash,
+                                success: function (html) {
+                                    $("#post-" + txHash).replaceWith(html);
+                                },
+                                error: function (xhr) {
+                                    alert("error getting post via ajax (status: " + xhr.status + ")");
+                                }
+                            });
+                        },
+                        error: function () {
+                            submitting = false;
+                            $broadcasting.addClass("hidden");
+                            console.log("Error waiting for transaction to broadcast.");
+                        }
+                    });
                 },
                 error: function (xhr) {
                     submitting = false;
@@ -545,7 +578,7 @@
         var $likeCancel = $("#like-cancel-" + txHash);
         var $likeInfo = $("#like-info-" + txHash);
         var $likeForm = $("#like-form-" + txHash);
-        var $broadcasting = $like.find(".broadcasting");
+        var $broadcasting = $like.parent().find(".broadcasting");
 
         $likeLink.click(function (e) {
             e.preventDefault();

@@ -63,11 +63,12 @@
         <a id="reply-link-{{ .Post.Memo.GetTransactionHashString }}" class="btn btn-default" href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">
             <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>{{ T "reply" }}
         </a>
+        <span class="broadcasting hidden btn btn-default">Broadcasting...</span>
         <div class="like" id="like-{{ .Post.Memo.GetTransactionHashString }}">
-        <span class="like-info" id="like-info-{{ .Post.Memo.GetTransactionHashString }}">
-            <a class="btn btn-default like-link" id="like-link-{{ .Post.Memo.GetTransactionHashString }}"
-               href="#"><span class="glyphicon glyphicon-heart{{ if not .Post.HasLiked }}-empty{{ end }}" aria-hidden="true"></span>{{ T "like" 1 }}</a>
-        </span>
+            <span class="like-info" id="like-info-{{ .Post.Memo.GetTransactionHashString }}">
+                <a class="btn btn-default like-link" id="like-link-{{ .Post.Memo.GetTransactionHashString }}"
+                   href="#"><span class="glyphicon glyphicon-heart{{ if not .Post.HasLiked }}-empty{{ end }}" aria-hidden="true"></span>{{ T "like" 1 }}</a>
+            </span>
             <form class="like-form hidden form-inline" id="like-form-{{ .Post.Memo.GetTransactionHashString }}">
                 <label for="tip-{{ .Post.Memo.GetTransactionHashString }}">Tip</label>
                 <input id="tip-{{ .Post.Memo.GetTransactionHashString }}" type="text" name="tip"
@@ -76,7 +77,6 @@
                 <input class="btn btn-sm btn-primary" type="submit" value="Like">
                 <a href="#" class="like-cancel btn btn-sm btn-default" id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
             </form>
-            <span class="broadcasting hidden btn btn-default">Broadcasting...</span>
         </div>
     {{ end }}
         <a class="btn btn-leave right" target="_blank"
@@ -86,7 +86,7 @@
     </div>
 {{ end }}
 
-{{ template "snippets/reply-form.html" dict "Post" .Post "Hidden" true }}
+{{ template "snippets/reply-form.html" dict "Post" .Post "Hidden" true "Threaded" false }}
 
 </div>
 
