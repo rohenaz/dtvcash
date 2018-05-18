@@ -87,7 +87,7 @@ var postAjaxRoute = web.Route{
 			}
 			pkHash = key.PkHash
 		}
-		post, err := profile.GetPostByTxHash(txHash.CloneBytes(), pkHash, uint(offset))
+		post, err := profile.GetPostByTxHashWithReplies(txHash.CloneBytes(), pkHash, uint(offset))
 		if err != nil {
 			r.Error(jerr.Get("error getting post", err), http.StatusInternalServerError)
 			return

@@ -101,7 +101,7 @@
                 <a href="#" class="like-cancel btn btn-sm btn-default"
                    id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
             </form>
-            <span class="broadcasting hidden">Broadcasting...</span>
+            <span class="broadcasting hidden btn btn-default">Broadcasting...</span>
         </div>
     {{ end }}
         <a class="btn btn-leave right" target="_blank"
@@ -144,6 +144,6 @@
     {{ end }}
     {{ if .Post.IsLoggedIn }}
     MemoApp.Form.ReplyLink("{{ .Post.Memo.GetTransactionHashString }}");
-    MemoApp.Form.NewLike($("#like-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}");
+    MemoApp.Form.NewLike($("#like-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}", true);
     {{ end }}
 </script>

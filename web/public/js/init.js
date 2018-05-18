@@ -154,6 +154,7 @@ var MemoApp = {
         MemoPost: "post",
         MemoPostAjax: "post-ajax",
         MemoPostThreadedAjax: "post-threaded-ajax",
+        MemoPostMoreThreadedAjax: "post-more-threaded-ajax",
         MemoNewSubmit: "memo/new-submit",
         MemoReplySubmit: "memo/reply-submit",
         MemoFollowSubmit: "memo/follow-submit",

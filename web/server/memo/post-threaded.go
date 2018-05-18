@@ -33,8 +33,8 @@ var postThreadedRoute = web.Route{
 	},
 }
 
-var postThreadedAjaxRoute = web.Route{
-	Pattern: res.UrlMemoPostThreadedAjax,
+var postMoreThreadedAjaxRoute = web.Route{
+	Pattern: res.UrlMemoPostMoreThreadedAjax,
 	Handler: func(r *web.Response) {
 		offset := r.Request.GetUrlParameterInt("offset")
 		txHashString := r.Request.GetUrlParameter("txHash")
@@ -72,7 +72,7 @@ func getPostWithThreads(r *web.Response, txHashString string, offset int) (*prof
 		}
 		pkHash = key.PkHash
 	}
-	post, err := profile.GetPostByTxHash(txHash.CloneBytes(), pkHash, uint(offset))
+	post, err := profile.GetPostByTxHashWithReplies(txHash.CloneBytes(), pkHash, uint(offset))
 	if err != nil {
 		return nil, jerr.Get("error getting post", err)
 	}

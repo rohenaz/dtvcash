@@ -44,7 +44,7 @@ var likeRoute = web.Route{
 			r.SetRedirect(res.UrlNeedFunds)
 			return
 		}
-		post, err := profile.GetPostByTxHash(txHash.CloneBytes(), key.PkHash, 0)
+		post, err := profile.GetPostByTxHashWithReplies(txHash.CloneBytes(), key.PkHash, 0)
 		if err != nil {
 			r.Error(jerr.Get("error getting post", err), http.StatusInternalServerError)
 			return

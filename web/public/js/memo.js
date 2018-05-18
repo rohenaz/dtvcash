@@ -538,8 +538,9 @@
     /**
      * @param {jQuery} $like
      * @param {string} txHash
+     * @param {boolean} threaded
      */
-    MemoApp.Form.NewLike = function ($like, txHash) {
+    MemoApp.Form.NewLike = function ($like, txHash, threaded) {
         var $likeLink = $("#like-link-" + txHash);
         var $likeCancel = $("#like-cancel-" + txHash);
         var $likeInfo = $("#like-info-" + txHash);
@@ -595,8 +596,12 @@
                         },
                         success: function () {
                             submitting = false;
+                            var url = MemoApp.URL.MemoPostAjax;
+                            if (threaded) {
+                                url = MemoApp.URL.MemoPostThreadedAjax
+                            }
                             $.ajax({
-                                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostAjax + "/" + txHash,
+                                url: MemoApp.GetBaseUrl() + url + "/" + txHash,
                                 success: function (html) {
                                     $("#post-" + txHash).replaceWith(html);
                                 },
@@ -657,7 +662,7 @@
         $link.click(function (e) {
             e.preventDefault();
             $.ajax({
-                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostThreadedAjax,
+                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostMoreThreadedAjax,
                 data: {
                     txHash: txHash,
                     offset: offset + 25
