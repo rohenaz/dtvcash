@@ -3,7 +3,7 @@
 
 <br/>
 
-{{ template "snippets/profile.html" .Profile }}
+{{ template "snippets/profile.html" dict "Profile" .Profile "UserSettings" .UserSettings }}
 
 {{ if .Likes }}
 

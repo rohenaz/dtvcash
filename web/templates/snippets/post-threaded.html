@@ -127,24 +127,29 @@
 </div>
 
 <script type="text/javascript">
-    var data = new Identicon('{{ .Post.Memo.GetAddressString }}', {
-        foreground: [255, 255, 255, 0],
-        background: [0, 0, 0, 255],
-        size: 18,
-        margin: 0
-    }).toString();
-    $(".identicon-{{ .Post.Memo.GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
+    (function () {
+        var foreground = {{ if eq .UserSettings.Theme "dark" }}[255, 255, 255, 255]{{ else }}[0, 0, 0, 255]{{ end }};
+        var background = [0, 0, 0, 0];
+        var data = new Identicon('{{ .Post.Memo.GetAddressString }}', {
+            foreground: foreground,
+            background: background,
+            size: 24,
+            form: 'svg',
+            margin: 0
+        }).toString();
+        $(".identicon-{{ .Post.Memo.GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
     {{ if .Post.Parent }}
-    data = new Identicon('{{ .Post.Parent.Memo.GetAddressString }}', {
-        foreground: [255, 255, 255, 0],
-        background: [0, 0, 0, 255],
-        size: 18,
-        margin: 0
-    }).toString();
-    $(".identicon-{{ .Post.Parent.Memo.GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
+        data = new Identicon('{{ .Post.Parent.Memo.GetAddressString }}', {
+            foreground: foreground,
+            background: background,
+            size: 18,
+            margin: 0
+        }).toString();
+        $(".identicon-{{ .Post.Parent.Memo.GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
     {{ end }}
     {{ if .Post.IsLoggedIn }}
-    MemoApp.Form.ReplyLink("{{ .Post.Memo.GetTransactionHashString }}");
-    MemoApp.Form.NewLike($("#like-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}", true);
+        MemoApp.Form.ReplyLink("{{ .Post.Memo.GetTransactionHashString }}");
+        MemoApp.Form.NewLike($("#like-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}", true);
     {{ end }}
+    })();
 </script>

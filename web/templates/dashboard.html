@@ -16,7 +16,7 @@
 
 <br/>
 
-{{ template "snippets/profile.html" .Profile }}
+{{ template "snippets/profile.html" dict "Profile" .Profile "UserSettings" .UserSettings }}
 
 <div class="dashboard-actions">
     <a class="btn btn-default" href="profile/{{ .Profile.GetAddressString }}">{{ T "view_your_profile" }}</a>
