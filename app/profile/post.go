@@ -67,7 +67,7 @@ func addYoutubeVideos(msg string) string {
 
 func addImgurImages(msg string) string {
 	// Album link
-	if strings.Contains(msg, "imgur.com/a/") {
+	if strings.Contains(msg, "imgur.com/a/") || strings.Contains(msg, "imgur.com/gallery/") {
 		return msg
 	}
 	containsRex := regexp.MustCompile(`\.jpg|\.jpeg|\.png|\.gif|\.gifv`)
