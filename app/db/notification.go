@@ -20,11 +20,15 @@ type Notification struct {
 	UpdatedAt time.Time
 }
 
+func (n Notification) IsTypeLike() bool {
+	return n.Type == NotificationTypeLike
+}
+
 func AddNotification(pkHash []byte, txHash []byte, notificationType uint) (*Notification, error) {
 	var notification = Notification{
 		PkHash: pkHash,
 		TxHash: txHash,
-		Type: notificationType,
+		Type:   notificationType,
 	}
 	err := create(&notification)
 	if err == nil {
@@ -34,4 +38,24 @@ func AddNotification(pkHash []byte, txHash []byte, notificationType uint) (*Noti
 		return nil, jerr.Get("error creating db notification", err)
 	}
 	return nil, nil
+}
+
+func GetRecentNotificationsForUser(pkHash []byte, offset uint) ([]*Notification, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	var notifications []*Notification
+	result := db.
+		Limit(25).
+		Offset(offset).
+		Joins("LEFT OUTER JOIN transactions ON (notifications.tx_hash = transactions.hash)").
+		Joins("LEFT OUTER JOIN blocks ON (transactions.block_id = blocks.id)").
+		Where("notifications.pk_hash = ?", pkHash).
+		Order("COALESCE(block.timestamp, notifications.created_at) DESC").
+		Find(&notifications)
+	if result.Error != nil {
+		return nil, jerr.Get("error running query", result.Error)
+	}
+	return notifications, nil
 }

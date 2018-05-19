@@ -130,6 +130,9 @@ a.disabled {
     padding: 10px 15px 20px;
     font-weight: bold;
 }
+.nav-item.notifications span {
+    top: 3px;
+}
 @media (max-width: 991px) {
     .footer {
         text-align: center;

@@ -5,6 +5,10 @@ import (
 	"github.com/memocash/memo/app/db"
 )
 
+type ReplyNotification struct {
+	Notification *db.Notification
+}
+
 func AddReplyNotification(reply *db.MemoPost) error {
 	parent, err := db.GetMemoPost(reply.ParentTxHash)
 	if err != nil {
