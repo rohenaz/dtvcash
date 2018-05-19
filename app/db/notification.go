@@ -20,10 +20,6 @@ type Notification struct {
 	UpdatedAt time.Time
 }
 
-func (n Notification) IsTypeLike() bool {
-	return n.Type == NotificationTypeLike
-}
-
 func AddNotification(pkHash []byte, txHash []byte, notificationType uint) (*Notification, error) {
 	var notification = Notification{
 		PkHash: pkHash,

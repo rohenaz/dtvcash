@@ -6,7 +6,16 @@ import (
 )
 
 type ReplyNotification struct {
+	Post         *db.MemoPost
 	Notification *db.Notification
+}
+
+func (n ReplyNotification) GetMessage() string {
+	return ""
+}
+
+func (n ReplyNotification) GetLink() string {
+	return ""
 }
 
 func AddReplyNotification(reply *db.MemoPost) error {

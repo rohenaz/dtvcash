@@ -119,6 +119,22 @@ func GetNameForPkHash(pkHash []byte) (*MemoSetName, error) {
 	return names[0], nil
 }
 
+func GetNamesForPkHashes(pkHashes [][]byte) ([]*MemoSetName, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	query := db.
+		Preload(BlockTable).
+		Where("pk_hash IN (?)", pkHashes)
+	var memoSetNames []*MemoSetName
+	result := query.Find(&memoSetNames)
+	if result.Error != nil {
+		return nil, jerr.Get("error getting set names", err)
+	}
+	return memoSetNames, nil
+}
+
 func GetSetNamesForPkHash(pkHash []byte) ([]*MemoSetName, error) {
 	var memoSetNames []*MemoSetName
 	err := findPreloadColumns([]string{

@@ -6,6 +6,7 @@ import (
 )
 
 type LikeNotification struct {
+	MemoLike     *db.MemoLike
 	Notification *db.Notification
 }
 
