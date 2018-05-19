@@ -49,9 +49,7 @@ func (p Post) GetMessage() string {
 		msg = addImgurImages(msg)
 		msg = addGiphyImages(msg)
 	}
-	if msg == p.Memo.Message {
-		msg = addLinks(msg)
-	}
+	msg = addLinks(msg)
 	return msg
 }
 
@@ -96,8 +94,8 @@ func addGiphyImages(msg string) string {
 }
 
 func addLinks(msg string) string {
-	var re = regexp.MustCompile(`(http[s]?://[^\s]*)`)
-	s := re.ReplaceAllString(msg, `<a href="$1" target="_blank">$1</a>`)
+	var re = regexp.MustCompile(`($|\s)(http[s]?://[^\s]*)`)
+	s := re.ReplaceAllString(msg, `$1<a href="$2" target="_blank">$2</a>`)
 	return strings.Replace(s, "\n", "<br/>", -1)
 }
 
