@@ -224,6 +224,7 @@ a.disabled {
 .post .creating,
 .post .broadcasting {
     display: inline-block;
+    margin: 5px 0;
 }
 .post .broadcasting.creating,
 .post .broadcasting.hidden {
