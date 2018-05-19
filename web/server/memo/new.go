@@ -8,6 +8,7 @@ import (
 	"github.com/memocash/memo/app/bitcoin/memo"
 	"github.com/memocash/memo/app/bitcoin/transaction"
 	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/mutex"
 	"github.com/memocash/memo/app/res"
 	"net/http"
 )
@@ -68,8 +69,10 @@ var newSubmitRoute = web.Route{
 		var fee = int64(memo.MaxTxFee - memo.MaxPostSize + len([]byte(message)))
 		var minInput = fee + transaction.DustMinimumOutput
 
+		mutex.Lock(key.PkHash)
 		txOut, err := db.GetSpendableTxOut(key.PkHash, minInput)
 		if err != nil {
+			mutex.Unlock(key.PkHash)
 			r.Error(jerr.Get("error getting spendable tx out", err), http.StatusInternalServerError)
 			return
 		}
@@ -83,6 +86,7 @@ var newSubmitRoute = web.Route{
 			Data: []byte(message),
 		}})
 		if err != nil {
+			mutex.Unlock(key.PkHash)
 			r.Error(jerr.Get("error creating tx", err), http.StatusInternalServerError)
 			return
 		}

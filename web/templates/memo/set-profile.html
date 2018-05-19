@@ -1,28 +1,22 @@
 {{ template "snippets/header.html" . }}
 
-<h2>{{ T "set_profile" }}</h2>
+<div class="col-md-6 col-md-offset-3">
 
-<form id="form-memo-set-profile" method="post">
-    <p>
-        <label for="profile">{{ T "profile_text" }} <span class="message-byte-count"></span></label>
-        <textarea id="profile" name="profile" class="form-control" placeholder="{{ T "profile_text" }}" autocomplete="on"
-                  required autofocus></textarea>
-    </p>
-    <p>
-        <label for="password">{{ T "password" }}</label>
-        <input id="password" type="password" name="password" class="form-control" placeholder="{{ T "password" }}"
-               autocomplete="on" required>
-    </p>
-    <p>
-        <label for="save-password">
-        {{ T "save_password" }}
-        </label>
-        <input id="save-password" name="save-password" type="checkbox"/>
-    </p>
-    <p>
-        <input class="btn btn-lg btn-primary btn-block" type="submit" value="{{ T "set_profile" }}">
-    </p>
-</form>
+    <h2>{{ T "set_profile" }}</h2>
+
+    <form id="form-memo-set-profile" method="post">
+        <p>
+            <label for="profile">{{ T "profile_text" }} <span class="message-byte-count"></span></label>
+            <textarea id="profile" name="profile" class="form-control" placeholder="{{ T "profile_text" }}"
+                      required></textarea>
+        </p>
+        <p>
+            <input class="btn btn-primary" type="submit" value="{{ T "set_profile" }}">
+            <a class="btn btn-default" href="/">Cancel</a>
+        </p>
+    </form>
+
+</div>
 
 <script type="text/javascript">
     $(function () {

@@ -37,7 +37,6 @@
         }
 
         setMsgByteCount();
-        MemoApp.CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -63,13 +62,11 @@
                 return;
             }
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
                 return;
             }
-
-            MemoApp.CheckSavePassword($form);
 
             submitting = true;
             $.ajax({
@@ -128,7 +125,7 @@
                 var data;
                 try {
                     data = JSON.parse(msg.data);
-                } catch(e) {
+                } catch (e) {
                     return;
                 }
                 var txHash = data.Hash.replace(/['"]+/g, '');
@@ -253,31 +250,7 @@
             }
         }
 
-        var $passwordArea = $form.find("#password-area");
-        var $passwordClear = $form.find("#password-clear");
-
         setMsgByteCount();
-        MemoApp.CheckLoadPassword($form);
-        if (localStorage.WalletPassword) {
-            $passwordArea.hide();
-            $passwordClear.addClass("show");
-        }
-        $passwordClear.find("a").click(function (e) {
-            e.preventDefault();
-            $passwordArea.show();
-            $passwordClear.removeClass("show");
-            delete(localStorage.WalletPassword);
-            $(".password-area").show();
-            $("[name=password]").val("");
-            $("[name=save-password]").prop('checked', false);
-        });
-        $passwordArea.find("[name=save-password]").change(function () {
-            if (this.checked) {
-                $passwordArea.hide();
-                $passwordClear.addClass("show");
-                MemoApp.CheckSavePassword($form);
-            }
-        });
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -303,13 +276,11 @@
                 return;
             }
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
                 return;
             }
-
-            MemoApp.CheckSavePassword($form);
 
             submitting = true;
             $.ajax({
@@ -326,7 +297,7 @@
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
-                    $broadcasting.addClass("show");
+                    $broadcasting.removeClass("hidden");
                     $.ajax({
                         type: "POST",
                         url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoWaitSubmit,
@@ -335,14 +306,14 @@
                         },
                         success: function () {
                             submitting = false;
-                            $broadcasting.removeClass("show");
+                            $broadcasting.addClass("hidden");
                             $message.val("");
                             setMsgByteCount();
                         },
                         error: function () {
                             submitting = false;
                             alert("Error waiting for transaction to broadcast.");
-                            $broadcasting.removeClass("show");
+                            $broadcasting.addClass("hidden");
                             $message.val("");
                         }
                     });
@@ -382,22 +353,6 @@
         });
         var $form = $like.find("form");
 
-        var $passwordArea = $like.find(".password-area");
-        var $passwordClear = $like.find(".password-clear");
-
-        MemoApp.CheckLoadPassword($form);
-        if (localStorage.WalletPassword) {
-            $passwordArea.hide();
-            $passwordClear.addClass("show");
-        }
-        $passwordArea.find("[name=save-password]").change(function () {
-            if (this.checked) {
-                $passwordArea.hide();
-                $passwordClear.addClass("show");
-                MemoApp.CheckSavePassword($form);
-            }
-        });
-
         var $broadcasting = $like.find(".broadcasting");
 
         var submitting = false;
@@ -419,13 +374,11 @@
                 return;
             }
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
                 return;
             }
-
-            MemoApp.CheckSavePassword($form);
 
             submitting = true;
             $.ajax({
@@ -442,7 +395,7 @@
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
-                    $broadcasting.addClass("show");
+                    $broadcasting.removeClass("hidden");
                     $form.hide();
                     $.ajax({
                         type: "POST",
@@ -452,12 +405,12 @@
                         },
                         success: function () {
                             submitting = false;
-                            $broadcasting.removeClass("show");
+                            $broadcasting.addClass("hidden");
                         },
                         error: function () {
                             submitting = false;
                             alert("Error waiting for transaction to broadcast.");
-                            $broadcasting.removeClass("show");
+                            $broadcasting.addClass("hidden");
                         }
                     });
                 },

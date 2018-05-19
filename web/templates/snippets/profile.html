@@ -1,39 +1,39 @@
-<table class="table left profile">
+<table class="table left profile table-striped">
     <tr>
         <th>{{ T "name" }}</th>
         <td class="name">
-            <span class="identicon-{{ .GetAddressString }}">
+            <span class="identicon-{{ .Profile.GetAddressString }}">
                 <img class="identicon"/>
             </span>
-        {{ .Name }}
+        {{ .Profile.Name }}
         </td>
     </tr>
     <tr>
         <th>{{ T "address" }}</th>
         <td class="address">
-        {{ .GetCashAddressString }}<br>
+        {{ .Profile.GetCashAddressString }}<br>
             <span class="click-for-qr"><a href="#" id="qr-code-link">Show QR code &amp; legacy address</a></span>
             <div id="qr-code">
-                <img src="data:image/png;base64,{{ .Qr }}"/>
+                <img src="data:image/png;base64,{{ .Profile.Qr }}"/>
                 <br/>
                 <span class="click-for-qr">Legacy Address</span> <br>
-            {{ .GetAddressString }}
+            {{ .Profile.GetAddressString }}
             </div>
         </td>
     </tr>
     <tr>
         <th>{{ T "followers" }}</th>
         <td>
-            <a href="profile/followers/{{ .GetAddressString }}">
-            {{ .FollowerCount }}
+            <a href="profile/followers/{{ .Profile.GetAddressString }}">
+            {{ .Profile.FollowerCount }}
             </a>
         </td>
     </tr>
     <tr>
         <th>{{ T "following" }}</th>
         <td>
-            <a href="profile/following/{{ .GetAddressString }}">
-            {{ .FollowingCount }}
+            <a href="profile/following/{{ .Profile.GetAddressString }}">
+            {{ .Profile.FollowingCount }}
             </a>
         </td>
     </tr>
@@ -46,15 +46,15 @@
             <b>This is you!</b>
         {{ end }}
         {{ if .Reputation.IsDirectFollow }}
-            You follow <b>{{ .Name }}</b>! -
-            <i>{{ .Reputation.GetTrustedFollowers }} of {{ .Reputation.GetTotalFollowing }}
-                ({{ .Reputation.GetPercentString }})</i>
+            You follow <b>{{ .Profile.Name }}</b>! -
+            <i>{{ .Profile.Reputation.GetTrustedFollowers }} of {{ .Profile.Reputation.GetTotalFollowing }}
+                ({{ .Profile.Reputation.GetPercentString }})</i>
         {{ else }}
-        {{ .Reputation.GetTrustedFollowers }} of the {{ .Reputation.GetTotalFollowing }}
+        {{ .Profile.Reputation.GetTrustedFollowers }} of the {{ .Profile.Reputation.GetTotalFollowing }}
             users you follow are following this person
-            ({{ .Reputation.GetPercentString }}).
+            ({{ .Profile.Reputation.GetPercentString }}).
         {{ end }}
-                <span>
+            <span>
                     Shared Connections is the percentage of people you follow who are following this person.
                     For more info visit the <a href="about#connectivity">about page</a>.
                 </span>
@@ -71,27 +71,34 @@
     <tr>
         <th>{{ T "profile" }}</th>
         <td>
-        {{ .GetText }}
+        {{ .Profile.GetText }}
         </td>
     </tr>
     <tr>
         <th>{{ T "actions" }}</th>
         <td>
-        {{ if .CanFollow }}
-            <a class="btn" href="memo/follow/{{ .GetAddressString }}">{{ T "follow" 1 }} {{ .Name }}</a>
-        {{ else if .CanUnfollow }}
-            <a class="btn" href="memo/unfollow/{{ .GetAddressString }}">{{ T "unfollow" }} {{ .Name }}</a>
-        {{ end }}
-            <a class="btn btn-leave" target="_blank"
-               href="https://explorer.bitcoin.com/bch/address/{{ .GetAddressString }}">
-            {{ T "view_address_on_block_explorer" }}
-            </a>
-        {{ if .NameSet }}
-            <a class="btn btn-leave" target="_blank"
-               href="https://explorer.bitcoin.com/bch/tx/{{ .GetNameTx }}">
-            {{ T "view_name_on_block_explorer" }}
-            </a>
-        {{ end }}
+            <ul class="nav nav-pills">
+            {{ if .CanFollow }}
+                <li><a href="memo/follow/{{ .Profile.GetAddressString }}">{{ T "follow" 1 }} {{ .Profile.Name }}</a></li>
+            {{ else if .CanUnfollow }}
+                <li><a href="memo/unfollow/{{ .Profile.GetAddressString }}">{{ T "unfollow" }} {{ .Profile.Name }}</a></li>
+            {{ end }}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Block Explorer</a>
+                    <ul class="dropdown-menu dropdown-menu-center">
+                        <li><a target="_blank"
+                               href="https://explorer.bitcoin.com/bch/address/{{ .Profile.GetAddressString }}">
+                        {{ T "view_address_on_block_explorer" }}
+                        </a></li>
+                    {{ if .NameSet }}
+                        <li><a target="_blank"
+                               href="https://explorer.bitcoin.com/bch/tx/{{ .Profile.GetNameTx }}">
+                        {{ T "view_name_on_block_explorer" }}
+                        </a></li>
+                    {{ end }}
+                    </ul>
+                </li>
+            </ul>
         </td>
     </tr>
 </table>
@@ -103,15 +110,19 @@
 </style>
 
 <script type="text/javascript">
-    $("#qr-code-link").click(function (e) {
-        e.preventDefault();
-        $("#qr-code").toggle();
-    });
-    var data = new Identicon('{{ .GetAddressString }}', {
-        foreground: [255, 255, 255, 0],
-        background: [0, 0, 0, 255],
-        size: 18,
-        margin: 0
-    }).toString();
-    $(".identicon-{{ .GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
+    (function() {
+        $("#qr-code-link").click(function (e) {
+            e.preventDefault();
+            $("#qr-code").toggle();
+        });
+        var foreground = {{ if eq .UserSettings.Theme "dark" }}[224, 224, 224, 255]{{ else }}[0, 0, 0, 255]{{ end }};
+        var background = [0, 0, 0, 0];
+        var data = new Identicon('{{ .Profile.GetAddressString }}', {
+            foreground: foreground,
+            background: background,
+            size: 24,
+            margin: 0
+        }).toString();
+        $(".identicon-{{ .Profile.GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
+    })();
 </script>

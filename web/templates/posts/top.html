@@ -2,25 +2,30 @@
 
 {{ template "posts/header.html" dict "Page" "top" "Username" .Username }}
 
-<div class="pagination">
-    <a class="btn {{ if eq .Range "1h" }}sel{{ end }}" href="posts/top?range=1h">{{ T "last_hour" }}</a>
-    <a class="btn {{ if eq .Range "24h" }}sel{{ end }}" href="posts/top?range=24h">{{ T "last_24_hours" }}</a>
-    <a class="btn {{ if eq .Range "7d" }}sel{{ end }}" href="posts/top?range=7d">{{ T "last_7_days" }}</a>
-    <a class="btn {{ if eq .Range "all" }}sel{{ end }}" href="posts/top?range=all">{{ T "all_time" }}</a>
+
+<div class="pagination posts-nav">
+    <a class="{{ if eq .Range "1h" }}sel{{ end }}" href="posts/top?range=1h">{{ T "last_hour" }}</a>
+    <a class="{{ if eq .Range "24h" }}sel{{ end }}" href="posts/top?range=24h">{{ T "last_24_hours" }}</a>
+    <a class="{{ if eq .Range "7d" }}sel{{ end }}" href="posts/top?range=7d">{{ T "last_7_days" }}</a>
+    <a class="{{ if eq .Range "all" }}sel{{ end }}" href="posts/top?range=all">{{ T "all_time" }}</a>
 </div>
 
 <p class="pagination">
-    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}"
+       href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
     <span class="page">{{ T "page" }} {{ .Page }}</span>
-    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}"
+       href="{{ .OffsetLink }}&offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
 </p>
 
-{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
+{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone "UserSettings" .UserSettings }}
 
 <p class="pagination">
-    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}"
+       href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
     <span class="page">{{ T "page" }} {{ .Page }}</span>
-    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="{{ .OffsetLink }}&offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}"
+       href="{{ .OffsetLink }}&offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
 </p>
 
 {{ template "snippets/footer.html" . }}

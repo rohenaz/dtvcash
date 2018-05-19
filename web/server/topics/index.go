@@ -22,6 +22,7 @@ var indexRoute = web.Route{
 			r.Error(jerr.Get("error getting topics from db", err), http.StatusInternalServerError)
 			return
 		}
+		r.Helper["Title"] = "Memo Topics"
 		r.Helper["Topics"] = topics
 		r.Helper["SearchString"] = searchString
 		res.SetPageAndOffset(r, offset)

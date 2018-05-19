@@ -1,11 +1,11 @@
 package transaction
 
 import (
-	"github.com/memocash/memo/app/bitcoin/queuer"
-	"github.com/memocash/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/queuer"
+	"github.com/memocash/memo/app/db"
 	"time"
 )
 

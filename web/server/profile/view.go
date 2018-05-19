@@ -2,13 +2,13 @@ package profile
 
 import (
 	"fmt"
-	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/jchavannes/jgo/jerr"
+	"github.com/jchavannes/jgo/web"
 	"github.com/memocash/memo/app/auth"
+	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/memocash/memo/app/db"
 	"github.com/memocash/memo/app/profile"
 	"github.com/memocash/memo/app/res"
-	"github.com/jchavannes/jgo/jerr"
-	"github.com/jchavannes/jgo/web"
 	"net/http"
 )
 
@@ -19,6 +19,7 @@ var viewRoute = web.Route{
 		address := wallet.GetAddressFromString(addressString)
 		pkHash := address.GetScriptAddress()
 		var userPkHash []byte
+		var userId uint
 		if auth.IsLoggedIn(r.Session.CookieId) {
 			user, err := auth.GetSessionUser(r.Session.CookieId)
 			if err != nil {
@@ -31,6 +32,7 @@ var viewRoute = web.Route{
 				return
 			}
 			userPkHash = key.PkHash
+			userId = user.Id
 		}
 
 		offset := r.Request.GetUrlParameterInt("offset")
@@ -47,6 +49,11 @@ var viewRoute = web.Route{
 		err = profile.AttachLikesToPosts(posts)
 		if err != nil {
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
+			return
+		}
+		err = profile.SetShowMediaForPosts(posts, userId)
+		if err != nil {
+			r.Error(jerr.Get("error setting show media for posts", err), http.StatusInternalServerError)
 			return
 		}
 		r.Helper["Posts"] = posts

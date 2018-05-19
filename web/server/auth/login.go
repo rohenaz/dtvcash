@@ -1,10 +1,10 @@
 package auth
 
 import (
+	"github.com/jchavannes/jgo/web"
 	"github.com/memocash/memo/app/auth"
 	"github.com/memocash/memo/app/db"
 	"github.com/memocash/memo/app/res"
-	"github.com/jchavannes/jgo/web"
 	"net/http"
 )
 

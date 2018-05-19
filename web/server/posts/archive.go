@@ -26,6 +26,7 @@ var archiveRoute = web.Route{
 		timeStart, err := time.Parse("2006-01-02", day)
 		day = timeStart.Format("2006-01-02")
 		var userPkHash []byte
+		var userId uint
 		if auth.IsLoggedIn(r.Session.CookieId) {
 			user, err := auth.GetSessionUser(r.Session.CookieId)
 			if err != nil {
@@ -38,6 +39,7 @@ var archiveRoute = web.Route{
 				return
 			}
 			userPkHash = key.PkHash
+			userId = user.Id
 		}
 		if err != nil {
 			r.Error(jerr.Get("error parsing time", err), http.StatusUnprocessableEntity)
@@ -71,6 +73,11 @@ var archiveRoute = web.Route{
 				r.Error(jerr.Get("error attaching reputation to posts", err), http.StatusInternalServerError)
 				return
 			}
+		}
+		err = profile.SetShowMediaForPosts(posts, userId)
+		if err != nil {
+			r.Error(jerr.Get("error setting show media for posts", err), http.StatusInternalServerError)
+			return
 		}
 		res.SetPageAndOffset(r, offset)
 		r.Helper["OffsetLink"] = fmt.Sprintf("%s?day=%s", strings.TrimLeft(res.UrlPostsArchive, "/"), day)

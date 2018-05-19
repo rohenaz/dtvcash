@@ -2,10 +2,10 @@ package profile
 
 import (
 	"bytes"
-	"github.com/memocash/memo/app/bitcoin/wallet"
-	"github.com/memocash/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/db"
 	"time"
 )
 
@@ -81,6 +81,9 @@ func AttachLikesToPosts(posts []*Post) error {
 			}
 			if setName != nil {
 				like.Name = setName.Name
+			}
+			if bytes.Equal(like.PkHash, post.SelfPkHash) {
+				post.HasLiked = true
 			}
 			likes = append(likes, like)
 		}

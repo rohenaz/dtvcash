@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"github.com/memocash/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/db"
 )
 
 func IsLoggedIn(cookieId string) bool {

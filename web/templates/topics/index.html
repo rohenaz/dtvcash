@@ -1,12 +1,14 @@
 {{ template "snippets/header.html" . }}
 
-<div class="topics-index-head">
-    <form id="topic-search-form">
-        <input id="topic-search" type="text" name="s" placeholder="Topic name" value="{{ .SearchString }}" autofocus/>
-        <input class="btn" type="submit" value="Search"/>
+<br/>
+
+<div class="topics-index-head center">
+    <form id="topic-search-form" class="form-inline">
+            <input id="topic-search" class="form-control" type="text" name="s" placeholder="Topic name" value="{{ .SearchString }}"/>
+            <input class="btn btn-primary" type="submit" value="Search"/>
     </form>
     &nbsp;
-    <a class="block-link" href="topics/create">{{ T "Create_new_topic" }}</a>
+    <a class="btn btn-default" href="topics/create">{{ T "Create_new_topic" }}</a>
 </div>
 
 <!--<h3>{{ T "Existing_Topics" }}</h3>-->
@@ -21,7 +23,7 @@
 </p>
 {{ end }}
 
-<table class="table left topics-table">
+<table class="table left topics-table table-striped">
     <thead>
     <tr>
         <th>{{ T "Topic" }}</th>

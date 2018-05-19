@@ -1,4 +1,5 @@
 {{ $tz := .TimeZone }}
+{{ $settings := .UserSettings }}
 <div class="post" id="post-{{ .Post.Memo.GetTransactionHashString }}">
     <div class="post-header">
         <p class="name">
@@ -38,49 +39,8 @@
     <p class="message">
     {{ .Post.GetMessage }}
     </p>
-    <div class="actions">
-    {{ if .Post.IsLoggedIn }}
-        <a class="btn" href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">{{ T "reply" }}</a>
-        <div class="like" id="like-{{ .Post.Memo.GetTransactionHashString }}">
-        <span class="like-info" id="like-info-{{ .Post.Memo.GetTransactionHashString }}">
-            <a class="btn like-link" id="like-link-{{ .Post.Memo.GetTransactionHashString }}"
-               href="#">{{ T "like" 1 }}</a>
-        </span>
-            <form class="like-form" id="like-form-{{ .Post.Memo.GetTransactionHashString }}">
-                <input id="tx-hash-{{ .Post.Memo.GetTransactionHashString }}" type="hidden" name="tx-hash"
-                       value="{{ .Post.Memo.GetTransactionHashString }}"/>
-                <label for="tip-{{ .Post.Memo.GetTransactionHashString }}">Tip</label>
-                <input id="tip-{{ .Post.Memo.GetTransactionHashString }}" type="text" name="tip"
-                       class="form-control"
-                       placeholder="0">
-                <span class="password-area">
-                    <label for="password-{{ .Post.Memo.GetTransactionHashString }}">Password</label>
-                    <input id="password-{{ .Post.Memo.GetTransactionHashString }}" type="password" name="password"
-                           class="form-control" placeholder="Password"
-                           autocomplete="on" required>
-                    <label for="save-password-{{ .Post.Memo.GetTransactionHashString }}">
-                        Save<br/>Password
-                    </label>
-                    <input id="save-password-{{ .Post.Memo.GetTransactionHashString }}" name="save-password"
-                           type="checkbox"/>
-                </span>
-                <input class="btn btn-lg btn-primary btn-block" type="submit" value="Like">
-                <a href="#" class="like-cancel" id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
-            </form>
-            <span class="broadcasting">Broadcasting...</span>
-            <script type="text/javascript">
-                MemoApp.Form.NewLike($("#like-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}");
-            </script>
-        </div>
-    {{ end }}
-        <a class="btn btn-leave right" target="_blank"
-           href="https://explorer.bitcoin.com/bch/tx/{{ .Post.Memo.GetTransactionHashString }}">
-        {{ T "view_on_block_explorer" }}</a>
-        <div style="clear:both"></div>
-    </div>
 
 {{ if .Post.Likes }}
-
     <p>
     {{ len .Post.Likes }} likes -
         <a href="#" id="show-hide-likes-{{ .Post.Memo.GetTransactionHashString }}">Show</a>
@@ -119,12 +79,45 @@
         </i>
     </p>
 {{ end }}
+    <div class="actions">
+    {{ if .Post.IsLoggedIn }}
+        <a id="reply-link-{{ .Post.Memo.GetTransactionHashString }}" class="btn btn-default"
+           href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">
+            <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>{{ T "reply" }}
+        </a>
+        <span class="creating hidden btn btn-warning">Creating...</span>
+        <span class="broadcasting hidden btn btn-warning">Broadcasting...</span>
+        <div class="like" id="like-{{ .Post.Memo.GetTransactionHashString }}">
+            <span class="like-info" id="like-info-{{ .Post.Memo.GetTransactionHashString }}">
+                <a class="btn btn-default like-link" id="like-link-{{ .Post.Memo.GetTransactionHashString }}"
+                   href="#"><span class="glyphicon glyphicon-heart{{ if not .Post.HasLiked }}-empty{{ end }}"
+                                  aria-hidden="true"></span>{{ T "like" 1 }}</a>
+            </span>
+            <form class="like-form hidden form-inline" id="like-form-{{ .Post.Memo.GetTransactionHashString }}">
+                <input id="tx-hash-{{ .Post.Memo.GetTransactionHashString }}" type="hidden" name="tx-hash"
+                       value="{{ .Post.Memo.GetTransactionHashString }}"/>
+                <label for="tip-{{ .Post.Memo.GetTransactionHashString }}">Tip</label>
+                <input id="tip-{{ .Post.Memo.GetTransactionHashString }}" type="text" name="tip"
+                       class="form-control input-sm"
+                       placeholder="0" value="{{ .UserSettings.GetDefaultTipString }}"/>
+                <input class="btn btn-sm btn-primary" type="submit" value="Like">
+                <a href="#" class="like-cancel btn btn-sm btn-default"
+                   id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
+            </form>
+        </div>
+    {{ end }}
+        <a class="btn btn-leave right" target="_blank"
+           href="https://explorer.bitcoin.com/bch/tx/{{ .Post.Memo.GetTransactionHashString }}">
+        {{ T "view_on_block_explorer" }}</a>
+        <div class="clear"></div>
+    </div>
 
+{{ template "snippets/reply-form.html" dict "Post" .Post "Hidden" true "Threaded" true }}
 
 {{ if .Post.Replies }}
 
 {{ range .Post.Replies }}
-{{ template "snippets/post-threaded.html" dict "Post" . "Compress" false "TimeZone" $tz }}
+{{ template "snippets/post-threaded.html" dict "Post" . "Compress" false "TimeZone" $tz "UserSettings" $settings }}
 {{ end }}
 
 {{ if eq (len .Post.Replies) 25 }}
@@ -135,20 +128,29 @@
 </div>
 
 <script type="text/javascript">
-    var data = new Identicon('{{ .Post.Memo.GetAddressString }}', {
-        foreground: [255, 255, 255, 0],
-        background: [0, 0, 0, 255],
-        size: 18,
-        margin: 0
-    }).toString();
-    $(".identicon-{{ .Post.Memo.GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
+    (function () {
+        var foreground = {{ if eq .UserSettings.Theme "dark" }}[224, 224, 224, 255]{{ else }}[0, 0, 0, 255]{{ end }};
+        var background = [0, 0, 0, 0];
+        var data = new Identicon('{{ .Post.Memo.GetAddressString }}', {
+            foreground: foreground,
+            background: background,
+            size: 24,
+            form: 'svg',
+            margin: 0
+        }).toString();
+        $(".identicon-{{ .Post.Memo.GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
     {{ if .Post.Parent }}
-    data = new Identicon('{{ .Post.Parent.Memo.GetAddressString }}', {
-        foreground: [255, 255, 255, 0],
-        background: [0, 0, 0, 255],
-        size: 18,
-        margin: 0
-    }).toString();
-    $(".identicon-{{ .Post.Parent.Memo.GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
+        data = new Identicon('{{ .Post.Parent.Memo.GetAddressString }}', {
+            foreground: foreground,
+            background: background,
+            size: 18,
+            margin: 0
+        }).toString();
+        $(".identicon-{{ .Post.Parent.Memo.GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
     {{ end }}
+    {{ if .Post.IsLoggedIn }}
+        MemoApp.Form.ReplyLink("{{ .Post.Memo.GetTransactionHashString }}");
+        MemoApp.Form.NewLike($("#like-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}", true);
+    {{ end }}
+    })();
 </script>

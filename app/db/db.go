@@ -50,6 +50,7 @@ var dbInterfaces = []interface{}{
 	MemoLike{},
 	NodeStatus{},
 	MemoSetProfile{},
+	UserSettings{},
 }
 
 func getDb() (*gorm.DB, error) {

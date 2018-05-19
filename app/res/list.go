@@ -11,16 +11,19 @@ var JsFiles = []string{
 	"lib/pnglib.js",
 	"lib/identicon.js",
 	"lib/jstz.min.js",
+	"lib/bootstrap.min.js",
 	"js/init.js",
 	"js/login.js",
 	"js/signup.js",
 	"js/key.js",
 	"js/memo.js",
 	"js/topics.js",
+	"js/profile.js",
 }
 
 var CssFiles = []string{
 	"lib/jquery-ui.min.css",
+	"lib/bootstrap.min.css",
 	"style.css",
 }
 

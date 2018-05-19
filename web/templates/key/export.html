@@ -1,13 +1,22 @@
 {{ template "snippets/header.html" . }}
 
-<h2>Export Key</h2>
+<div class="col-md-6 col-md-offset-3">
 
-<div id="private-key">
-    <form id="key-password-form" method="post">
-        <label for="key-password">Key Password:</label>
-        <input autocomplete="new-password" type="password" name="password" id="key-password"/>
-        <input class="btn" type="submit" value="Unlock"/>
-    </form>
+    <h2>Export Key</h2>
+
+    <div id="private-key">
+        <form id="key-password-form" method="post">
+            <p>
+                <label for="key-password">Key Password:</label>
+                <input type="password" name="password" id="key-password" class="form-control" autocomplete="on"/>
+            </p>
+            <p>
+                <input class="btn btn-primary" type="submit" value="Unlock"/>
+                <a class="btn btn-default" href="/">Cancel</a>
+            </p>
+        </form>
+    </div>
+
 </div>
 
 <script type="text/javascript">

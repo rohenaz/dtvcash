@@ -18,6 +18,7 @@ const (
 	UrlStats        = "/stats"
 	UrlFeed         = "/feed"
 	UrlAbout        = "/about"
+	UrlNotFound     = "/404"
 )
 
 const (
@@ -30,38 +31,42 @@ const (
 )
 
 const (
-	UrlMemoNew              = "/memo/new"
-	UrlMemoNewSubmit        = "/memo/new-submit"
-	UrlMemoSetName          = "/memo/set-name"
-	UrlMemoSetNameSubmit    = "/memo/set-name-submit"
-	UrlMemoFollow           = "/memo/follow"
-	UrlMemoFollowSubmit     = "/memo/follow-submit"
-	UrlMemoUnfollow         = "/memo/unfollow"
-	UrlMemoUnfollowSubmit   = "/memo/unfollow-submit"
-	UrlMemoPost             = "/post"
-	UrlMemoPostThreaded     = "/post-threaded"
-	UrlMemoPostThreadedAjax = "/post-threaded-ajax"
-	UrlMemoPostAjax         = "/post-ajax"
-	UrlMemoLike             = "/memo/like"
-	UrlMemoLikeSubmit       = "/memo/like-submit"
-	UrlMemoReply            = "/memo/reply"
-	UrlMemoReplySubmit      = "/memo/reply-submit"
-	UrlMemoWait             = "/memo/wait"
-	UrlMemoWaitSubmit       = "/memo/wait-submit"
-	UrlMemoSetProfile       = "/memo/set-profile"
-	UrlMemoSetProfileSubmit = "/memo/set-profile-submit"
+	UrlMemoNew                  = "/memo/new"
+	UrlMemoNewSubmit            = "/memo/new-submit"
+	UrlMemoSetName              = "/memo/set-name"
+	UrlMemoSetNameSubmit        = "/memo/set-name-submit"
+	UrlMemoFollow               = "/memo/follow"
+	UrlMemoFollowSubmit         = "/memo/follow-submit"
+	UrlMemoUnfollow             = "/memo/unfollow"
+	UrlMemoUnfollowSubmit       = "/memo/unfollow-submit"
+	UrlMemoPost                 = "/post"
+	UrlMemoPostThreaded         = "/post-threaded"
+	UrlMemoPostMoreThreadedAjax = "/post-more-threaded-ajax"
+	UrlMemoPostThreadedAjax     = "/post-threaded-ajax"
+	UrlMemoPostAjax             = "/post-ajax"
+	UrlMemoLike                 = "/memo/like"
+	UrlMemoLikeSubmit           = "/memo/like-submit"
+	UrlMemoReply                = "/memo/reply"
+	UrlMemoReplySubmit          = "/memo/reply-submit"
+	UrlMemoWait                 = "/memo/wait"
+	UrlMemoWaitSubmit           = "/memo/wait-submit"
+	UrlMemoSetProfile           = "/memo/set-profile"
+	UrlMemoSetProfileSubmit     = "/memo/set-profile-submit"
 
 	TmplMemoPost         = "/memo/post"
 	TmplMemoPostThreaded = "/memo/post-threaded"
 )
 
 const (
-	UrlProfiles         = "/profiles"
-	UrlProfileView      = "/profile"
-	UrlProfileFollowers = "/profile/followers"
-	UrlProfileFollowing = "/profile/following"
+	UrlProfiles              = "/profiles"
+	UrlProfileView           = "/profile"
+	UrlProfileFollowers      = "/profile/followers"
+	UrlProfileFollowing      = "/profile/following"
+	UrlProfileSettings       = "/settings"
+	UrlProfileSettingsSubmit = "/settings-submit"
 
-	TmplProfiles = "/profile/all"
+	TmplProfiles        = "/profile/all"
+	TmplProfileSettings = "/profile/settings"
 )
 
 const (

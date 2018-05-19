@@ -3,6 +3,7 @@ package profile
 import (
 	"bytes"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
 	"regexp"
 	"strings"
@@ -14,10 +15,12 @@ type Post struct {
 	Memo       *db.MemoPost
 	Parent     *Post
 	Likes      []*Like
+	HasLiked   bool
 	SelfPkHash []byte
 	ReplyCount uint
 	Replies    []*Post
 	Reputation *Reputation
+	ShowMedia  bool
 }
 
 func (p Post) IsSelf() bool {
@@ -40,9 +43,12 @@ func (p Post) GetTotalTip() int64 {
 }
 
 func (p Post) GetMessage() string {
-	msg := addYoutubeVideos(p.Memo.Message)
-	msg = addImgurImages(msg)
-	msg = addGiphyImages(msg)
+	var msg = p.Memo.Message
+	if p.ShowMedia {
+		msg = addYoutubeVideos(msg)
+		msg = addImgurImages(msg)
+		msg = addGiphyImages(msg)
+	}
 	if msg == p.Memo.Message {
 		msg = addLinks(msg)
 	}
@@ -201,7 +207,7 @@ func GetPostsForHash(pkHash []byte, selfPkHash []byte, offset uint) ([]*Post, er
 	return posts, nil
 }
 
-func GetPostByTxHash(txHash []byte, selfPkHash []byte, offset uint) (*Post, error) {
+func GetPostByTxHashWithReplies(txHash []byte, selfPkHash []byte, offset uint) (*Post, error) {
 	memoPost, err := db.GetMemoPost(txHash)
 	if err != nil {
 		return nil, jerr.Get("error getting memo post", err)
@@ -227,6 +233,32 @@ func GetPostByTxHash(txHash []byte, selfPkHash []byte, offset uint) (*Post, erro
 	err = AttachRepliesToPost(post, offset)
 	if err != nil {
 		return nil, jerr.Get("error attaching replies to post", err)
+	}
+	return post, nil
+}
+
+func GetPostByTxHash(txHash []byte, selfPkHash []byte) (*Post, error) {
+	memoPost, err := db.GetMemoPost(txHash)
+	if err != nil {
+		return nil, jerr.Get("error getting memo post", err)
+	}
+	setName, err := db.GetNameForPkHash(memoPost.PkHash)
+	if err != nil {
+		return nil, jerr.Get("error getting name for hash", err)
+	}
+	var name = ""
+	if setName != nil {
+		name = setName.Name
+	}
+	cnt, err := db.GetPostReplyCount(txHash)
+	if err != nil {
+		return nil, jerr.Get("error getting post reply count", err)
+	}
+	post := &Post{
+		Name:       name,
+		Memo:       memoPost,
+		SelfPkHash: selfPkHash,
+		ReplyCount: cnt,
 	}
 	return post, nil
 }
@@ -436,6 +468,25 @@ func AttachParentToPosts(posts []*Post) error {
 			Name:       name,
 			Memo:       parentPost,
 			SelfPkHash: post.SelfPkHash,
+		}
+	}
+	return nil
+}
+
+func SetShowMediaForPosts(posts []*Post, userId uint) error {
+	if userId == 0 {
+		for _, post := range posts {
+			post.ShowMedia = true
+		}
+		return nil
+	}
+	settings, err := cache.GetUserSettings(userId)
+	if err != nil {
+		return jerr.Get("error getting user settings", err)
+	}
+	if settings.Integrations == db.SettingIntegrationsAll {
+		for _, post := range posts {
+			post.ShowMedia = true
 		}
 	}
 	return nil
