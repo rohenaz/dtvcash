@@ -53,13 +53,19 @@
                 return;
             }
 
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
+                return;
+            }
+
             submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoNewSubmit,
                 data: {
                     message: message,
-                    password: MemoApp.GetPassword()
+                    password: password
                 },
                 success: function (txHash) {
                     submitting = false;
@@ -126,13 +132,19 @@
                 return;
             }
 
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
+                return;
+            }
+
             submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoSetNameSubmit,
                 data: {
                     name: name,
-                    password: MemoApp.GetPassword()
+                    password: password
                 },
                 success: function (txHash) {
                     submitting = false;
@@ -201,13 +213,19 @@
                 }
             }
 
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
+                return;
+            }
+
             submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoSetProfileSubmit,
                 data: {
                     profile: profile,
-                    password: MemoApp.GetPassword()
+                    password: password
                 },
                 success: function (txHash) {
                     submitting = false;
@@ -251,13 +269,19 @@
                 return;
             }
 
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
+                return;
+            }
+
             submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoFollowSubmit,
                 data: {
                     address: address,
-                    password: MemoApp.GetPassword()
+                    password: password
                 },
                 success: function (txHash) {
                     submitting = false;
@@ -302,13 +326,19 @@
                 return;
             }
 
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
+                return;
+            }
+
             submitting = true;
             $.ajax({
                 type: "POST",
                 url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoUnfollowSubmit,
                 data: {
                     address: address,
-                    password: MemoApp.GetPassword()
+                    password: password
                 },
                 success: function (txHash) {
                     submitting = false;
@@ -358,6 +388,12 @@
                 return;
             }
 
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
+                return;
+            }
+
             submitting = true;
             $.ajax({
                 type: "POST",
@@ -365,7 +401,7 @@
                 data: {
                     txHash: txHash,
                     tip: tip,
-                    password: MemoApp.GetPassword()
+                    password: password
                 },
                 success: function (txHash) {
                     submitting = false;
@@ -448,6 +484,12 @@
             $replyLink.hide();
             $form.hide();
 
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
+                return;
+            }
+
             submitting = true;
             $.ajax({
                 type: "POST",
@@ -455,7 +497,7 @@
                 data: {
                     txHash: txHash,
                     message: message,
-                    password: MemoApp.GetPassword()
+                    password: password
                 },
                 success: function (replyTxHash) {
                     submitting = false;
@@ -612,6 +654,12 @@
             $creating.removeClass("hidden");
             $likeForm.hide();
 
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
+                return;
+            }
+
             submitting = true;
             $.ajax({
                 type: "POST",
@@ -619,7 +667,7 @@
                 data: {
                     txHash: txHash,
                     tip: tip,
-                    password: MemoApp.GetPassword()
+                    password: password
                 },
                 success: function (likeTxHash) {
                     submitting = false;

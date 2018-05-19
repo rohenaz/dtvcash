@@ -17,6 +17,11 @@ var logoutRoute = web.Route{
 				return
 			}
 		}
-		r.SetRedirect(res.GetUrlWithBaseUrl(res.UrlIndex, r))
+		a := r.Request.GetUrlParameter("a")
+		if a == "re-login" {
+			r.SetRedirect(res.GetUrlWithBaseUrl(res.UrlLogin, r))
+		} else {
+			r.SetRedirect(res.GetUrlWithBaseUrl(res.UrlIndex, r))
+		}
 	},
 }

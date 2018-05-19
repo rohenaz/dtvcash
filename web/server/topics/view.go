@@ -76,6 +76,7 @@ var viewRoute = web.Route{
 			r.Error(jerr.Get("error setting show media for posts", err), http.StatusInternalServerError)
 			return
 		}
+		r.Helper["Title"] = "Memo Topic - " + topicPosts[0].Memo.Topic
 		r.Helper["Topic"] = topicPosts[0].Memo.Topic
 		r.Helper["Posts"] = topicPosts
 		r.Helper["FirstPostId"] = topicPosts[0].Memo.Id

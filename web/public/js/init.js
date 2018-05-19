@@ -72,35 +72,11 @@ var MemoApp = {
         return parseInt(s);
     };
 
-    /**
-     * @param {jQuery} $form
-     */
-    MemoApp.CheckLoadPassword = function($form) {
-        if (!localStorage.WalletPassword) {
-            return;
-        }
-        $form.find("[name=password]").val(localStorage.WalletPassword);
-        $form.find("[name=save-password]").prop("checked", true);
-    };
-
-    /**
-     * @param {jQuery} $form
-     */
-    MemoApp.CheckSavePassword = function($form) {
-        if (!$form.find("[name=save-password]").is(':checked')) {
-            delete(localStorage.WalletPassword);
-            return;
-        }
-
-        var password = $form.find("[name=password]").val();
-        if (password.length === 0) {
-            return;
-        }
-
-        localStorage.WalletPassword = password;
-    };
-
     MemoApp.GetPassword = function() {
+        if (!localStorage.WalletPassword || localStorage.WalletPassword.length === 0) {
+            alert("We've updated how wallets are unlocked. Please re-login to unlock your wallet.");
+            window.location = MemoApp.URL.Logout + "?a=re-login";
+        }
         return localStorage.WalletPassword;
     };
 
@@ -151,6 +127,7 @@ var MemoApp = {
         LoadKey: "key/load",
         LoginSubmit: "login-submit",
         SignupSubmit: "signup-submit",
+        Logout: "logout",
         MemoPost: "post",
         MemoPostAjax: "post-ajax",
         MemoPostThreadedAjax: "post-threaded-ajax",
