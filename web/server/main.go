@@ -80,6 +80,8 @@ func preHandler(r *web.Response) {
 			return
 		}
 		r.Helper["UserSettings"] = userSettings
+	} else {
+		r.Helper["UserSettings"] = db.GetDefaultUserSettings()
 	}
 	if UseMinJS {
 		r.Helper["jsFiles"] = res.GetMinJsFiles()

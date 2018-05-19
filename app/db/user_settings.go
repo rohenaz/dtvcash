@@ -72,13 +72,20 @@ func GetSettingsForUser(userId uint) (*UserSettings, error) {
 		return nil, jerr.Get("error finding settings for user", err)
 	}
 	// Defaults
-	userSettings.Integrations = SettingIntegrationsAll
-	userSettings.Theme = SettingThemeDefault
+	userSettings = GetDefaultUserSettings()
+	userSettings.UserId = userId
 	err = userSettings.Save()
 	if err != nil {
 		return nil, jerr.Get("error saving default settings", err)
 	}
 	return &userSettings, nil
+}
+
+func GetDefaultUserSettings() UserSettings {
+	return UserSettings{
+		Integrations: SettingIntegrationsAll,
+		Theme:        SettingThemeDefault,
+	}
 }
 
 func IsValidDefaultTip(defaultTip uint) bool {
