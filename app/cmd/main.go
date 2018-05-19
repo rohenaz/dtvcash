@@ -17,6 +17,7 @@ func Execute() {
 	memoCmd.AddCommand(fixNameEmojisCmd)
 	memoCmd.AddCommand(viewPostCmd)
 	memoCmd.AddCommand(fixLeadingCharsCmd)
-	memoCmd.AddCommand(addNotificationsCmd)
+	memoCmd.AddCommand(addLikeNotificationsCmd)
+	memoCmd.AddCommand(addReplyNotificationsCmd)
 	memoCmd.Execute()
 }

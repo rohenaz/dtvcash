@@ -8,10 +8,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var addNotificationsCmd = &cobra.Command{
-	Use:   "notifications",
+var addLikeNotificationsCmd = &cobra.Command{
+	Use:   "like-notifications",
 	RunE: func(c *cobra.Command, args []string) error {
-		for offset := uint(0); offset < 100; offset += 25 {
+		for offset := uint(0); offset < 100000; offset += 25 {
 			likes, err := db.GetRecentLikes(offset)
 			fmt.Printf("Found %d likes\n", len(likes))
 			if err != nil {
@@ -22,8 +22,38 @@ var addNotificationsCmd = &cobra.Command{
 				err := notify.AddLikeNotification(like)
 				if err != nil {
 					jerr.Get("error adding like notification", err).Print()
-					return nil
 				}
+			}
+			if len(likes) != 25 {
+				break
+			}
+		}
+		fmt.Println("All done")
+		return nil
+	},
+}
+
+var addReplyNotificationsCmd = &cobra.Command{
+	Use:   "reply-notifications",
+	RunE: func(c *cobra.Command, args []string) error {
+		for offset := uint(0); offset < 100000; offset += 25 {
+			posts, err := db.GetRecentReplyPosts(offset)
+			fmt.Printf("Found %d posts\n", len(posts))
+			if err != nil {
+				jerr.Get("error getting recent posts", err).Print()
+				return nil
+			}
+			for _, post := range posts {
+				if len(post.ParentTxHash) == 0 {
+					continue
+				}
+				err := notify.AddReplyNotification(post)
+				if err != nil {
+					jerr.Get("error adding reply notification", err).Print()
+				}
+			}
+			if len(posts) != 25 {
+				break
 			}
 		}
 		fmt.Println("All done")
