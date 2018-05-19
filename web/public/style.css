@@ -80,23 +80,6 @@ select {
     clear: both;
 }
 
-/*table.table {
-    width: 100%;
-    background: rgba(0, 0, 0, 0.01);
-}
-table.table,
-table.table th,
-table.table td {
-    border-collapse: collapse;
-    border: 0;
-    border-radius: 8px;
-}
-
-table.table th,
-table.table td {
-    padding: 5px 7px;
-    height: 38px;
-}*/
 table.sortable td.bars span {
     display: block;
     width: 20px;
@@ -164,16 +147,6 @@ a.disabled {
     margin: 0 10px;
 }
 
-/*.post {
-    border: 1px solid rgba(0,0,0,0.5);
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-    padding: 1px 10px;
-    max-width: 775px;
-    margin: 12px 0;
-    border-radius: 11px;
-    background: #f4f4f4;
-    word-wrap: break-word;
-}*/
 .posts {
     padding: 15px 0;
 }
@@ -189,15 +162,6 @@ a.disabled {
     font-weight: bold;
     font-size: 18px;
 }
-/*.post .post {
-    margin: 10px -8px 5px -4px;
-}*/
-/*.post .post-header {
-    background: #d0d0d0;
-    margin: 0 -10px 0 -10px;
-    padding: 1px 10px 1px 10px;
-    border-radius: 11px 11px 0 0;
-}*/
 
 .post .post {
     margin: 0 -9px 3px -7px;
@@ -236,11 +200,6 @@ a.disabled {
     display: inline-block;
     margin: 0;
 }
-@media (max-width: 562px) {
-    .post .like-form {
-        margin-bottom: 10px;
-    }
-}
 .post .like-form label {
     width: unset;
     padding: 2px 5px;
@@ -256,30 +215,9 @@ a.disabled {
     margin-top: -4px;
     vertical-align: middle;
 }
-/*.post .like-form {
-    display: none;
-    font-size: 12px;
-    margin: 0;
+.post .actions a {
+    margin: 5px 0;
 }
-.post .like-form a {
-    display: inline-block;
-}
-.post .like-form label {
-    width: unset;
-    vertical-align: middle;
-    margin: 0 5px 0 15px;
-}
-.post .like-form input {
-    height: 28px;
-    min-width: unset;
-}
-.post .like-form .like-cancel {
-    margin-left: 10px;
-    display: inline-block;
-}
-.post .like-form input[type=checkbox] {
-    width: unset;
-}*/
 .post .creating,
 .post .broadcasting {
     display: inline-block;
@@ -289,7 +227,13 @@ a.disabled {
     display: none;
 }
 .post .actions {
-    margin: 10px 0;
+    margin: 5px 0;
+}
+.post .reply-form {
+    margin-bottom: 5px;
+}
+.post .actions .btn-leave {
+    margin-left: 10px;
 }
 #notify {
     color: red;
