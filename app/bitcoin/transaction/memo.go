@@ -11,6 +11,7 @@ import (
 	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
 	"github.com/memocash/memo/app/html-parser"
+	"github.com/memocash/memo/app/notify"
 )
 
 func GetMemoOutputIfExists(txn *db.Transaction) (*db.TransactionOut, error) {
@@ -293,6 +294,12 @@ func saveMemoLike(txn *db.Transaction, out *db.TransactionOut, blockId uint, inp
 	if err != nil {
 		return jerr.Get("error saving memo_like", err)
 	}
+	go func() {
+		err = notify.AddLikeNotification(memoLike)
+		if err != nil {
+			jerr.Get("error adding like notification", err).Print()
+		}
+	}()
 	return nil
 }
 
@@ -342,6 +349,12 @@ func saveMemoReply(txn *db.Transaction, out *db.TransactionOut, blockId uint, in
 	if err != nil {
 		return jerr.Get("error saving memo_reply", err)
 	}
+	go func() {
+		err = notify.AddReplyNotification(memoPost)
+		if err != nil {
+			jerr.Get("error adding reply notification", err).Print()
+		}
+	}()
 	return nil
 }
 

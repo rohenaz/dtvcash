@@ -2,11 +2,11 @@ package db
 
 import (
 	"bytes"
-	"github.com/memocash/memo/app/bitcoin/script"
-	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/script"
+	"github.com/memocash/memo/app/bitcoin/wallet"
 	"html"
 	"sort"
 	"time"
@@ -253,6 +253,23 @@ func GetRecentLikesForTopic(topic string, lastLikeId uint) ([]*MemoLike, error) 
 		Find(&memoLikes)
 	if result.Error != nil {
 		return nil, jerr.Get("error running recent topic likes query", result.Error)
+	}
+	return memoLikes, nil
+}
+
+func GetRecentLikes(offset uint) ([]*MemoLike, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	var memoLikes []*MemoLike
+	result := db.
+		Limit(25).
+		Offset(offset).
+		Order("id DESC").
+		Find(&memoLikes)
+	if result.Error != nil {
+		return nil, jerr.Get("error running query", result.Error)
 	}
 	return memoLikes, nil
 }
