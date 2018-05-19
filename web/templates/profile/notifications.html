@@ -4,4 +4,11 @@
 
 <br/>
 
+{{ range .Notifications }}
+<p>
+    Message: {{ .GetMessage }}<br/>
+    Link: {{ .GetLink }}
+</p>
+{{ end }}
+
 {{ template "snippets/footer.html" . }}

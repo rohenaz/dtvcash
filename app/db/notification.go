@@ -52,7 +52,7 @@ func GetRecentNotificationsForUser(pkHash []byte, offset uint) ([]*Notification,
 		Joins("LEFT OUTER JOIN transactions ON (notifications.tx_hash = transactions.hash)").
 		Joins("LEFT OUTER JOIN blocks ON (transactions.block_id = blocks.id)").
 		Where("notifications.pk_hash = ?", pkHash).
-		Order("COALESCE(block.timestamp, notifications.created_at) DESC").
+		Order("COALESCE(blocks.timestamp, notifications.created_at) DESC").
 		Find(&notifications)
 	if result.Error != nil {
 		return nil, jerr.Get("error running query", result.Error)
