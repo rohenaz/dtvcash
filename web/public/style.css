@@ -164,7 +164,8 @@ a.disabled {
 }
 
 .post .post {
-    margin: 0 -9px 3px -7px;
+    margin: 0 -9px 5px -5px;
+    border-color: #ccc;
 }
 .post .reply {
     margin: 5px 0 10px;
