@@ -543,6 +543,11 @@
                             "Please verify your password is correct. " +
                             "If this problem persists, please try refreshing the page.");
                         return;
+                    } else if (xhr.status === 402) {
+                        alert("Please make sure your account has enough funds. " +
+                            "Unable to find a spendable transaction output. " +
+                            "You may need to consolidate dust.")
+                        return;
                     }
                     var errorMessage =
                         "Error with request (response code " + xhr.status + "):\n" +
@@ -712,6 +717,11 @@
                         alert("Error unlocking key. " +
                             "Please verify your password is correct. " +
                             "If this problem persists, please try refreshing the page.");
+                        return;
+                    } else if (xhr.status === 402) {
+                        alert("Please make sure your account has enough funds. " +
+                            "Unable to find a spendable transaction output. " +
+                            "You may need to consolidate dust.");
                         return;
                     }
                     var errorMessage =

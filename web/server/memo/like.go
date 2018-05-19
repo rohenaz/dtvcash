@@ -118,7 +118,7 @@ var likeSubmitRoute = web.Route{
 		txOut, err := db.GetSpendableTxOut(key.PkHash, minInput)
 		if err != nil {
 			mutex.Unlock(key.PkHash)
-			r.Error(jerr.Get("error getting spendable tx out", err), http.StatusInternalServerError)
+			r.Error(jerr.Get("error getting spendable tx out", err), http.StatusPaymentRequired)
 			return
 		}
 		remaining := txOut.Value
