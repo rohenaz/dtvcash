@@ -1,21 +1,33 @@
 package notify
 
 import (
+	"fmt"
+	"github.com/jchavannes/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/db"
 )
 
 type LikeNotification struct {
-	MemoLike     *db.MemoLike
+	Like         *db.MemoLike
 	Notification *db.Notification
+	Name         string
 }
 
 func (n LikeNotification) GetMessage() string {
-	return ""
+	return fmt.Sprintf("%s liked your post", n.Name)
 }
 
 func (n LikeNotification) GetLink() string {
-	return ""
+	hash, err := chainhash.NewHash(n.Like.LikeTxHash)
+	if err != nil {
+		jerr.Get("error getting like notification tx hash", err).Print()
+		return ""
+	}
+	return fmt.Sprintf("post/%s", hash.String())
+}
+
+func (n LikeNotification) GetTime() string {
+	return n.Like.GetTimeString()
 }
 
 func AddLikeNotification(like *db.MemoLike) error {

@@ -76,7 +76,7 @@ func (m MemoLike) GetTimeString() string {
 
 func GetMemoLike(txHash []byte) (*MemoLike, error) {
 	var memoLike MemoLike
-	err := find(&memoLike, MemoLike{
+	err := findPreloadColumns([]string{BlockTable}, &memoLike, MemoLike{
 		TxHash: txHash,
 	})
 	if err != nil {

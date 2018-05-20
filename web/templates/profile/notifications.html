@@ -4,11 +4,14 @@
 
 <br/>
 
-{{ range .Notifications }}
-<p>
-    Message: {{ .GetMessage }}<br/>
-    Link: {{ .GetLink }}
-</p>
-{{ end }}
+<table class="table table-striped">
+    <tbody>
+    {{ range .Notifications }}
+    <tr>
+        <td><a href="{{ .GetLink }}">{{ .GetMessage }}</a> at {{ .GetTime }}</td>
+    </tr>
+    {{ end }}
+    </tbody>
+</table>
 
 {{ template "snippets/footer.html" . }}
