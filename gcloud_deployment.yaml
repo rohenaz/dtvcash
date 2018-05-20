@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: default
+  labels:
+    service: bitcoin
+  name: bitcoin
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: bitcoin
+    spec:
+      containers:
+      - env:
+        - name: BITCOIN_RPC_USER
+          valueFrom:
+            secretKeyRef:
+              name: bitcoin
+              key: rpcuser
+        - name: BITCOIN_RPC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: bitcoin
+              key: rpcpass
+        image: zquestz/bitcoin-abc
+        name: bitcoin
+        volumeMounts:
+          - mountPath: /data
+            name: bitcoin-data
+        resources:
+          requests:
+            memory: "2Gi"
+      restartPolicy: Always
+      volumes:
+        - name: bitcoin-data
+          gcePersistentDisk:
+            pdName: bitcoin-data
+            fsType: ext4
