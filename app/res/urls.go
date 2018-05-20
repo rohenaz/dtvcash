@@ -64,9 +64,11 @@ const (
 	UrlProfileFollowing      = "/profile/following"
 	UrlProfileSettings       = "/settings"
 	UrlProfileSettingsSubmit = "/settings-submit"
+	UrlProfileNotifications  = "/notifications"
 
-	TmplProfiles        = "/profile/all"
-	TmplProfileSettings = "/profile/settings"
+	TmplProfiles             = "/profile/all"
+	TmplProfileSettings      = "/profile/settings"
+	TmplProfileNotifications = "/profile/notifications"
 )
 
 const (

@@ -37,15 +37,15 @@
             </a>
         </td>
     </tr>
-{{ if .Reputation }}
+{{ if .Profile.Reputation }}
     <tr>
         <th>{{ T "connections" }}</th>
         <td>
             <span class="reputation-tooltip">
-        {{ if .IsSelf }}
+        {{ if .Profile.IsSelf }}
             <b>This is you!</b>
         {{ end }}
-        {{ if .Reputation.IsDirectFollow }}
+        {{ if .Profile.Reputation.IsDirectFollow }}
             You follow <b>{{ .Profile.Name }}</b>! -
             <i>{{ .Profile.Reputation.GetTrustedFollowers }} of {{ .Profile.Reputation.GetTotalFollowing }}
                 ({{ .Profile.Reputation.GetPercentString }})</i>
@@ -62,10 +62,10 @@
         </td>
     </tr>
 {{ end }}
-{{ if .HasBalance }}
+{{ if .Profile.HasBalance }}
     <tr>
         <th>{{ T "balance" }}</th>
-        <td>{{ formatBigInt .Balance }} satoshis ({{ formatBigFloat .BalanceBCH }} BCH)</td>
+        <td>{{ formatBigInt .Profile.Balance }} satoshis ({{ formatBigFloat .Profile.BalanceBCH }} BCH)</td>
     </tr>
 {{ end }}
     <tr>
@@ -78,9 +78,9 @@
         <th>{{ T "actions" }}</th>
         <td>
             <ul class="nav nav-pills">
-            {{ if .CanFollow }}
+            {{ if .Profile.CanFollow }}
                 <li><a href="memo/follow/{{ .Profile.GetAddressString }}">{{ T "follow" 1 }} {{ .Profile.Name }}</a></li>
-            {{ else if .CanUnfollow }}
+            {{ else if .Profile.CanUnfollow }}
                 <li><a href="memo/unfollow/{{ .Profile.GetAddressString }}">{{ T "unfollow" }} {{ .Profile.Name }}</a></li>
             {{ end }}
                 <li class="nav-item dropdown">
@@ -90,7 +90,7 @@
                                href="https://explorer.bitcoin.com/bch/address/{{ .Profile.GetAddressString }}">
                         {{ T "view_address_on_block_explorer" }}
                         </a></li>
-                    {{ if .NameSet }}
+                    {{ if .Profile.NameSet }}
                         <li><a target="_blank"
                                href="https://explorer.bitcoin.com/bch/tx/{{ .Profile.GetNameTx }}">
                         {{ T "view_name_on_block_explorer" }}

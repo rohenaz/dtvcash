@@ -130,6 +130,9 @@ a.disabled {
     padding: 10px 15px 20px;
     font-weight: bold;
 }
+.nav-item.notifications span {
+    top: 3px;
+}
 @media (max-width: 991px) {
     .footer {
         text-align: center;
@@ -599,6 +602,34 @@ h1.home-header {
     margin: 5px 0;
 }
 
+table.notifications-table td:nth-child(1) {
+    vertical-align: middle;
+    text-align: center;
+}
+table.notifications-table td.like {
+    color: #b00;
+}
+table.notifications-table td.reply {
+    color: #487521;
+}
+.notify-post a {
+    color: #aaa;
+}
+.notify-post .reply {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background: #f4f4f4;
+}
+table.notifications-table .name {
+    font-size: 18px;
+}
+table.notifications-table .time-ago {
+    color: #777;
+}
+table.notifications-table .tip {
+    font-size: 14px;
+    font-weight: bold;
+}
 
 body.dark {
     background: #2b3e50;
@@ -696,4 +727,17 @@ body.dark .dropdown-menu>li>a:hover {
 }
 body.dark .navbar-default .navbar-brand {
     color: #5e992b;
+}
+body.dark table.notifications-table td.like {
+    color: #f00;
+}
+body.dark table.notifications-table td.reply {
+    color: #5e992b;
+}
+body.dark .notify-post .reply {
+    border-color: #3e5973;
+    background: #374f66;
+}
+body.dark .notify-post a {
+    color: #888;
 }

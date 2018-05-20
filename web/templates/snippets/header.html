@@ -66,6 +66,10 @@
             </ul>
         {{ if .Username }}
             <ul class="nav navbar-nav navbar-right">
+                <li class="nav-item notifications"><a href="notifications">
+                    {{ formatUInt .UnreadNotifications }}
+                    <span class="glyphicon glyphicon-bell" aria-hidden="true"></span>
+                </a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

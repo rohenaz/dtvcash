@@ -2,7 +2,6 @@ package mutex
 
 import (
 	"encoding/hex"
-	"fmt"
 	"sync"
 	"time"
 )
@@ -19,12 +18,6 @@ var masterMutex *sync.Mutex
 func init() {
 	masterMutex = &sync.Mutex{}
 	locks = make(map[string]lockObj)
-	go func() {
-		ticker := time.NewTicker(60 * time.Second)
-		for range ticker.C {
-			fmt.Printf("Locks: %#v\n", locks)
-		}
-	}()
 }
 
 func Lock(pkHash []byte) {
