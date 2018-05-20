@@ -18,11 +18,13 @@ func GetNotificationsFeed(pkHash []byte, offset uint) ([]*Notification, error) {
 		case db.NotificationTypeLike:
 			like, err := db.GetMemoLike(dbNotification.TxHash)
 			if err != nil {
-				return nil, jerr.Get("error getting notification like", err)
+				jerr.Get("error getting notification like", err).Print()
+				continue
 			}
 			post, err := db.GetMemoPost(like.LikeTxHash)
 			if err != nil {
-				return nil, jerr.Get("error getting like post", err)
+				jerr.Get("error getting like post for notification", err).Print()
+				continue
 			}
 			generics = append(generics, &LikeNotification{
 				Notification: dbNotification,
@@ -33,11 +35,13 @@ func GetNotificationsFeed(pkHash []byte, offset uint) ([]*Notification, error) {
 		case db.NotificationTypeReply:
 			post, err := db.GetMemoPost(dbNotification.TxHash)
 			if err != nil {
-				return nil, jerr.Get("error getting notification post", err)
+				jerr.Get("error getting notification post", err).Print()
+				continue
 			}
 			parent, err := db.GetMemoPost(post.ParentTxHash)
 			if err != nil {
-				return nil, jerr.Get("error getting notification post parent", err)
+				jerr.Get("error getting notification post parent", err).Print()
+				continue
 			}
 			generics = append(generics, &ReplyNotification{
 				Notification: dbNotification,
