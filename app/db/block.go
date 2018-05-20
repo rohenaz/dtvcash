@@ -1,10 +1,10 @@
 package db
 
 import (
-	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/wallet"
 	"time"
 )
 
