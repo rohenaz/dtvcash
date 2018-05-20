@@ -49,7 +49,7 @@
                 <a href="{{ .Generic.GetLink }}" class="name">{{ .Generic.GetName }}</a>
                 <a href="post/{{ .GetPostHashString }}">replied</a> to your
                 <a href="post/{{ .GetParentHashString }}">post</a>
-            {{ .GetTimeAgo }}
+                <span class="time-ago">{{ .GetTimeAgo }}</span>
                 <div class="notify-post">
                     <a href="post/{{ .GetParentHashString }}">{{ .GetParentMessage }}</a>
                     <div class="reply">

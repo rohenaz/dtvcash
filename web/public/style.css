@@ -617,7 +617,6 @@ table.notifications-table td.reply {
 }
 .notify-post .reply {
     padding: 5px 10px;
-    color: #888;
     border: 1px solid #ccc;
     background: #f4f4f4;
 }
@@ -728,4 +727,17 @@ body.dark .dropdown-menu>li>a:hover {
 }
 body.dark .navbar-default .navbar-brand {
     color: #5e992b;
+}
+body.dark table.notifications-table td.like {
+    color: #f00;
+}
+body.dark table.notifications-table td.reply {
+    color: #5e992b;
+}
+body.dark .notify-post .reply {
+    border-color: #3e5973;
+    background: #374f66;
+}
+body.dark .notify-post a {
+    color: #888;
 }
