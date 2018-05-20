@@ -14,6 +14,7 @@ var notificationsRoute = web.Route{
 	Pattern:    res.UrlProfileNotifications,
 	NeedsLogin: true,
 	Handler: func(r *web.Response) {
+		offset := r.Request.GetUrlParameterInt("offset")
 		user, err := auth.GetSessionUser(r.Session.CookieId)
 		if err != nil {
 			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
@@ -24,12 +25,13 @@ var notificationsRoute = web.Route{
 			r.Error(jerr.Get("error getting address", err), http.StatusInternalServerError)
 			return
 		}
-		notifications, err := notify.GetNotificationsFeed(pkHash, 0)
+		notifications, err := notify.GetNotificationsFeed(pkHash, uint(offset))
 		if err != nil {
 			r.Error(jerr.Get("error getting recent notifications for user", err), http.StatusInternalServerError)
 			return
 		}
 		r.Helper["Notifications"] = notifications
+		res.SetPageAndOffset(r, offset)
 		r.RenderTemplate(res.TmplProfileNotifications)
 	},
 }

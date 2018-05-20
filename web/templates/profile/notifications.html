@@ -1,36 +1,90 @@
 {{ template "snippets/header.html" . }}
 
-<h2>Notifications</h2>
+{{ $settings := .UserSettings }}
 
-<br/>
+<div class="col-md-8 col-md-offset-2">
 
-<table class="table table-striped notifications-table">
-    <tbody>
-    {{ range .Notifications }}
-    <tr>
-        <td>
+    <h2 class="center">Notifications</h2>
+    <br/>
+
+{{ if and (eq .NextOffset 25) (lt (len .Notifications) 25) }}{{ else }}
+    <p class="pagination">
+        <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="notifications?offset={{ .PrevOffset }}">
+            &lt; {{ T "previous" }}</a>
+        <span class="page">{{ T "page" }} {{ .Page }}</span>
+        <a class="{{ if lt (len .Notifications) 25 }}disabled{{ end }}" href="notifications?offset={{ .NextOffset }}">
+        {{ T "next" }} &gt;</a>
+    </p>
+{{ end }}
+
+    <table class="table table-striped notifications-table">
+        <tbody>
+        {{ range .Notifications }}
+        <tr>
         {{ if .IsLike }}
-            <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
-        {{ else if .IsReply }}
-            <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
-        {{ end }}
-        </td>
-        <td>
-            <a href="{{ .Generic.GetLink }}">{{ .Generic.GetMessage }}</a> at {{ .Generic.GetTime }}
-            <div class="notify-post">
-            {{ if .IsLike }}
-            {{ .GetPostMessage }}
-            {{ else if .IsReply }}
-            {{ .GetParentMessage }}
-                <div class="reply">
-                {{ .GetPostMessage }}
-                </div>
+            <td class="like">
+                <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
+            </td>
+            <td>
+                <span class="identicon-{{ .GetAddressString }}">
+                    <img class="identicon"/>
+                </span>
+                <a href="profile/{{ .GetAddressString }}" class="name">{{ .Generic.GetName }}</a> liked your
+                <a href="post/{{ .GetPostHashString }}">post</a>
+            {{ if gt .GetTipAmount 0 }}
+                <span class="tip">(tip: {{ formatBigInt .GetTipAmount }} satoshis)</span>
             {{ end }}
-            </div>
-        </td>
-    </tr>
-    {{ end }}
-    </tbody>
-</table>
+                <span class="time-ago">{{ .GetTimeAgo }}</span>
+                <div class="notify-post">
+                    <a href="post/{{ .GetPostHashString }}">{{ .GetPostMessage }}</a>
+                </div>
+            </td>
+        {{ else if .IsReply }}
+            <td class="reply">
+                <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+            </td>
+            <td>
+                <span class="identicon-{{ .GetAddressString }}">
+                    <img class="identicon"/>
+                </span>
+                <a href="{{ .Generic.GetLink }}" class="name">{{ .Generic.GetName }}</a> {{ .GetTimeAgo }}
+                <div class="notify-post">
+                    <a href="post/{{ .GetParentHashString }}">{{ .GetParentMessage }}</a>
+                    <div class="reply">
+                        <a href="post/{{ .GetPostHashString }}">{{ .GetPostMessage }}</a>
+                    </div>
+                </div>
+            </td>
+        {{ end }}
+        </tr>
+        <script type="text/javascript">
+            (function () {
+                var foreground = {{ if eq $settings.Theme "dark" }}[224, 224, 224, 255]{{ else }}[0, 0, 0, 255]{{ end }};
+                var background = [0, 0, 0, 0];
+                var data = new Identicon('{{ .GetAddressString }}', {
+                    foreground: foreground,
+                    background: background,
+                    size: 24,
+                    form: 'svg',
+                    margin: 0
+                }).toString();
+                $(".identicon-{{ .GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
+            })();
+        </script>
+        {{ end }}
+        </tbody>
+    </table>
+
+{{ if and (eq .NextOffset 25) (lt (len .Notifications) 25) }}{{ else }}
+    <p class="pagination">
+        <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="notifications?offset={{ .PrevOffset }}">
+            &lt; {{ T "previous" }}</a>
+        <span class="page">{{ T "page" }} {{ .Page }}</span>
+        <a class="{{ if lt (len .Notifications) 25 }}disabled{{ end }}" href="notifications?offset={{ .NextOffset }}">
+        {{ T "next" }} &gt;</a>
+    </p>
+{{ end }}
+
+</div>
 
 {{ template "snippets/footer.html" . }}

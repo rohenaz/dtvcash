@@ -2,56 +2,9 @@ package notify
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/db"
 )
-
-type Notification struct {
-	Generic Generic
-}
-
-func (n Notification) IsLike() bool {
-	_, ok := n.Generic.(*LikeNotification)
-	return ok
-}
-
-func (n Notification) IsReply() bool {
-	_, ok := n.Generic.(*ReplyNotification)
-	return ok
-}
-
-func (n Notification) GetPostMessage() string {
-	var msg string
-	switch g := n.Generic.(type) {
-	case *LikeNotification:
-		msg = g.Post.GetMessage()
-	case *ReplyNotification:
-		msg = g.Post.GetMessage()
-	}
-	if len(msg) > 50 {
-		msg = msg[:47] + "..."
-	}
-	return msg
-}
-
-func (n Notification) GetParentMessage() string {
-	var msg string
-	switch g := n.Generic.(type) {
-	case *ReplyNotification:
-		msg = g.Parent.GetMessage()
-	}
-	if len(msg) > 50 {
-		msg = msg[:47] + "..."
-	}
-	return msg
-}
-
-type Generic interface {
-	GetMessage() string
-	GetLink() string
-	GetTime() string
-}
 
 func GetNotificationsFeed(pkHash []byte, offset uint) ([]*Notification, error) {
 	dbNotifications, err := db.GetRecentNotificationsForUser(pkHash, offset)
@@ -99,18 +52,24 @@ func GetNotificationsFeed(pkHash []byte, offset uint) ([]*Notification, error) {
 		return nil, jerr.Get("error getting set names for pk hashes", err)
 	}
 	for _, notification := range generics {
-		for _, setName := range setNames {
-			switch n := notification.(type) {
-			case *LikeNotification:
+		switch n := notification.(type) {
+		case *LikeNotification:
+			for _, setName := range setNames {
 				if bytes.Equal(n.Like.PkHash, setName.PkHash) {
-					fmt.Printf("-")
 					n.Name = setName.Name
 				}
-			case *ReplyNotification:
+			}
+			if n.Name == "" {
+				n.Name = n.Like.GetTransactionHashString()
+			}
+		case *ReplyNotification:
+			for _, setName := range setNames {
 				if bytes.Equal(n.Post.PkHash, setName.PkHash) {
-					fmt.Printf("_")
 					n.Name = setName.Name
 				}
+			}
+			if n.Name == "" {
+				n.Name = n.Post.GetTransactionHashString()
 			}
 		}
 	}

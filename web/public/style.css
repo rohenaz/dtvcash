@@ -606,14 +606,30 @@ table.notifications-table td:nth-child(1) {
     vertical-align: middle;
     text-align: center;
 }
-.notify-post {
+table.notifications-table td.like {
+    color: #b00;
+}
+table.notifications-table td.reply {
+    color: #487521;
+}
+.notify-post a {
     color: #aaa;
 }
 .notify-post .reply {
     padding: 5px 10px;
     color: #888;
     border: 1px solid #ccc;
-    background: #eee;
+    background: #f4f4f4;
+}
+table.notifications-table .name {
+    font-size: 18px;
+}
+table.notifications-table .time-ago {
+    color: #777;
+}
+table.notifications-table .tip {
+    font-size: 14px;
+    font-weight: bold;
 }
 
 body.dark {

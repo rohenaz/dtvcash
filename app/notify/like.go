@@ -5,6 +5,7 @@ import (
 	"github.com/jchavannes/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/db"
+	"time"
 )
 
 type LikeNotification struct {
@@ -14,8 +15,20 @@ type LikeNotification struct {
 	Name         string
 }
 
+func (n LikeNotification) GetName() string {
+	return n.Name
+}
+
+func (n LikeNotification) GetAddressString() string {
+	return n.Like.GetAddressString()
+}
+
+func (n LikeNotification) GetPostHashString() string {
+	return n.Like.GetLikeTransactionHashString()
+}
+
 func (n LikeNotification) GetMessage() string {
-	return fmt.Sprintf("%s liked your post", n.Name)
+	return n.Post.GetMessage()
 }
 
 func (n LikeNotification) GetLink() string {
@@ -27,8 +40,12 @@ func (n LikeNotification) GetLink() string {
 	return fmt.Sprintf("post/%s", hash.String())
 }
 
-func (n LikeNotification) GetTime() string {
-	return n.Like.GetTimeString()
+func (n LikeNotification) GetTime() time.Time {
+	if n.Like.Block != nil {
+		return n.Like.Block.Timestamp
+	} else {
+		return n.Like.CreatedAt
+	}
 }
 
 func AddLikeNotification(like *db.MemoLike) error {

@@ -5,6 +5,7 @@ import (
 	"github.com/jchavannes/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/db"
+	"time"
 )
 
 type ReplyNotification struct {
@@ -14,8 +15,20 @@ type ReplyNotification struct {
 	Name         string
 }
 
+func (n ReplyNotification) GetName() string {
+	return n.Name
+}
+
+func (n ReplyNotification) GetAddressString() string {
+	return n.Post.GetAddressString()
+}
+
+func (n ReplyNotification) GetPostHashString() string {
+	return n.Post.GetTransactionHashString()
+}
+
 func (n ReplyNotification) GetMessage() string {
-	return fmt.Sprintf("%s replied to your post", n.Name)
+	return n.Post.GetMessage()
 }
 
 func (n ReplyNotification) GetLink() string {
@@ -27,15 +40,12 @@ func (n ReplyNotification) GetLink() string {
 	return fmt.Sprintf("post/%s", hash.String())
 }
 
-func (n ReplyNotification) GetTime() string {
-	if n.Post.BlockId != 0 {
-		if n.Post.Block != nil {
-			return n.Post.Block.Timestamp.Format("2006-01-02 15:04:05")
-		} else {
-			return "Unknown"
-		}
+func (n ReplyNotification) GetTime() time.Time {
+	if n.Post.Block != nil {
+		return n.Post.Block.Timestamp
+	} else {
+		return n.Post.CreatedAt
 	}
-	return "Unconfirmed"
 }
 
 func AddReplyNotification(reply *db.MemoPost) error {
