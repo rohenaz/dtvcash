@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/jchavannes/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
 	"time"
 )
@@ -48,14 +49,28 @@ func (n ReplyNotification) GetTime() time.Time {
 	}
 }
 
-func AddReplyNotification(reply *db.MemoPost) error {
+func AddReplyNotification(reply *db.MemoPost, updateCache bool) error {
 	parent, err := db.GetMemoPost(reply.ParentTxHash)
 	if err != nil {
 		return jerr.Get("error getting parent post", err)
 	}
+	userId, err := db.GetUserIdFromPkHash(parent.PkHash)
+	if err != nil {
+		if db.IsRecordNotFoundError(err) {
+			// Don't add notifications for external users, not an error though
+			return nil
+		}
+		return jerr.Get("error getting user id from pk hash", err)
+	}
 	_, err = db.AddNotification(parent.PkHash, reply.TxHash, db.NotificationTypeReply)
 	if err != nil {
 		return jerr.Get("error adding notification", err)
+	}
+	if updateCache {
+		_, err = cache.GetAndSetUnreadNotificationCount(userId)
+		if err != nil {
+			return jerr.Get("error setting notification unread count", err)
+		}
 	}
 	return nil
 }

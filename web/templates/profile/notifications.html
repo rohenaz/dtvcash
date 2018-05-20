@@ -5,7 +5,6 @@
 <div class="col-md-8 col-md-offset-2">
 
     <h2 class="center">Notifications</h2>
-    <br/>
 
 {{ if and (eq .NextOffset 25) (lt (len .Notifications) 25) }}{{ else }}
     <p class="pagination">
@@ -47,7 +46,10 @@
                 <span class="identicon-{{ .GetAddressString }}">
                     <img class="identicon"/>
                 </span>
-                <a href="{{ .Generic.GetLink }}" class="name">{{ .Generic.GetName }}</a> {{ .GetTimeAgo }}
+                <a href="{{ .Generic.GetLink }}" class="name">{{ .Generic.GetName }}</a>
+                <a href="post/{{ .GetPostHashString }}">replied</a> to your
+                <a href="post/{{ .GetParentHashString }}">post</a>
+            {{ .GetTimeAgo }}
                 <div class="notify-post">
                     <a href="post/{{ .GetParentHashString }}">{{ .GetParentMessage }}</a>
                     <div class="reply">

@@ -50,9 +50,6 @@ func (n Notification) GetParentHashString() string {
 
 func (n Notification) GetPostMessage() string {
 	msg := n.Generic.GetMessage()
-	if len(msg) > 50 {
-		msg = msg[:47] + "..."
-	}
 	return msg
 }
 
@@ -61,9 +58,6 @@ func (n Notification) GetParentMessage() string {
 	switch g := n.Generic.(type) {
 	case *ReplyNotification:
 		msg = g.Parent.GetMessage()
-	}
-	if len(msg) > 50 {
-		msg = msg[:47] + "..."
 	}
 	return msg
 }
@@ -78,6 +72,9 @@ func (n Notification) GetTimeAgo() string {
 				return "1 day ago"
 			}
 			return fmt.Sprintf("%d days ago", hours/24)
+		}
+		if hours == 1 {
+			return "1 hour ago"
 		}
 		return fmt.Sprintf("%d hours ago", hours)
 	}
@@ -94,4 +91,14 @@ func (n Notification) GetTipAmount() int64 {
 		return 0
 	}
 	return like.Like.TipAmount
+}
+
+func (n Notification) GetId() uint {
+	switch g := n.Generic.(type) {
+	case *ReplyNotification:
+		return g.Notification.Id
+	case *LikeNotification:
+		return g.Notification.Id
+	}
+	return 0
 }

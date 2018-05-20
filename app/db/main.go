@@ -52,6 +52,7 @@ var dbInterfaces = []interface{}{
 	MemoSetProfile{},
 	UserSettings{},
 	Notification{},
+	UserAction{},
 }
 
 func getDb() (*gorm.DB, error) {

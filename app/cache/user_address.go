@@ -32,19 +32,11 @@ func GetUserPkHash(userId uint) ([]byte, error) {
 	if err != nil {
 		return nil, jerr.Get("error getting key from db", err)
 	}
-	err = SetUserAddress(userId, &UserAddress{PkHash: key.PkHash})
+	err = SetItem(getUserAddressName(userId), &UserAddress{PkHash: key.PkHash})
 	if err != nil {
-		return nil, jerr.Get("error saving cache", err)
+		return nil, jerr.Get("error setting user address cache", err)
 	}
 	return key.PkHash, nil
-}
-
-func SetUserAddress(userId uint, userAddress *UserAddress) error {
-	err := SetItem(getUserAddressName(userId), userAddress)
-	if err != nil {
-		return jerr.Get("error setting user address cache", err)
-	}
-	return nil
 }
 
 func getUserAddressName(userId uint) string {

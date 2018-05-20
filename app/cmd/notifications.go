@@ -19,7 +19,7 @@ var addLikeNotificationsCmd = &cobra.Command{
 				return nil
 			}
 			for _, like := range likes {
-				err := notify.AddLikeNotification(like)
+				err := notify.AddLikeNotification(like, false)
 				if err != nil {
 					jerr.Get("error adding like notification", err).Print()
 				}
@@ -47,7 +47,7 @@ var addReplyNotificationsCmd = &cobra.Command{
 				if len(post.ParentTxHash) == 0 {
 					continue
 				}
-				err := notify.AddReplyNotification(post)
+				err := notify.AddReplyNotification(post, false)
 				if err != nil {
 					jerr.Get("error adding reply notification", err).Print()
 				}

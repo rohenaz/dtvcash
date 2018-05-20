@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/jchavannes/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
 	"time"
 )
@@ -48,14 +49,28 @@ func (n LikeNotification) GetTime() time.Time {
 	}
 }
 
-func AddLikeNotification(like *db.MemoLike) error {
+func AddLikeNotification(like *db.MemoLike, updateCache bool) error {
 	post, err := db.GetMemoPost(like.LikeTxHash)
 	if err != nil {
 		return jerr.Get("error getting memo post", err)
 	}
+	userId, err := db.GetUserIdFromPkHash(post.PkHash)
+	if err != nil {
+		if db.IsRecordNotFoundError(err) {
+			// Don't add notifications for external users, not an error though
+			return nil
+		}
+		return jerr.Get("error getting user id from pk hash", err)
+	}
 	_, err = db.AddNotification(post.PkHash, like.TxHash, db.NotificationTypeLike)
 	if err != nil {
 		return jerr.Get("error adding notification", err)
+	}
+	if updateCache {
+		_, err = cache.GetAndSetUnreadNotificationCount(userId)
+		if err != nil {
+			return jerr.Get("error setting notification unread count", err)
+		}
 	}
 	return nil
 }

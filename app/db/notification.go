@@ -55,3 +55,20 @@ func GetRecentNotificationsForUser(pkHash []byte, offset uint) ([]*Notification,
 	}
 	return notifications, nil
 }
+
+func GetUnreadNotificationCount(pkHash []byte, lastNotificationId uint) (uint, error) {
+	db, err := getDb()
+	if err != nil {
+		return 0, jerr.Get("error getting db", err)
+	}
+	var count uint
+	result := db.
+		Table("notifications").
+		Where("pk_hash = ?", pkHash).
+		Where("id > ?", lastNotificationId).
+		Count(&count)
+	if result.Error != nil {
+		return 0, jerr.Get("error getting unread notification count", result.Error)
+	}
+	return count, nil
+}

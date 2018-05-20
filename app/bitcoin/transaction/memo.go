@@ -295,7 +295,7 @@ func saveMemoLike(txn *db.Transaction, out *db.TransactionOut, blockId uint, inp
 		return jerr.Get("error saving memo_like", err)
 	}
 	go func() {
-		err = notify.AddLikeNotification(memoLike)
+		err = notify.AddLikeNotification(memoLike, true)
 		if err != nil {
 			jerr.Get("error adding like notification", err).Print()
 		}
@@ -350,7 +350,7 @@ func saveMemoReply(txn *db.Transaction, out *db.TransactionOut, blockId uint, in
 		return jerr.Get("error saving memo_reply", err)
 	}
 	go func() {
-		err = notify.AddReplyNotification(memoPost)
+		err = notify.AddReplyNotification(memoPost, true)
 		if err != nil {
 			jerr.Get("error adding reply notification", err).Print()
 		}

@@ -5,6 +5,7 @@ import (
 	"github.com/jchavannes/jgo/web"
 	"github.com/memocash/memo/app/auth"
 	"github.com/memocash/memo/app/cache"
+	"github.com/memocash/memo/app/db"
 	"github.com/memocash/memo/app/notify"
 	"github.com/memocash/memo/app/res"
 	"net/http"
@@ -29,6 +30,29 @@ var notificationsRoute = web.Route{
 		if err != nil {
 			r.Error(jerr.Get("error getting recent notifications for user", err), http.StatusInternalServerError)
 			return
+		}
+		lastNotificationId, err := db.GetLastNotificationId(user.Id)
+		if err != nil {
+			r.Error(jerr.Get("error getting last notification id from db", err), http.StatusInternalServerError)
+			return
+		}
+		var newLastNotificationId = lastNotificationId
+		for _, notification := range notifications {
+			if notification.GetId() > newLastNotificationId {
+				newLastNotificationId = notification.GetId()
+			}
+		}
+		if newLastNotificationId > lastNotificationId {
+			err = db.SetLastNotificationId(user.Id, newLastNotificationId)
+			if err != nil {
+				r.Error(jerr.Get("error setting last notification id", err), http.StatusInternalServerError)
+				return
+			}
+			_, err = cache.GetAndSetUnreadNotificationCount(user.Id)
+			if err != nil {
+				r.Error(jerr.Get("error updating unread notification count in cache", err), http.StatusInternalServerError)
+				return
+			}
 		}
 		r.Helper["Notifications"] = notifications
 		res.SetPageAndOffset(r, offset)

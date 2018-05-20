@@ -79,6 +79,12 @@ func preHandler(r *web.Response) {
 			r.Error(jerr.Get("error getting user settings from cache", err), http.StatusInternalServerError)
 			return
 		}
+		unreadNotifications, err := cache.GetUnreadNotificationCount(user.Id)
+		if err != nil {
+			r.Error(jerr.Get("error getting last notification id from cache", err), http.StatusInternalServerError)
+			return
+		}
+		r.Helper["UnreadNotifications"] = unreadNotifications
 		r.Helper["UserSettings"] = userSettings
 	} else {
 		r.Helper["UserSettings"] = db.GetDefaultUserSettings()
