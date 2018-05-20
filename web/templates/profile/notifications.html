@@ -4,11 +4,30 @@
 
 <br/>
 
-<table class="table table-striped">
+<table class="table table-striped notifications-table">
     <tbody>
     {{ range .Notifications }}
     <tr>
-        <td><a href="{{ .GetLink }}">{{ .GetMessage }}</a> at {{ .GetTime }}</td>
+        <td>
+        {{ if .IsLike }}
+            <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
+        {{ else if .IsReply }}
+            <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+        {{ end }}
+        </td>
+        <td>
+            <a href="{{ .Generic.GetLink }}">{{ .Generic.GetMessage }}</a> at {{ .Generic.GetTime }}
+            <div class="notify-post">
+            {{ if .IsLike }}
+            {{ .GetPostMessage }}
+            {{ else if .IsReply }}
+            {{ .GetParentMessage }}
+                <div class="reply">
+                {{ .GetPostMessage }}
+                </div>
+            {{ end }}
+            </div>
+        </td>
     </tr>
     {{ end }}
     </tbody>

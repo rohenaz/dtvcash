@@ -9,6 +9,7 @@ import (
 
 type ReplyNotification struct {
 	Post         *db.MemoPost
+	Parent       *db.MemoPost
 	Notification *db.Notification
 	Name         string
 }

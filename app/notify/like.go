@@ -9,6 +9,7 @@ import (
 
 type LikeNotification struct {
 	Like         *db.MemoLike
+	Post         *db.MemoPost
 	Notification *db.Notification
 	Name         string
 }

@@ -602,6 +602,19 @@ h1.home-header {
     margin: 5px 0;
 }
 
+table.notifications-table td:nth-child(1) {
+    vertical-align: middle;
+    text-align: center;
+}
+.notify-post {
+    color: #aaa;
+}
+.notify-post .reply {
+    padding: 5px 10px;
+    color: #888;
+    border: 1px solid #ccc;
+    background: #eee;
+}
 
 body.dark {
     background: #2b3e50;
