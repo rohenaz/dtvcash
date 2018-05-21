@@ -632,6 +632,18 @@ table.notifications-table .tip {
     font-weight: bold;
 }
 
+#new-poll-form .glyphicon-remove {
+    color: rgba(255,0,0,0.25);
+    margin-left: 5px;
+    top: 2px;
+}
+#new-poll-form .glyphicon-remove:hover {
+    color: rgba(255,0,0,1);
+    top: 2px;
+}
+
+
+
 body.dark {
     background: #2b3e50;
     color: #e0e0e0;

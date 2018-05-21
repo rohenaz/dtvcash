@@ -93,6 +93,10 @@ const (
 )
 
 const (
+	UrlPollCreate = "/poll/create"
+)
+
+const (
 	TmplSnippetsPost                 = "/snippets/post"
 	TmplSnippetsPostThreaded         = "/snippets/post-threaded"
 	TmplSnippetsPostThreadedLoadMore = "/snippets/post-threaded-load-more"

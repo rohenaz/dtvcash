@@ -11,6 +11,7 @@ import (
 	auth2 "github.com/memocash/memo/web/server/auth"
 	"github.com/memocash/memo/web/server/key"
 	"github.com/memocash/memo/web/server/memo"
+	"github.com/memocash/memo/web/server/poll"
 	"github.com/memocash/memo/web/server/posts"
 	"github.com/memocash/memo/web/server/profile"
 	"github.com/memocash/memo/web/server/topics"
@@ -178,6 +179,7 @@ func Run(sessionCookieInsecure bool) {
 				feedRoute,
 				//testsRoute,
 			},
+			poll.GetRoutes(),
 			topics.GetRoutes(),
 			posts.GetRoutes(),
 			key.GetRoutes(),
