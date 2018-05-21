@@ -64,7 +64,7 @@ func GetNotificationsFeed(pkHash []byte, offset uint) ([]*Notification, error) {
 				}
 			}
 			if n.Name == "" {
-				n.Name = n.Like.GetTransactionHashString()
+				n.Name = n.Like.GetAddressString()[:16]
 			}
 		case *ReplyNotification:
 			for _, setName := range setNames {
@@ -73,7 +73,7 @@ func GetNotificationsFeed(pkHash []byte, offset uint) ([]*Notification, error) {
 				}
 			}
 			if n.Name == "" {
-				n.Name = n.Post.GetTransactionHashString()
+				n.Name = n.Post.GetAddressString()[:16]
 			}
 		}
 	}

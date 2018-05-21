@@ -8,6 +8,7 @@ import (
 	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/bitcoin/main-node"
+	"github.com/memocash/memo/app/bitcoin/memo"
 	"github.com/memocash/memo/app/bitcoin/transaction"
 	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/memocash/memo/app/config"
@@ -90,6 +91,10 @@ func setBloomFilters(n *SNode) {
 		fmt.Printf("Adding filter for address: %s\n", key.GetAddress().GetEncoded())
 		bloomFilter.Add(key.GetAddress().GetScriptAddress())
 		bloomFilter.Add(key.GetPublicKey().GetSerialized())
+	}
+	for _, code := range memo.GetAllCodes() {
+		fmt.Printf("Adding filter for code: %x\n", code)
+		bloomFilter.Add(code)
 	}
 	n.Peer.QueueMessage(bloomFilter.MsgFilterLoad(), nil)
 }

@@ -10,7 +10,6 @@ type Generic interface {
 	GetAddressString() string
 	GetPostHashString() string
 	GetMessage() string
-	GetLink() string
 	GetTime() time.Time
 }
 

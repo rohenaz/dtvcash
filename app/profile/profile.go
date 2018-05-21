@@ -2,18 +2,18 @@ package profile
 
 import (
 	"bytes"
+	"encoding/base64"
 	"fmt"
-	"github.com/memocash/memo/app/bitcoin/wallet"
-	"github.com/memocash/memo/app/cache"
-	"github.com/memocash/memo/app/db"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
 	"github.com/jchavannes/bchutil"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/cache"
+	"github.com/memocash/memo/app/db"
+	"github.com/skip2/go-qrcode"
 	"regexp"
 	"strings"
-	"github.com/skip2/go-qrcode"
-	"encoding/base64"
 )
 
 type Profile struct {
@@ -207,7 +207,7 @@ func GetProfile(pkHash []byte, selfPkHash []byte) (*Profile, error) {
 		SelfPkHash: selfPkHash,
 	}
 	if profile.Name == "" {
-		profile.Name = fmt.Sprintf("Profile %.6s", profile.GetAddressString())
+		profile.Name = fmt.Sprintf("Profile %.16s", profile.GetAddressString())
 	}
 	memoSetProfile, err := db.GetProfileForPkHash(pkHash)
 	if err != nil && ! db.IsRecordNotFoundError(err) {

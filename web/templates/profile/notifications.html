@@ -46,7 +46,7 @@
                 <span class="identicon-{{ .GetAddressString }}">
                     <img class="identicon"/>
                 </span>
-                <a href="{{ .Generic.GetLink }}" class="name">{{ .Generic.GetName }}</a>
+                <a href="profile/{{ .GetAddressString }}" class="name">{{ .Generic.GetName }}</a>
                 <a href="post/{{ .GetPostHashString }}">replied</a> to your
                 <a href="post/{{ .GetParentHashString }}">post</a>
                 <span class="time-ago">{{ .GetTimeAgo }}</span>

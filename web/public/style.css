@@ -678,6 +678,9 @@ body.dark .navbar-default {
     background: #2b3e50;
     border-color: #666;
 }
+body.dark .footer {
+    border-color: #666;
+}
 body.dark .navbar-default .navbar-nav a,
 body.dark .navbar-default .navbar-nav a:focus,
 body.dark .navbar-default .navbar-nav a:hover {

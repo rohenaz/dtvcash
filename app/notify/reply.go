@@ -1,8 +1,6 @@
 package notify
 
 import (
-	"fmt"
-	"github.com/jchavannes/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
@@ -30,15 +28,6 @@ func (n ReplyNotification) GetPostHashString() string {
 
 func (n ReplyNotification) GetMessage() string {
 	return n.Post.GetMessage()
-}
-
-func (n ReplyNotification) GetLink() string {
-	hash, err := chainhash.NewHash(n.Post.TxHash)
-	if err != nil {
-		jerr.Get("error getting like notification tx hash", err).Print()
-		return ""
-	}
-	return fmt.Sprintf("post/%s", hash.String())
 }
 
 func (n ReplyNotification) GetTime() time.Time {
