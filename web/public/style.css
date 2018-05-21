@@ -277,7 +277,7 @@ img.identicon {
     font-size: 12px;
 }
 
-.message-byte-count.red {
+.byte-count.red {
     color: red;
 }
 .posts-nav {
@@ -632,6 +632,9 @@ table.notifications-table .tip {
     font-weight: bold;
 }
 
+#new-poll-form .remove-response.hidden {
+    display: none;
+}
 #new-poll-form .glyphicon-remove {
     color: rgba(255,0,0,0.25);
     margin-left: 5px;
