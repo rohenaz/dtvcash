@@ -60,3 +60,31 @@ var addReplyNotificationsCmd = &cobra.Command{
 		return nil
 	},
 }
+
+var addFollowerNotificationsCmd = &cobra.Command{
+	Use:   "follower-notifications",
+	RunE: func(c *cobra.Command, args []string) error {
+		for offset := uint(0); offset < 100000; offset += 25 {
+			follows, err := db.GetAllFollows(offset)
+			fmt.Printf("Found %d follows\n", len(follows))
+			if err != nil {
+				jerr.Get("error getting recent follows", err).Print()
+				return nil
+			}
+			for _, follow := range follows {
+				if follow.Unfollow {
+					continue
+				}
+				err := notify.AddNewFollowerNotification(follow, false)
+				if err != nil {
+					jerr.Get("error adding follow notification", err).Print()
+				}
+			}
+			if len(follows) != 25 {
+				break
+			}
+		}
+		fmt.Println("All done")
+		return nil
+	},
+}

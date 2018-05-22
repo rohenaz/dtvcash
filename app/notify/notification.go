@@ -27,6 +27,11 @@ func (n Notification) IsReply() bool {
 	return ok
 }
 
+func (n Notification) IsNewFollower() bool {
+	_, ok := n.Generic.(*NewFollowerNotification)
+	return ok
+}
+
 func (n Notification) GetName() string {
 	return n.Generic.GetName()
 }
@@ -97,6 +102,8 @@ func (n Notification) GetId() uint {
 	case *ReplyNotification:
 		return g.Notification.Id
 	case *LikeNotification:
+		return g.Notification.Id
+	case *NewFollowerNotification:
 		return g.Notification.Id
 	}
 	return 0

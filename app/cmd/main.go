@@ -19,5 +19,6 @@ func Execute() {
 	memoCmd.AddCommand(fixLeadingCharsCmd)
 	memoCmd.AddCommand(addLikeNotificationsCmd)
 	memoCmd.AddCommand(addReplyNotificationsCmd)
+	memoCmd.AddCommand(addFollowerNotificationsCmd)
 	memoCmd.Execute()
 }

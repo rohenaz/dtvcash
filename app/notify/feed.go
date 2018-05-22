@@ -49,6 +49,17 @@ func GetNotificationsFeed(pkHash []byte, offset uint) ([]*Notification, error) {
 				Parent:       parent,
 			})
 			namePkHashes = append(namePkHashes, post.PkHash)
+		case db.NotificationTypeNewFollower:
+			follow, err := db.GetMemoFollow(dbNotification.TxHash)
+			if err != nil {
+				jerr.Get("error getting notification new follower", err).Print()
+				continue
+			}
+			generics = append(generics, &NewFollowerNotification{
+				Notification: dbNotification,
+				Follow:       follow,
+			})
+			namePkHashes = append(namePkHashes, follow.PkHash)
 		}
 	}
 	setNames, err := db.GetNamesForPkHashes(namePkHashes)
@@ -74,6 +85,15 @@ func GetNotificationsFeed(pkHash []byte, offset uint) ([]*Notification, error) {
 			}
 			if n.Name == "" {
 				n.Name = n.Post.GetAddressString()[:16]
+			}
+		case *NewFollowerNotification:
+			for _, setName := range setNames {
+				if bytes.Equal(n.Follow.PkHash, setName.PkHash) {
+					n.Name = setName.Name
+				}
+			}
+			if n.Name == "" {
+				n.Name = n.Follow.GetAddressString()[:16]
 			}
 		}
 	}
