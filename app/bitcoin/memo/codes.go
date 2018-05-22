@@ -19,6 +19,8 @@ const (
 
 	CodePollSingle = 0x10
 	CodePollMulti  = 0x11
+	CodePollRank   = 0x12
+	CodePollOption = 0x13
 )
 
 func GetAllCodes() [][]byte {

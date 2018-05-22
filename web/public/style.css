@@ -644,6 +644,14 @@ table.notifications-table .tip {
     color: rgba(255,0,0,1);
     top: 2px;
 }
+body.dark #new-poll-form .glyphicon-remove {
+    color: rgba(255,50,50,0.75);
+    margin-left: 5px;
+    top: 2px;
+}
+body.dark #new-poll-form .glyphicon-remove:hover {
+    color: rgba(255,0,0,1);
+}
 
 
 

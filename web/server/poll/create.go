@@ -25,7 +25,7 @@ var createSubmitRoute = web.Route{
 	Handler: func(r *web.Response) {
 		pollType := r.Request.GetFormValue("pollType")
 		question := r.Request.GetFormValue("question")
-		responses := r.Request.GetFormValueSlice("responses")
+		options := r.Request.GetFormValueSlice("options")
 		password := r.Request.GetFormValue("password")
 
 		user, err := auth.GetSessionUser(r.Session.CookieId)
@@ -45,14 +45,14 @@ var createSubmitRoute = web.Route{
 		}
 
 		var questionFee = int64(memo.MaxTxFee - memo.MaxPollQuestionSize + len([]byte(question)))
-		var responseFees []int64
-		var totalResponseFee int64
-		for _, response := range responses {
-			responseFee := int64(memo.MaxTxFee - memo.MaxPollResponseSize + len([]byte(response)))
-			responseFees = append(responseFees, responseFee)
-			totalResponseFee += responseFee
+		var optionFees []int64
+		var totalOptionsFee int64
+		for _, option := range options {
+			optionFee := int64(memo.MaxTxFee - memo.MaxPollOptionSize + len([]byte(option)))
+			optionFees = append(optionFees, optionFee)
+			totalOptionsFee += optionFee
 		}
-		var minInput = questionFee + totalResponseFee + transaction.DustMinimumOutput
+		var minInput = questionFee + totalOptionsFee + transaction.DustMinimumOutput
 
 		mutex.Lock(key.PkHash)
 		txOuts, err := db.GetSpendableTxOuts(key.PkHash, minInput)
@@ -67,10 +67,11 @@ var createSubmitRoute = web.Route{
 			totalValue += txOut.Value
 		}
 
+		var outValue = totalValue - questionFee
 		tx, err := transaction.Create(txOuts, privateKey, []transaction.SpendOutput{{
 			Type:    transaction.SpendOutputTypeP2PK,
 			Address: address,
-			Amount:  totalValue - questionFee - totalResponseFee,
+			Amount:  outValue,
 		}, {
 			Type:    transaction.SpendOutputTypeMemoPollQuestion,
 			Data:    []byte(question),
@@ -82,9 +83,41 @@ var createSubmitRoute = web.Route{
 			return
 		}
 
-		mutex.Unlock(key.PkHash) // remove after testing
 		fmt.Println(transaction.GetTxInfo(tx))
-		/*transaction.QueueTx(tx)
-		r.Write(tx.TxHash().String())*/
+		//transaction.QueueTx(tx)
+		questionTxHash := tx.TxHash()
+		questionTxHashBytes := questionTxHash.CloneBytes()
+
+		for _, option := range options {
+			prevTxHash := tx.TxHash()
+			fmt.Printf("prevTxHash: %s\n", prevTxHash.String())
+			prevTxHashBytes := prevTxHash.CloneBytes()
+			var txOut = &db.TransactionOut{
+				TransactionHash: prevTxHashBytes,
+				Index:           0,
+				Value:           outValue,
+			}
+			var optionFee = int64(memo.MaxTxFee - memo.MaxPollOptionSize + len([]byte(option)))
+			outValue = outValue - optionFee
+			tx, err = transaction.Create([]*db.TransactionOut{txOut}, privateKey, []transaction.SpendOutput{{
+				Type:    transaction.SpendOutputTypeP2PK,
+				Address: address,
+				Amount:  outValue,
+			}, {
+				Type:    transaction.SpendOutputTypeMemoPollOption,
+				Data:    []byte(option),
+				RefData: []byte(questionTxHashBytes),
+			}})
+			if err != nil {
+				mutex.Unlock(key.PkHash)
+				r.Error(jerr.Get("error creating tx", err), http.StatusInternalServerError)
+				return
+			}
+			fmt.Println(transaction.GetTxInfo(tx))
+			//transaction.QueueTx(tx)
+		}
+
+		mutex.Unlock(key.PkHash) // remove after testing
+		r.Write(tx.TxHash().String())
 	},
 }

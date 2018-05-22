@@ -5,7 +5,7 @@ const (
 	MaxReplySize        = 184
 	MaxTagMessageSize   = 217
 	MaxPollQuestionSize = 213
-	MaxPollResponseSize = 184
+	MaxPollOptionSize   = 184
 )
 
 const (

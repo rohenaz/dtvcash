@@ -28,6 +28,7 @@ const (
 	SpendOutputTypeMemoSetProfile
 	SpendOutputTypeMemoTopicMessage
 	SpendOutputTypeMemoPollQuestion
+	SpendOutputTypeMemoPollOption
 )
 
 func Create(spendOuts []*db.TransactionOut, privateKey *wallet.PrivateKey, spendOutputs []SpendOutput) (*wire.MsgTx, error) {
@@ -197,7 +198,7 @@ func Create(spendOuts []*db.TransactionOut, privateKey *wallet.PrivateKey, spend
 				return nil, jerr.New("question size too large")
 			}
 			if len(spendOutput.Data) == 0 {
-				return nil, jerr.New("empty message")
+				return nil, jerr.New("empty question")
 			}
 			var code byte
 			switch string(spendOutput.RefData) {
@@ -214,7 +215,25 @@ func Create(spendOuts []*db.TransactionOut, privateKey *wallet.PrivateKey, spend
 				AddData(spendOutput.Data).
 				Script()
 			if err != nil {
-				return nil, jerr.Get("error creating memo message output", err)
+				return nil, jerr.Get("error creating memo question output", err)
+			}
+			fmt.Printf("pkScript: %x\n", pkScript)
+			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
+		case SpendOutputTypeMemoPollOption:
+			if len(spendOutput.Data) > memo.MaxPollOptionSize {
+				return nil, jerr.New("option size too large")
+			}
+			if len(spendOutput.Data) == 0 {
+				return nil, jerr.New("empty option")
+			}
+			pkScript, err := txscript.NewScriptBuilder().
+				AddOp(txscript.OP_RETURN).
+				AddData([]byte{memo.CodePrefix, memo.CodePollOption}).
+				AddData(spendOutput.RefData).
+				AddData(spendOutput.Data).
+				Script()
+			if err != nil {
+				return nil, jerr.Get("error creating memo option output", err)
 			}
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))

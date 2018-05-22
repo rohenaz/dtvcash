@@ -1,12 +1,12 @@
 (function () {
-    var maxResponseBytes = 184;
+    var maxOptionBytes = 184;
     var maxQuestionBytes = 213;
 
     var $form;
     var $question;
-    var $responses;
+    var $options;
     var $questionByteCount;
-    var responseCounter = 1;
+    var optionCounter = 1;
     var submitting = false;
 
     /**
@@ -14,22 +14,22 @@
      */
     MemoApp.Form.NewPoll = function ($ele) {
         $form = $ele;
-        $responses = $form.find("#responses");
+        $options = $form.find("#options");
         $question = $form.find("[name=question]");
         $questionByteCount = $form.find(".question-byte-count");
 
-        $form.find("#add-response").click(function () {
-            addResponse();
-            bindRemoveResponse();
+        $form.find("#add-option").click(function () {
+            addOption();
+            bindRemoveOption();
         });
 
         $question.on("input", function () {
             setQuestionByteCount();
         });
 
-        addResponse();
-        bindRemoveResponse();
-        initResponseByteCounter(1);
+        addOption();
+        bindRemoveOption();
+        initOptionByteCounter(1);
         showHideRemoveButton();
         setQuestionByteCount();
 
@@ -69,33 +69,33 @@
             return;
         }
 
-        var $responseInputs = $responses.find("[name=response]");
-        if ($responseInputs.length < 2) {
-            alert("Error, not enough responses.");
+        var $optionInputs = $options.find("[name=option]");
+        if ($optionInputs.length < 2) {
+            alert("Error, not enough options.");
             return;
         }
-        var responses = [];
-        for (var i = 0; i < $responseInputs.length; i++) {
-            var response = $responseInputs.eq(i).val();
-            if (maxResponseBytes - MemoApp.utf8ByteLength(response) < 0) {
-                alert("Maximum response size is " + maxResponseBytes + " bytes." +
+        var options = [];
+        for (var i = 0; i < $optionInputs.length; i++) {
+            var option = $optionInputs.eq(i).val();
+            if (maxOptionBytes - MemoApp.utf8ByteLength(option) < 0) {
+                alert("Maximum option size is " + maxOptionBytes + " bytes." +
                     " Note that some characters are more than 1 byte." +
                     " Emojis are usually 4 bytes, for example.");
                 return;
             }
-            responses.push(response);
+            options.push(option);
         }
 
-        postPoll(pollType, question, responses, password);
+        postPoll(pollType, question, options, password);
     }
 
     /**
      * @param {string} pollType
      * @param {string} question
-     * @param {[string]} responses
+     * @param {[string]} options
      * @param {string} password
      */
-    function postPoll(pollType, question, responses, password) {
+    function postPoll(pollType, question, options, password) {
         submitting = true;
         $.ajax({
             type: "POST",
@@ -103,7 +103,7 @@
             data: {
                 pollType: pollType,
                 question: question,
-                responses: responses,
+                options: options,
                 password: password
             },
             success: function (txHash) {
@@ -123,63 +123,63 @@
                     return;
                 }
                 var errorMessage =
-                    "Error with request (response code " + xhr.status + "):\n" +
-                    (xhr.responseText !== "" ? xhr.responseText + "\n" : "") +
+                    "Error with request (option code " + xhr.status + "):\n" +
+                    (xhr.optionText !== "" ? xhr.optionText + "\n" : "") +
                     "If this problem persists, try refreshing the page.";
                 alert(errorMessage);
             }
         });
     }
 
-    function addResponse() {
-        var $firstResponse = $responses.find("div:eq(0)");
-        var newResponseHtml = $firstResponse.clone()[0].outerHTML.replace(/response-[0-9]+/g, "response-" + ++responseCounter);
-        $responses.append(newResponseHtml);
-        initResponseByteCounter(responseCounter);
+    function addOption() {
+        var $firstOption = $options.find("div:eq(0)");
+        var newOptionHtml = $firstOption.clone()[0].outerHTML.replace(/option-[0-9]+/g, "option-" + ++optionCounter);
+        $options.append(newOptionHtml);
+        initOptionByteCounter(optionCounter);
         showHideRemoveButton();
     }
 
     /**
      * @param {number} id
      */
-    function initResponseByteCounter(id) {
-        var $response = $responses.find("#response-" + id);
-        var $responseByteCounter = $response.find(".response-byte-count");
-        var $input = $response.find("input");
+    function initOptionByteCounter(id) {
+        var $option = $options.find("#option-" + id);
+        var $optionByteCounter = $option.find(".option-byte-count");
+        var $input = $option.find("input");
         $input.on("input", function () {
-            setResponseByteCounter();
+            setOptionByteCounter();
         });
 
-        function setResponseByteCounter() {
-            var cnt = maxResponseBytes - MemoApp.utf8ByteLength($input.val());
-            $responseByteCounter.html("[" + cnt + "]");
+        function setOptionByteCounter() {
+            var cnt = maxOptionBytes - MemoApp.utf8ByteLength($input.val());
+            $optionByteCounter.html("[" + cnt + "]");
             if (cnt < 0) {
-                $responseByteCounter.addClass("red");
+                $optionByteCounter.addClass("red");
             } else {
-                $responseByteCounter.removeClass("red");
+                $optionByteCounter.removeClass("red");
             }
         }
 
-        setResponseByteCounter();
+        setOptionByteCounter();
     }
 
-    function bindRemoveResponse() {
-        $responses.find(".remove-response").click(function (e) {
+    function bindRemoveOption() {
+        $options.find(".remove-option").click(function (e) {
             e.preventDefault();
-            var numResponses = $responses.find("> div").length;
-            if (numResponses <= 2) {
+            var numOptions = $options.find("> div").length;
+            if (numOptions <= 2) {
                 return;
             }
             var $this = $(this);
-            var responseId = $this.attr("data-response-id");
-            var $response = $("#" + responseId);
-            $response.remove();
+            var optionId = $this.attr("data-option-id");
+            var $option = $("#" + optionId);
+            $option.remove();
             showHideRemoveButton();
         });
     }
 
     function showHideRemoveButton() {
-        var $removeButtons = $responses.find(".remove-response");
+        var $removeButtons = $options.find(".remove-option");
         if ($removeButtons.length > 2) {
             $removeButtons.removeClass("hidden");
         } else {
