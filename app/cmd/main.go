@@ -13,6 +13,7 @@ func Execute() {
 	memoCmd.AddCommand(webCmd)
 	memoCmd.AddCommand(mainNodeCmd)
 	memoCmd.AddCommand(scannerCmd)
+	memoCmd.AddCommand(scanRecentCmd)
 	memoCmd.AddCommand(fixPostEmojisCmd)
 	memoCmd.AddCommand(fixNameEmojisCmd)
 	memoCmd.AddCommand(viewPostCmd)

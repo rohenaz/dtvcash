@@ -26,6 +26,7 @@ type SNode struct {
 	PrevBlockHashes map[string]*db.Block
 	MemoTxnsFound   int
 	AllTxnsFound    int
+	NumBlocksBack   uint
 }
 
 func (n *SNode) Start() {
@@ -59,7 +60,18 @@ func (n *SNode) OnVerAck(p *peer.Peer, msg *wire.MsgVerAck) {
 	// set bloom filters
 	setBloomFilters(n)
 	// start scanning
-	queueMerkleBlocks(n, main_node.MinCheckHeight)
+	var minCheckHeight = uint(main_node.MinCheckHeight)
+	if n.NumBlocksBack > 0 {
+		recentBlock, err := db.GetRecentBlock()
+		if err != nil {
+			jerr.Get("error getting recent block", err).Print()
+			n.Peer.Disconnect()
+			return
+		}
+		minCheckHeight = recentBlock.Height - n.NumBlocksBack
+	}
+	fmt.Printf("Starting with block height: %d\n", minCheckHeight)
+	queueMerkleBlocks(n, minCheckHeight)
 }
 
 func (n *SNode) OnReject(p *peer.Peer, msg *wire.MsgReject) {
