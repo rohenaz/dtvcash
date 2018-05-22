@@ -195,13 +195,15 @@ func Create(spendOuts []*db.TransactionOut, privateKey *wallet.PrivateKey, spend
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
 		case SpendOutputTypeMemoPollQuestionSingle, SpendOutputTypeMemoPollQuestionMulti:
-			if len(spendOutput.Data) > memo.MaxPollQuestionSize {
+			var question = spendOutput.Data
+			var optionCount = spendOutput.RefData
+			if len(question) > memo.MaxPollQuestionSize {
 				return nil, jerr.New("question size too large")
 			}
-			if len(spendOutput.Data) == 0 {
+			if len(question) == 0 {
 				return nil, jerr.New("empty question")
 			}
-			if len(spendOutput.RefData) == 0 {
+			if len(optionCount) == 0 {
 				return nil, jerr.New("empty option count")
 			}
 			var code byte
@@ -216,8 +218,8 @@ func Create(spendOuts []*db.TransactionOut, privateKey *wallet.PrivateKey, spend
 			pkScript, err := txscript.NewScriptBuilder().
 				AddOp(txscript.OP_RETURN).
 				AddData([]byte{memo.CodePrefix, code}).
-				AddData(spendOutput.RefData).
-				AddData(spendOutput.Data).
+				AddData(optionCount).
+				AddData(question).
 				Script()
 			if err != nil {
 				return nil, jerr.Get("error creating memo question output", err)
@@ -225,17 +227,22 @@ func Create(spendOuts []*db.TransactionOut, privateKey *wallet.PrivateKey, spend
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
 		case SpendOutputTypeMemoPollOption:
-			if len(spendOutput.Data) > memo.MaxPollOptionSize {
+			var option = spendOutput.Data
+			var parentTxHash = spendOutput.RefData
+			if len(option) > memo.MaxPollOptionSize {
 				return nil, jerr.New("option size too large")
 			}
-			if len(spendOutput.Data) == 0 {
+			if len(option) == 0 {
 				return nil, jerr.New("empty option")
+			}
+			if len(parentTxHash) != 32 {
+				return nil, jerr.Newf("parent tx hash length incorrect (expected 32, got: %d)", len(parentTxHash))
 			}
 			pkScript, err := txscript.NewScriptBuilder().
 				AddOp(txscript.OP_RETURN).
 				AddData([]byte{memo.CodePrefix, memo.CodePollOption}).
-				AddData(spendOutput.RefData).
-				AddData(spendOutput.Data).
+				AddData(parentTxHash).
+				AddData(option).
 				Script()
 			if err != nil {
 				return nil, jerr.Get("error creating memo option output", err)
