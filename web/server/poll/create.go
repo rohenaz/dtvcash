@@ -94,7 +94,7 @@ var createSubmitRoute = web.Route{
 		}
 
 		fmt.Println(transaction.GetTxInfo(tx))
-		//transaction.QueueTx(tx)
+		transaction.QueueTx(tx)
 		questionTxHash := tx.TxHash()
 		questionTxHashBytes := questionTxHash.CloneBytes()
 
@@ -102,9 +102,11 @@ var createSubmitRoute = web.Route{
 			prevTxHash := tx.TxHash()
 			fmt.Printf("prevTxHash: %s\n", prevTxHash.String())
 			prevTxHashBytes := prevTxHash.CloneBytes()
+			var index uint32 = 0
 			var txOut = &db.TransactionOut{
 				TransactionHash: prevTxHashBytes,
-				Index:           0,
+				PkScript:        tx.TxOut[index].PkScript,
+				Index:           index,
 				Value:           outValue,
 			}
 			var optionFee = int64(memo.MaxTxFee - memo.MaxPollOptionSize + len([]byte(option)))
@@ -124,7 +126,7 @@ var createSubmitRoute = web.Route{
 				return
 			}
 			fmt.Println(transaction.GetTxInfo(tx))
-			//transaction.QueueTx(tx)
+			transaction.QueueTx(tx)
 		}
 
 		mutex.Unlock(key.PkHash) // remove after testing

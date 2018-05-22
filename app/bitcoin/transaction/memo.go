@@ -538,10 +538,18 @@ func saveMemoPollOption(txn *db.Transaction, out *db.TransactionOut, blockId uin
 	if err != nil {
 		return jerr.Get("error parsing push data from poll option", err)
 	}
-	if len(pushData) != 2 {
+	if len(pushData) != 3 {
 		return jerr.Newf("invalid poll option, incorrect push data (%d)", len(pushData))
 	}
-	var option = string(pushData[1])
+	var pollTxHashRaw = pushData[1]
+	if len(pollTxHashRaw) == 0 {
+		return jerr.New("invalid push data for poll option, parent tx hash empty")
+	}
+	pollTxHash, err := chainhash.NewHash(pollTxHashRaw)
+	if err != nil {
+		return jerr.Get("error parsing transaction hash", err)
+	}
+	var option = string(pushData[2])
 	if len(option) == 0 {
 		return jerr.New("invalid push data for poll option, option empty")
 	}
@@ -550,6 +558,7 @@ func saveMemoPollOption(txn *db.Transaction, out *db.TransactionOut, blockId uin
 		PkHash:     inputAddress.ScriptAddress(),
 		PkScript:   out.PkScript,
 		Option:     html_parser.EscapeWithEmojis(option),
+		PollTxHash: pollTxHash.CloneBytes(),
 		ParentHash: parentHash,
 		BlockId:    blockId,
 	}
