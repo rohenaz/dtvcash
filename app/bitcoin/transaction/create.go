@@ -27,7 +27,8 @@ const (
 	SpendOutputTypeMemoReply
 	SpendOutputTypeMemoSetProfile
 	SpendOutputTypeMemoTopicMessage
-	SpendOutputTypeMemoPollQuestion
+	SpendOutputTypeMemoPollQuestionSingle
+	SpendOutputTypeMemoPollQuestionMulti
 	SpendOutputTypeMemoPollOption
 )
 
@@ -193,18 +194,21 @@ func Create(spendOuts []*db.TransactionOut, privateKey *wallet.PrivateKey, spend
 			}
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
-		case SpendOutputTypeMemoPollQuestion:
+		case SpendOutputTypeMemoPollQuestionSingle, SpendOutputTypeMemoPollQuestionMulti:
 			if len(spendOutput.Data) > memo.MaxPollQuestionSize {
 				return nil, jerr.New("question size too large")
 			}
 			if len(spendOutput.Data) == 0 {
 				return nil, jerr.New("empty question")
 			}
+			if len(spendOutput.RefData) == 0 {
+				return nil, jerr.New("empty option count")
+			}
 			var code byte
-			switch string(spendOutput.RefData) {
-			case memo.PollTypeOne:
+			switch spendOutput.Type {
+			case SpendOutputTypeMemoPollQuestionSingle:
 				code = memo.CodePollSingle
-			case memo.PollTypeAny:
+			case SpendOutputTypeMemoPollQuestionMulti:
 				code = memo.CodePollMulti
 			default:
 				return nil, jerr.New("invalid poll type")
@@ -212,6 +216,7 @@ func Create(spendOuts []*db.TransactionOut, privateKey *wallet.PrivateKey, spend
 			pkScript, err := txscript.NewScriptBuilder().
 				AddOp(txscript.OP_RETURN).
 				AddData([]byte{memo.CodePrefix, code}).
+				AddData(spendOutput.RefData).
 				AddData(spendOutput.Data).
 				Script()
 			if err != nil {

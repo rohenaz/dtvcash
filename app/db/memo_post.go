@@ -28,6 +28,7 @@ type MemoPost struct {
 	Replies      []*MemoPost `gorm:"foreignkey:ParentTxHash"`
 	Topic        string      `gorm:"index:tag;size:500"`
 	Message      string      `gorm:"size:500"`
+	IsPoll       bool
 	BlockId      uint
 	Block        *Block
 	CreatedAt    time.Time

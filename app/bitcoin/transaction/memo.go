@@ -91,6 +91,16 @@ func SaveMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) erro
 		if err != nil {
 			return jerr.Get("error saving memo_post tag message", err)
 		}
+	case memo.CodePollSingle:
+		err = saveMemoPollQuestion(memo.CodePollSingle, txn, out, blockId, inputAddress, parentHash)
+		if err != nil {
+			return jerr.Get("error saving memo_poll_question (single)", err)
+		}
+	case memo.CodePollMulti:
+		err = saveMemoPollQuestion(memo.CodePollMulti, txn, out, blockId, inputAddress, parentHash)
+		if err != nil {
+			return jerr.Get("error saving memo_poll_question (multi)", err)
+		}
 	}
 	return nil
 }
@@ -440,6 +450,63 @@ func saveMemoSetProfile(txn *db.Transaction, out *db.TransactionOut, blockId uin
 		BlockId:    blockId,
 	}
 	err = memoSetProfile.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_set_profile", err)
+	}
+	return nil
+}
+
+func saveMemoPollQuestion(pollType int, txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+	memoPost, err := db.GetMemoPost(txn.Hash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return jerr.Get("error getting memo_poll_question", err)
+	}
+	if memoPost != nil {
+		if memoPost.BlockId != 0 || blockId == 0 {
+			return nil
+		}
+		memoPost.BlockId = blockId
+		err = memoPost.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_poll_question", err)
+		}
+		return nil
+	}
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from poll question", err)
+	}
+	if len(pushData) != 3 {
+		return jerr.Newf("invalid poll question, incorrect push data (%d)", len(pushData))
+	}
+	if len(pushData[1]) == 0 {
+		return jerr.New("invalid push data for poll question, num options empty")
+	}
+	if len(pushData[2]) == 0 {
+		return jerr.New("invalid push data for poll question, question empty")
+	}
+	var numOptions = uint(pushData[1][0])
+	var question = string(pushData[2])
+	memoPost = &db.MemoPost{
+		TxHash:     txn.Hash,
+		PkHash:     inputAddress.ScriptAddress(),
+		PkScript:   out.PkScript,
+		Message:    question,
+		ParentHash: parentHash,
+		Address:    inputAddress.EncodeAddress(),
+		BlockId:    blockId,
+		IsPoll:     true,
+	}
+	err = memoPost.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_post for poll question", err)
+	}
+	memoPollQuestion := &db.MemoPollQuestion{
+		TxHash:     txn.Hash,
+		NumOptions: numOptions,
+		PollType:   pollType,
+	}
+	err = memoPollQuestion.Save()
 	if err != nil {
 		return jerr.Get("error saving memo_set_profile", err)
 	}

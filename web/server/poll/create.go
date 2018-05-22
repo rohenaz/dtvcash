@@ -67,15 +67,25 @@ var createSubmitRoute = web.Route{
 			totalValue += txOut.Value
 		}
 
+		var transactionType transaction.SpendOutputType
+		switch pollType {
+		case memo.PollTypeOne:
+			transactionType = transaction.SpendOutputTypeMemoPollQuestionSingle
+		case memo.PollTypeAny:
+			transactionType = transaction.SpendOutputTypeMemoPollQuestionMulti
+		default:
+			r.Error(jerr.New("invalid poll type"), http.StatusUnprocessableEntity)
+			return
+		}
 		var outValue = totalValue - questionFee
 		tx, err := transaction.Create(txOuts, privateKey, []transaction.SpendOutput{{
 			Type:    transaction.SpendOutputTypeP2PK,
 			Address: address,
 			Amount:  outValue,
 		}, {
-			Type:    transaction.SpendOutputTypeMemoPollQuestion,
+			Type:    transactionType,
 			Data:    []byte(question),
-			RefData: []byte(pollType),
+			RefData: []byte{byte(len(options))},
 		}})
 		if err != nil {
 			mutex.Unlock(key.PkHash)
