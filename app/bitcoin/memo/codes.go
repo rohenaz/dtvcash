@@ -16,6 +16,9 @@ const (
 	CodeSetProfilePicture = 0x0A
 	CodeRepost            = 0x0B
 	CodeTopicMessage      = 0x0C
+
+	CodePollSingle = 0x10
+	CodePollMulti  = 0x11
 )
 
 func GetAllCodes() [][]byte {

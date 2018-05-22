@@ -1,6 +1,6 @@
 (function () {
     var maxResponseBytes = 184;
-    var maxQuestionBytes = 217;
+    var maxQuestionBytes = 213;
 
     var $form;
     var $question;
@@ -86,20 +86,22 @@
             responses.push(response);
         }
 
-        postPoll(question, responses, password);
+        postPoll(pollType, question, responses, password);
     }
 
     /**
+     * @param {string} pollType
      * @param {string} question
      * @param {[string]} responses
      * @param {string} password
      */
-    function postPoll(question, responses, password) {
+    function postPoll(pollType, question, responses, password) {
         submitting = true;
         $.ajax({
             type: "POST",
             url: MemoApp.GetBaseUrl() + MemoApp.URL.PollCreateSubmit,
             data: {
+                pollType: pollType,
                 question: question,
                 responses: responses,
                 password: password
@@ -136,6 +138,7 @@
         initResponseByteCounter(responseCounter);
         showHideRemoveButton();
     }
+
     /**
      * @param {number} id
      */
@@ -143,7 +146,7 @@
         var $response = $responses.find("#response-" + id);
         var $responseByteCounter = $response.find(".response-byte-count");
         var $input = $response.find("input");
-        $input.on("input", function() {
+        $input.on("input", function () {
             setResponseByteCounter();
         });
 
@@ -156,6 +159,7 @@
                 $responseByteCounter.removeClass("red");
             }
         }
+
         setResponseByteCounter();
     }
 

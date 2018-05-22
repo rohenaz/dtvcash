@@ -27,9 +27,10 @@ const (
 	SpendOutputTypeMemoReply
 	SpendOutputTypeMemoSetProfile
 	SpendOutputTypeMemoTopicMessage
+	SpendOutputTypeMemoPollQuestion
 )
 
-func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutputs []SpendOutput) (*wire.MsgTx, error) {
+func Create(spendOuts []*db.TransactionOut, privateKey *wallet.PrivateKey, spendOutputs []SpendOutput) (*wire.MsgTx, error) {
 	var txOuts []*wire.TxOut
 	for _, spendOutput := range spendOutputs {
 		switch spendOutput.Type {
@@ -191,23 +192,53 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 			}
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
+		case SpendOutputTypeMemoPollQuestion:
+			if len(spendOutput.Data) > memo.MaxPollQuestionSize {
+				return nil, jerr.New("question size too large")
+			}
+			if len(spendOutput.Data) == 0 {
+				return nil, jerr.New("empty message")
+			}
+			var code byte
+			switch string(spendOutput.RefData) {
+			case memo.PollTypeOne:
+				code = memo.CodePollSingle
+			case memo.PollTypeAny:
+				code = memo.CodePollMulti
+			default:
+				return nil, jerr.New("invalid poll type")
+			}
+			pkScript, err := txscript.NewScriptBuilder().
+				AddOp(txscript.OP_RETURN).
+				AddData([]byte{memo.CodePrefix, code}).
+				AddData(spendOutput.Data).
+				Script()
+			if err != nil {
+				return nil, jerr.Get("error creating memo message output", err)
+			}
+			fmt.Printf("pkScript: %x\n", pkScript)
+			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
 		}
 	}
 
-	hash, err := chainhash.NewHash(txOut.TransactionHash)
-	if err != nil {
-		return nil, jerr.Get("error getting transaction hash", err)
+	var txIns []*wire.TxIn
+	var totalValue int64
+	for _, spendOut := range spendOuts {
+		hash, err := chainhash.NewHash(spendOut.TransactionHash)
+		if err != nil {
+			return nil, jerr.Get("error getting transaction hash", err)
+		}
+		newTxIn := wire.NewTxIn(&wire.OutPoint{
+			Hash:  *hash,
+			Index: uint32(spendOut.Index),
+		}, nil)
+		txIns = append(txIns, newTxIn)
+		totalValue += spendOut.Value
 	}
-	newTxIn := wire.NewTxIn(&wire.OutPoint{
-		Hash:  *hash,
-		Index: uint32(txOut.Index),
-	}, nil)
 
 	var tx = &wire.MsgTx{
-		Version: wire.TxVersion,
-		TxIn: []*wire.TxIn{
-			newTxIn,
-		},
+		Version:  wire.TxVersion,
+		TxIn:     txIns,
 		TxOut:    txOuts,
 		LockTime: 0,
 	}
@@ -215,17 +246,17 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 	signature, err := txscript.SignatureScript(
 		tx,
 		0,
-		txOut.PkScript,
+		spendOuts[0].PkScript,
 		txscript.SigHashAll+wallet.SigHashForkID,
 		privateKey.GetBtcEcPrivateKey(),
 		true,
-		txOut.Value,
+		totalValue,
 	)
 
 	if err != nil {
 		return nil, jerr.Get("error signing transaction", err)
 	}
-	newTxIn.SignatureScript = signature
+	txIns[0].SignatureScript = signature
 
 	fmt.Printf("Signature: %x\n", signature)
 	writer := new(bytes.Buffer)

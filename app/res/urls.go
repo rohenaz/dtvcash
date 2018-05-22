@@ -89,11 +89,11 @@ const (
 
 	TmplTopicView  = "/topics/view"
 	TmplTopicPost  = "/topics/post"
-	TmplTopicPosts = "/topics/posts"
 )
 
 const (
-	UrlPollCreate = "/poll/create"
+	UrlPollCreate       = "/poll/create"
+	UrlPollCreateSubmit = "/poll/create-submit"
 )
 
 const (

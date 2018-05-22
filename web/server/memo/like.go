@@ -152,7 +152,7 @@ var likeSubmitRoute = web.Route{
 			Address: userAddress,
 			Amount:  remaining - fee,
 		})
-		tx, err = transaction.Create(txOut, privateKey, transactions)
+		tx, err = transaction.Create([]*db.TransactionOut{txOut}, privateKey, transactions)
 		if err != nil {
 			mutex.Unlock(key.PkHash)
 			r.Error(jerr.Get("error creating tx", err), http.StatusInternalServerError)
