@@ -57,6 +57,18 @@
                     </div>
                 </div>
             </td>
+        {{ else if .IsNewFollower }}
+            <td class="new-follower">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            </td>
+            <td>
+                <span class="identicon-{{ .GetAddressString }}">
+                    <img class="identicon"/>
+                </span>
+                <a href="profile/{{ .GetAddressString }}" class="name">{{ .Generic.GetName }}</a>
+                followed you.
+                <span class="time-ago">{{ .GetTimeAgo }}</span>
+            </td>
         {{ end }}
         </tr>
         <script type="text/javascript">
