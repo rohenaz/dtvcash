@@ -101,6 +101,11 @@ func SaveMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) erro
 		if err != nil {
 			return jerr.Get("error saving memo_poll_question (multi)", err)
 		}
+	case memo.CodePollOption:
+		err = saveMemoPollOption(txn, out, blockId, inputAddress, parentHash)
+		if err != nil {
+			return jerr.Get("error saving memo poll option", err)
+		}
 	}
 	return nil
 }
@@ -459,7 +464,7 @@ func saveMemoSetProfile(txn *db.Transaction, out *db.TransactionOut, blockId uin
 func saveMemoPollQuestion(pollType int, txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
 	memoPost, err := db.GetMemoPost(txn.Hash)
 	if err != nil && ! db.IsRecordNotFoundError(err) {
-		return jerr.Get("error getting memo_poll_question", err)
+		return jerr.Get("error getting memo_post", err)
 	}
 	if memoPost != nil {
 		if memoPost.BlockId != 0 || blockId == 0 {
@@ -509,6 +514,48 @@ func saveMemoPollQuestion(pollType int, txn *db.Transaction, out *db.Transaction
 	err = memoPollQuestion.Save()
 	if err != nil {
 		return jerr.Get("error saving memo_set_profile", err)
+	}
+	return nil
+}
+
+func saveMemoPollOption(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+	memoPollOption, err := db.GetMemoPollOption(txn.Hash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return jerr.Get("error getting memo_poll_option", err)
+	}
+	if memoPollOption != nil {
+		if memoPollOption.BlockId != 0 || blockId == 0 {
+			return nil
+		}
+		memoPollOption.BlockId = blockId
+		err = memoPollOption.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_poll_option", err)
+		}
+		return nil
+	}
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from poll option", err)
+	}
+	if len(pushData) != 2 {
+		return jerr.Newf("invalid poll option, incorrect push data (%d)", len(pushData))
+	}
+	var option = string(pushData[1])
+	if len(option) == 0 {
+		return jerr.New("invalid push data for poll option, option empty")
+	}
+	memoPollOption = &db.MemoPollOption{
+		TxHash:     txn.Hash,
+		PkHash:     inputAddress.ScriptAddress(),
+		PkScript:   out.PkScript,
+		Option:     html_parser.EscapeWithEmojis(option),
+		ParentHash: parentHash,
+		BlockId:    blockId,
+	}
+	err = memoPollOption.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_post for poll option", err)
 	}
 	return nil
 }
