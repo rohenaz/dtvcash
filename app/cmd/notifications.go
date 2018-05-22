@@ -72,6 +72,9 @@ var addFollowerNotificationsCmd = &cobra.Command{
 				return nil
 			}
 			for _, follow := range follows {
+				if follow.Unfollow {
+					continue
+				}
 				err := notify.AddNewFollowerNotification(follow, false)
 				if err != nil {
 					jerr.Get("error adding follow notification", err).Print()
