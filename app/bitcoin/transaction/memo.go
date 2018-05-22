@@ -491,7 +491,7 @@ func saveMemoPollQuestion(pollType int, txn *db.Transaction, out *db.Transaction
 		TxHash:     txn.Hash,
 		PkHash:     inputAddress.ScriptAddress(),
 		PkScript:   out.PkScript,
-		Message:    question,
+		Message:    html_parser.EscapeWithEmojis(question),
 		ParentHash: parentHash,
 		Address:    inputAddress.EncodeAddress(),
 		BlockId:    blockId,
