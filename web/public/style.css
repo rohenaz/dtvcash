@@ -162,7 +162,7 @@ a.disabled {
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
     border-radius: 4px;
 }
-.post .name a:nth-of-type(1) {
+.post .name .profile {
     font-weight: bold;
     font-size: 18px;
 }
@@ -315,6 +315,9 @@ span.page {
 }
 .reputation-tooltip {
     position: relative;
+}
+.reputation-tooltip a {
+    font-weight: bold;
 }
 .reputation-tooltip:hover > span {
     display: block;
