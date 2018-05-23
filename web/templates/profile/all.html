@@ -1,25 +1,41 @@
 {{ template "snippets/header.html" . }}
 
+{{ $settings := .UserSettings }}
+
 <br/>
 
 <form>
-    <label for="profile-search">
-        Search:
-    </label>
-    <input id="profile-search" type="text" placeholder="Enter username"/>
+    <input id="profile-search" class="form-control" type="text" placeholder="Search - enter username"/>
 </form>
 
 <div id="profile-list">
 {{ range .Profiles }}
 {{ if .NameSet }}
     <p data-address="{{ .Name }} {{ .GetAddressString }}">
-        <a class="btn" href="/profile/{{ .GetAddressString }}">{{ .Name }} ({{ .GetAddressString }})</a>
+                <span class="identicon-{{ .GetAddressString }}">
+                    <img class="identicon"/>
+                </span>
+        <a href="/profile/{{ .GetAddressString }}">{{ .Name }} ({{ .GetAddressString }})</a>
     </p>
 {{ else }}
     <p data-address="{{ .GetAddressString }}">
-        <a class="btn" href="/profile/{{ .GetAddressString }}">{{ .GetAddressString }}</a>
+        <a href="/profile/{{ .GetAddressString }}">{{ .GetAddressString }}</a>
     </p>
 {{ end }}
+    <script type="text/javascript">
+        (function () {
+            var foreground = {{ if eq $settings.Theme "dark" }}[224, 224, 224, 255]{{ else }}[0, 0, 0, 255]{{ end }};
+            var background = [0, 0, 0, 0];
+            var data = new Identicon('{{ .GetAddressString }}', {
+                foreground: foreground,
+                background: background,
+                size: 24,
+                form: 'svg',
+                margin: 0
+            }).toString();
+            $(".identicon-{{ .GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
+        })();
+    </script>
 {{ end }}
 </div>
 
