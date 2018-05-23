@@ -127,7 +127,7 @@ func GetNamesForPkHashes(pkHashes [][]byte) ([]*MemoSetName, error) {
 	query := db.
 		Table("memo_set_names").
 		Select("memo_set_names.*, blocks.*").
-		Joins("LEFT OUTER JOIN blocks ON (memo_set_names.block_id = blocks.id)").
+		Joins("JOIN blocks ON (memo_set_names.block_id = blocks.id)").
 		Order("blocks.timestamp DESC").
 		Where("pk_hash IN (?)", pkHashes)
 	rows, err := query.Rows()
