@@ -264,5 +264,9 @@
   {
     "id": "Delete_Account",
     "translation": "Delete Account"
+  },
+  {
+    "id": "Guides",
+    "translation": "Guides"
   }
 ]

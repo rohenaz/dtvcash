@@ -258,5 +258,9 @@
   {
     "id": "Delete_Account",
     "translation": "删除帐户"
+  },
+  {
+    "id": "Guides",
+    "translation": "导游"
   }
 ]
