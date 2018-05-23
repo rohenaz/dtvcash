@@ -168,6 +168,10 @@
     "translation": "投稿時間"
   },
   {
+    "id": "posted",
+    "translation": "投稿時間"
+  },
+  {
     "id": "view_on_block_explorer",
     "translation": "ブロックエクスプローラーで見る"
   },

@@ -168,6 +168,10 @@
     "translation": "发表于"
   },
   {
+    "id": "posted",
+    "translation": "发表于"
+  },
+  {
     "id": "view_on_block_explorer",
     "translation": "在区块链浏览器中查看"
   },

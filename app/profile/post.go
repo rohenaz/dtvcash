@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	"github.com/memocash/memo/app/util"
 )
 
 type Post struct {
@@ -118,6 +119,15 @@ func (p Post) GetTimeString(timezone string) string {
 		}
 	}
 	return "Unconfirmed"
+}
+
+func (p Post) GetTimeAgo() string {
+	if p.Memo.Block != nil {
+		ts := p.Memo.Block.Timestamp
+		return util.GetTimeAgo(ts)
+	} else {
+		return "probably in the last 10 minutes"
+	}
 }
 
 func (p Post) GetLastLikeId() uint {
