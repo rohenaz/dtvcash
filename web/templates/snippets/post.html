@@ -48,6 +48,28 @@
     <p class="message">
     {{ .Post.GetMessage }}
     </p>
+{{ if .Post.IsPoll }}
+    <form id="poll" class="form-horizontal">
+        <div class="form-group row">
+        {{ range .Post.Question.Options }}
+            <div class="col-sm-12">
+                <div class="checkbox">
+                    <input id="option-{{ .Option }}" type="radio" name="theme" class="form-check-input"
+                           value="{{ .Option }}"/>
+                    <label for="option-{{ .Option }}" class="form-check-label">
+                    {{ .Option }}
+                    </label>
+                </div>
+            </div>
+        {{ end }}
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <input class="btn btn-default" type="submit" value="Vote"/>
+            </div>
+        </div>
+    </form>
+{{ end }}
     <p class="likes">
         <i>
             <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ len .Post.Likes }} {{ T "likes" }}</a>
@@ -60,7 +82,8 @@
 {{ if not .Compress }}
     <div class="actions">
     {{ if .Post.IsLoggedIn }}
-        <a id="reply-link-{{ .Post.Memo.GetTransactionHashString }}" class="btn btn-default" href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">
+        <a id="reply-link-{{ .Post.Memo.GetTransactionHashString }}" class="btn btn-default"
+           href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">
             <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>{{ T "reply" }}
         </a>
         <span class="creating hidden btn btn-warning">Creating...</span>
@@ -68,7 +91,8 @@
         <div class="like" id="like-{{ .Post.Memo.GetTransactionHashString }}">
             <span class="like-info" id="like-info-{{ .Post.Memo.GetTransactionHashString }}">
                 <a class="btn btn-default like-link" id="like-link-{{ .Post.Memo.GetTransactionHashString }}"
-                   href="#"><span class="glyphicon glyphicon-heart{{ if not .Post.HasLiked }}-empty{{ end }}" aria-hidden="true"></span>{{ T "like" 1 }}</a>
+                   href="#"><span class="glyphicon glyphicon-heart{{ if not .Post.HasLiked }}-empty{{ end }}"
+                                  aria-hidden="true"></span>{{ T "like" 1 }}</a>
             </span>
             <form class="like-form hidden form-inline" id="like-form-{{ .Post.Memo.GetTransactionHashString }}">
                 <label for="tip-{{ .Post.Memo.GetTransactionHashString }}">Tip</label>
@@ -76,7 +100,8 @@
                        class="form-control input-sm"
                        placeholder="0" value="{{ .UserSettings.GetDefaultTipString }}"/>
                 <input class="btn btn-sm btn-primary" type="submit" value="Like">
-                <a href="#" class="like-cancel btn btn-sm btn-default" id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
+                <a href="#" class="like-cancel btn btn-sm btn-default"
+                   id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
             </form>
         </div>
     {{ end }}
@@ -92,7 +117,7 @@
 </div>
 
 <script type="text/javascript">
-    (function() {
+    (function () {
         var foreground = {{ if eq .UserSettings.Theme "dark" }}[224, 224, 224, 255]{{ else }}[0, 0, 0, 255]{{ end }};
         var background = [0, 0, 0, 0];
         var data = new Identicon('{{ .Post.Memo.GetAddressString }}', {

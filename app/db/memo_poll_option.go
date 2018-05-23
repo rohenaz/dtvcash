@@ -12,8 +12,8 @@ type MemoPollOption struct {
 	ParentHash []byte
 	PkHash     []byte `gorm:"index:pk_hash"`
 	PkScript   []byte
-	PollTxHash []byte `gorm:"index:like_tx_hash"`
-	Option     string
+	PollTxHash []byte `gorm:"index:poll_tx_hash"`
+	Option     string `gorm:"size:500"`
 	BlockId    uint
 	Block      *Block
 	CreatedAt  time.Time

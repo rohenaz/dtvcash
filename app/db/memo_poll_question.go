@@ -7,8 +7,9 @@ import (
 )
 
 type MemoPollQuestion struct {
-	Id         uint   `gorm:"primary_key"`
-	TxHash     []byte `gorm:"unique;size:50"`
+	Id         uint              `gorm:"primary_key"`
+	TxHash     []byte            `gorm:"key;size:50"`
+	Options    []*MemoPollOption `gorm:"foreignkey:PollTxHash;associationforeignkey:TxHash"`
 	NumOptions uint
 	PollType   int
 	CreatedAt  time.Time
@@ -34,7 +35,7 @@ func (m MemoPollQuestion) GetTransactionHashString() string {
 
 func GetMemoPollQuestion(txHash []byte) (*MemoPollQuestion, error) {
 	var memoPollQuestion MemoPollQuestion
-	err := find(&memoPollQuestion, MemoPollQuestion{
+	err := findPreloadColumns([]string{"Options"}, &memoPollQuestion, MemoPollQuestion{
 		TxHash: txHash,
 	})
 	if err != nil {

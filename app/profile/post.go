@@ -21,6 +21,7 @@ type Post struct {
 	Replies    []*Post
 	Reputation *Reputation
 	ShowMedia  bool
+	Question   *db.MemoPollQuestion
 }
 
 func (p Post) IsSelf() bool {
@@ -51,6 +52,17 @@ func (p Post) GetMessage() string {
 	}
 	msg = addLinks(msg)
 	return msg
+}
+
+func (p Post) IsPoll() bool {
+	if !p.Memo.IsPoll || p.Question == nil {
+		return false
+	}
+	numOptions := len(p.Question.Options)
+	if numOptions >= 2 && int(p.Question.NumOptions) == numOptions {
+		return true
+	}
+	return false
 }
 
 func addYoutubeVideos(msg string) string {
@@ -485,6 +497,22 @@ func SetShowMediaForPosts(posts []*Post, userId uint) error {
 	if settings.Integrations == db.SettingIntegrationsAll {
 		for _, post := range posts {
 			post.ShowMedia = true
+		}
+	}
+	return nil
+}
+
+func AttachPollsToPosts(posts []*Post) error {
+	for _, post := range posts {
+		if post.Memo.IsPoll {
+			question, err := db.GetMemoPollQuestion(post.Memo.TxHash)
+			if err != nil {
+				return jerr.Get("error getting memo poll question", err)
+			}
+			numOptions := len(question.Options)
+			if numOptions >= 2 && int(question.NumOptions) == numOptions {
+				post.Question = question
+			}
 		}
 	}
 	return nil
