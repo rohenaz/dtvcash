@@ -20,6 +20,7 @@ var JsFiles = []string{
 	"js/topics.js",
 	"js/profile.js",
 	"js/poll.js",
+	"js/vote.js",
 }
 
 var CssFiles = []string{
