@@ -10,6 +10,7 @@ const (
 	UrlLoginSubmit  = "/login-submit"
 	UrlLogout       = "/logout"
 	UrlProtocol     = "/protocol"
+	UrlGuides       = "/guides"
 	UrlDisclaimer   = "/disclaimer"
 	UrlIntroducing  = "/introducing-memo"
 	UrlOpenSource   = "/open-sourcing-memo"

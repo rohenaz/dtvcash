@@ -72,6 +72,14 @@ var protocolRoute = web.Route{
 	},
 }
 
+var guidesRoute = web.Route{
+	Pattern: res.UrlGuides,
+	Handler: func(r *web.Response) {
+		r.Helper["Title"] = "Memo - Guides"
+		r.Render()
+	},
+}
+
 var disclaimerRoute = web.Route{
 	Pattern: res.UrlDisclaimer,
 	Handler: func(r *web.Response) {
