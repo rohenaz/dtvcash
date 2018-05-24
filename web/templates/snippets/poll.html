@@ -16,12 +16,13 @@
             {{ end }}
             </tbody>
         </table>
-        <br/>
         <p>
         {{ if (and .Post.Poll.CanVote .Post.IsLoggedIn) }}
             <a href="#" class="btn btn-success vote-show-form">Vote</a>
         {{ end }}
+        {{ if .Post.Poll.Votes }}
             <a href="#" class="btn btn-default show-votes">Show Votes</a>
+        {{ end }}
             <span class="creating hidden btn btn-warning">Creating...</span>
             <span class="broadcasting hidden btn btn-warning">Broadcasting...</span>
         </p>

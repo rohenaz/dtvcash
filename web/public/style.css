@@ -731,6 +731,9 @@ body.dark a.btn-leave {
 body.dark a {
     color: #6eb332;
 }
+body.dark a.btn {
+    color: #fff;
+}
 body.dark .pagination a {
     color: #e0e0e0;
 }
@@ -807,4 +810,8 @@ body.dark .notify-post .reply {
 }
 body.dark .notify-post a {
     color: #888;
+}
+body.dark .poll .votes {
+    background: #374f66;
+    border-color: #3e5973;
 }

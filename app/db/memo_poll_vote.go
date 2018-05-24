@@ -69,7 +69,7 @@ func GetVotesForOptions(options [][]byte, single bool) ([]*MemoPollVote, error) 
 		var joinSql = "JOIN (" +
 			"SELECT MIN(id) AS id " +
 			"FROM memo_poll_votes " +
-			"GROUP BY pk_hash) AS uids ON (memo_poll_votes.id = uids.id)"
+			"GROUP BY pk_hash, option_tx_hash) AS uids ON (memo_poll_votes.id = uids.id)"
 		db = db.Joins(joinSql)
 	}
 	result := db.
