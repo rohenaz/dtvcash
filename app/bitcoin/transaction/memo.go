@@ -106,6 +106,11 @@ func SaveMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) erro
 		if err != nil {
 			return jerr.Get("error saving memo poll option", err)
 		}
+	case memo.CodePollVote:
+		err = saveMemoPollVote(txn, out, blockId, inputAddress, parentHash)
+		if err != nil {
+			return jerr.Get("error saving memo poll option", err)
+		}
 	}
 	return nil
 }
@@ -573,6 +578,71 @@ func saveMemoPollOption(txn *db.Transaction, out *db.TransactionOut, blockId uin
 	err = memoPollOption.Save()
 	if err != nil {
 		return jerr.Get("error saving memo_post for poll option", err)
+	}
+	return nil
+}
+
+func saveMemoPollVote(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+	memoPollVote, err := db.GetMemoPollVote(txn.Hash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return jerr.Get("error getting memo_poll_vote", err)
+	}
+	if memoPollVote != nil {
+		if memoPollVote.BlockId != 0 || blockId == 0 {
+			return nil
+		}
+		memoPollVote.BlockId = blockId
+		err = memoPollVote.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_poll_vote", err)
+		}
+		return nil
+	}
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from poll vote", err)
+	}
+	if len(pushData) < 2 {
+		return jerr.Newf("invalid poll vote, incorrect push data (%d)", len(pushData))
+	}
+	var optionTxHashRaw = pushData[1]
+	if len(optionTxHashRaw) == 0 {
+		return jerr.New("invalid push data for poll vote, option tx hash empty")
+	}
+	optionTxHash, err := chainhash.NewHash(optionTxHashRaw)
+	if err != nil {
+		return jerr.Get("error parsing option transaction hash", err)
+	}
+	var message string
+	if len(pushData) == 3 {
+		message = string(pushData[2])
+	}
+	var tipPkHash []byte
+	var tipAmount int64
+	for _, txOut := range txn.TxOut {
+		if len(txOut.KeyPkHash) == 0 || bytes.Equal(txOut.KeyPkHash, inputAddress.ScriptAddress()) {
+			continue
+		}
+		if len(tipPkHash) != 0 {
+			return jerr.New("error found multiple tip outputs, unable to process")
+		}
+		tipAmount += txOut.Value
+		tipPkHash = txOut.KeyPkHash
+	}
+	memoPollVote = &db.MemoPollVote{
+		TxHash:       txn.Hash,
+		PkHash:       inputAddress.ScriptAddress(),
+		PkScript:     out.PkScript,
+		Message:      message,
+		OptionTxHash: optionTxHash.CloneBytes(),
+		TipAmount:    tipAmount,
+		TipPkHash:    tipPkHash,
+		ParentHash:   parentHash,
+		BlockId:      blockId,
+	}
+	err = memoPollVote.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_post for poll vote", err)
 	}
 	return nil
 }

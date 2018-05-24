@@ -5,10 +5,10 @@ import (
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/util"
 	"regexp"
 	"strings"
 	"time"
-	"github.com/memocash/memo/app/util"
 )
 
 type Post struct {
@@ -22,7 +22,7 @@ type Post struct {
 	Replies    []*Post
 	Reputation *Reputation
 	ShowMedia  bool
-	Question   *db.MemoPollQuestion
+	Poll       *Poll
 }
 
 func (p Post) IsSelf() bool {
@@ -56,11 +56,11 @@ func (p Post) GetMessage() string {
 }
 
 func (p Post) IsPoll() bool {
-	if !p.Memo.IsPoll || p.Question == nil {
+	if !p.Memo.IsPoll || p.Poll == nil {
 		return false
 	}
-	numOptions := len(p.Question.Options)
-	if numOptions >= 2 && int(p.Question.NumOptions) == numOptions {
+	numOptions := len(p.Poll.Question.Options)
+	if numOptions >= 2 && int(p.Poll.Question.NumOptions) == numOptions {
 		return true
 	}
 	return false
@@ -520,9 +520,24 @@ func AttachPollsToPosts(posts []*Post) error {
 				return jerr.Get("error getting memo poll question", err)
 			}
 			numOptions := len(question.Options)
-			if numOptions >= 2 && int(question.NumOptions) == numOptions {
-				post.Question = question
+			if numOptions < 2 || int(question.NumOptions) != numOptions {
+				continue
 			}
+			post.Poll = &Poll{
+				Question: question,
+			}
+			var optionHashes [][]byte
+			for _, option := range question.Options {
+				optionHashes = append(optionHashes, option.TxHash)
+			}
+			votes, err := db.GetVotesForOptions(optionHashes)
+			if err != nil {
+				if db.IsRecordNotFoundError(err) {
+					continue
+				}
+				return jerr.Get("error getting votes for options", err)
+			}
+			post.Poll.Votes = votes
 		}
 	}
 	return nil

@@ -2,10 +2,10 @@
     <div class="results">
         <table class="poll-results">
             <tbody>
-            {{ range .Post.Question.Options }}
+            {{ range .Post.Poll.GetOptions }}
             <tr>
-                <td>{{ .Option }}</td>
-                <td>0 votes, 0 satoshis</td>
+                <td>{{ .Name }}</td>
+                <td>{{ .Votes }} votes, {{ .Satoshis }} satoshis</td>
             </tr>
             {{ end }}
             </tbody>
@@ -19,7 +19,7 @@
     </div>
     <form class="form-horizontal hidden">
         <div class="form-group row">
-        {{ range .Post.Question.Options }}
+        {{ range .Post.Poll.Question.Options }}
             <div class="col-sm-12">
                 <div class="checkbox">
                     <input id="option-{{ .Option }}" type="radio" name="option" class="form-check-input"
