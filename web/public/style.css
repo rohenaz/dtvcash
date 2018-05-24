@@ -624,6 +624,10 @@ table.notifications-table td.like {
 table.notifications-table td.reply {
     color: #487521;
 }
+.notifications-table a,
+.notify-post {
+    word-break: break-word;
+}
 .notify-post a {
     color: #aaa;
 }
