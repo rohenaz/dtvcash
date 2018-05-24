@@ -168,6 +168,7 @@ func Run(sessionCookieInsecure bool) {
 			[]web.Route{
 				indexRoute,
 				protocolRoute,
+				guidesRoute,
 				disclaimerRoute,
 				introducingMemoRoute,
 				openSourcingMemoRoute,

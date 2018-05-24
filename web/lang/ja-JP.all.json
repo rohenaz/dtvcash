@@ -262,5 +262,9 @@
   {
     "id": "Delete_Account",
     "translation": "アカウントを削除する"
+  },
+  {
+    "id": "Guides",
+    "translation": "ガイド"
   }
 ]

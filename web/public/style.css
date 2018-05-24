@@ -32,7 +32,7 @@ h1 a img {
 iframe {
     display: block;
     width: 100%;
-    margin: 10px auto;
+    margin: 0px auto;
 }
 video {
     display: block;
@@ -309,10 +309,18 @@ span.page {
     color: #888;
 }
 
-#about h3 {
+#about h3, #guides h3 {
     font-size: 1.1em;
     font-weight: bold;
 }
+
+#guides img {
+    margin-top: 5px;
+}
+#guides li {
+    margin-bottom: 3px;
+}
+
 .reputation-tooltip {
     position: relative;
 }
