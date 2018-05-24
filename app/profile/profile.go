@@ -173,8 +173,14 @@ func (p Profile) GetText() string {
 	return s
 }
 
-func GetProfiles(selfPkHash []byte) ([]*Profile, error) {
-	pkHashes, err := db.GetUniqueMemoAPkHashes()
+func GetProfiles(selfPkHash []byte, searchString string, offset int) ([]*Profile, error) {
+	var pkHashes [][]byte
+	var err error
+	if searchString != "" {
+		pkHashes, err = db.GetUniqueMemoAPkHashesMatchName(searchString, offset)
+	} else {
+		pkHashes, err = db.GetUniqueMemoAPkHashes(offset)
+	}
 	if err != nil {
 		return nil, jerr.Get("error getting unique pk hashes", err)
 	}

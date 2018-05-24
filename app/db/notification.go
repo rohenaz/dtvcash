@@ -9,6 +9,7 @@ const (
 	NotificationTypeLike        = 1
 	NotificationTypeReply       = 2
 	NotificationTypeThreadReply = 3
+	NotificationTypeNewFollower = 4
 )
 
 type Notification struct {

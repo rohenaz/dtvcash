@@ -31,7 +31,7 @@ func (n ReplyNotification) GetMessage() string {
 }
 
 func (n ReplyNotification) GetTime() time.Time {
-	if n.Post.Block != nil {
+	if n.Post.Block != nil && n.Post.Block.Timestamp.Before(n.Post.CreatedAt) {
 		return n.Post.Block.Timestamp
 	} else {
 		return n.Post.CreatedAt

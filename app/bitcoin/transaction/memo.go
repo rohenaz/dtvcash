@@ -258,6 +258,14 @@ func saveMemoFollow(txn *db.Transaction, out *db.TransactionOut, blockId uint, i
 	if err != nil && ! cache.IsMissError(err) {
 		return jerr.Get("error clearing cache", err)
 	}
+	if !unfollow {
+		go func() {
+			err = notify.AddNewFollowerNotification(memoFollow, true)
+			if err != nil {
+				jerr.Get("error adding new follower notification", err).Print()
+			}
+		}()
+	}
 	return nil
 }
 

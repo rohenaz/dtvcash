@@ -168,6 +168,10 @@
     "translation": "发表于"
   },
   {
+    "id": "posted",
+    "translation": "发表于"
+  },
+  {
     "id": "view_on_block_explorer",
     "translation": "在区块链浏览器中查看"
   },
@@ -258,5 +262,9 @@
   {
     "id": "Delete_Account",
     "translation": "删除帐户"
+  },
+  {
+    "id": "Guides",
+    "translation": "导游"
   }
 ]

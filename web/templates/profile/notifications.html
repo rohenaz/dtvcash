@@ -11,7 +11,7 @@
         <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="notifications?offset={{ .PrevOffset }}">
             &lt; {{ T "previous" }}</a>
         <span class="page">{{ T "page" }} {{ .Page }}</span>
-        <a class="{{ if lt (len .Notifications) 25 }}disabled{{ end }}" href="notifications?offset={{ .NextOffset }}">
+        <a class="{{ if eq (len .Notifications) 0 }}disabled{{ end }}" href="notifications?offset={{ .NextOffset }}">
         {{ T "next" }} &gt;</a>
     </p>
 {{ end }}
@@ -57,6 +57,18 @@
                     </div>
                 </div>
             </td>
+        {{ else if .IsNewFollower }}
+            <td class="new-follower">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            </td>
+            <td>
+                <span class="identicon-{{ .GetAddressString }}">
+                    <img class="identicon"/>
+                </span>
+                <a href="profile/{{ .GetAddressString }}" class="name">{{ .Generic.GetName }}</a>
+                followed you.
+                <span class="time-ago">{{ .GetTimeAgo }}</span>
+            </td>
         {{ end }}
         </tr>
         <script type="text/javascript">
@@ -82,7 +94,7 @@
         <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="notifications?offset={{ .PrevOffset }}">
             &lt; {{ T "previous" }}</a>
         <span class="page">{{ T "page" }} {{ .Page }}</span>
-        <a class="{{ if lt (len .Notifications) 25 }}disabled{{ end }}" href="notifications?offset={{ .NextOffset }}">
+        <a class="{{ if eq (len .Notifications) 0 }}disabled{{ end }}" href="notifications?offset={{ .NextOffset }}">
         {{ T "next" }} &gt;</a>
     </p>
 {{ end }}

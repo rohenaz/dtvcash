@@ -6,7 +6,7 @@
         <span class="identicon-{{ .Post.Memo.GetAddressString }}">
             <img class="identicon"/>
         </span>
-            <a href="profile/{{ .Post.Memo.GetAddressString }}">{{ $len := len .Post.Name }}
+            <a class="profile" href="profile/{{ .Post.Memo.GetAddressString }}">{{ $len := len .Post.Name }}
         {{- if gt $len 0 -}}
             {{ .Post.Name }}
         {{- else -}}
@@ -26,11 +26,11 @@
             </span>
         {{ end }}
         {{ if .Post.Memo.ParentTxHash }}
-            replied to <a href="post/{{ .Post.Memo.GetParentTransactionHashString }}">post</a> at
+            replied to <a href="post/{{ .Post.Memo.GetParentTransactionHashString }}">post</a>
         {{ else }}
-            {{ T "posted_at" }}
+            {{ T "posted" }}
         {{ end }}
-            <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeString .TimeZone }}</a>
+            <a title="{{ .Post.GetTimeString .TimeZone }}" href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeAgo }}</a>
         {{- if .Post.Memo.Topic }}
             in <a href="topic/{{ .Post.Memo.GetUrlEncodedTopic }}">{{ .Post.Memo.Topic }}</a>
         {{ end }}

@@ -256,3 +256,20 @@ func IsFollowing(followerPkHash []byte, followingPkHash []byte) (bool, error) {
 	}
 	return cnt == 0, nil
 }
+
+func GetAllFollows(offset uint) ([]*MemoFollow, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	var memoFollows []*MemoFollow
+	result := db.
+		Limit(25).
+		Offset(offset).
+		Order("id ASC").
+		Find(&memoFollows)
+	if result.Error != nil {
+		return nil, jerr.Get("error running query", result.Error)
+	}
+	return memoFollows, nil
+}

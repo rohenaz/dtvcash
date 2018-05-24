@@ -32,7 +32,7 @@ h1 a img {
 iframe {
     display: block;
     width: 100%;
-    margin: 10px auto;
+    margin: 0px auto;
 }
 video {
     display: block;
@@ -162,7 +162,7 @@ a.disabled {
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
     border-radius: 4px;
 }
-.post .name a:nth-of-type(1) {
+.post .name .profile {
     font-weight: bold;
     font-size: 18px;
 }
@@ -309,12 +309,23 @@ span.page {
     color: #888;
 }
 
-#about h3 {
+#about h3, #guides h3 {
     font-size: 1.1em;
     font-weight: bold;
 }
+
+#guides img {
+    margin-top: 5px;
+}
+#guides li {
+    margin-bottom: 3px;
+}
+
 .reputation-tooltip {
     position: relative;
+}
+.reputation-tooltip a {
+    font-weight: bold;
 }
 .reputation-tooltip:hover > span {
     display: block;
@@ -612,6 +623,10 @@ table.notifications-table td.like {
 }
 table.notifications-table td.reply {
     color: #487521;
+}
+.notifications-table a,
+.notify-post {
+    word-break: break-word;
 }
 .notify-post a {
     color: #aaa;
