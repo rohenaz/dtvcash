@@ -145,6 +145,10 @@ func setFeed(r *web.Response, selfPkHash []byte, userId uint) error {
 	if err != nil {
 		return jerr.Get("error attaching likes to posts", err)
 	}
+	err = profile.AttachPollsToPosts(posts)
+	if err != nil {
+		return jerr.Get("error attaching polls to posts", err)
+	}
 	r.Helper["PostCount"] = len(posts)
 	for i := 0; i < len(posts); i++ {
 		post := posts[i]

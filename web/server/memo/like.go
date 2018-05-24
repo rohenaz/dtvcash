@@ -55,6 +55,11 @@ var likeRoute = web.Route{
 			r.Error(jerr.Get("error attaching parent to post", err), http.StatusInternalServerError)
 			return
 		}
+		err = profile.AttachPollsToPosts([]*profile.Post{post})
+		if err != nil {
+			r.Error(jerr.Get("error attaching polls to posts", err), http.StatusInternalServerError)
+			return
+		}
 		err = profile.AttachLikesToPosts([]*profile.Post{post})
 		if err != nil {
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)

@@ -54,6 +54,11 @@ var replyRoute = web.Route{
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
 		}
+		err = profile.AttachPollsToPosts([]*profile.Post{post})
+		if err != nil {
+			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
+			return
+		}
 		r.Helper["Post"] = post
 
 		user, err := auth.GetSessionUser(r.Session.CookieId)

@@ -18,7 +18,7 @@
         </table>
         <br/>
         <p>
-        {{ if .Post.Poll.CanVote }}
+        {{ if (and .Post.Poll.CanVote .Post.IsLoggedIn) }}
             <a href="#" class="btn btn-success vote-show-form">Vote</a>
         {{ end }}
             <a href="#" class="btn btn-default show-votes">Show Votes</a>
