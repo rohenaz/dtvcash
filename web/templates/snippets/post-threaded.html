@@ -30,7 +30,7 @@
         {{ else }}
             {{ T "posted" }}
         {{ end }}
-            <a title="{{ .Post.GetTimeString .TimeZone }}" href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.Memo.GetTimeAgo }}</a>
+            <a title="{{ .Post.GetTimeString .TimeZone }}" href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeAgo }}</a>
         {{- if .Post.Memo.Topic }}
             in <a href="topic/{{ .Post.Memo.GetUrlEncodedTopic }}">{{ .Post.Memo.Topic }}</a>
         {{ end }}
