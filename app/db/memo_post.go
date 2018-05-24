@@ -7,6 +7,7 @@ import (
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/bitcoin/script"
 	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/util"
 	"html"
 	"net/url"
 	"time"
@@ -391,6 +392,10 @@ func (t Topic) GetUrlEncoded() string {
 	return url.QueryEscape(t.Name)
 }
 
+func (t Topic) GetTimeAgo() string {
+	return util.GetTimeAgo(t.RecentTime)
+}
+
 func GetUniqueTopics(offset uint, searchString string) ([]*Topic, error) {
 	db, err := getDb()
 	if err != nil {
@@ -398,7 +403,7 @@ func GetUniqueTopics(offset uint, searchString string) ([]*Topic, error) {
 	}
 	query := db.
 		Table("memo_posts").
-		Select("topic, MAX(memo_posts.created_at) AS max_time, COUNT(*)").
+		Select("topic, MAX(IF(COALESCE(blocks.timestamp, memo_posts.created_at) < memo_posts.created_at, blocks.timestamp, memo_posts.created_at)) AS max_time, COUNT(*)").
 		Joins("LEFT OUTER JOIN blocks ON (memo_posts.block_id = blocks.id)").
 		Group("topic").
 		Order("max_time DESC").
