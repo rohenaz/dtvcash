@@ -358,12 +358,14 @@ func GetRankedPosts(offset uint) ([]*MemoPost, error) {
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
 	}
-	var scoreQuery = fmt.Sprintf("(COUNT(memo_likes.id)*%d)/POW(TIMESTAMPDIFF(MINUTE, memo_posts.created_at, NOW()),%0.2f)", RankCountBoost, RankGravity)
+	var coalescedTimestamp = "IF(COALESCE(blocks.timestamp, memo_posts.created_at) < memo_posts.created_at, blocks.timestamp, memo_posts.created_at)"
+	var scoreQuery = fmt.Sprintf("(COUNT(memo_likes.id)*%d)/POW(TIMESTAMPDIFF(MINUTE, "+coalescedTimestamp+", NOW()),%0.2f)", RankCountBoost, RankGravity)
 
 	var memoPosts []*MemoPost
 	result := db.
 		Joins("LEFT OUTER JOIN memo_likes ON (memo_posts.tx_hash = memo_likes.like_tx_hash)").
-		Where("memo_posts.created_at > DATE_SUB(NOW(), INTERVAL 3 DAY)").
+		Joins("LEFT OUTER JOIN blocks ON (memo_posts.block_id = blocks.id)").
+		Where(coalescedTimestamp+" > DATE_SUB(NOW(), INTERVAL 3 DAY)").
 		Group("memo_posts.tx_hash").
 		Order(scoreQuery + " DESC").
 		Limit(25).
