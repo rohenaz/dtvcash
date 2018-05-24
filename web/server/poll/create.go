@@ -14,14 +14,17 @@ import (
 )
 
 var createRoute = web.Route{
-	Pattern: res.UrlPollCreate,
+	Pattern:    res.UrlPollCreate,
+	NeedsLogin: true,
 	Handler: func(r *web.Response) {
 		r.Render()
 	},
 }
 
 var createSubmitRoute = web.Route{
-	Pattern: res.UrlPollCreateSubmit,
+	Pattern:     res.UrlPollCreateSubmit,
+	NeedsLogin:  true,
+	CsrfProtect: true,
 	Handler: func(r *web.Response) {
 		pollType := r.Request.GetFormValue("pollType")
 		question := r.Request.GetFormValue("question")

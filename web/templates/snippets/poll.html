@@ -12,11 +12,13 @@
         </table>
         <br/>
         <p>
-            <a href="#" class="btn btn-default vote-show-form">Vote</a>
+            <a href="#" class="btn btn-success vote-show-form">Vote</a>
+            <a href="#" class="btn btn-default show-votes">Show Votes</a>
             <span class="creating hidden btn btn-warning">Creating...</span>
             <span class="broadcasting hidden btn btn-warning">Broadcasting...</span>
         </p>
     </div>
+    <div class="votes hidden"></div>
     <form class="form-horizontal hidden">
         <div class="form-group row">
         {{ range .Post.Poll.Question.Options }}

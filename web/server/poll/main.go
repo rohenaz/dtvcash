@@ -7,6 +7,7 @@ func GetRoutes() []web.Route {
 		createRoute,
 		createSubmitRoute,
 		voteSubmitRoute,
+		votesAjaxRoute,
 	}
 }
 

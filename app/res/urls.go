@@ -96,6 +96,7 @@ const (
 	UrlPollCreate       = "/poll/create"
 	UrlPollCreateSubmit = "/poll/create-submit"
 	UrlPollVoteSubmit   = "/poll/vote-submit"
+	UrlPollVotesAjax    = "/poll/votes-ajax"
 )
 
 const (

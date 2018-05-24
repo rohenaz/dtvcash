@@ -17,7 +17,9 @@ import (
 )
 
 var voteSubmitRoute = web.Route{
-	Pattern: res.UrlPollVoteSubmit,
+	Pattern:     res.UrlPollVoteSubmit,
+	NeedsLogin:  true,
+	CsrfProtect: true,
 	Handler: func(r *web.Response) {
 		txHashString := r.Request.GetFormValue("txHash")
 		txHash, err := chainhash.NewHashFromStr(txHashString)
