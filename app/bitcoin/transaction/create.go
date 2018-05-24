@@ -207,18 +207,19 @@ func Create(spendOuts []*db.TransactionOut, privateKey *wallet.PrivateKey, spend
 			if len(optionCount) == 0 {
 				return nil, jerr.New("empty option count")
 			}
-			var code byte
+			var pollType byte
 			switch spendOutput.Type {
 			case SpendOutputTypeMemoPollQuestionSingle:
-				code = memo.CodePollSingle
+				pollType = memo.CodePollTypeSingle
 			case SpendOutputTypeMemoPollQuestionMulti:
-				code = memo.CodePollMulti
+				pollType = memo.CodePollTypeMulti
 			default:
 				return nil, jerr.New("invalid poll type")
 			}
 			pkScript, err := txscript.NewScriptBuilder().
 				AddOp(txscript.OP_RETURN).
-				AddData([]byte{memo.CodePrefix, code}).
+				AddData([]byte{memo.CodePrefix, memo.CodePollCreate}).
+				AddData([]byte{pollType}).
 				AddData(optionCount).
 				AddData(question).
 				Script()

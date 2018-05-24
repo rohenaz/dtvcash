@@ -4,7 +4,7 @@ const (
 	MaxPostSize         = 217
 	MaxReplySize        = 184
 	MaxTagMessageSize   = 217
-	MaxPollQuestionSize = 213
+	MaxPollQuestionSize = 209
 	MaxPollOptionSize   = 184
 	MaxVoteCommentSize  = 184
 )

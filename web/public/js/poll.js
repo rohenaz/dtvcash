@@ -1,6 +1,6 @@
 (function () {
     var maxOptionBytes = 184;
-    var maxQuestionBytes = 213;
+    var maxQuestionBytes = 209;
 
     var $form;
     var $question;

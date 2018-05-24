@@ -531,7 +531,7 @@ func AttachPollsToPosts(posts []*Post) error {
 			for _, option := range question.Options {
 				optionHashes = append(optionHashes, option.TxHash)
 			}
-			single := question.PollType == memo.CodePollSingle
+			single := question.PollType == memo.CodePollTypeSingle
 			votes, err := db.GetVotesForOptions(optionHashes, single)
 			if err != nil {
 				if db.IsRecordNotFoundError(err) {

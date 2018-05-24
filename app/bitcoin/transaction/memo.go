@@ -91,15 +91,10 @@ func SaveMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) erro
 		if err != nil {
 			return jerr.Get("error saving memo_post tag message", err)
 		}
-	case memo.CodePollSingle:
-		err = saveMemoPollQuestion(memo.CodePollSingle, txn, out, blockId, inputAddress, parentHash)
+	case memo.CodePollCreate:
+		err = saveMemoPollQuestion(txn, out, blockId, inputAddress, parentHash)
 		if err != nil {
 			return jerr.Get("error saving memo_poll_question (single)", err)
-		}
-	case memo.CodePollMulti:
-		err = saveMemoPollQuestion(memo.CodePollMulti, txn, out, blockId, inputAddress, parentHash)
-		if err != nil {
-			return jerr.Get("error saving memo_poll_question (multi)", err)
 		}
 	case memo.CodePollOption:
 		err = saveMemoPollOption(txn, out, blockId, inputAddress, parentHash)
@@ -474,7 +469,7 @@ func saveMemoSetProfile(txn *db.Transaction, out *db.TransactionOut, blockId uin
 	return nil
 }
 
-func saveMemoPollQuestion(pollType int, txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+func saveMemoPollQuestion(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
 	memoPost, err := db.GetMemoPost(txn.Hash)
 	if err != nil && ! db.IsRecordNotFoundError(err) {
 		return jerr.Get("error getting memo_post", err)
@@ -494,8 +489,13 @@ func saveMemoPollQuestion(pollType int, txn *db.Transaction, out *db.Transaction
 	if err != nil {
 		return jerr.Get("error parsing push data from poll question", err)
 	}
-	if len(pushData) != 3 {
+	if len(pushData) < 3 {
 		return jerr.Newf("invalid poll question, incorrect push data (%d)", len(pushData))
+	}
+	var pollType = memo.CodePollTypeSingle
+	if len(pushData) == 4 {
+		pollType = int(pushData[1][0])
+		pushData = pushData[1:]
 	}
 	if len(pushData[1]) == 0 {
 		return jerr.New("invalid push data for poll question, num options empty")

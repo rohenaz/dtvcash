@@ -38,6 +38,15 @@ func (m MemoPollOption) GetTransactionHashString() string {
 	return hash.String()
 }
 
+func (m MemoPollOption) GetPollTransactionHashString() string {
+	hash, err := chainhash.NewHash(m.PollTxHash)
+	if err != nil {
+		jerr.Get("error getting chainhash from memo poll option", err).Print()
+		return ""
+	}
+	return hash.String()
+}
+
 func (m MemoPollOption) GetAddressString() string {
 	return m.GetAddress().GetEncoded()
 }
