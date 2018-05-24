@@ -164,10 +164,12 @@
                 e.preventDefault();
                 if (!$votes.hasClass("hidden")) {
                     $votes.addClass("hidden");
+                    $showVotesButton.html("Show Votes");
                     return;
                 }
                 if ($votes.html().length > 0) {
                     $votes.removeClass("hidden");
+                    $showVotesButton.html("Hide Votes");
                     return;
                 }
                 $.ajax({
@@ -177,10 +179,10 @@
                     },
                     success: function (html) {
                         $votes.removeClass("hidden");
+                        $showVotesButton.html("Hide Votes");
                         $votes.html(html);
                     },
                     error: function () {
-                        submitting = false;
                         console.log("Error waiting for transaction to broadcast.");
                     }
                 });
