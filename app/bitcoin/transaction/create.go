@@ -30,6 +30,7 @@ const (
 	SpendOutputTypeMemoPollQuestionSingle
 	SpendOutputTypeMemoPollQuestionMulti
 	SpendOutputTypeMemoPollOption
+	SpendOutputTypeMemoPollVote
 )
 
 func Create(spendOuts []*db.TransactionOut, privateKey *wallet.PrivateKey, spendOutputs []SpendOutput) (*wire.MsgTx, error) {
@@ -246,6 +247,24 @@ func Create(spendOuts []*db.TransactionOut, privateKey *wallet.PrivateKey, spend
 				Script()
 			if err != nil {
 				return nil, jerr.Get("error creating memo option output", err)
+			}
+			fmt.Printf("pkScript: %x\n", pkScript)
+			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
+		case SpendOutputTypeMemoPollVote:
+			if len(spendOutput.Data) != 32 {
+				return nil, jerr.New("invalid txn hash")
+			}
+			if len(spendOutput.RefData) > memo.MaxVoteCommentSize {
+				return nil, jerr.New("comment data too large")
+			}
+			pkScript, err := txscript.NewScriptBuilder().
+				AddOp(txscript.OP_RETURN).
+				AddData([]byte{memo.CodePrefix, memo.CodePollVote}).
+				AddData(spendOutput.Data).
+				AddData(spendOutput.RefData).
+				Script()
+			if err != nil {
+				return nil, jerr.Get("error creating memo poll vote output", err)
 			}
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))

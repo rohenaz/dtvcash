@@ -6,6 +6,7 @@ const (
 	MaxTagMessageSize   = 217
 	MaxPollQuestionSize = 213
 	MaxPollOptionSize   = 184
+	MaxVoteCommentSize  = 184
 )
 
 const (

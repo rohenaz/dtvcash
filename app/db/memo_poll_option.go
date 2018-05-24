@@ -1,8 +1,9 @@
 package db
 
 import (
-	"github.com/btcsuite/btcd/chaincfg/chainhash"
+	"github.com/jchavannes/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/wallet"
 	"time"
 )
 
@@ -37,10 +38,30 @@ func (m MemoPollOption) GetTransactionHashString() string {
 	return hash.String()
 }
 
+func (m MemoPollOption) GetAddressString() string {
+	return m.GetAddress().GetEncoded()
+}
+
+func (m MemoPollOption) GetAddress() wallet.Address {
+	return wallet.GetAddressFromPkHash(m.PkHash)
+}
+
 func GetMemoPollOption(txHash []byte) (*MemoPollOption, error) {
 	var memoPollOption MemoPollOption
 	err := find(&memoPollOption, MemoPollOption{
 		TxHash: txHash,
+	})
+	if err != nil {
+		return nil, jerr.Get("error getting memo poll option", err)
+	}
+	return &memoPollOption, nil
+}
+
+func GetMemoPollOptionByOption(pollTxHash []byte, option string) (*MemoPollOption, error) {
+	var memoPollOption MemoPollOption
+	err := find(&memoPollOption, MemoPollOption{
+		PollTxHash: pollTxHash,
+		Option:     option,
 	})
 	if err != nil {
 		return nil, jerr.Get("error getting memo poll option", err)

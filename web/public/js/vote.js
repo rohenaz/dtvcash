@@ -1,5 +1,5 @@
 (function () {
-    var maxPollResponseBytes = 184;
+    var maxVoteCommentBytes = 184;
 
     var $form;
     var $msgByteCount;
@@ -49,7 +49,7 @@
     };
 
     function setMsgByteCount() {
-        var cnt = maxPollResponseBytes - MemoApp.utf8ByteLength($message.val());
+        var cnt = maxVoteCommentBytes - MemoApp.utf8ByteLength($message.val());
         $msgByteCount.html("[" + cnt + "]");
         if (cnt < 0) {
             $msgByteCount.addClass("red");
@@ -76,8 +76,8 @@
         }
 
         var message = $message.val();
-        if (maxPollResponseBytes - MemoApp.utf8ByteLength(message) < 0) {
-            alert("Maximum message size is " + maxPollResponseBytes + " bytes. Note that some characters are more than 1 byte." +
+        if (maxVoteCommentBytes - MemoApp.utf8ByteLength(message) < 0) {
+            alert("Maximum message size is " + maxVoteCommentBytes + " bytes. Note that some characters are more than 1 byte." +
                 " Emojis are usually 4 bytes, for example.");
             return;
         }

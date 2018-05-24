@@ -32,7 +32,7 @@ h1 a img {
 iframe {
     display: block;
     width: 100%;
-    margin: 0px auto;
+    margin: 0 auto;
 }
 video {
     display: block;
@@ -659,6 +659,15 @@ table.notifications-table .tip {
     color: rgba(255,0,0,1);
     top: 2px;
 }
+table.poll-results td {
+    padding: 5px 10px;
+}
+table.poll-results td:nth-of-type(2) {
+    font-style: italic;
+    font-size: 14px;
+}
+
+
 body.dark #new-poll-form .glyphicon-remove {
     color: rgba(255,50,50,0.75);
     margin-left: 5px;
@@ -667,9 +676,6 @@ body.dark #new-poll-form .glyphicon-remove {
 body.dark #new-poll-form .glyphicon-remove:hover {
     color: rgba(255,0,0,1);
 }
-
-
-
 body.dark {
     background: #2b3e50;
     color: #e0e0e0;

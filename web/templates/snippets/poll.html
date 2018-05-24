@@ -1,8 +1,16 @@
 <div id="poll-{{ .Post.Memo.GetTransactionHashString }}">
     <div class="results">
-    {{ range .Post.Question.Options }}
-        <p>{{ .Option }} - 0 votes, 0 satoshis</p>
-    {{ end }}
+        <table class="poll-results">
+            <tbody>
+            {{ range .Post.Question.Options }}
+            <tr>
+                <td>{{ .Option }}</td>
+                <td>0 votes, 0 satoshis</td>
+            </tr>
+            {{ end }}
+            </tbody>
+        </table>
+        <br/>
         <p>
             <a href="#" class="btn btn-default vote-show-form">Vote</a>
             <span class="creating hidden btn btn-warning">Creating...</span>
