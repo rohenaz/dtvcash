@@ -659,6 +659,12 @@ table.notifications-table .tip {
     color: rgba(255,0,0,1);
     top: 2px;
 }
+table.poll-results {
+    border-bottom: 1px solid #ddd;
+}
+body.dark table.poll-results {
+    border-color: #666;
+}
 table.poll-results td {
     padding: 5px 10px;
 }

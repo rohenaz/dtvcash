@@ -1,6 +1,6 @@
 <div id="poll-{{ .Post.Memo.GetTransactionHashString }}" class="poll">
     <div class="results">
-        <table class="poll-results">
+        <table class="poll-results table table-condensed">
             <tbody>
             {{ $isMulti := .Post.Poll.IsMulti }}
             {{ range .Post.Poll.GetOptions }}
