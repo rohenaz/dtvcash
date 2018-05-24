@@ -28,7 +28,8 @@
         {{ else }}
             {{ T "posted" }}
         {{ end }}
-            <a title="{{ .Post.GetTimeString .TimeZone }}" href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeAgo }}</a>
+            <a title="{{ .Post.GetTimeString .TimeZone }}"
+               href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeAgo }}</a>
         {{- if .Post.Memo.Topic }}
             in <a href="topic/{{ .Post.Memo.GetUrlEncodedTopic }}">{{ .Post.Memo.Topic }}</a>
         {{ end }}
@@ -49,26 +50,7 @@
     {{ .Post.GetMessage }}
     </p>
 {{ if .Post.IsPoll }}
-    <form id="poll" class="form-horizontal">
-        <div class="form-group row">
-        {{ range .Post.Question.Options }}
-            <div class="col-sm-12">
-                <div class="checkbox">
-                    <input id="option-{{ .Option }}" type="radio" name="theme" class="form-check-input"
-                           value="{{ .Option }}"/>
-                    <label for="option-{{ .Option }}" class="form-check-label">
-                    {{ .Option }}
-                    </label>
-                </div>
-            </div>
-        {{ end }}
-        </div>
-        <div class="form-group">
-            <div class="col-sm-12">
-                <input class="btn btn-default" type="submit" value="Vote"/>
-            </div>
-        </div>
-    </form>
+    {{ template "snippets/poll.html" dict "Post" .Post "Threaded" false }}
 {{ end }}
     <p class="likes">
         <i>

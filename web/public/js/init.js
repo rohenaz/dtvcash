@@ -142,6 +142,7 @@ var MemoApp = {
         MemoWait: "memo/wait",
         MemoWaitSubmit: "memo/wait-submit",
         PollCreateSubmit: "poll/create-submit",
+        PollVoteSubmit: "poll/vote-submit",
         ProfileSettingsSubmit: "settings-submit",
         KeyChangePasswordSubmit: "key/change-password-submit",
         KeyDeleteAccountSubmit: "key/delete-account-submit",
