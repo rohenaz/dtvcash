@@ -11,8 +11,6 @@
     <a class="btn btn-default" href="topics/create">{{ T "Create_new_topic" }}</a>
 </div>
 
-<!--<h3>{{ T "Existing_Topics" }}</h3>-->
-
 {{ if and (eq .NextOffset 25) (lt (len .Topics) 25) }}{{ else }}
 <p class="pagination">
     <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}"

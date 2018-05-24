@@ -240,12 +240,17 @@ func GetPostsForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 	return memoPosts, nil
 }
 
-func GetUniqueMemoAPkHashes() ([][]byte, error) {
+func GetUniqueMemoAPkHashes(offset int) ([][]byte, error) {
 	db, err := getDb()
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
 	}
-	rows, err := db.Table("memo_posts").Select("DISTINCT(pk_hash)").Rows()
+	rows, err := db.
+		Table("memo_posts").
+		Select("DISTINCT(pk_hash)").
+		Limit(25).
+		Offset(offset).
+		Rows()
 	if err != nil {
 		return nil, jerr.Get("error getting distinct pk hashes", err)
 	}
