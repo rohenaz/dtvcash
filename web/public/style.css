@@ -497,16 +497,21 @@ span.page {
 #password-clear a:hover {
     text-decoration: underline;
 }
-#topic-search-form {
+.search-form {
     display: inline;
     margin-bottom: 0;
 }
-#topic-search-form label {
+.search-form label {
     min-width: unset;
     margin: 5px 0;
 }
-#topic-search-form input {
+.search-form input {
     margin: 5px 0;
+}
+@media (min-width: 768px) {
+    .search-form input[type=text] {
+        width: 250px;
+    }
 }
 a.block-link {
     display: inline-block;

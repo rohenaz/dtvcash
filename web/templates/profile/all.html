@@ -6,10 +6,15 @@
 
 <div class="col-md-8 col-md-offset-2">
 
-    <form action="profiles">
-        <input class="form-control" type="text" name="s" placeholder="Search - enter username"
-               value="{{ .SearchString }}"/>
-    </form>
+    <div class="center">
+        <form action="profiles" class="form-inline search-form">
+            <div class="form-group row">
+                <input class="form-control" type="text" name="s" placeholder="Username"
+                       value="{{ .SearchString }}"/>
+                <input class="btn btn-primary" type="submit" value="Search"/>
+            </div>
+        </form>
+    </div>
 
 {{ if and (eq .NextOffset 25) (lt (len .Profiles) 25) }}<br/>{{ else }}
     <p class="pagination">
