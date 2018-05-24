@@ -1,0 +1,23 @@
+{{ template "snippets/header.html" . }}
+
+{{ template "posts/header.html" dict "Page" "ranked" "Username" .Username }}
+
+<p class="pagination">
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}"
+       href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
+    <span class="page">{{ T "page" }} {{ .Page }}</span>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}"
+       href="{{ .OffsetLink }}&offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
+</p>
+
+{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone "UserSettings" .UserSettings }}
+
+<p class="pagination">
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}"
+       href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
+    <span class="page">{{ T "page" }} {{ .Page }}</span>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}"
+       href="{{ .OffsetLink }}&offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
+</p>
+
+{{ template "snippets/footer.html" . }}

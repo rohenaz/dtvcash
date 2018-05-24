@@ -57,7 +57,7 @@
             {{ if .Username }}
                 <li {{ if eq $nav "new" }}class="active"{{ end }}><a href="memo/new">{{ T "new_memo" }}</a></li>
             {{ end }}
-                <li {{ if eq $nav "posts" }}class="active"{{ end }}><a href="posts/top">{{ T "posts" }}</a></li>
+                <li {{ if eq $nav "posts" }}class="active"{{ end }}><a href="posts/ranked">{{ T "posts" }}</a></li>
                 <li {{ if eq $nav "profiles" }}class="active"{{ end }}><a href="profiles">{{ T "profiles" }}</a></li>
                 <li {{ if eq $nav "topics" }}class="active"{{ end }}><a href="topics">{{ T "Topics" }}</a></li>
             {{ if not .Username }}

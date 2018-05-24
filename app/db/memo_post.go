@@ -348,6 +348,33 @@ func GetTopPosts(offset uint, timeStart time.Time, timeEnd time.Time) ([]*MemoPo
 	return sortedPosts, nil
 }
 
+const (
+	RankCountBoost = 500
+	RankGravity    = 0.5
+)
+
+func GetRankedPosts(offset uint) ([]*MemoPost, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	var scoreQuery = fmt.Sprintf("(COUNT(memo_likes.id)*%d)/POW(TIMESTAMPDIFF(MINUTE, memo_posts.created_at, NOW()),%0.2f)", RankCountBoost, RankGravity)
+
+	var memoPosts []*MemoPost
+	result := db.
+		Joins("LEFT OUTER JOIN memo_likes ON (memo_posts.tx_hash = memo_likes.like_tx_hash)").
+		Where("memo_posts.created_at > DATE_SUB(NOW(), INTERVAL 3 DAY)").
+		Group("memo_posts.tx_hash").
+		Order(scoreQuery + " DESC").
+		Limit(25).
+		Offset(offset).
+		Find(&memoPosts)
+	if result.Error != nil {
+		return nil, jerr.Get("error running query", result.Error)
+	}
+	return memoPosts, nil
+}
+
 func GetPersonalizedTopPosts(selfPkHash []byte, offset uint, timeStart time.Time, timeEnd time.Time) ([]*MemoPost, error) {
 	topLikeTxHashes, err := GetPersonalizedRecentTopLikedTxHashes(selfPkHash, offset, timeStart, timeEnd)
 	if err != nil {

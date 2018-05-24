@@ -346,6 +346,47 @@ func GetTopPostsNamedRange(selfPkHash []byte, offset uint, timeRange string, per
 	return GetTopPosts(selfPkHash, offset, timeStart, time.Time{}, personalized)
 }
 
+func GetRankedPosts(selfPkHash []byte, offset uint) ([]*Post, error) {
+	memoPosts, err := db.GetRankedPosts(offset)
+	if err != nil {
+		return nil, jerr.Get("error getting posts for hash", err)
+	}
+	var posts []*Post
+	for _, dbPost := range memoPosts {
+		cnt, err := db.GetPostReplyCount(dbPost.TxHash)
+		if err != nil {
+			return nil, jerr.Get("error getting post reply count", err)
+		}
+		post := &Post{
+			Memo:       dbPost,
+			SelfPkHash: selfPkHash,
+			ReplyCount: cnt,
+		}
+		posts = append(posts, post)
+	}
+	var namePkHashes [][]byte
+	for _, post := range posts {
+		for _, namePkHash := range namePkHashes {
+			if bytes.Equal(namePkHash, post.Memo.PkHash) {
+				continue
+			}
+		}
+		namePkHashes = append(namePkHashes, post.Memo.PkHash)
+	}
+	setNames, err := db.GetNamesForPkHashes(namePkHashes)
+	for _, setName := range setNames {
+		for _, post := range posts {
+			if bytes.Equal(post.Memo.PkHash, setName.PkHash) {
+				post.Name = setName.Name
+			}
+		}
+	}
+	if err != nil {
+		return nil, jerr.Get("error getting set names for pk hashes", err)
+	}
+	return posts, nil
+}
+
 func GetTopPosts(selfPkHash []byte, offset uint, timeStart time.Time, timeEnd time.Time, personalized bool) ([]*Post, error) {
 	var dbPosts []*db.MemoPost
 	var err error
