@@ -3,6 +3,7 @@ package profile
 import (
 	"bytes"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/memo"
 	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
 	"github.com/memocash/memo/app/util"
@@ -530,7 +531,8 @@ func AttachPollsToPosts(posts []*Post) error {
 			for _, option := range question.Options {
 				optionHashes = append(optionHashes, option.TxHash)
 			}
-			votes, err := db.GetVotesForOptions(optionHashes)
+			single := question.PollType == memo.CodePollSingle
+			votes, err := db.GetVotesForOptions(optionHashes, single)
 			if err != nil {
 				if db.IsRecordNotFoundError(err) {
 					continue

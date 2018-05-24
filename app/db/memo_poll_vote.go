@@ -59,12 +59,19 @@ func GetMemoPollVote(txHash []byte) (*MemoPollVote, error) {
 	return &memoPollVote, nil
 }
 
-func GetVotesForOptions(options [][]byte) ([]*MemoPollVote, error) {
+func GetVotesForOptions(options [][]byte, single bool) ([]*MemoPollVote, error) {
 	db, err := getDb()
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
 	}
 	var memoPollVotes []*MemoPollVote
+	if single {
+		var joinSql = "JOIN (" +
+			"SELECT MIN(id) AS id " +
+			"FROM memo_poll_votes " +
+			"GROUP BY pk_hash) AS uids ON (memo_poll_votes.id = uids.id)"
+		db = db.Joins(joinSql)
+	}
 	result := db.
 		Where("option_tx_hash IN (?)", options).
 		Find(&memoPollVotes)

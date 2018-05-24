@@ -28,6 +28,7 @@
         });
         $voteShowForm.click(function (e) {
             e.preventDefault();
+            hideVotes();
             $form.removeClass("hidden");
             $results.addClass("hidden");
         });
@@ -163,13 +164,11 @@
             $showVotesButton.click(function(e) {
                 e.preventDefault();
                 if (!$votes.hasClass("hidden")) {
-                    $votes.addClass("hidden");
-                    $showVotesButton.html("Show Votes");
+                    hideVotes();
                     return;
                 }
                 if ($votes.html().length > 0) {
-                    $votes.removeClass("hidden");
-                    $showVotesButton.html("Hide Votes");
+                    showVotes();
                     return;
                 }
                 $.ajax({
@@ -178,8 +177,7 @@
                         txHash: postTxHash
                     },
                     success: function (html) {
-                        $votes.removeClass("hidden");
-                        $showVotesButton.html("Hide Votes");
+                        showVotes();
                         $votes.html(html);
                     },
                     error: function () {
@@ -187,6 +185,14 @@
                     }
                 });
             });
+        }
+        function showVotes() {
+            $votes.removeClass("hidden");
+            $showVotesButton.html("Hide Votes");
+        }
+        function hideVotes() {
+            $votes.addClass("hidden");
+            $showVotesButton.html("Show Votes");
         }
     };
 })();

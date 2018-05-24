@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/memo"
 	"github.com/memocash/memo/app/db"
 )
 
@@ -27,7 +28,8 @@ func GetVotesForTxHash(txHash []byte) ([]*Vote, error) {
 	for _, option := range question.Options {
 		optionHashes = append(optionHashes, option.TxHash)
 	}
-	dbVotes, err := db.GetVotesForOptions(optionHashes)
+	single := question.PollType == memo.CodePollSingle
+	dbVotes, err := db.GetVotesForOptions(optionHashes, single)
 	if err != nil {
 		if db.IsRecordNotFoundError(err) {
 			return []*Vote{}, nil

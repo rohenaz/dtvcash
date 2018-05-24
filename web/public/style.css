@@ -666,6 +666,14 @@ table.poll-results td:nth-of-type(2) {
     font-style: italic;
     font-size: 14px;
 }
+.poll .votes {
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    background: #fafafa;
+}
+.poll .votes .table {
+    margin: 0;
+}
 
 
 body.dark #new-poll-form .glyphicon-remove {
