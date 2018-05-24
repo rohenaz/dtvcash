@@ -525,7 +525,8 @@ func AttachPollsToPosts(posts []*Post) error {
 				continue
 			}
 			post.Poll = &Poll{
-				Question: question,
+				Question:   question,
+				SelfPkHash: post.SelfPkHash,
 			}
 			var optionHashes [][]byte
 			for _, option := range question.Options {

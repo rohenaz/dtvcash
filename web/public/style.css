@@ -674,6 +674,11 @@ table.poll-results td:nth-of-type(2) {
 .poll .votes .table {
     margin: 0;
 }
+.poll .note {
+    font-weight: bold;
+    font-style: italic;
+    margin-left: 10px;
+}
 
 
 body.dark #new-poll-form .glyphicon-remove {

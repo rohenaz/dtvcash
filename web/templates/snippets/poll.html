@@ -2,17 +2,25 @@
     <div class="results">
         <table class="poll-results">
             <tbody>
+            {{ $isMulti := .Post.Poll.IsMulti }}
             {{ range .Post.Poll.GetOptions }}
             <tr>
                 <td>{{ .Name }}</td>
-                <td>{{ .Votes }} votes, {{ .Satoshis }} satoshis</td>
+                <td>{{ .Votes }} votes
+                {{- if $isMulti }}
+                    ({{ .UniqueVotes }} unique)
+                {{- end -}}
+                    , {{ .Satoshis }} satoshis
+                </td>
             </tr>
             {{ end }}
             </tbody>
         </table>
         <br/>
         <p>
+        {{ if .Post.Poll.CanVote }}
             <a href="#" class="btn btn-success vote-show-form">Vote</a>
+        {{ end }}
             <a href="#" class="btn btn-default show-votes">Show Votes</a>
             <span class="creating hidden btn btn-warning">Creating...</span>
             <span class="broadcasting hidden btn btn-warning">Broadcasting...</span>
@@ -52,12 +60,17 @@
             <div class="col-sm-12">
                 <input class="btn btn-primary" type="submit" value="Vote"/>
                 <a class="btn btn-default vote-cancel" href="#">Cancel</a>
+            {{ if .Post.Poll.IsMulti }}
+                <span class="note">Note: this poll allows voting multiple times</span>
+            {{ else }}
+                <span class="note">Note: this poll only allows voting once</span>
+            {{ end }}
             </div>
         </div>
     </form>
 </div>
 <script type="text/javascript">
-    (function() {
+    (function () {
         MemoApp.Form.NewVote($("#poll-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}", {{ .Threaded }});
     })();
 </script>
