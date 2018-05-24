@@ -24,7 +24,7 @@
             </span>
         {{ end }}
         {{ if .Post.Memo.ParentTxHash }}
-            replied to <a href="post/{{ .Post.Memo.GetParentTransactionHashString }}">post</a> at
+            replied to <a href="post/{{ .Post.Memo.GetParentTransactionHashString }}">post</a>
         {{ else }}
             {{ T "posted" }}
         {{ end }}

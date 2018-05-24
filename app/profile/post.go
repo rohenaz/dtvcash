@@ -122,11 +122,11 @@ func (p Post) GetTimeString(timezone string) string {
 }
 
 func (p Post) GetTimeAgo() string {
-	if p.Memo.Block != nil {
+	if p.Memo.Block != nil && p.Memo.Block.Timestamp.Before(p.Memo.CreatedAt) {
 		ts := p.Memo.Block.Timestamp
 		return util.GetTimeAgo(ts)
 	} else {
-		return "probably in the last 10 minutes"
+		return util.GetTimeAgo(p.Memo.CreatedAt)
 	}
 }
 

@@ -30,7 +30,7 @@ func (n NewFollowerNotification) GetMessage() string {
 }
 
 func (n NewFollowerNotification) GetTime() time.Time {
-	if n.Follow.Block != nil {
+	if n.Follow.Block != nil && n.Follow.Block.Timestamp.Before(n.Follow.CreatedAt) {
 		return n.Follow.Block.Timestamp
 	} else {
 		return n.Follow.CreatedAt
