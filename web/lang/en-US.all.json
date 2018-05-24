@@ -171,6 +171,10 @@
     "translation": "posted at"
   },
   {
+    "id": "posted",
+    "translation": "posted"
+  },
+  {
     "id": "view_on_block_explorer",
     "translation": "View on Block Explorer"
   },
