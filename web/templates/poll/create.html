@@ -1,51 +1,51 @@
 {{ template "snippets/header.html" . }}
 
 <div class="col-md-8 col-md-offset-2">
-    <h2 class="center">New Poll</h2>
+    <h2 class="center">{{ T "new_poll" | Title }}</h2>
     <form class="form-horizontal" id="new-poll-form" method="post">
         <div class="form-group row">
-            <label for="poll-type" class="col-sm-3 col-form-label">{{ T "Poll Type" }}</label>
+            <label for="poll-type" class="col-sm-3 col-form-label">{{ T "type" | Title }}</label>
             <div class="col-sm-9">
                 <select id="poll-type" name="poll-type" class="form-control">
-                    <option value="one">Single choice poll</option>
-                    <option value="any">Multi-select poll</option>
+                    <option value="one">{{ T "select_one_option" }}</option>
+                    <option value="any">{{ T "select_multiple_options" }}</option>
                     <!--<option value="rank" disabled>Rank choices (not yet implemented)</option>-->
                 </select>
             </div>
         </div>
         <div class="form-group row">
-            <label for="question" class="col-sm-3 col-form-label">{{ T "Question" }}
+            <label for="question" class="col-sm-3 col-form-label">{{ T "question" | Title }}
                 <span class="question-byte-count byte-count"></span>
             </label>
             <div class="col-sm-9">
-            <textarea id="question" type="text" name="question" class="form-control" placeholder="Question"
+            <textarea id="question" type="text" name="question" class="form-control" placeholder="{{ T "question" | Title }}"
                       required></textarea>
             </div>
         </div>
-        <h3 class="center">Options</h3>
+        <h3 class="center">{{ T "option" 2 | Title }}</h3>
         <div id="options">
             <div id="option-1" class="form-group row">
                 <label for="input-option-1" class="col-sm-3 col-form-label">
-                    Option
+                {{ T "option" 1 | Title }}
                     <span class="option-byte-count byte-count"></span>
                     <a href="#" class="remove-option" data-option-id="option-1" tabindex="-1">
                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                     </a>
                 </label>
                 <div class="col-sm-9">
-                    <input id="input-option-1" type="text" name="option" class="form-control" placeholder="Option"/>
+                    <input id="input-option-1" type="text" name="option" class="form-control" placeholder="{{ T "option" 1 | Title }}"/>
                 </div>
             </div>
         </div>
         <div class="form-group row">
             <div class="col-sm-9 col-sm-offset-3">
-                <input id="add-option" class="btn btn-sm btn-default" type="button" value="Add option"/>
+                <input id="add-option" class="btn btn-sm btn-default" type="button" value="{{ T "add_option" | Title }}"/>
             </div>
         </div>
         <br/>
         <div class="form-group row">
             <div class="col-sm-9 col-sm-offset-3">
-                <input class="btn btn-primary" type="submit" value="{{ T "Create Poll" }}">
+                <input class="btn btn-primary" type="submit" value="{{ T "create_poll" | Title }}">
             </div>
         </div>
     </form>

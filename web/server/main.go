@@ -19,6 +19,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 )
 
 var UseMinJS bool
@@ -109,6 +110,7 @@ func preHandler(r *web.Response) {
 
 	r.SetFuncMap(map[string]interface{}{
 		"T": i18n.MustTfunc(lang),
+		"Title": strings.Title,
 	})
 }
 
