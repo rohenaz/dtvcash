@@ -61,7 +61,7 @@
   },
   {
     "id": "balance",
-    "translation": "Balance"
+    "translation": "Solde"
   },
   {
     "id": "profile",
@@ -73,7 +73,7 @@
   },
   {
     "id": "view_your_profile",
-    "translation": "View Your Profile"
+    "translation": "Voir mon Profil"
   },
   {
     "id": "set_name",
@@ -85,11 +85,11 @@
   },
   {
     "id": "export_key",
-    "translation": "Export Key"
+    "translation": "Exporter ma clé"
   },
   {
     "id": "change_password",
-    "translation": "Change Password"
+    "translation": "Changer de Mot de Passe"
   },
   {
     "id": "reply",
@@ -132,15 +132,15 @@
   },
   {
     "id": "last_24_hours",
-    "translation": "Last 24 hours"
+    "translation": "Dernières 24 heures"
   },
   {
     "id": "last_7_days",
-    "translation": "Last 7 days"
+    "translation": "Cette semaine"
   },
   {
     "id": "all_time",
-    "translation": "All time"
+    "translation": "Tout"
   },
   {
     "id": "message",
@@ -172,15 +172,15 @@
   },
   {
     "id": "view_on_block_explorer",
-    "translation": "View on Block Explorer"
+    "translation": "Voir sur le Block Explorer"
   },
   {
     "id": "view_address_on_block_explorer",
-    "translation": "View Address on Block Explorer"
+    "translation": "Voir l'Adresse sur le Block Explorer"
   },
   {
     "id": "view_name_on_block_explorer",
-    "translation": "View Name on Block Explorer"
+    "translation": "Voir le Nom sur le Block Explorer"
   },
   {
     "id": "page",
@@ -211,11 +211,11 @@
   },
   {
     "id": "next_day",
-    "translation": "Next Day"
+    "translation": "Jour Suivant"
   },
   {
     "id": "previous_day",
-    "translation": "Previous Day"
+    "translation": "Jour Précédent"
   },
   {
     "id": "Topic",
@@ -231,7 +231,7 @@
   },
   {
     "id": "Existing_Topics",
-    "translation": "Existing Topics"
+    "translation": "Topics Existants"
   },
   {
     "id": "Create_new_topic",
@@ -251,7 +251,7 @@
   },
   {
     "id": "Forget_password",
-    "translation": "Uncache password"
+    "translation": "Enlever mon mot de passe du cache"
   },
   {
     "id": "Names_set",
