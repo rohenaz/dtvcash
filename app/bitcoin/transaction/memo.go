@@ -104,7 +104,11 @@ func SaveMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) erro
 	case memo.CodePollVote:
 		err = saveMemoPollVote(txn, out, blockId, inputAddress, parentHash)
 		if err != nil {
-			return jerr.Get("error saving memo poll option", err)
+			return jerr.Get("error saving memo poll vote", err)
+		}
+		err = saveMemoVotePost(txn, out, blockId, inputAddress, parentHash)
+		if err != nil {
+			return jerr.Get("error saving memo poll vote post", err)
 		}
 	}
 	return nil
@@ -641,6 +645,53 @@ func saveMemoPollVote(txn *db.Transaction, out *db.TransactionOut, blockId uint,
 		BlockId:      blockId,
 	}
 	err = memoPollVote.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_post for poll vote", err)
+	}
+	return nil
+}
+
+func saveMemoVotePost(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+	memoPost, err := db.GetMemoPost(txn.Hash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return jerr.Get("error getting memo_post for poll vote", err)
+	}
+	if memoPost != nil {
+		if memoPost.BlockId != 0 || blockId == 0 {
+			return nil
+		}
+		memoPost.BlockId = blockId
+		err = memoPost.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_post for poll vote", err)
+		}
+		return nil
+	}
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from poll vote", err)
+	}
+	if len(pushData) < 2 {
+		return jerr.Newf("invalid poll vote, incorrect push data (%d)", len(pushData))
+	}
+	var message string
+	if len(pushData) == 3 {
+		message = string(pushData[2])
+	}
+	if message == "" {
+		return nil
+	}
+	memoPost = &db.MemoPost{
+		TxHash:     txn.Hash,
+		PkHash:     inputAddress.ScriptAddress(),
+		PkScript:   out.PkScript,
+		Message:    html_parser.EscapeWithEmojis(message),
+		ParentHash: parentHash,
+		Address:    inputAddress.EncodeAddress(),
+		BlockId:    blockId,
+		IsVote:     true,
+	}
+	err = memoPost.Save()
 	if err != nil {
 		return jerr.Get("error saving memo_post for poll vote", err)
 	}

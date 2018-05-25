@@ -25,6 +25,8 @@
         {{ end }}
         {{ if .Post.Memo.ParentTxHash }}
             replied to <a href="post/{{ .Post.Memo.GetParentTransactionHashString }}">post</a>
+        {{ else if .Post.Memo.IsVote }}
+            voted in <a href="post/{{ .Post.VoteQuestion.GetTransactionHashString }}">poll</a>
         {{ else }}
             {{ T "posted" }}
         {{ end }}
@@ -44,6 +46,12 @@
         <a href="post/{{ .Post.Parent.Memo.GetTransactionHashString }}">{{ .Post.Parent.Name }}'s
             post</a>
         <p>{{ .Post.Parent.GetMessage }}</p>
+    </div>
+{{ end }}
+{{ if .Post.Memo.IsVote }}
+    <div class="reply vote">
+        <p>{{ .Post.VoteQuestion.Message }}</p>
+        <p>{{ .Post.VoteOption.Option }}</p>
     </div>
 {{ end }}
     <p class="message">

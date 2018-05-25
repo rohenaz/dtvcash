@@ -180,6 +180,15 @@ a.disabled {
 .post .reply p {
     margin: 12px 0 5px;
 }
+.post .reply.vote p {
+    margin: 5px 0 5px;
+}
+.post .reply.vote p:nth-of-type(1) {
+    font-style: italic;
+}
+.post .reply.vote p:nth-of-type(2) {
+    font-weight: bold;
+}
 .post .name {
     margin: 5px 0;
     line-height: 22px;

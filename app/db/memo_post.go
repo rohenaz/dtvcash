@@ -30,6 +30,7 @@ type MemoPost struct {
 	Topic        string      `gorm:"index:tag;size:500"`
 	Message      string      `gorm:"size:500"`
 	IsPoll       bool
+	IsVote       bool
 	BlockId      uint
 	Block        *Block
 	CreatedAt    time.Time
@@ -360,13 +361,13 @@ func GetRankedPosts(offset uint) ([]*MemoPost, error) {
 		return nil, jerr.Get("error getting db", err)
 	}
 	var coalescedTimestamp = "IF(COALESCE(blocks.timestamp, memo_posts.created_at) < memo_posts.created_at, blocks.timestamp, memo_posts.created_at)"
-	var scoreQuery = fmt.Sprintf("(COUNT(memo_likes.id)*%d)/POW(TIMESTAMPDIFF(MINUTE, "+coalescedTimestamp+", NOW()),%0.2f)", RankCountBoost, RankGravity)
+	var scoreQuery = fmt.Sprintf("(COUNT(memo_likes.id)*%d)/POW(TIMESTAMPDIFF(MINUTE, "+coalescedTimestamp+", NOW())+2,%0.2f)", RankCountBoost, RankGravity)
 
 	var memoPosts []*MemoPost
 	result := db.
 		Joins("LEFT OUTER JOIN memo_likes ON (memo_posts.tx_hash = memo_likes.like_tx_hash)").
 		Joins("LEFT OUTER JOIN blocks ON (memo_posts.block_id = blocks.id)").
-		Where(coalescedTimestamp+" > DATE_SUB(NOW(), INTERVAL 3 DAY)").
+		Where(coalescedTimestamp + " > DATE_SUB(NOW(), INTERVAL 3 DAY)").
 		Group("memo_posts.tx_hash").
 		Order(scoreQuery + " DESC").
 		Limit(25).

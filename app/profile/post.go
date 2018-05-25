@@ -13,17 +13,19 @@ import (
 )
 
 type Post struct {
-	Name       string
-	Memo       *db.MemoPost
-	Parent     *Post
-	Likes      []*Like
-	HasLiked   bool
-	SelfPkHash []byte
-	ReplyCount uint
-	Replies    []*Post
-	Reputation *Reputation
-	ShowMedia  bool
-	Poll       *Poll
+	Name         string
+	Memo         *db.MemoPost
+	Parent       *Post
+	Likes        []*Like
+	HasLiked     bool
+	SelfPkHash   []byte
+	ReplyCount   uint
+	Replies      []*Post
+	Reputation   *Reputation
+	ShowMedia    bool
+	Poll         *Poll
+	VoteQuestion *db.MemoPost
+	VoteOption   *db.MemoPollOption
 }
 
 func (p Post) IsSelf() bool {
@@ -582,6 +584,22 @@ func AttachPollsToPosts(posts []*Post) error {
 				return jerr.Get("error getting votes for options", err)
 			}
 			post.Poll.Votes = votes
+		}
+		if post.Memo.IsVote {
+			memoPollVote, err := db.GetMemoPollVote(post.Memo.TxHash)
+			if err != nil {
+				return jerr.Get("error getting memo poll vote", err)
+			}
+			memoPollOption, err := db.GetMemoPollOption(memoPollVote.OptionTxHash)
+			if err != nil {
+				return jerr.Get("error getting memo poll option", err)
+			}
+			post.VoteOption = memoPollOption
+			memoPost, err := db.GetMemoPost(memoPollOption.PollTxHash)
+			if err != nil {
+				return jerr.Get("error getting memo poll question post", err)
+			}
+			post.VoteQuestion = memoPost
 		}
 	}
 	return nil
