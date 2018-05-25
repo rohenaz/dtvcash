@@ -352,7 +352,7 @@ func GetTopPosts(offset uint, timeStart time.Time, timeEnd time.Time) ([]*MemoPo
 
 const (
 	RankCountBoost int     = 60
-	RankGravity    float32 = 0.6
+	RankGravity    float32 = 0.85
 )
 
 func GetRankedPosts(offset uint) ([]*MemoPost, error) {
@@ -361,7 +361,7 @@ func GetRankedPosts(offset uint) ([]*MemoPost, error) {
 		return nil, jerr.Get("error getting db", err)
 	}
 	var coalescedTimestamp = "IF(COALESCE(blocks.timestamp, memo_posts.created_at) < memo_posts.created_at, blocks.timestamp, memo_posts.created_at)"
-	var scoreQuery = fmt.Sprintf("(COUNT(memo_likes.id)*%d)/POW(TIMESTAMPDIFF(MINUTE, "+coalescedTimestamp+", NOW())+2,%0.2f)", RankCountBoost, RankGravity)
+	var scoreQuery = fmt.Sprintf("(COUNT(DISTINCT memo_likes.pk_hash)*%d)/POW(TIMESTAMPDIFF(MINUTE, "+coalescedTimestamp+", NOW())+2,%0.2f)", RankCountBoost, RankGravity)
 
 	var memoPosts []*MemoPost
 	result := db.
