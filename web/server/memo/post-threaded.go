@@ -78,6 +78,10 @@ func getPostWithThreads(r *web.Response, txHashString string, offset int) (*prof
 	if err != nil {
 		return nil, jerr.Get("error getting post", err)
 	}
+	err = profile.AttachParentToPosts([]*profile.Post{post})
+	if err != nil {
+		return nil, jerr.Get("error attaching parent to post", err)
+	}
 	allPosts := []*profile.Post{post}
 	needsReplies := post.Replies
 	for len(needsReplies) != 0 {

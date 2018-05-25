@@ -13,6 +13,15 @@ type Vote struct {
 	Option  string
 	Message string
 	Tip     int64
+	Vote    *db.MemoPollVote
+}
+
+func (v Vote) GetProfileHashString() string {
+	return v.Vote.GetAddressString()
+}
+
+func (v Vote) GetTxHashString() string {
+	return v.Vote.GetTransactionHashString()
 }
 
 func GetVotesForTxHash(txHash []byte) ([]*Vote, error) {
@@ -66,6 +75,7 @@ func GetVotesForTxHash(txHash []byte) ([]*Vote, error) {
 			Message: dbVote.Message,
 			Tip:     dbVote.TipAmount,
 			Option:  optionString,
+			Vote:    dbVote,
 		})
 	}
 	return votes, nil

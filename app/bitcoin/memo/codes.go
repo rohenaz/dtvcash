@@ -43,5 +43,8 @@ func GetAllCodes() [][]byte {
 		{CodePrefix, CodeSetProfilePicture},
 		{CodePrefix, CodeRepost},
 		{CodePrefix, CodeTopicMessage},
+		{CodePrefix, CodePollCreate},
+		{CodePrefix, CodePollOption},
+		{CodePrefix, CodePollVote},
 	}
 }

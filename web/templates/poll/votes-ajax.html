@@ -11,10 +11,10 @@
         <tbody>
         {{ range .Votes }}
         <tr>
-            <td>{{ .Name }}</td>
+            <td><a href="profile/{{ .GetProfileHashString }}">{{ .Name }}</a></td>
             <td>{{ .Option }}</td>
             <td>{{ .Tip }}</td>
-            <td>{{ .Message }}</td>
+            <td>{{ if .Message }}<a href="post/{{ .GetTxHashString }}">{{ .Message }}</a>{{ end }}</td>
         </tr>
         {{ end }}
         </tbody>
