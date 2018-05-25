@@ -73,6 +73,14 @@ func GetVotesForOptions(questionTxHash []byte, single bool) ([]*MemoPollVote, er
 			"WHERE memo_poll_options.poll_tx_hash = ? " +
 			"GROUP BY memo_poll_votes.pk_hash) AS uids ON (memo_poll_votes.id = uids.id)"
 		db = db.Joins(joinSql, questionTxHash)
+	} else {
+		var joinSql = "JOIN (" +
+			"SELECT memo_poll_votes.id AS id " +
+			"FROM memo_poll_votes " +
+			"JOIN memo_poll_options ON (memo_poll_votes.option_tx_hash = memo_poll_options.tx_hash) " +
+			"WHERE memo_poll_options.poll_tx_hash = ? " +
+			") AS uids ON (memo_poll_votes.id = uids.id)"
+		db = db.Joins(joinSql, questionTxHash)
 	}
 	result := db.
 		Order("created_at DESC").
