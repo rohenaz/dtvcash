@@ -32,7 +32,8 @@
         {{ else }}
             {{ T "posted" }}
         {{ end }}
-            <a title="{{ .Post.GetTimeString .TimeZone }}" href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeAgo }}</a>
+            &middot; <a title="{{ .Post.GetTimeString .TimeZone }}"
+                        href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeAgo }}</a>
         {{- if .Post.Memo.Topic }}
             in <a href="topic/{{ .Post.Memo.GetUrlEncodedTopic }}">{{ .Post.Memo.Topic }}</a>
         {{ end }}
@@ -67,7 +68,7 @@
     <p>
     {{ len .Post.Likes }} likes -
         <a href="#" id="show-hide-likes-{{ .Post.Memo.GetTransactionHashString }}">Show</a>
-        (tip: {{ formatBigInt .Post.GetTotalTip }} satoshis), {{ .Post.ReplyCount }} {{ T "replies" }}
+        (tip: {{ formatBigInt .Post.GetTotalTip }} satoshis) &middot; {{ .Post.ReplyCount }} {{ T "replies" }}
     </p>
 
     <div id="likes-{{ .Post.Memo.GetTransactionHashString }}" style="display:none">
@@ -98,7 +99,7 @@
     <p class="likes">
         <i>
             <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ len .Post.Likes }} {{ T "likes" }}</a>
-            <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.ReplyCount }} {{ T "replies" }}</a>
+            &middot; <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.ReplyCount }} {{ T "replies" }}</a>
         </i>
     </p>
 {{ end }}
