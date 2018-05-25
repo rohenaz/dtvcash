@@ -158,9 +158,6 @@ a.disabled {
     padding: 10px 10px 0 10px;
     margin-bottom: 15px;
     word-wrap: break-word;
-    border: 1px solid #ccc;
-    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
-    border-radius: 4px;
 }
 .post .name .profile {
     font-weight: bold;
@@ -411,6 +408,9 @@ span.page {
 .topic-post .post-wrapper {
     float: right;
     width: 100%;
+}
+.post-header {
+    border-bottom: 1px solid #eee
 }
 .topic-post .post-header,
 .topic-post .post-header p {
