@@ -350,8 +350,8 @@ func GetTopPosts(offset uint, timeStart time.Time, timeEnd time.Time) ([]*MemoPo
 }
 
 const (
-	RankCountBoost int     = 500
-	RankGravity    float32 = 1
+	RankCountBoost int     = 60
+	RankGravity    float32 = 0.6
 )
 
 func GetRankedPosts(offset uint) ([]*MemoPost, error) {
