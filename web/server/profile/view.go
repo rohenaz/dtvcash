@@ -51,6 +51,11 @@ var viewRoute = web.Route{
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
 		}
+		err = profile.AttachPollsToPosts(posts)
+		if err != nil {
+			r.Error(jerr.Get("error attaching polls to posts", err), http.StatusInternalServerError)
+			return
+		}
 		err = profile.SetShowMediaForPosts(posts, userId)
 		if err != nil {
 			r.Error(jerr.Get("error setting show media for posts", err), http.StatusInternalServerError)

@@ -1,6 +1,7 @@
 {{ $page := .Page }}
 <br/>
 <p class="posts-nav">
+    <a {{ if eq $page "ranked" }}class="sel"{{ end }} href="posts/ranked">{{ T "Ranked" }}</a>
     <a {{ if eq $page "top" }}class="sel"{{ end }} href="posts/top">{{ T "top" }}</a>
     {{ with .Username }}
     <a {{ if eq $page "personalized" }}class="sel"{{ end }} href="posts/personalized?range=24h">{{ T "personalized" }}</a>

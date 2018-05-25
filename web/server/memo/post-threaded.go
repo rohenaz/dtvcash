@@ -104,6 +104,10 @@ func getPostWithThreads(r *web.Response, txHashString string, offset int) (*prof
 			return nil, jerr.Get("error attaching reputation to posts", err)
 		}
 	}
+	err = profile.AttachPollsToPosts(allPosts)
+	if err != nil {
+		return nil, jerr.Get("error attaching polls to posts", err)
+	}
 	err = profile.SetShowMediaForPosts(allPosts, userId)
 	if err != nil {
 		return nil, jerr.Get("error setting show media for posts", err)

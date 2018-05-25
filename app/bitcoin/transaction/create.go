@@ -27,9 +27,13 @@ const (
 	SpendOutputTypeMemoReply
 	SpendOutputTypeMemoSetProfile
 	SpendOutputTypeMemoTopicMessage
+	SpendOutputTypeMemoPollQuestionSingle
+	SpendOutputTypeMemoPollQuestionMulti
+	SpendOutputTypeMemoPollOption
+	SpendOutputTypeMemoPollVote
 )
 
-func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutputs []SpendOutput) (*wire.MsgTx, error) {
+func Create(spendOuts []*db.TransactionOut, privateKey *wallet.PrivateKey, spendOutputs []SpendOutput) (*wire.MsgTx, error) {
 	var txOuts []*wire.TxOut
 	for _, spendOutput := range spendOutputs {
 		switch spendOutput.Type {
@@ -191,23 +195,101 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 			}
 			fmt.Printf("pkScript: %x\n", pkScript)
 			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
+		case SpendOutputTypeMemoPollQuestionSingle, SpendOutputTypeMemoPollQuestionMulti:
+			var question = spendOutput.Data
+			var optionCount = spendOutput.RefData
+			if len(question) > memo.MaxPollQuestionSize {
+				return nil, jerr.New("question size too large")
+			}
+			if len(question) == 0 {
+				return nil, jerr.New("empty question")
+			}
+			if len(optionCount) == 0 {
+				return nil, jerr.New("empty option count")
+			}
+			var pollType byte
+			switch spendOutput.Type {
+			case SpendOutputTypeMemoPollQuestionSingle:
+				pollType = memo.CodePollTypeSingle
+			case SpendOutputTypeMemoPollQuestionMulti:
+				pollType = memo.CodePollTypeMulti
+			default:
+				return nil, jerr.New("invalid poll type")
+			}
+			pkScript, err := txscript.NewScriptBuilder().
+				AddOp(txscript.OP_RETURN).
+				AddData([]byte{memo.CodePrefix, memo.CodePollCreate}).
+				AddData([]byte{pollType}).
+				AddData(optionCount).
+				AddData(question).
+				Script()
+			if err != nil {
+				return nil, jerr.Get("error creating memo question output", err)
+			}
+			fmt.Printf("pkScript: %x\n", pkScript)
+			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
+		case SpendOutputTypeMemoPollOption:
+			var option = spendOutput.Data
+			var parentTxHash = spendOutput.RefData
+			if len(option) > memo.MaxPollOptionSize {
+				return nil, jerr.New("option size too large")
+			}
+			if len(option) == 0 {
+				return nil, jerr.New("empty option")
+			}
+			if len(parentTxHash) != 32 {
+				return nil, jerr.Newf("parent tx hash length incorrect (expected 32, got: %d)", len(parentTxHash))
+			}
+			pkScript, err := txscript.NewScriptBuilder().
+				AddOp(txscript.OP_RETURN).
+				AddData([]byte{memo.CodePrefix, memo.CodePollOption}).
+				AddData(parentTxHash).
+				AddData(option).
+				Script()
+			if err != nil {
+				return nil, jerr.Get("error creating memo option output", err)
+			}
+			fmt.Printf("pkScript: %x\n", pkScript)
+			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
+		case SpendOutputTypeMemoPollVote:
+			if len(spendOutput.Data) != 32 {
+				return nil, jerr.New("invalid txn hash")
+			}
+			if len(spendOutput.RefData) > memo.MaxVoteCommentSize {
+				return nil, jerr.New("comment data too large")
+			}
+			pkScript, err := txscript.NewScriptBuilder().
+				AddOp(txscript.OP_RETURN).
+				AddData([]byte{memo.CodePrefix, memo.CodePollVote}).
+				AddData(spendOutput.Data).
+				AddData(spendOutput.RefData).
+				Script()
+			if err != nil {
+				return nil, jerr.Get("error creating memo poll vote output", err)
+			}
+			fmt.Printf("pkScript: %x\n", pkScript)
+			txOuts = append(txOuts, wire.NewTxOut(spendOutput.Amount, pkScript))
 		}
 	}
 
-	hash, err := chainhash.NewHash(txOut.TransactionHash)
-	if err != nil {
-		return nil, jerr.Get("error getting transaction hash", err)
+	var txIns []*wire.TxIn
+	var totalValue int64
+	for _, spendOut := range spendOuts {
+		hash, err := chainhash.NewHash(spendOut.TransactionHash)
+		if err != nil {
+			return nil, jerr.Get("error getting transaction hash", err)
+		}
+		newTxIn := wire.NewTxIn(&wire.OutPoint{
+			Hash:  *hash,
+			Index: uint32(spendOut.Index),
+		}, nil)
+		txIns = append(txIns, newTxIn)
+		totalValue += spendOut.Value
 	}
-	newTxIn := wire.NewTxIn(&wire.OutPoint{
-		Hash:  *hash,
-		Index: uint32(txOut.Index),
-	}, nil)
 
 	var tx = &wire.MsgTx{
-		Version: wire.TxVersion,
-		TxIn: []*wire.TxIn{
-			newTxIn,
-		},
+		Version:  wire.TxVersion,
+		TxIn:     txIns,
 		TxOut:    txOuts,
 		LockTime: 0,
 	}
@@ -215,17 +297,17 @@ func Create(txOut *db.TransactionOut, privateKey *wallet.PrivateKey, spendOutput
 	signature, err := txscript.SignatureScript(
 		tx,
 		0,
-		txOut.PkScript,
+		spendOuts[0].PkScript,
 		txscript.SigHashAll+wallet.SigHashForkID,
 		privateKey.GetBtcEcPrivateKey(),
 		true,
-		txOut.Value,
+		totalValue,
 	)
 
 	if err != nil {
 		return nil, jerr.Get("error signing transaction", err)
 	}
-	newTxIn.SignatureScript = signature
+	txIns[0].SignatureScript = signature
 
 	fmt.Printf("Signature: %x\n", signature)
 	writer := new(bytes.Buffer)

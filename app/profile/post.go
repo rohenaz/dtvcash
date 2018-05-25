@@ -3,8 +3,10 @@ package profile
 import (
 	"bytes"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/memo"
 	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/util"
 	"regexp"
 	"strings"
 	"time"
@@ -21,6 +23,7 @@ type Post struct {
 	Replies    []*Post
 	Reputation *Reputation
 	ShowMedia  bool
+	Poll       *Poll
 }
 
 func (p Post) IsSelf() bool {
@@ -51,6 +54,17 @@ func (p Post) GetMessage() string {
 	}
 	msg = addLinks(msg)
 	return msg
+}
+
+func (p Post) IsPoll() bool {
+	if !p.Memo.IsPoll || p.Poll == nil {
+		return false
+	}
+	numOptions := len(p.Poll.Question.Options)
+	if numOptions >= 2 && int(p.Poll.Question.NumOptions) == numOptions {
+		return true
+	}
+	return false
 }
 
 func addYoutubeVideos(msg string) string {
@@ -118,6 +132,15 @@ func (p Post) GetTimeString(timezone string) string {
 		}
 	}
 	return "Unconfirmed"
+}
+
+func (p Post) GetTimeAgo() string {
+	if p.Memo.Block != nil && p.Memo.Block.Timestamp.Before(p.Memo.CreatedAt) {
+		ts := p.Memo.Block.Timestamp
+		return util.GetTimeAgo(ts)
+	} else {
+		return util.GetTimeAgo(p.Memo.CreatedAt)
+	}
 }
 
 func (p Post) GetLastLikeId() uint {
@@ -336,6 +359,47 @@ func GetTopPostsNamedRange(selfPkHash []byte, offset uint, timeRange string, per
 	return GetTopPosts(selfPkHash, offset, timeStart, time.Time{}, personalized)
 }
 
+func GetRankedPosts(selfPkHash []byte, offset uint) ([]*Post, error) {
+	memoPosts, err := db.GetRankedPosts(offset)
+	if err != nil {
+		return nil, jerr.Get("error getting posts for hash", err)
+	}
+	var posts []*Post
+	for _, dbPost := range memoPosts {
+		cnt, err := db.GetPostReplyCount(dbPost.TxHash)
+		if err != nil {
+			return nil, jerr.Get("error getting post reply count", err)
+		}
+		post := &Post{
+			Memo:       dbPost,
+			SelfPkHash: selfPkHash,
+			ReplyCount: cnt,
+		}
+		posts = append(posts, post)
+	}
+	var namePkHashes [][]byte
+	for _, post := range posts {
+		for _, namePkHash := range namePkHashes {
+			if bytes.Equal(namePkHash, post.Memo.PkHash) {
+				continue
+			}
+		}
+		namePkHashes = append(namePkHashes, post.Memo.PkHash)
+	}
+	setNames, err := db.GetNamesForPkHashes(namePkHashes)
+	for _, setName := range setNames {
+		for _, post := range posts {
+			if bytes.Equal(post.Memo.PkHash, setName.PkHash) {
+				post.Name = setName.Name
+			}
+		}
+	}
+	if err != nil {
+		return nil, jerr.Get("error getting set names for pk hashes", err)
+	}
+	return posts, nil
+}
+
 func GetTopPosts(selfPkHash []byte, offset uint, timeStart time.Time, timeEnd time.Time, personalized bool) ([]*Post, error) {
 	var dbPosts []*db.MemoPost
 	var err error
@@ -485,6 +549,39 @@ func SetShowMediaForPosts(posts []*Post, userId uint) error {
 	if settings.Integrations == db.SettingIntegrationsAll {
 		for _, post := range posts {
 			post.ShowMedia = true
+		}
+	}
+	return nil
+}
+
+func AttachPollsToPosts(posts []*Post) error {
+	for _, post := range posts {
+		if post.Memo.IsPoll {
+			question, err := db.GetMemoPollQuestion(post.Memo.TxHash)
+			if err != nil {
+				return jerr.Get("error getting memo poll question", err)
+			}
+			numOptions := len(question.Options)
+			if numOptions < 2 || int(question.NumOptions) != numOptions {
+				continue
+			}
+			post.Poll = &Poll{
+				Question:   question,
+				SelfPkHash: post.SelfPkHash,
+			}
+			var optionHashes [][]byte
+			for _, option := range question.Options {
+				optionHashes = append(optionHashes, option.TxHash)
+			}
+			single := question.PollType == memo.CodePollTypeSingle
+			votes, err := db.GetVotesForOptions(optionHashes, single)
+			if err != nil {
+				if db.IsRecordNotFoundError(err) {
+					continue
+				}
+				return jerr.Get("error getting votes for options", err)
+			}
+			post.Poll.Votes = votes
 		}
 	}
 	return nil

@@ -1,0 +1,77 @@
+<div id="poll-{{ .Post.Memo.GetTransactionHashString }}" class="poll">
+    <div class="results">
+        <table class="poll-results table table-condensed">
+            <tbody>
+            {{ $isMulti := .Post.Poll.IsMulti }}
+            {{ range .Post.Poll.GetOptions }}
+            <tr>
+                <td>{{ .Name }}</td>
+                <td>{{ .Votes }} votes
+                {{- if $isMulti }}
+                    ({{ .UniqueVotes }} unique)
+                {{- end -}}
+                    , {{ .Satoshis }} satoshis
+                </td>
+            </tr>
+            {{ end }}
+            </tbody>
+        </table>
+        <p>
+        {{ if (and .Post.Poll.CanVote .Post.IsLoggedIn) }}
+            <a href="#" class="btn btn-success vote-show-form">Vote</a>
+        {{ end }}
+        {{ if .Post.Poll.Votes }}
+            <a href="#" class="btn btn-default show-votes">Show Votes</a>
+        {{ end }}
+            <span class="creating hidden btn btn-warning">Creating...</span>
+            <span class="broadcasting hidden btn btn-warning">Broadcasting...</span>
+        </p>
+    </div>
+    <div class="votes hidden"></div>
+    <form class="form-horizontal hidden">
+        <div class="form-group row">
+        {{ range .Post.Poll.Question.Options }}
+            <div class="col-sm-12">
+                <div class="checkbox">
+                    <input id="option-{{ .Option }}" type="radio" name="option" class="form-check-input"
+                           value="{{ .Option }}"/>
+                    <label for="option-{{ .Option }}" class="form-check-label">
+                    {{ .Option }}
+                    </label>
+                </div>
+            </div>
+        {{ end }}
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <label for="tip">Tip</label>
+                <input id="tip" class="form-control" name="tip" placeholder="0"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <label for="message">
+                    Message (optional)
+                    <span class="message-byte-count byte-count"></span>
+                </label>
+                <textarea id="message" name="message" class="form-control" placeholder="Message"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <input class="btn btn-primary" type="submit" value="Vote"/>
+                <a class="btn btn-default vote-cancel" href="#">Cancel</a>
+            {{ if .Post.Poll.IsMulti }}
+                <span class="note">Note: this poll allows voting multiple times</span>
+            {{ else }}
+                <span class="note">Note: this poll only allows voting once</span>
+            {{ end }}
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    (function () {
+        MemoApp.Form.NewVote($("#poll-{{ .Post.Memo.GetTransactionHashString }}"), "{{ .Post.Memo.GetTransactionHashString }}", {{ .Threaded }});
+    })();
+</script>

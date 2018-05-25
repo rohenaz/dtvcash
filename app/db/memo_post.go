@@ -7,6 +7,7 @@ import (
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/bitcoin/script"
 	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/util"
 	"html"
 	"net/url"
 	"time"
@@ -28,6 +29,7 @@ type MemoPost struct {
 	Replies      []*MemoPost `gorm:"foreignkey:ParentTxHash"`
 	Topic        string      `gorm:"index:tag;size:500"`
 	Message      string      `gorm:"size:500"`
+	IsPoll       bool
 	BlockId      uint
 	Block        *Block
 	CreatedAt    time.Time
@@ -240,12 +242,17 @@ func GetPostsForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 	return memoPosts, nil
 }
 
-func GetUniqueMemoAPkHashes() ([][]byte, error) {
+func GetUniqueMemoAPkHashes(offset int) ([][]byte, error) {
 	db, err := getDb()
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
 	}
-	rows, err := db.Table("memo_posts").Select("DISTINCT(pk_hash)").Rows()
+	rows, err := db.
+		Table("memo_posts").
+		Select("DISTINCT(pk_hash)").
+		Limit(25).
+		Offset(offset).
+		Rows()
 	if err != nil {
 		return nil, jerr.Get("error getting distinct pk hashes", err)
 	}
@@ -342,6 +349,35 @@ func GetTopPosts(offset uint, timeStart time.Time, timeEnd time.Time) ([]*MemoPo
 	return sortedPosts, nil
 }
 
+const (
+	RankCountBoost int     = 500
+	RankGravity    float32 = 1
+)
+
+func GetRankedPosts(offset uint) ([]*MemoPost, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	var coalescedTimestamp = "IF(COALESCE(blocks.timestamp, memo_posts.created_at) < memo_posts.created_at, blocks.timestamp, memo_posts.created_at)"
+	var scoreQuery = fmt.Sprintf("(COUNT(memo_likes.id)*%d)/POW(TIMESTAMPDIFF(MINUTE, "+coalescedTimestamp+", NOW()),%0.2f)", RankCountBoost, RankGravity)
+
+	var memoPosts []*MemoPost
+	result := db.
+		Joins("LEFT OUTER JOIN memo_likes ON (memo_posts.tx_hash = memo_likes.like_tx_hash)").
+		Joins("LEFT OUTER JOIN blocks ON (memo_posts.block_id = blocks.id)").
+		Where(coalescedTimestamp+" > DATE_SUB(NOW(), INTERVAL 3 DAY)").
+		Group("memo_posts.tx_hash").
+		Order(scoreQuery + " DESC").
+		Limit(25).
+		Offset(offset).
+		Find(&memoPosts)
+	if result.Error != nil {
+		return nil, jerr.Get("error running query", result.Error)
+	}
+	return memoPosts, nil
+}
+
 func GetPersonalizedTopPosts(selfPkHash []byte, offset uint, timeStart time.Time, timeEnd time.Time) ([]*MemoPost, error) {
 	topLikeTxHashes, err := GetPersonalizedRecentTopLikedTxHashes(selfPkHash, offset, timeStart, timeEnd)
 	if err != nil {
@@ -386,6 +422,10 @@ func (t Topic) GetUrlEncoded() string {
 	return url.QueryEscape(t.Name)
 }
 
+func (t Topic) GetTimeAgo() string {
+	return util.GetTimeAgo(t.RecentTime)
+}
+
 func GetUniqueTopics(offset uint, searchString string) ([]*Topic, error) {
 	db, err := getDb()
 	if err != nil {
@@ -393,7 +433,7 @@ func GetUniqueTopics(offset uint, searchString string) ([]*Topic, error) {
 	}
 	query := db.
 		Table("memo_posts").
-		Select("topic, MAX(memo_posts.created_at) AS max_time, COUNT(*)").
+		Select("topic, MAX(IF(COALESCE(blocks.timestamp, memo_posts.created_at) < memo_posts.created_at, blocks.timestamp, memo_posts.created_at)) AS max_time, COUNT(*)").
 		Joins("LEFT OUTER JOIN blocks ON (memo_posts.block_id = blocks.id)").
 		Group("topic").
 		Order("max_time DESC").

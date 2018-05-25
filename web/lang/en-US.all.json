@@ -171,6 +171,10 @@
     "translation": "posted at"
   },
   {
+    "id": "posted",
+    "translation": "posted"
+  },
+  {
     "id": "view_on_block_explorer",
     "translation": "View on Block Explorer"
   },
@@ -264,5 +268,9 @@
   {
     "id": "Delete_Account",
     "translation": "Delete Account"
+  },
+  {
+    "id": "Guides",
+    "translation": "Guides"
   }
 ]

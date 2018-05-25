@@ -76,7 +76,7 @@ var setNameSubmitRoute = web.Route{
 			return
 		}
 
-		tx, err := transaction.Create(txOut, privateKey, []transaction.SpendOutput{{
+		tx, err := transaction.Create([]*db.TransactionOut{txOut}, privateKey, []transaction.SpendOutput{{
 			Type:    transaction.SpendOutputTypeP2PK,
 			Address: address,
 			Amount:  txOut.Value - fee,

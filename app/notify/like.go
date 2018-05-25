@@ -31,7 +31,7 @@ func (n LikeNotification) GetMessage() string {
 }
 
 func (n LikeNotification) GetTime() time.Time {
-	if n.Like.Block != nil {
+	if n.Like.Block != nil && n.Like.Block.Timestamp.Before(n.Like.CreatedAt) {
 		return n.Like.Block.Timestamp
 	} else {
 		return n.Like.CreatedAt

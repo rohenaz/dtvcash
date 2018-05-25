@@ -11,7 +11,7 @@
         <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="notifications?offset={{ .PrevOffset }}">
             &lt; {{ T "previous" }}</a>
         <span class="page">{{ T "page" }} {{ .Page }}</span>
-        <a class="{{ if lt (len .Notifications) 25 }}disabled{{ end }}" href="notifications?offset={{ .NextOffset }}">
+        <a class="{{ if eq (len .Notifications) 0 }}disabled{{ end }}" href="notifications?offset={{ .NextOffset }}">
         {{ T "next" }} &gt;</a>
     </p>
 {{ end }}
@@ -94,7 +94,7 @@
         <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="notifications?offset={{ .PrevOffset }}">
             &lt; {{ T "previous" }}</a>
         <span class="page">{{ T "page" }} {{ .Page }}</span>
-        <a class="{{ if lt (len .Notifications) 25 }}disabled{{ end }}" href="notifications?offset={{ .NextOffset }}">
+        <a class="{{ if eq (len .Notifications) 0 }}disabled{{ end }}" href="notifications?offset={{ .NextOffset }}">
         {{ T "next" }} &gt;</a>
     </p>
 {{ end }}

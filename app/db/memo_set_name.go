@@ -2,6 +2,7 @@ package db
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
 	"github.com/jchavannes/jgo/jerr"
@@ -180,6 +181,40 @@ SetNameLoop:
 		setNames = append(setNames, memoSetName)
 	}
 	return setNames, nil
+}
+
+func GetUniqueMemoAPkHashesMatchName(searchString string, offset int) ([][]byte, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	joinSelect := "JOIN (" +
+		"	SELECT MAX(id) AS id" +
+		"	FROM memo_set_names" +
+		"	GROUP BY pk_hash" +
+		") sq ON (sq.id = memo_set_names.id)"
+	rows, err := db.
+		Table("memo_set_names").
+		Select("DISTINCT(pk_hash)").
+		Joins(joinSelect).
+		Where("name LIKE ?", fmt.Sprintf("%%%s%%", searchString)).
+		Limit(25).
+		Offset(offset).
+		Rows()
+	if err != nil {
+		return nil, jerr.Get("error getting distinct pk hashes", err)
+	}
+	defer rows.Close()
+	var pkHashes [][]byte
+	for rows.Next() {
+		var pkHash []byte
+		err := rows.Scan(&pkHash)
+		if err != nil {
+			return nil, jerr.Get("error scanning row with pkHash", err)
+		}
+		pkHashes = append(pkHashes, pkHash)
+	}
+	return pkHashes, nil
 }
 
 func GetSetNamesForPkHash(pkHash []byte) ([]*MemoSetName, error) {

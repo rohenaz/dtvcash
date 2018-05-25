@@ -72,6 +72,14 @@ var protocolRoute = web.Route{
 	},
 }
 
+var guidesRoute = web.Route{
+	Pattern: res.UrlGuides,
+	Handler: func(r *web.Response) {
+		r.Helper["Title"] = "Memo - Guides"
+		r.Render()
+	},
+}
+
 var disclaimerRoute = web.Route{
 	Pattern: res.UrlDisclaimer,
 	Handler: func(r *web.Response) {
@@ -136,6 +144,10 @@ func setFeed(r *web.Response, selfPkHash []byte, userId uint) error {
 	err = profile.AttachLikesToPosts(posts)
 	if err != nil {
 		return jerr.Get("error attaching likes to posts", err)
+	}
+	err = profile.AttachPollsToPosts(posts)
+	if err != nil {
+		return jerr.Get("error attaching polls to posts", err)
 	}
 	r.Helper["PostCount"] = len(posts)
 	for i := 0; i < len(posts); i++ {

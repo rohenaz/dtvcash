@@ -32,7 +32,7 @@ h1 a img {
 iframe {
     display: block;
     width: 100%;
-    margin: 10px auto;
+    margin: 0 auto;
 }
 video {
     display: block;
@@ -162,7 +162,7 @@ a.disabled {
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
     border-radius: 4px;
 }
-.post .name a:nth-of-type(1) {
+.post .name .profile {
     font-weight: bold;
     font-size: 18px;
 }
@@ -277,7 +277,7 @@ img.identicon {
     font-size: 12px;
 }
 
-.message-byte-count.red {
+.byte-count.red {
     color: red;
 }
 .posts-nav {
@@ -309,12 +309,23 @@ span.page {
     color: #888;
 }
 
-#about h3 {
+#about h3, #guides h3 {
     font-size: 1.1em;
     font-weight: bold;
 }
+
+#guides img {
+    margin-top: 5px;
+}
+#guides li {
+    margin-bottom: 3px;
+}
+
 .reputation-tooltip {
     position: relative;
+}
+.reputation-tooltip a {
+    font-weight: bold;
 }
 .reputation-tooltip:hover > span {
     display: block;
@@ -486,16 +497,21 @@ span.page {
 #password-clear a:hover {
     text-decoration: underline;
 }
-#topic-search-form {
+.search-form {
     display: inline;
     margin-bottom: 0;
 }
-#topic-search-form label {
+.search-form label {
     min-width: unset;
     margin: 5px 0;
 }
-#topic-search-form input {
+.search-form input {
     margin: 5px 0;
+}
+@media (min-width: 768px) {
+    .search-form input[type=text] {
+        width: 250px;
+    }
 }
 a.block-link {
     display: inline-block;
@@ -613,6 +629,10 @@ table.notifications-table td.like {
 table.notifications-table td.reply {
     color: #487521;
 }
+.notifications-table a,
+.notify-post {
+    word-break: break-word;
+}
 .notify-post a {
     color: #aaa;
 }
@@ -632,6 +652,54 @@ table.notifications-table .tip {
     font-weight: bold;
 }
 
+#new-poll-form .remove-response.hidden {
+    display: none;
+}
+#new-poll-form .glyphicon-remove {
+    color: rgba(255,0,0,0.25);
+    margin-left: 5px;
+    top: 2px;
+}
+#new-poll-form .glyphicon-remove:hover {
+    color: rgba(255,0,0,1);
+    top: 2px;
+}
+table.poll-results {
+    border-bottom: 1px solid #ddd;
+}
+body.dark table.poll-results {
+    border-color: #666;
+}
+table.poll-results td {
+    padding: 5px 10px;
+}
+table.poll-results td:nth-of-type(2) {
+    font-style: italic;
+    font-size: 14px;
+}
+.poll .votes {
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    background: #fafafa;
+}
+.poll .votes .table {
+    margin: 0;
+}
+.poll .note {
+    font-weight: bold;
+    font-style: italic;
+    margin-left: 10px;
+}
+
+
+body.dark #new-poll-form .glyphicon-remove {
+    color: rgba(255,50,50,0.75);
+    margin-left: 5px;
+    top: 2px;
+}
+body.dark #new-poll-form .glyphicon-remove:hover {
+    color: rgba(255,0,0,1);
+}
 body.dark {
     background: #2b3e50;
     color: #e0e0e0;
@@ -667,6 +735,9 @@ body.dark a.btn-leave {
 }
 body.dark a {
     color: #6eb332;
+}
+body.dark a.btn {
+    color: #fff;
 }
 body.dark .pagination a {
     color: #e0e0e0;
@@ -744,4 +815,8 @@ body.dark .notify-post .reply {
 }
 body.dark .notify-post a {
     color: #888;
+}
+body.dark .poll .votes {
+    background: #374f66;
+    border-color: #3e5973;
 }
