@@ -6,6 +6,7 @@ func GetRoutes() []web.Route {
 	return []web.Route{
 		newRoute,
 		topRoute,
+		rankedRoute,
 		archiveRoute,
 		personalizedRoute,
 	}

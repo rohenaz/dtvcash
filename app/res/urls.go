@@ -75,6 +75,7 @@ const (
 const (
 	UrlPostsNew          = "/posts/new"
 	UrlPostsTop          = "/posts/top"
+	UrlPostsRanked       = "/posts/ranked"
 	UrlPostsArchive      = "/posts/archive"
 	UrlPostsPersonalized = "/posts/personalized"
 )
