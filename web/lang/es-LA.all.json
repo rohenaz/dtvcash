@@ -120,7 +120,7 @@
   },
   {
     "id": "new",
-    "translation": "Nuevo"
+    "translation": "nuevo"
   },
   {
     "id": "archive",
@@ -272,5 +272,60 @@
   {
     "id": "Guides",
     "translation": "Guías"
+  },
+  {
+    "id": "Signup",
+    "translation": "Regístrate"
+  },
+  {
+    "id": "Memo",
+    "translation": "Memo"
+  },
+  {
+    "id": "Poll",
+    "translation": "Encuesta"
+  },
+  {
+    "id": "Notifications",
+    "translation": "Notificaciones"
+  },
+  {
+    "id": "Settings",
+    "translation": "Configuraciones"
+  },
+  {
+    "id": "new_poll",
+    "translation": "nueva encuesta"
+  },
+  {
+    "id": "type",
+    "translation": "tipo"
+  },
+  {
+    "id": "select_one_option",
+    "translation": "Se puede seleccionar una opción"
+  },
+  {
+    "id": "select_multiple_options",
+    "translation": "Se pueden seleccionar muchas opciones"
+  },
+  {
+    "id": "question",
+    "translation": "pregunta"
+  },
+  {
+    "id": "option",
+    "translation": {
+      "one": "opción",
+      "other": "optiones"
+    }
+  },
+  {
+    "id": "add_option",
+    "translation": "agregar opción"
+  },
+  {
+    "id": "create_poll",
+    "translation": "crear encuesta"
   }
 ]

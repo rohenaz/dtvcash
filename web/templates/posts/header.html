@@ -6,6 +6,6 @@
     {{ with .Username }}
     <a {{ if eq $page "personalized" }}class="sel"{{ end }} href="posts/personalized?range=24h">{{ T "personalized" }}</a>
     {{ end }}
-    <a {{ if eq $page "new" }}class="sel"{{ end }} href="posts/new">{{ T "new" }}</a>
+    <a {{ if eq $page "new" }}class="sel"{{ end }} href="posts/new">{{ T "new" | Title }}</a>
     <a {{ if eq $page "archive" }}class="sel"{{ end }} href="posts/archive">{{ T "archive" }}</a>
 </p>

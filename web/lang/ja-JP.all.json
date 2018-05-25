@@ -97,7 +97,10 @@
   },
   {
     "id": "like",
-    "translation": "いいね"
+    "translation": {
+      "one": "いいね",
+      "other": "いいね"
+    }
   },
   {
     "id": "replies",
@@ -201,7 +204,10 @@
   },
   {
     "id": "follow",
-    "translation": "フォロー"
+    "translation": {
+      "one": "フォロー",
+      "other": "フォロー"
+    }
   },
   {
     "id": "unfollow",
@@ -266,5 +272,60 @@
   {
     "id": "Guides",
     "translation": "ガイド"
+  },
+  {
+    "id": "Signup",
+    "translation": "サインアップ"
+  },
+  {
+    "id": "Memo",
+    "translation": "投稿"
+  },
+  {
+    "id": "Poll",
+    "translation": "投票"
+  },
+  {
+    "id": "Notifications",
+    "translation": "通知"
+  },
+  {
+    "id": "Settings",
+    "translation": "設定"
+  },
+  {
+    "id": "new_poll",
+    "translation": "新投票"
+  },
+  {
+    "id": "type",
+    "translation": "種類"
+  },
+  {
+    "id": "select_one_option",
+    "translation": "1つのオプションを選択できます。"
+  },
+  {
+    "id": "select_multiple_options",
+    "translation": "多くのオプションを選択できます。"
+  },
+  {
+    "id": "question",
+    "translation": "質問"
+  },
+  {
+    "id": "option",
+    "translation": {
+      "one": "選択",
+      "other": "選択"
+    }
+  },
+  {
+    "id": "add_option",
+    "translation": "オプションを追加"
+  },
+  {
+    "id": "create_poll",
+    "translation": "作成する"
   }
 ]

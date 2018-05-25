@@ -97,7 +97,10 @@
   },
   {
     "id": "like",
-    "translation": "点赞"
+    "translation": {
+      "one": "点赞",
+      "other": "点赞"
+    }
   },
   {
     "id": "replies",
@@ -201,7 +204,10 @@
   },
   {
     "id": "follow",
-    "translation": "关注"
+    "translation": {
+      "one": "关注",
+      "other": "关注"
+    }
   },
   {
     "id": "unfollow",
@@ -266,5 +272,60 @@
   {
     "id": "Guides",
     "translation": "导游"
+  },
+  {
+    "id": "Signup",
+    "translation": "注册"
+  },
+  {
+    "id": "Memo",
+    "translation": "记事本"
+  },
+  {
+    "id": "Poll",
+    "translation": "轮询"
+  },
+  {
+    "id": "Notifications",
+    "translation": "通知"
+  },
+  {
+    "id": "Settings",
+    "translation": "设置"
+  },
+  {
+    "id": "new_poll",
+    "translation": "新民意调查"
+  },
+  {
+    "id": "type",
+    "translation": "类型"
+  },
+  {
+    "id": "select_one_option",
+    "translation": "一票"
+  },
+  {
+    "id": "select_multiple_options",
+    "translation": "多票"
+  },
+  {
+    "id": "question",
+    "translation": "题"
+  },
+  {
+    "id": "option",
+    "translation": {
+      "one": "选项",
+      "other": "选项"
+    }
+  },
+  {
+    "id": "add_option",
+    "translation": "添加选项"
+  },
+  {
+    "id": "create_poll",
+    "translation": "创建投票"
   }
 ]

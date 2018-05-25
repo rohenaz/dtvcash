@@ -57,7 +57,7 @@
             {{ if .Username }}
                 <li {{ if eq $nav "new" }}class="active"{{ end }}>
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ T "New" }}</a>
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ T "new" | Title }}</a>
                     <ul class="dropdown-menu dropdown-menu-left">
                         <li><a href="memo/new">{{ T "Memo" }}</a></li>
                         <li><a href="poll/create">{{ T "Poll" }}</a></li>
@@ -68,7 +68,7 @@
                 <li {{ if eq $nav "profiles" }}class="active"{{ end }}><a href="profiles">{{ T "profiles" }}</a></li>
                 <li {{ if eq $nav "topics" }}class="active"{{ end }}><a href="topics">{{ T "Topics" }}</a></li>
             {{ if not .Username }}
-                <li {{ if eq $nav "signup" }}class="active"{{ end }}><a href="signup">Signup</a></li>
+                <li {{ if eq $nav "signup" }}class="active"{{ end }}><a href="signup">{{ T "Signup" }}</a></li>
             {{ end }}
             </ul>
         {{ if .Username }}
@@ -85,7 +85,7 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li><a href="profile/{{ .UserAddress }}">{{ T "profile" }}</a></li>
-                        <li><a href="settings">Settings</a></li>
+                        <li><a href="settings">{{ T "Settings" }}</a></li>
                         <li class="divider"></li>
                         <li>
                             <a id="header-logout" href="logout">{{ T "logout" $user }}</a>
