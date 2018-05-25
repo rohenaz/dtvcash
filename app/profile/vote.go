@@ -43,12 +43,8 @@ func GetVotesForTxHash(txHash []byte) ([]*Vote, error) {
 	if numOptions < 2 || int(question.NumOptions) != numOptions {
 		return nil, jerr.Get("invalid question", err)
 	}
-	var optionHashes [][]byte
-	for _, option := range question.Options {
-		optionHashes = append(optionHashes, option.TxHash)
-	}
 	single := question.PollType == memo.CodePollTypeSingle
-	dbVotes, err := db.GetVotesForOptions(optionHashes, single)
+	dbVotes, err := db.GetVotesForOptions(question.TxHash, single)
 	if err != nil {
 		if db.IsRecordNotFoundError(err) {
 			return []*Vote{}, nil
