@@ -68,7 +68,7 @@
                 <li {{ if eq $nav "profiles" }}class="active"{{ end }}><a href="profiles">{{ T "profiles" }}</a></li>
                 <li {{ if eq $nav "topics" }}class="active"{{ end }}><a href="topics">{{ T "Topics" }}</a></li>
             {{ if not .Username }}
-                <li {{ if eq $nav "signup" }}class="active"{{ end }}><a href="signup">Signup</a></li>
+                <li {{ if eq $nav "signup" }}class="active"{{ end }}><a href="signup">{{ T "Signup" }}</a></li>
             {{ end }}
             </ul>
         {{ if .Username }}
