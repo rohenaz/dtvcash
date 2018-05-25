@@ -81,3 +81,11 @@ func GetVotesForOptions(options [][]byte, single bool) ([]*MemoPollVote, error) 
 	}
 	return memoPollVotes, nil
 }
+
+func GetCountMemoPollVote() (uint, error) {
+	cnt, err := count(&MemoPollVote{})
+	if err != nil {
+		return 0, jerr.Get("error getting total count", err)
+	}
+	return cnt, nil
+}
