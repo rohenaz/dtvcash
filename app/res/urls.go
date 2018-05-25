@@ -10,6 +10,7 @@ const (
 	UrlLoginSubmit  = "/login-submit"
 	UrlLogout       = "/logout"
 	UrlProtocol     = "/protocol"
+	UrlGuides       = "/guides"
 	UrlDisclaimer   = "/disclaimer"
 	UrlIntroducing  = "/introducing-memo"
 	UrlOpenSource   = "/open-sourcing-memo"
@@ -18,6 +19,7 @@ const (
 	UrlStats        = "/stats"
 	UrlFeed         = "/feed"
 	UrlAbout        = "/about"
+	UrlNotFound     = "/404"
 )
 
 const (
@@ -30,43 +32,50 @@ const (
 )
 
 const (
-	UrlMemoNew              = "/memo/new"
-	UrlMemoNewSubmit        = "/memo/new-submit"
-	UrlMemoSetName          = "/memo/set-name"
-	UrlMemoSetNameSubmit    = "/memo/set-name-submit"
-	UrlMemoFollow           = "/memo/follow"
-	UrlMemoFollowSubmit     = "/memo/follow-submit"
-	UrlMemoUnfollow         = "/memo/unfollow"
-	UrlMemoUnfollowSubmit   = "/memo/unfollow-submit"
-	UrlMemoPost             = "/post"
-	UrlMemoPostThreaded     = "/post-threaded"
-	UrlMemoPostThreadedAjax = "/post-threaded-ajax"
-	UrlMemoPostAjax         = "/post-ajax"
-	UrlMemoLike             = "/memo/like"
-	UrlMemoLikeSubmit       = "/memo/like-submit"
-	UrlMemoReply            = "/memo/reply"
-	UrlMemoReplySubmit      = "/memo/reply-submit"
-	UrlMemoWait             = "/memo/wait"
-	UrlMemoWaitSubmit       = "/memo/wait-submit"
-	UrlMemoSetProfile       = "/memo/set-profile"
-	UrlMemoSetProfileSubmit = "/memo/set-profile-submit"
+	UrlMemoNew                  = "/memo/new"
+	UrlMemoNewSubmit            = "/memo/new-submit"
+	UrlMemoSetName              = "/memo/set-name"
+	UrlMemoSetNameSubmit        = "/memo/set-name-submit"
+	UrlMemoFollow               = "/memo/follow"
+	UrlMemoFollowSubmit         = "/memo/follow-submit"
+	UrlMemoUnfollow             = "/memo/unfollow"
+	UrlMemoUnfollowSubmit       = "/memo/unfollow-submit"
+	UrlMemoPost                 = "/post"
+	UrlMemoPostThreaded         = "/post-threaded"
+	UrlMemoPostMoreThreadedAjax = "/post-more-threaded-ajax"
+	UrlMemoPostThreadedAjax     = "/post-threaded-ajax"
+	UrlMemoPostAjax             = "/post-ajax"
+	UrlMemoLike                 = "/memo/like"
+	UrlMemoLikeSubmit           = "/memo/like-submit"
+	UrlMemoReply                = "/memo/reply"
+	UrlMemoReplySubmit          = "/memo/reply-submit"
+	UrlMemoWait                 = "/memo/wait"
+	UrlMemoWaitSubmit           = "/memo/wait-submit"
+	UrlMemoSetProfile           = "/memo/set-profile"
+	UrlMemoSetProfileSubmit     = "/memo/set-profile-submit"
 
 	TmplMemoPost         = "/memo/post"
 	TmplMemoPostThreaded = "/memo/post-threaded"
 )
 
 const (
-	UrlProfiles         = "/profiles"
-	UrlProfileView      = "/profile"
-	UrlProfileFollowers = "/profile/followers"
-	UrlProfileFollowing = "/profile/following"
+	UrlProfiles              = "/profiles"
+	UrlProfileView           = "/profile"
+	UrlProfileFollowers      = "/profile/followers"
+	UrlProfileFollowing      = "/profile/following"
+	UrlProfileSettings       = "/settings"
+	UrlProfileSettingsSubmit = "/settings-submit"
+	UrlProfileNotifications  = "/notifications"
 
-	TmplProfiles = "/profile/all"
+	TmplProfiles             = "/profile/all"
+	TmplProfileSettings      = "/profile/settings"
+	TmplProfileNotifications = "/profile/notifications"
 )
 
 const (
 	UrlPostsNew          = "/posts/new"
 	UrlPostsTop          = "/posts/top"
+	UrlPostsRanked       = "/posts/ranked"
 	UrlPostsArchive      = "/posts/archive"
 	UrlPostsPersonalized = "/posts/personalized"
 )
@@ -80,9 +89,15 @@ const (
 	UrlTopicsMorePosts    = "/topics/more-posts"
 	UrlTopicsPostAjax     = "/topics/post-ajax"
 
-	TmplTopicView  = "/topics/view"
-	TmplTopicPost  = "/topics/post"
-	TmplTopicPosts = "/topics/posts"
+	TmplTopicView = "/topics/view"
+	TmplTopicPost = "/topics/post"
+)
+
+const (
+	UrlPollCreate       = "/poll/create"
+	UrlPollCreateSubmit = "/poll/create-submit"
+	UrlPollVoteSubmit   = "/poll/vote-submit"
+	UrlPollVotesAjax    = "/poll/votes-ajax"
 )
 
 const (

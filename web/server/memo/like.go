@@ -10,6 +10,7 @@ import (
 	"github.com/memocash/memo/app/bitcoin/memo"
 	"github.com/memocash/memo/app/bitcoin/transaction"
 	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/mutex"
 	"github.com/memocash/memo/app/profile"
 	"github.com/memocash/memo/app/res"
 	"net/http"
@@ -44,7 +45,7 @@ var likeRoute = web.Route{
 			r.SetRedirect(res.UrlNeedFunds)
 			return
 		}
-		post, err := profile.GetPostByTxHash(txHash.CloneBytes(), key.PkHash, 0)
+		post, err := profile.GetPostByTxHashWithReplies(txHash.CloneBytes(), key.PkHash, 0)
 		if err != nil {
 			r.Error(jerr.Get("error getting post", err), http.StatusInternalServerError)
 			return
@@ -52,6 +53,11 @@ var likeRoute = web.Route{
 		err = profile.AttachParentToPosts([]*profile.Post{post})
 		if err != nil {
 			r.Error(jerr.Get("error attaching parent to post", err), http.StatusInternalServerError)
+			return
+		}
+		err = profile.AttachPollsToPosts([]*profile.Post{post})
+		if err != nil {
+			r.Error(jerr.Get("error attaching polls to posts", err), http.StatusInternalServerError)
 			return
 		}
 		err = profile.AttachLikesToPosts([]*profile.Post{post})
@@ -104,7 +110,7 @@ var likeSubmitRoute = web.Route{
 
 		var tx *wire.MsgTx
 
-		var fee = int64(283 - memo.MaxPostSize + len(txHash.CloneBytes()))
+		var fee = int64(memo.MaxTxFee - memo.MaxPostSize + len(txHash.CloneBytes()))
 		tip := int64(r.Request.GetFormValueInt("tip"))
 		var minInput = fee + transaction.DustMinimumOutput + tip
 
@@ -113,19 +119,23 @@ var likeSubmitRoute = web.Route{
 			Data: txHash.CloneBytes(),
 		}}
 
+		mutex.Lock(key.PkHash)
 		txOut, err := db.GetSpendableTxOut(key.PkHash, minInput)
 		if err != nil {
-			r.Error(jerr.Get("error getting spendable tx out", err), http.StatusInternalServerError)
+			mutex.Unlock(key.PkHash)
+			r.Error(jerr.Get("error getting spendable tx out", err), http.StatusPaymentRequired)
 			return
 		}
 		remaining := txOut.Value
 
 		if tip != 0 {
 			if tip < transaction.DustMinimumOutput {
+				mutex.Unlock(key.PkHash)
 				r.Error(jerr.Get("error tip not above dust limit", err), http.StatusUnprocessableEntity)
 				return
 			}
 			if tip > 1e8 {
+				mutex.Unlock(key.PkHash)
 				r.Error(jerr.Get("error trying to tip too much", err), http.StatusUnprocessableEntity)
 				return
 			}
@@ -136,18 +146,20 @@ var likeSubmitRoute = web.Route{
 			})
 			remaining -= tip
 			if remaining < transaction.DustMinimumOutput {
+				mutex.Unlock(key.PkHash)
 				r.Error(jerr.New("not enough funds"), http.StatusUnprocessableEntity)
 				return
 			}
-			fee += 34
+			fee += memo.AdditionalOutputFee
 		}
 		transactions = append(transactions, transaction.SpendOutput{
 			Type:    transaction.SpendOutputTypeP2PK,
 			Address: userAddress,
 			Amount:  remaining - fee,
 		})
-		tx, err = transaction.Create(txOut, privateKey, transactions)
+		tx, err = transaction.Create([]*db.TransactionOut{txOut}, privateKey, transactions)
 		if err != nil {
+			mutex.Unlock(key.PkHash)
 			r.Error(jerr.Get("error creating tx", err), http.StatusInternalServerError)
 			return
 		}

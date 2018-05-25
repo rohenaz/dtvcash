@@ -1,14 +1,18 @@
 <p class="pagination">
 
-    <a class="{{ if (eq .Offset 0) }}disabled{{ end }}" href="feed?offset={{ .PrevOffset }}">< {{ T "previous" }}</a>
+    <a class="{{ if (eq .Offset 0) }}disabled{{ end }}"
+       href="feed?offset={{ .PrevOffset }}">< {{ T "previous" }}</a>
     <span class="page">{{ T "page" }} {{ .Page }}</span>
-    <a class="{{ if lt (len .Posts) 25 }}disabled{{end}}" href="feed?offset={{ .NextOffset }}">{{ T "next" }} ></a>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{end}}" href="feed?offset={{ .NextOffset }}">{{ T "next" }}
+        ></a>
 </p>
 
-{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
+{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone "UserSettings" .UserSettings }}
 
 <p class="pagination">
-    <a class="{{ if (eq .Offset 0) }}disabled{{ end }}" href="feed?offset={{ .PrevOffset }}">< {{ T "previous" }}</a>
+    <a class="{{ if (eq .Offset 0) }}disabled{{ end }}"
+       href="feed?offset={{ .PrevOffset }}">< {{ T "previous" }}</a>
     <span class="page">{{ T "page" }} {{ .Page }}</span>
-    <a class="{{ if lt (len .Posts) 25 }}disabled{{end}}" href="feed?offset={{ .NextOffset }}">{{ T "next" }} ></a>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{end}}" href="feed?offset={{ .NextOffset }}">{{ T "next" }}
+        ></a>
 </p>

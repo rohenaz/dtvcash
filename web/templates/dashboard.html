@@ -1,30 +1,43 @@
 {{ template "snippets/header.html" . }}
 
+{{ if eq .Profile.Balance 0 }}
+<h3>
+    You need some Bitcoin Cash (BCH) to get started
+</h3>
+<p>
+    <b>Step 1.</b> Copy your address below<br/>
+</p>
+<p>
+    <b>Step 2.</b> Paste your address into your bitcoin cash wallet to send yourself some funds.
+    If you don't have any BCH <a target="_blank" href="https://free.bitcoin.com">visit the bitcoin.com faucet</a> to get
+    some for free!
+</p>
+{{ end }}
+
 <br/>
 
-{{ template "snippets/profile.html" .Profile }}
-<p>
-    <a class="btn" href="profile/{{ .Profile.GetAddressString }}">{{ T "view_your_profile" }}</a>
-    <!--<a class="btn" href="memo/new">{{ T "new_memo" }}</a>-->
-    <a class="btn" href="memo/set-name">{{ T "set_name" }}</a>
-    <a class="btn" href="memo/set-profile">{{ T "set_profile" }}</a>
-    <a class="btn" href="key/export">{{ T "export_key" }}</a>
-    <a class="btn" href="key/change-password">{{ T "change_password" }}</a>
-    <a class="btn" href="key/delete-account">{{ T "Delete_Account" }}</a>
-</p>
+{{ template "snippets/profile.html" dict "Profile" .Profile "UserSettings" .UserSettings }}
 
-{{ if not .Posts }}
+<div class="dashboard-actions">
+    <a class="btn btn-default" href="profile/{{ .Profile.GetAddressString }}">{{ T "view_your_profile" }}</a>
+    <!--<a href="memo/new">{{ T "new_memo" }}</a>-->
+    <a class="btn btn-default" href="memo/set-name">{{ T "set_name" }}</a>
+    <a class="btn btn-default" href="memo/set-profile">{{ T "set_profile" }}</a>
+    <a class="btn btn-default" href="key/export">{{ T "export_key" }}</a>
+    <a class="btn btn-default" href="key/change-password">{{ T "change_password" }}</a>
+    <a class="btn btn-default" href="key/delete-account">{{ T "Delete_Account" }}</a>
+</div>
+
+{{ if and (not .Posts) (not (eq .Profile.Balance 0)) }}
 <h3>Feed Empty</h3>
 <p>Start following others to see their posts here</p>
-{{ else }}
-<h3>Feed</h3>
+{{ end }}
+
+{{ if .Posts }}
+<h3 class="center">Feed</h3>
 {{ template "snippets/feed.html" . }}
 {{ end }}
 
-{{ if eq .Profile.Balance 0 }}
-<p>
-    Send yourself some BCH to start posting.
-</p>
-{{ end }}
+<br/>
 
 {{ template "snippets/footer.html" . }}

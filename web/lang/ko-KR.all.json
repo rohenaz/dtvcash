@@ -1,0 +1,331 @@
+[
+  {
+    "id": "home",
+    "translation": ""
+  },
+  {
+    "id": "dashboard",
+    "translation": ""
+  },
+  {
+    "id": "new_memo",
+    "translation": ""
+  },
+  {
+    "id": "posts",
+    "translation": ""
+  },
+  {
+    "id": "profiles",
+    "translation": ""
+  },
+  {
+    "id": "login",
+    "translation": ""
+  },
+  {
+    "id": "logout",
+    "translation": " <b>{{.Username}}</b>"
+  },
+  {
+    "id": "about",
+    "translation": ""
+  },
+  {
+    "id": "protocol",
+    "translation": ""
+  },
+  {
+    "id": "disclaimer",
+    "translation": ""
+  },
+  {
+    "id": "statistics",
+    "translation": ""
+  },
+  {
+    "id": "name",
+    "translation": ""
+  },
+  {
+    "id": "address",
+    "translation": ""
+  },
+  {
+    "id": "followers",
+    "translation": ""
+  },
+  {
+    "id": "following",
+    "translation": ""
+  },
+  {
+    "id": "balance",
+    "translation": ""
+  },
+  {
+    "id": "profile",
+    "translation": ""
+  },
+  {
+    "id": "actions",
+    "translation": ""
+  },
+  {
+    "id": "view_your_profile",
+    "translation": ""
+  },
+  {
+    "id": "set_name",
+    "translation": ""
+  },
+  {
+    "id": "set_profile",
+    "translation": ""
+  },
+  {
+    "id": "export_key",
+    "translation": ""
+  },
+  {
+    "id": "change_password",
+    "translation": ""
+  },
+  {
+    "id": "reply",
+    "translation": ""
+  },
+  {
+    "id": "like",
+    "translation": {
+      "one": "",
+      "other": ""
+    }
+  },
+  {
+    "id": "replies",
+    "translation": ""
+  },
+  {
+    "id": "likes",
+    "translation": ""
+  },
+  {
+    "id": "top",
+    "translation": ""
+  },
+  {
+    "id": "personalized",
+    "translation": ""
+  },
+  {
+    "id": "new",
+    "translation": ""
+  },
+  {
+    "id": "archive",
+    "translation": ""
+  },
+  {
+    "id": "last_hour",
+    "translation": ""
+  },
+  {
+    "id": "last_24_hours",
+    "translation": ""
+  },
+  {
+    "id": "last_7_days",
+    "translation": ""
+  },
+  {
+    "id": "all_time",
+    "translation": ""
+  },
+  {
+    "id": "message",
+    "translation": ""
+  },
+  {
+    "id": "password",
+    "translation": ""
+  },
+  {
+    "id": "save_password",
+    "translation": ""
+  },
+  {
+    "id": "post",
+    "translation": ""
+  },
+  {
+    "id": "profile_text",
+    "translation": ""
+  },
+  {
+    "id": "feed",
+    "translation": ""
+  },
+  {
+    "id": "posted_at",
+    "translation": ""
+  },
+  {
+    "id": "posted",
+    "translation": ""
+  },
+  {
+    "id": "view_on_block_explorer",
+    "translation": ""
+  },
+  {
+    "id": "view_address_on_block_explorer",
+    "translation": ""
+  },
+  {
+    "id": "view_name_on_block_explorer",
+    "translation": ""
+  },
+  {
+    "id": "page",
+    "translation": ""
+  },
+  {
+    "id": "previous",
+    "translation": ""
+  },
+  {
+    "id": "next",
+    "translation": ""
+  },
+  {
+    "id": "connections",
+    "translation": ""
+  },
+  {
+    "id": "follow",
+    "translation": {
+      "one": "",
+      "other": ""
+    }
+  },
+  {
+    "id": "unfollow",
+    "translation": ""
+  },
+  {
+    "id": "next_day",
+    "translation": ""
+  },
+  {
+    "id": "previous_day",
+    "translation": ""
+  },
+  {
+    "id": "Topic",
+    "translation": ""
+  },
+  {
+    "id": "Topics",
+    "translation": ""
+  },
+  {
+    "id": "Send",
+    "translation": ""
+  },
+  {
+    "id": "Existing_Topics",
+    "translation": ""
+  },
+  {
+    "id": "Create_new_topic",
+    "translation": ""
+  },
+  {
+    "id": "Most_recent_post",
+    "translation": ""
+  },
+  {
+    "id": "Total_posts",
+    "translation": ""
+  },
+  {
+    "id": "Back_to_topics",
+    "translation": ""
+  },
+  {
+    "id": "Forget_password",
+    "translation": ""
+  },
+  {
+    "id": "Names_set",
+    "translation": ""
+  },
+  {
+    "id": "Total",
+    "translation": ""
+  },
+  {
+    "id": "Delete_Account",
+    "translation": ""
+  },
+  {
+    "id": "Guides",
+    "translation": ""
+  },
+  {
+    "id": "Signup",
+    "translation": ""
+  },
+  {
+    "id": "Memo",
+    "translation": ""
+  },
+  {
+    "id": "Poll",
+    "translation": ""
+  },
+  {
+    "id": "Notifications",
+    "translation": ""
+  },
+  {
+    "id": "Settings",
+    "translation": ""
+  },
+  {
+    "id": "new_poll",
+    "translation": ""
+  },
+  {
+    "id": "type",
+    "translation": ""
+  },
+  {
+    "id": "select_one_option",
+    "translation": ""
+  },
+  {
+    "id": "select_multiple_options",
+    "translation": ""
+  },
+  {
+    "id": "question",
+    "translation": ""
+  },
+  {
+    "id": "option",
+    "translation": {
+      "one": "",
+      "other": ""
+    }
+  },
+  {
+    "id": "add_option",
+    "translation": ""
+  },
+  {
+    "id": "create_poll",
+    "translation": ""
+  }
+]

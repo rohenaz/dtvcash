@@ -16,6 +16,7 @@ var newRoute = web.Route{
 		preHandler(r)
 		offset := r.Request.GetUrlParameterInt("offset")
 		var userPkHash []byte
+		var userId uint
 		if auth.IsLoggedIn(r.Session.CookieId) {
 			user, err := auth.GetSessionUser(r.Session.CookieId)
 			if err != nil {
@@ -28,6 +29,7 @@ var newRoute = web.Route{
 				return
 			}
 			userPkHash = key.PkHash
+			userId = user.Id
 		}
 		posts, err := profile.GetRecentPosts(userPkHash, uint(offset))
 		if err != nil {
@@ -44,12 +46,22 @@ var newRoute = web.Route{
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
 		}
+		err = profile.AttachPollsToPosts(posts)
+		if err != nil {
+			r.Error(jerr.Get("error attaching polls to posts", err), http.StatusInternalServerError)
+			return
+		}
 		if len(userPkHash) > 0 {
 			err = profile.AttachReputationToPosts(posts)
 			if err != nil {
 				r.Error(jerr.Get("error attaching reputation to posts", err), http.StatusInternalServerError)
 				return
 			}
+		}
+		err = profile.SetShowMediaForPosts(posts, userId)
+		if err != nil {
+			r.Error(jerr.Get("error setting show media for posts", err), http.StatusInternalServerError)
+			return
 		}
 		res.SetPageAndOffset(r, offset)
 		r.Helper["Posts"] = posts

@@ -1,21 +1,26 @@
 {{ template "snippets/header.html" . }}
 
-<h2>{{ T "Delete_Account" }}</h2>
+<div class="col-md-6 col-md-offset-3">
 
-<div id="delete-account">
-    <form id="delete-account-form" method="post">
-        <p>
-            <label for="password">{{ T "password" }}:</label>
-            <input type="password" name="password" id="password"/>
-        </p>
-        <p>
-            <label for="confirm">To confirm, type:<br/><b>DELETE ACCOUNT</b></label>
-            <input type="text" name="confirm" id="confirm"/>
-        </p>
-        <p>
-            <input class="btn" type="submit" value="{{ T "Delete_Account" }}"/>
-        </p>
-    </form>
+    <h2>{{ T "Delete_Account" }}</h2>
+
+    <div id="delete-account">
+        <form id="delete-account-form" method="post">
+            <p>
+                <label for="password">{{ T "password" }}:</label>
+                <input type="password" name="password" id="password" class="form-control" placeholder="Password"/>
+            </p>
+            <p>
+                <label for="confirm">To confirm, type:<br/><b>DELETE ACCOUNT</b></label>
+                <input type="text" name="confirm" id="confirm" class="form-control"/>
+            </p>
+            <p>
+                <input class="btn btn-primary" type="submit" value="{{ T "Delete_Account" }}"/>
+                <a class="btn btn-default" href="/">Cancel</a>
+            </p>
+        </form>
+    </div>
+
 </div>
 
 <script type="text/javascript">

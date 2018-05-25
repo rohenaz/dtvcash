@@ -3,15 +3,16 @@ package memo
 import (
 	"bytes"
 	"fmt"
-	"github.com/memocash/memo/app/bitcoin/memo"
-	"github.com/memocash/memo/app/bitcoin/wallet"
-	"github.com/memocash/memo/app/auth"
-	"github.com/memocash/memo/app/bitcoin/transaction"
-	"github.com/memocash/memo/app/db"
-	"github.com/memocash/memo/app/profile"
-	"github.com/memocash/memo/app/res"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
+	"github.com/memocash/memo/app/auth"
+	"github.com/memocash/memo/app/bitcoin/memo"
+	"github.com/memocash/memo/app/bitcoin/transaction"
+	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/mutex"
+	"github.com/memocash/memo/app/profile"
+	"github.com/memocash/memo/app/res"
 	"net/http"
 )
 
@@ -97,16 +98,18 @@ var followSubmitRoute = web.Route{
 
 		address := key.GetAddress()
 
-		var fee = int64(283 - memo.MaxPostSize + len(address.GetScriptAddress()))
+		var fee = int64(memo.MaxTxFee - memo.MaxPostSize + len(address.GetScriptAddress()))
 		var minInput = fee + transaction.DustMinimumOutput
 
+		mutex.Lock(key.PkHash)
 		txOut, err := db.GetSpendableTxOut(key.PkHash, minInput)
 		if err != nil {
+			mutex.Unlock(key.PkHash)
 			r.Error(jerr.Get("error getting spendable tx out", err), http.StatusInternalServerError)
 			return
 		}
 
-		tx, err := transaction.Create(txOut, privateKey, []transaction.SpendOutput{{
+		tx, err := transaction.Create([]*db.TransactionOut{txOut}, privateKey, []transaction.SpendOutput{{
 			Type:    transaction.SpendOutputTypeP2PK,
 			Address: address,
 			Amount:  txOut.Value - fee,
@@ -115,6 +118,7 @@ var followSubmitRoute = web.Route{
 			Data: followAddress.GetScriptAddress(),
 		}})
 		if err != nil {
+			mutex.Unlock(key.PkHash)
 			r.Error(jerr.Get("error creating tx", err), http.StatusInternalServerError)
 			return
 		}

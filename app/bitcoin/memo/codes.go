@@ -16,6 +16,16 @@ const (
 	CodeSetProfilePicture = 0x0A
 	CodeRepost            = 0x0B
 	CodeTopicMessage      = 0x0C
+
+	CodePollCreate = 0x10
+	CodePollOption = 0x13
+	CodePollVote   = 0x14
+)
+
+const (
+	CodePollTypeSingle = 0x01
+	CodePollTypeMulti  = 0x02
+	CodePollTypeRank   = 0x03
 )
 
 func GetAllCodes() [][]byte {
@@ -33,5 +43,8 @@ func GetAllCodes() [][]byte {
 		{CodePrefix, CodeSetProfilePicture},
 		{CodePrefix, CodeRepost},
 		{CodePrefix, CodeTopicMessage},
+		{CodePrefix, CodePollCreate},
+		{CodePrefix, CodePollOption},
+		{CodePrefix, CodePollVote},
 	}
 }

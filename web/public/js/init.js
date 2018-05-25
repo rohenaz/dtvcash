@@ -72,31 +72,18 @@ var MemoApp = {
         return parseInt(s);
     };
 
-    /**
-     * @param {jQuery} $form
-     */
-    MemoApp.CheckLoadPassword = function($form) {
-        if (!localStorage.WalletPassword) {
-            return;
+    MemoApp.GetPassword = function() {
+        if (!localStorage.WalletPassword || localStorage.WalletPassword.length === 0) {
+            alert("We've updated how wallets are unlocked. Please re-login to unlock your wallet.");
+            window.location = MemoApp.URL.Logout + "?a=re-login";
         }
-        $form.find("[name=password]").val(localStorage.WalletPassword);
-        $form.find("[name=save-password]").prop("checked", true);
+        return localStorage.WalletPassword;
     };
 
     /**
-     * @param {jQuery} $form
+     * @param {string} password
      */
-    MemoApp.CheckSavePassword = function($form) {
-        if (!$form.find("[name=save-password]").is(':checked')) {
-            delete(localStorage.WalletPassword);
-            return;
-        }
-
-        var password = $form.find("[name=password]").val();
-        if (password.length === 0) {
-            return;
-        }
-
+    MemoApp.SetPassword = function(password) {
         localStorage.WalletPassword = password;
     };
 
@@ -140,9 +127,11 @@ var MemoApp = {
         LoadKey: "key/load",
         LoginSubmit: "login-submit",
         SignupSubmit: "signup-submit",
+        Logout: "logout",
         MemoPost: "post",
         MemoPostAjax: "post-ajax",
         MemoPostThreadedAjax: "post-threaded-ajax",
+        MemoPostMoreThreadedAjax: "post-more-threaded-ajax",
         MemoNewSubmit: "memo/new-submit",
         MemoReplySubmit: "memo/reply-submit",
         MemoFollowSubmit: "memo/follow-submit",
@@ -152,6 +141,10 @@ var MemoApp = {
         MemoLikeSubmit: "memo/like-submit",
         MemoWait: "memo/wait",
         MemoWaitSubmit: "memo/wait-submit",
+        PollCreateSubmit: "poll/create-submit",
+        PollVoteSubmit: "poll/vote-submit",
+        PollVotesAjax: "poll/votes-ajax",
+        ProfileSettingsSubmit: "settings-submit",
         KeyChangePasswordSubmit: "key/change-password-submit",
         KeyDeleteAccountSubmit: "key/delete-account-submit",
         TopicsSocket: "topics/socket",

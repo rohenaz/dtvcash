@@ -1,22 +1,25 @@
 package server
 
 import (
+	"github.com/jchavannes/jgo/jerr"
+	"github.com/jchavannes/jgo/web"
 	"github.com/memocash/memo/app/auth"
 	"github.com/memocash/memo/app/bitcoin/queuer"
+	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
 	"github.com/memocash/memo/app/res"
 	auth2 "github.com/memocash/memo/web/server/auth"
 	"github.com/memocash/memo/web/server/key"
 	"github.com/memocash/memo/web/server/memo"
+	"github.com/memocash/memo/web/server/poll"
 	"github.com/memocash/memo/web/server/posts"
 	"github.com/memocash/memo/web/server/profile"
 	"github.com/memocash/memo/web/server/topics"
-	"github.com/jchavannes/jgo/jerr"
-	"github.com/jchavannes/jgo/web"
 	"github.com/nicksnyder/go-i18n/i18n"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 )
 
 var UseMinJS bool
@@ -67,6 +70,26 @@ func preHandler(r *web.Response) {
 			return
 		}
 		r.Helper["Username"] = user.Username
+		userAddress, err := cache.GetUserAddress(user.Id)
+		if err != nil {
+			r.Error(jerr.Get("error getting user address from cache", err), http.StatusInternalServerError)
+			return
+		}
+		r.Helper["UserAddress"] = userAddress.GetEncoded()
+		userSettings, err := cache.GetUserSettings(user.Id)
+		if err != nil {
+			r.Error(jerr.Get("error getting user settings from cache", err), http.StatusInternalServerError)
+			return
+		}
+		unreadNotifications, err := cache.GetUnreadNotificationCount(user.Id)
+		if err != nil {
+			r.Error(jerr.Get("error getting last notification id from cache", err), http.StatusInternalServerError)
+			return
+		}
+		r.Helper["UnreadNotifications"] = unreadNotifications
+		r.Helper["UserSettings"] = userSettings
+	} else {
+		r.Helper["UserSettings"] = db.GetDefaultUserSettings()
 	}
 	if UseMinJS {
 		r.Helper["jsFiles"] = res.GetMinJsFiles()
@@ -87,7 +110,13 @@ func preHandler(r *web.Response) {
 
 	r.SetFuncMap(map[string]interface{}{
 		"T": i18n.MustTfunc(lang),
+		"Title": strings.Title,
 	})
+}
+
+func notFoundHandler(r *web.Response) {
+	r.SetResponseCode(http.StatusNotFound)
+	r.RenderTemplate(res.UrlNotFound)
 }
 
 func isValidLang(lang string) bool {
@@ -97,6 +126,20 @@ func isValidLang(lang string) bool {
 		}
 	}
 	return false
+}
+
+var allowedExtensions = []string{
+	"js",
+	"css",
+	"jpg",
+	"png",
+	"ico",
+	"gif",
+	"woff",
+	"woff2",
+	"ttf",
+	"svg",
+	"eot",
 }
 
 func Run(sessionCookieInsecure bool) {
@@ -116,16 +159,19 @@ func Run(sessionCookieInsecure bool) {
 
 	// Start web server
 	ws := web.Server{
-		CookiePrefix:   "memo",
-		InsecureCookie: sessionCookieInsecure,
-		IsLoggedIn:     isLoggedIn,
-		Port:           8261,
-		PreHandler:     preHandler,
-		GetCsrfToken:   getCsrfToken,
+		CookiePrefix:      "memo",
+		InsecureCookie:    sessionCookieInsecure,
+		AllowedExtensions: allowedExtensions,
+		IsLoggedIn:        isLoggedIn,
+		Port:              8261,
+		NotFoundHandler:   notFoundHandler,
+		PreHandler:        preHandler,
+		GetCsrfToken:      getCsrfToken,
 		Routes: web.Routes(
 			[]web.Route{
 				indexRoute,
 				protocolRoute,
+				guidesRoute,
 				disclaimerRoute,
 				introducingMemoRoute,
 				openSourcingMemoRoute,
@@ -136,6 +182,7 @@ func Run(sessionCookieInsecure bool) {
 				feedRoute,
 				//testsRoute,
 			},
+			poll.GetRoutes(),
 			topics.GetRoutes(),
 			posts.GetRoutes(),
 			key.GetRoutes(),

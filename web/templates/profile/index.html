@@ -1,9 +1,9 @@
 {{ $tz := .TimeZone }}
 {{ template "snippets/header.html" . }}
 
-<h2>{{ T "profile" }}</h2>
+<br/>
 
-{{ template "snippets/profile.html" .Profile }}
+{{ template "snippets/profile.html" dict "Profile" .Profile "UserSettings" .UserSettings }}
 
 {{ if .Likes }}
 
@@ -31,31 +31,35 @@
         MemoApp.Form.LikesToggle($("#show-hide-likes"), $("#likes"));
     });
 </script>
-{{ else }}
-<h3>This User Hasn't Liked Anything Yet</h3>
 {{ end }}
 
+<div class="center">
 {{ if not .Posts }}
-<h3>No Posts Yet</h3>
+    <h3>No Posts Yet</h3>
 {{ else }}
-<h3>{{ T "posts" }}</h3>
+    <h3>{{ T "posts" }} by {{ .Profile.Name }}</h3>
 {{ end }}
+</div>
 
 {{ if and (eq .NextOffset 25) (lt (len .Posts) 25) }}{{ else }}
 <p class="pagination">
-    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}"
+       href="profile/{{ .Profile.GetAddressString }}?offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
     <span class="page">{{ T "page" }} {{ .Page }}</span>
-    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}"
+       href="profile/{{ .Profile.GetAddressString }}?offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
 </p>
 {{ end }}
 
-{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
+{{ template "snippets/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone "UserSettings" .UserSettings }}
 
 {{ if and (eq .NextOffset 25) (lt (len .Posts) 25) }}{{ else }}
 <p class="pagination">
-    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
+    <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}"
+       href="profile/{{ .Profile.GetAddressString }}?offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
     <span class="page">{{ T "page" }} {{ .Page }}</span>
-    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}" href="profile/{{ .Profile.GetAddressString }}?offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
+    <a class="{{ if lt (len .Posts) 25 }}disabled{{ end }}"
+       href="profile/{{ .Profile.GetAddressString }}?offset={{ .NextOffset }}">{{ T "next" }} &gt;</a>
 </p>
 {{ end }}
 

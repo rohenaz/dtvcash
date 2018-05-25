@@ -3,7 +3,7 @@
 
 <br/>
 
-{{ template "snippets/post.html" dict "Post" .Post "Compress" false "TimeZone" .TimeZone }}
+{{ template "snippets/post.html" dict "Post" .Post "Compress" false "TimeZone" .TimeZone "UserSettings" .UserSettings }}
 
 {{ if .Post.Likes }}
 
@@ -51,7 +51,7 @@
 </p>
 {{ end }}
 
-{{ template "snippets/posts.html" dict "Posts" .Post.Replies "TimeZone" .TimeZone }}
+{{ template "snippets/posts.html" dict "Posts" .Post.Replies "TimeZone" .TimeZone "UserSettings" .UserSettings }}
 
 {{ if and (eq .NextOffset 25) (lt (len .Post.Replies) 25) }}{{ else }}
 <p class="pagination">

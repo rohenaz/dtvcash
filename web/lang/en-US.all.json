@@ -120,7 +120,7 @@
   },
   {
     "id": "new",
-    "translation": "New"
+    "translation": "new"
   },
   {
     "id": "archive",
@@ -169,6 +169,10 @@
   {
     "id": "posted_at",
     "translation": "posted at"
+  },
+  {
+    "id": "posted",
+    "translation": "posted"
   },
   {
     "id": "view_on_block_explorer",
@@ -264,5 +268,64 @@
   {
     "id": "Delete_Account",
     "translation": "Delete Account"
+  },
+  {
+    "id": "Guides",
+    "translation": "Guides"
+  },
+  {
+    "id": "Signup",
+    "translation": "Signup"
+  },
+  {
+    "id": "Memo",
+    "translation": "Memo"
+  },
+  {
+    "id": "Poll",
+    "translation": "Poll"
+  },
+  {
+    "id": "Notifications",
+    "translation": "Notifications"
+  },
+  {
+    "id": "Settings",
+    "translation": "Settings"
+  },
+  {
+    "id": "new_poll",
+    "translation": "new poll"
+  },
+  {
+    "id": "type",
+    "translation": "type"
+  },
+  {
+    "id": "select_one_option",
+    "translation": "One option can be selected"
+  },
+  {
+    "id": "select_multiple_options",
+    "translation": "Many options can be selected"
+  },
+  {
+    "id": "question",
+    "translation": "question"
+  },
+  {
+    "id": "option",
+    "translation": {
+      "one": "option",
+      "other": "options"
+    }
+  },
+  {
+    "id": "add_option",
+    "translation": "add option"
+  },
+  {
+    "id": "create_poll",
+    "translation": "create poll"
   }
 ]

@@ -1,37 +1,79 @@
 {{ template "snippets/header.html" . }}
 
+{{ $settings := .UserSettings }}
+
 <br/>
 
-<form>
-    <label for="profile-search">
-        Search:
-    </label>
-    <input id="profile-search" type="text" placeholder="Enter username"/>
-</form>
+<div class="col-md-8 col-md-offset-2">
 
-<div id="profile-list">
-{{ range .Profiles }}
-{{ if .NameSet }}
-    <p data-address="{{ .Name }} {{ .GetAddressString }}">
-        <a class="btn" href="/profile/{{ .GetAddressString }}">{{ .Name }} ({{ .GetAddressString }})</a>
-    </p>
-{{ else }}
-    <p data-address="{{ .GetAddressString }}">
-        <a class="btn" href="/profile/{{ .GetAddressString }}">{{ .GetAddressString }}</a>
+    <div class="center">
+        <form action="profiles" class="form-inline search-form">
+            <div class="form-group row">
+                <input class="form-control" type="text" name="s" placeholder="Username"
+                       value="{{ .SearchString }}"/>
+                <input class="btn btn-primary" type="submit" value="Search"/>
+            </div>
+        </form>
+    </div>
+
+{{ if and (eq .NextOffset 25) (lt (len .Profiles) 25) }}<br/>{{ else }}
+    <p class="pagination">
+        <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}"
+           href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
+        <span class="page">{{ T "page" }} {{ .Page }}</span>
+        <a class="{{ if lt (len .Profiles) 25 }}disabled{{ end }}"
+           href="{{ .OffsetLink }}&offset={{ .NextOffset }}">{{ T "next" }}
+            &gt;</a>
     </p>
 {{ end }}
+
+    <div id="profile-list">
+    {{ range .Profiles }}
+    {{ if .NameSet }}
+        <p data-address="{{ .Name }} {{ .GetAddressString }}">
+        <span class="identicon-{{ .GetAddressString }}">
+            <img class="identicon"/>
+        </span>
+            <a href="/profile/{{ .GetAddressString }}">{{ .Name }} ({{ .GetAddressString }})</a>
+        </p>
+    {{ else }}
+        <p data-address="{{ .GetAddressString }}">
+        <span class="identicon-{{ .GetAddressString }}">
+            <img class="identicon"/>
+        </span>
+            <a href="/profile/{{ .GetAddressString }}">{{ .GetAddressString }}</a>
+        </p>
+    {{ end }}
+        <script type="text/javascript">
+            (function () {
+                var foreground = {{ if eq $settings.Theme "dark" }}[224, 224, 224, 255]{{ else }}[0, 0, 0, 255]{{ end }};
+                var background = [0, 0, 0, 0];
+                var data = new Identicon('{{ .GetAddressString }}', {
+                    foreground: foreground,
+                    background: background,
+                    size: 24,
+                    form: 'svg',
+                    margin: 0
+                }).toString();
+                $(".identicon-{{ .GetAddressString }}").html('<img class="identicon" src="data:image/png;base64,' + data + '">');
+            })();
+        </script>
+    {{ end }}
+    </div>
+
+{{ if and (eq .NextOffset 25) (lt (len .Profiles) 25) }}{{ else }}
+    <p class="pagination">
+        <a class="{{ if eq .NextOffset 25 }}disabled{{ end }}"
+           href="{{ .OffsetLink }}&offset={{ .PrevOffset }}">&lt; {{ T "previous" }}</a>
+        <span class="page">{{ T "page" }} {{ .Page }}</span>
+        <a class="{{ if lt (len .Profiles) 25 }}disabled{{ end }}"
+           href="{{ .OffsetLink }}&offset={{ .NextOffset }}">{{ T "next" }}
+            &gt;</a>
+    </p>
 {{ end }}
+
+    <br/>
+
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("#profile-search").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("#profile-list p").filter(function () {
-                $(this).toggle($(this).attr("data-address").toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
-</script>
 
 {{ template "snippets/footer.html" . }}

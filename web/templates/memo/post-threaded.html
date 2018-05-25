@@ -1,9 +1,13 @@
 {{ template "snippets/header.html" . }}
 
+{{ if not .Username }}
+<h3 class="notice">
+    <a href="signup">Click here to create an account</a>
+</h3>
+{{ else }}
 <br/>
+{{ end }}
 
-{{ template "snippets/post-threaded.html" dict "Post" .Post "Compress" false "TimeZone" .TimeZone "Offset" .Offset }}
-
-<br/>
+{{ template "snippets/post-threaded.html" dict "Post" .Post "Compress" false "TimeZone" .TimeZone "Offset" .Offset "UserSettings" .UserSettings }}
 
 {{ template "snippets/footer.html" . }}

@@ -1,13 +1,14 @@
 package memo
 
 import (
-	"github.com/memocash/memo/app/bitcoin/memo"
-	"github.com/memocash/memo/app/bitcoin/transaction"
-	"github.com/memocash/memo/app/db"
-	"github.com/memocash/memo/app/res"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
+	"github.com/memocash/memo/app/bitcoin/memo"
+	"github.com/memocash/memo/app/bitcoin/transaction"
+	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/mutex"
+	"github.com/memocash/memo/app/res"
 	"net/http"
 	"strings"
 )
@@ -44,11 +45,16 @@ var waitSubmitRoute = web.Route{
 			return
 		}
 		txn, err := db.GetTransactionByHashWithOutputs(txHash.CloneBytes())
+		if err != nil {
+			r.Error(jerr.Get("error getting transaction from db", err), http.StatusInternalServerError)
+			return
+		}
 		out, err := transaction.GetMemoOutputIfExists(txn)
 		if err != nil {
 			r.Error(jerr.Get("error checking for memo output", err), http.StatusInternalServerError)
 			return
 		}
+		mutex.Unlock(out.KeyPkHash)
 		switch out.PkScript[3] {
 		case memo.CodeFollow, memo.CodeUnfollow:
 			follow, err := db.GetMemoFollow(txHash.CloneBytes())
@@ -99,6 +105,13 @@ var waitSubmitRoute = web.Route{
 				return
 			}
 			r.Write(strings.TrimLeft(res.UrlTopicView + "/" + post.Topic, "/"))
+		case memo.CodePollOption:
+			memoPollOption, err := db.GetMemoPollOption(txHash.CloneBytes())
+			if err != nil {
+				r.Error(jerr.Get("error getting memo_poll_option from db", err), http.StatusInternalServerError)
+				return
+			}
+			r.Write(strings.TrimLeft(res.UrlMemoPost + "/" + memoPollOption.GetPollTransactionHashString(), "/"))
 		}
 	},
 }

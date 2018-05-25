@@ -2,15 +2,16 @@ package memo
 
 import (
 	"fmt"
-	"github.com/memocash/memo/app/bitcoin/memo"
-	"github.com/memocash/memo/app/auth"
-	"github.com/memocash/memo/app/bitcoin/transaction"
-	"github.com/memocash/memo/app/db"
-	"github.com/memocash/memo/app/profile"
-	"github.com/memocash/memo/app/res"
 	"github.com/jchavannes/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
+	"github.com/memocash/memo/app/auth"
+	"github.com/memocash/memo/app/bitcoin/memo"
+	"github.com/memocash/memo/app/bitcoin/transaction"
+	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/mutex"
+	"github.com/memocash/memo/app/profile"
+	"github.com/memocash/memo/app/res"
 	"net/http"
 )
 
@@ -38,7 +39,7 @@ var replyRoute = web.Route{
 			}
 			pkHash = key.PkHash
 		}
-		post, err := profile.GetPostByTxHash(txHash.CloneBytes(), pkHash, 0)
+		post, err := profile.GetPostByTxHashWithReplies(txHash.CloneBytes(), pkHash, 0)
 		if err != nil {
 			r.Error(jerr.Get("error getting post", err), http.StatusInternalServerError)
 			return
@@ -49,6 +50,11 @@ var replyRoute = web.Route{
 			return
 		}
 		err = profile.AttachLikesToPosts([]*profile.Post{post})
+		if err != nil {
+			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
+			return
+		}
+		err = profile.AttachPollsToPosts([]*profile.Post{post})
 		if err != nil {
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
@@ -101,23 +107,25 @@ var replySubmitRoute = web.Route{
 			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
 			return
 		}
-		address := key.GetAddress()
-		var fee = int64(284 - memo.MaxReplySize + len([]byte(message)))
-		var minInput = fee + transaction.DustMinimumOutput
-
-		txOut, err := db.GetSpendableTxOut(key.PkHash, minInput)
-		if err != nil {
-			r.Error(jerr.Get("error getting spendable tx out", err), http.StatusInternalServerError)
-			return
-		}
-
 		privateKey, err := key.GetPrivateKey(password)
 		if err != nil {
 			r.Error(jerr.Get("error getting private key", err), http.StatusUnauthorized)
 			return
 		}
 
-		tx, err := transaction.Create(txOut, privateKey, []transaction.SpendOutput{{
+		address := key.GetAddress()
+		var fee = int64(memo.MaxTxFee - memo.MaxReplySize + len([]byte(message)))
+		var minInput = fee + transaction.DustMinimumOutput
+
+		mutex.Lock(key.PkHash)
+		txOut, err := db.GetSpendableTxOut(key.PkHash, minInput)
+		if err != nil {
+			mutex.Unlock(key.PkHash)
+			r.Error(jerr.Get("error getting spendable tx out", err), http.StatusPaymentRequired)
+			return
+		}
+
+		tx, err := transaction.Create([]*db.TransactionOut{txOut}, privateKey, []transaction.SpendOutput{{
 			Type:    transaction.SpendOutputTypeP2PK,
 			Address: address,
 			Amount:  txOut.Value - fee,
@@ -127,6 +135,7 @@ var replySubmitRoute = web.Route{
 			Data:    []byte(message),
 		}})
 		if err != nil {
+			mutex.Unlock(key.PkHash)
 			r.Error(jerr.Get("error creating tx", err), http.StatusInternalServerError)
 			return
 		}

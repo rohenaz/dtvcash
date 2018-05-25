@@ -8,6 +8,7 @@ import (
 	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/bitcoin/main-node"
+	"github.com/memocash/memo/app/bitcoin/memo"
 	"github.com/memocash/memo/app/bitcoin/transaction"
 	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/memocash/memo/app/config"
@@ -25,6 +26,7 @@ type SNode struct {
 	PrevBlockHashes map[string]*db.Block
 	MemoTxnsFound   int
 	AllTxnsFound    int
+	NumBlocksBack   uint
 }
 
 func (n *SNode) Start() {
@@ -58,7 +60,18 @@ func (n *SNode) OnVerAck(p *peer.Peer, msg *wire.MsgVerAck) {
 	// set bloom filters
 	setBloomFilters(n)
 	// start scanning
-	queueMerkleBlocks(n, main_node.MinCheckHeight)
+	var minCheckHeight = uint(main_node.MinCheckHeight)
+	if n.NumBlocksBack > 0 {
+		recentBlock, err := db.GetRecentBlock()
+		if err != nil {
+			jerr.Get("error getting recent block", err).Print()
+			n.Peer.Disconnect()
+			return
+		}
+		minCheckHeight = recentBlock.Height - n.NumBlocksBack
+	}
+	fmt.Printf("Starting with block height: %d\n", minCheckHeight)
+	queueMerkleBlocks(n, minCheckHeight)
 }
 
 func (n *SNode) OnReject(p *peer.Peer, msg *wire.MsgReject) {
@@ -90,6 +103,10 @@ func setBloomFilters(n *SNode) {
 		fmt.Printf("Adding filter for address: %s\n", key.GetAddress().GetEncoded())
 		bloomFilter.Add(key.GetAddress().GetScriptAddress())
 		bloomFilter.Add(key.GetPublicKey().GetSerialized())
+	}
+	for _, code := range memo.GetAllCodes() {
+		fmt.Printf("Adding filter for code: %x\n", code)
+		bloomFilter.Add(code)
 	}
 	n.Peer.QueueMessage(bloomFilter.MsgFilterLoad(), nil)
 }

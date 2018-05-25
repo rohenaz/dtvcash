@@ -26,6 +26,7 @@ var personalizedRoute = web.Route{
 			return
 		}
 		var userPkHash []byte
+		var userId uint
 		if auth.IsLoggedIn(r.Session.CookieId) {
 			user, err := auth.GetSessionUser(r.Session.CookieId)
 			if err != nil {
@@ -38,6 +39,7 @@ var personalizedRoute = web.Route{
 				return
 			}
 			userPkHash = key.PkHash
+			userId = user.Id
 		}
 		posts, err := profile.GetTopPostsNamedRange(userPkHash, uint(offset), timeRange, true)
 		if err != nil {
@@ -54,9 +56,19 @@ var personalizedRoute = web.Route{
 			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
 			return
 		}
+		err = profile.AttachPollsToPosts(posts)
+		if err != nil {
+			r.Error(jerr.Get("error attaching polls to posts", err), http.StatusInternalServerError)
+			return
+		}
 		err = profile.AttachReputationToPosts(posts)
 		if err != nil {
 			r.Error(jerr.Get("error attaching reputation to posts", err), http.StatusInternalServerError)
+			return
+		}
+		err = profile.SetShowMediaForPosts(posts, userId)
+		if err != nil {
+			r.Error(jerr.Get("error setting show media for posts", err), http.StatusInternalServerError)
 			return
 		}
 		res.SetPageAndOffset(r, offset)

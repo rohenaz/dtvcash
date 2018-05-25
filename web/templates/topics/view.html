@@ -1,44 +1,25 @@
 {{ template "snippets/header.html" . }}
 
-<h2>{{ T "Topic" }} - {{ .Topic }}</h2>
-
-<p><a href="topics">{{ T "Back_to_topics" }}</a></p>
-
+<div class="center">
+    <h2>{{ T "Topic" }} - {{ .Topic }}</h2>
+    <p><a href="topics">{{ T "Back_to_topics" }}</a></p>
+</div>
 <div id="all-posts" style="position:relative;">
-{{ template "topics/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone }}
+{{ template "topics/posts.html" dict "Posts" .Posts "TimeZone" .TimeZone "UserSettings" .UserSettings }}
 </div>
 
 {{ if .Username }}
 <form id="form-new-topic-message" method="post">
     <input type="hidden" name="topic" value="{{ .Topic }}"/>
     <p>
-        <label for="message">{{ T "message" }} <span class="message-byte-count"></span></label>
+        <label for="message">{{ T "message" }} <span class="message-byte-count byte-count"></span></label>
         <input id="message" type="text" name="message" class="form-control" placeholder="{{ T "message" }}"
-               autocomplete="on"
-               required autofocus/>
+               required/>
     </p>
-    <div id="password-area">
-        <p>
-            <label for="password">{{ T "password" }}</label>
-            <input id="password" type="password" name="password" class="form-control" placeholder="Password"
-                   autocomplete="on" required/>
-        </p>
-        <p>
-            <label for="save-password">
-                {{ T "save_password" }}
-            </label>
-            <input id="save-password" name="save-password" type="checkbox"/>
-        </p>
-    </div>
     <p>
-        <input class="btn btn-lg btn-primary btn-block" type="submit" value="{{ T "Send" }}"/>
-        <span id="broadcasting">
+        <input class="btn btn-primary" type="submit" value="{{ T "Send" }}"/>
+        <span id="broadcasting" class="hidden">
             Broadcasting...
-        </span>
-    </p>
-    <p>
-        <span id="password-clear">
-            <a href="#">{{ T "Forget_password" }}</a>
         </span>
     </p>
 </form>

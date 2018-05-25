@@ -3,32 +3,34 @@
 </div>
 
 <div class="footer">
-    <div class="nav">
-        <a href="/about">{{ T "about" }}</a>
-        <a href="protocol">{{ T "protocol" }}</a>
-        <a href="disclaimer">{{ T "disclaimer" }}</a>
-        <a href="/stats">{{ T "statistics" }}</a>
-    </div>
-    <div class="nav">
-        <a href="#" language="en-US" class="setlang">English (US)</a>
-        <a href="#" language="es-LA" class="setlang">Español</a>
-        <a href="#" language="zh-CN" class="setlang">中文(简体)</a>
-        <a href="#" language="ja-JP" class="setlang">日本語</a>
+    <div class="container">
+        <div class="col-md-6">
+            <a href="/about">{{ T "about" }}</a>
+            <a href="/guides">{{ T "Guides" }}</a>
+            <a href="protocol">{{ T "protocol" }}</a>
+            <a href="disclaimer">{{ T "disclaimer" }}</a>
+            <a href="/stats">{{ T "statistics" }}</a>
+        </div>
+        <div class="col-md-6 text-right-large">
+            <a href="#" language="en-US" class="setlang">English (US)</a>
+            <a href="#" language="es-LA" class="setlang">Español</a>
+            <a href="#" language="zh-CN" class="setlang">中文(简体)</a>
+            <a href="#" language="ja-JP" class="setlang">日本語</a>
+        </div>
     </div>
 </div>
 
+{{ if not (eq .UserSettings.Integrations "none") }}
 <script type="text/javascript" async src="https://www.googletagmanager.com/gtag/js?id={{ .GoogleId }}"></script>
 <script type="text/javascript">
     window.dataLayer = window.dataLayer || [];
-
     function gtag() {
         dataLayer.push(arguments);
     }
-
     gtag('js', new Date());
-
     gtag('config', '{{ .GoogleId }}');
 </script>
+{{ end }}
 
 </body>
 </html>

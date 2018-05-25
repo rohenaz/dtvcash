@@ -1,0 +1,17 @@
+<form class="reply-form {{ if .Hidden }}hidden{{ end }}" id="reply-form-{{ .Post.Memo.GetTransactionHashString }}" method="post">
+    <p>
+        <label for="message-{{ .Post.Memo.GetTransactionHashString }}">Message <span class="message-byte-count byte-count"></span></label>
+        <textarea id="message-{{ .Post.Memo.GetTransactionHashString }}" type="text" name="message" class="form-control"
+                  placeholder="Message" required></textarea>
+    </p>
+    <p>
+        <input class="btn btn-primary" type="submit" value="Post Reply">
+        <a href="#" id="reply-cancel-{{ .Post.Memo.GetTransactionHashString }}" class="btn btn-default">Cancel</a>
+    </p>
+</form>
+
+<script type="text/javascript">
+    $(function () {
+        MemoApp.Form.ReplyMemo("{{ .Post.Memo.GetTransactionHashString }}", {{ if .Threaded }}true{{ else }}false{{ end }});
+    });
+</script>

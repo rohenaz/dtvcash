@@ -3,21 +3,29 @@ package profile
 import (
 	"bytes"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/memo"
+	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/util"
 	"regexp"
 	"strings"
 	"time"
 )
 
 type Post struct {
-	Name       string
-	Memo       *db.MemoPost
-	Parent     *Post
-	Likes      []*Like
-	SelfPkHash []byte
-	ReplyCount uint
-	Replies    []*Post
-	Reputation *Reputation
+	Name         string
+	Memo         *db.MemoPost
+	Parent       *Post
+	Likes        []*Like
+	HasLiked     bool
+	SelfPkHash   []byte
+	ReplyCount   uint
+	Replies      []*Post
+	Reputation   *Reputation
+	ShowMedia    bool
+	Poll         *Poll
+	VoteQuestion *db.MemoPost
+	VoteOption   *db.MemoPollOption
 }
 
 func (p Post) IsSelf() bool {
@@ -40,24 +48,42 @@ func (p Post) GetTotalTip() int64 {
 }
 
 func (p Post) GetMessage() string {
-	msg := addYoutubeVideos(p.Memo.Message)
-	msg = addImgurImages(msg)
-	msg = addGiphyImages(msg)
-	if msg == p.Memo.Message {
-		msg = addLinks(msg)
+	var msg = p.Memo.Message
+	if p.ShowMedia {
+		msg = addYoutubeVideos(msg)
+		msg = addImgurImages(msg)
+		msg = addGiphyImages(msg)
 	}
+	msg = addLinks(msg)
 	return msg
 }
 
+func (p Post) IsPoll() bool {
+	if !p.Memo.IsPoll || p.Poll == nil {
+		return false
+	}
+	numOptions := len(p.Poll.Question.Options)
+	if numOptions >= 2 && int(p.Poll.Question.NumOptions) == numOptions {
+		return true
+	}
+	return false
+}
+
 func addYoutubeVideos(msg string) string {
-	var re = regexp.MustCompile(`(https://youtu\.be/)([A-Za-z0-9_\-\?=]+)`)
+	var re = regexp.MustCompile(`(http[s]?://youtu\.be/)([A-Za-z0-9_\-\?=]+)`)
 	msg = re.ReplaceAllString(msg, `<div class="video-container"><iframe frameborder="0" src="https://www.youtube.com/embed/$2"></iframe></div>`)
-	re = regexp.MustCompile(`(https://(www\.)?youtube\.com/watch\?v=)([A-Za-z0-9_\-\?=]+)`)
+	re = regexp.MustCompile(`(http[s]?://y2u\.be/)([A-Za-z0-9_\-\?=]+)`)
+	msg = re.ReplaceAllString(msg, `<div class="video-container"><iframe frameborder="0" src="https://www.youtube.com/embed/$2"></iframe></div>`)
+	re = regexp.MustCompile(`(http[s]?://(www\.)?youtube\.com/watch\?v=)([A-Za-z0-9_\-\?=]+)`)
 	msg = re.ReplaceAllString(msg, `<div class="video-container"><iframe frameborder="0" src="https://www.youtube.com/embed/$3"></iframe></div>`)
 	return msg
 }
 
 func addImgurImages(msg string) string {
+	// Album link
+	if strings.Contains(msg, "imgur.com/a/") || strings.Contains(msg, "imgur.com/gallery/") {
+		return msg
+	}
 	containsRex := regexp.MustCompile(`\.jpg|\.jpeg|\.png|\.gif|\.gifv`)
 	if strings.Contains(msg, ".mp4") {
 		var re = regexp.MustCompile(`(http[s]?://([a-z]+\.)?imgur\.com/)([^\s]*)`)
@@ -73,14 +99,19 @@ func addImgurImages(msg string) string {
 }
 
 func addGiphyImages(msg string) string {
-	var re = regexp.MustCompile(`(http[s]?://([a-z]+\.)?giphy\.com/)([^\s]*)`)
-	msg = re.ReplaceAllString(msg, `<a href="https://i.giphy.com/$3.jpg" target="_blank"><img class="imgur" src="https://i.giphy.com/$3"/></a>`)
+	if strings.Contains(msg, "giphy.com/gifs/") {
+		var re = regexp.MustCompile(`(http[s]?://([a-z]+\.)?giphy.com/gifs/[a-z-]*-([A-Za-z0-9]+))`)
+		msg = re.ReplaceAllString(msg, `<a href="https://i.giphy.com/$3.gif" target="_blank"><img class="imgur" src="https://i.giphy.com/$3.gif"/></a>`)
+	} else {
+		var re = regexp.MustCompile(`(http[s]?://([a-z]+\.)?giphy\.com/)([^\s]*)`)
+		msg = re.ReplaceAllString(msg, `<a href="https://i.giphy.com/$3" target="_blank"><img class="imgur" src="https://i.giphy.com/$3"/></a>`)
+	}
 	return msg
 }
 
 func addLinks(msg string) string {
-	var re = regexp.MustCompile(`(http[s]?://[^\s]*)`)
-	s := re.ReplaceAllString(msg, `<a href="$1" target="_blank">$1</a>`)
+	var re = regexp.MustCompile(`(^|\s)(http[s]?://[^\s]*)`)
+	s := re.ReplaceAllString(msg, `$1<a href="$2" target="_blank">$2</a>`)
 	return strings.Replace(s, "\n", "<br/>", -1)
 }
 
@@ -103,6 +134,15 @@ func (p Post) GetTimeString(timezone string) string {
 		}
 	}
 	return "Unconfirmed"
+}
+
+func (p Post) GetTimeAgo() string {
+	if p.Memo.Block != nil && p.Memo.Block.Timestamp.Before(p.Memo.CreatedAt) {
+		ts := p.Memo.Block.Timestamp
+		return util.GetTimeAgo(ts)
+	} else {
+		return util.GetTimeAgo(p.Memo.CreatedAt)
+	}
 }
 
 func (p Post) GetLastLikeId() uint {
@@ -190,7 +230,7 @@ func GetPostsForHash(pkHash []byte, selfPkHash []byte, offset uint) ([]*Post, er
 	return posts, nil
 }
 
-func GetPostByTxHash(txHash []byte, selfPkHash []byte, offset uint) (*Post, error) {
+func GetPostByTxHashWithReplies(txHash []byte, selfPkHash []byte, offset uint) (*Post, error) {
 	memoPost, err := db.GetMemoPost(txHash)
 	if err != nil {
 		return nil, jerr.Get("error getting memo post", err)
@@ -216,6 +256,32 @@ func GetPostByTxHash(txHash []byte, selfPkHash []byte, offset uint) (*Post, erro
 	err = AttachRepliesToPost(post, offset)
 	if err != nil {
 		return nil, jerr.Get("error attaching replies to post", err)
+	}
+	return post, nil
+}
+
+func GetPostByTxHash(txHash []byte, selfPkHash []byte) (*Post, error) {
+	memoPost, err := db.GetMemoPost(txHash)
+	if err != nil {
+		return nil, jerr.Get("error getting memo post", err)
+	}
+	setName, err := db.GetNameForPkHash(memoPost.PkHash)
+	if err != nil {
+		return nil, jerr.Get("error getting name for hash", err)
+	}
+	var name = ""
+	if setName != nil {
+		name = setName.Name
+	}
+	cnt, err := db.GetPostReplyCount(txHash)
+	if err != nil {
+		return nil, jerr.Get("error getting post reply count", err)
+	}
+	post := &Post{
+		Name:       name,
+		Memo:       memoPost,
+		SelfPkHash: selfPkHash,
+		ReplyCount: cnt,
 	}
 	return post, nil
 }
@@ -293,6 +359,47 @@ func GetTopPostsNamedRange(selfPkHash []byte, offset uint, timeRange string, per
 		timeStart = time.Now().Add(-24 * 365 * 10 * time.Hour)
 	}
 	return GetTopPosts(selfPkHash, offset, timeStart, time.Time{}, personalized)
+}
+
+func GetRankedPosts(selfPkHash []byte, offset uint) ([]*Post, error) {
+	memoPosts, err := db.GetRankedPosts(offset)
+	if err != nil {
+		return nil, jerr.Get("error getting posts for hash", err)
+	}
+	var posts []*Post
+	for _, dbPost := range memoPosts {
+		cnt, err := db.GetPostReplyCount(dbPost.TxHash)
+		if err != nil {
+			return nil, jerr.Get("error getting post reply count", err)
+		}
+		post := &Post{
+			Memo:       dbPost,
+			SelfPkHash: selfPkHash,
+			ReplyCount: cnt,
+		}
+		posts = append(posts, post)
+	}
+	var namePkHashes [][]byte
+	for _, post := range posts {
+		for _, namePkHash := range namePkHashes {
+			if bytes.Equal(namePkHash, post.Memo.PkHash) {
+				continue
+			}
+		}
+		namePkHashes = append(namePkHashes, post.Memo.PkHash)
+	}
+	setNames, err := db.GetNamesForPkHashes(namePkHashes)
+	for _, setName := range setNames {
+		for _, post := range posts {
+			if bytes.Equal(post.Memo.PkHash, setName.PkHash) {
+				post.Name = setName.Name
+			}
+		}
+	}
+	if err != nil {
+		return nil, jerr.Get("error getting set names for pk hashes", err)
+	}
+	return posts, nil
 }
 
 func GetTopPosts(selfPkHash []byte, offset uint, timeStart time.Time, timeEnd time.Time, personalized bool) ([]*Post, error) {
@@ -425,6 +532,70 @@ func AttachParentToPosts(posts []*Post) error {
 			Name:       name,
 			Memo:       parentPost,
 			SelfPkHash: post.SelfPkHash,
+		}
+	}
+	return nil
+}
+
+func SetShowMediaForPosts(posts []*Post, userId uint) error {
+	if userId == 0 {
+		for _, post := range posts {
+			post.ShowMedia = true
+		}
+		return nil
+	}
+	settings, err := cache.GetUserSettings(userId)
+	if err != nil {
+		return jerr.Get("error getting user settings", err)
+	}
+	if settings.Integrations == db.SettingIntegrationsAll {
+		for _, post := range posts {
+			post.ShowMedia = true
+		}
+	}
+	return nil
+}
+
+func AttachPollsToPosts(posts []*Post) error {
+	for _, post := range posts {
+		if post.Memo.IsPoll {
+			question, err := db.GetMemoPollQuestion(post.Memo.TxHash)
+			if err != nil {
+				return jerr.Get("error getting memo poll question", err)
+			}
+			numOptions := len(question.Options)
+			if numOptions < 2 || int(question.NumOptions) != numOptions {
+				continue
+			}
+			post.Poll = &Poll{
+				Question:   question,
+				SelfPkHash: post.SelfPkHash,
+			}
+			single := question.PollType == memo.CodePollTypeSingle
+			votes, err := db.GetVotesForOptions(question.TxHash, single)
+			if err != nil {
+				if db.IsRecordNotFoundError(err) {
+					continue
+				}
+				return jerr.Get("error getting votes for options", err)
+			}
+			post.Poll.Votes = votes
+		}
+		if post.Memo.IsVote {
+			memoPollVote, err := db.GetMemoPollVote(post.Memo.TxHash)
+			if err != nil {
+				return jerr.Get("error getting memo poll vote", err)
+			}
+			memoPollOption, err := db.GetMemoPollOption(memoPollVote.OptionTxHash)
+			if err != nil {
+				return jerr.Get("error getting memo poll option", err)
+			}
+			post.VoteOption = memoPollOption
+			memoPost, err := db.GetMemoPost(memoPollOption.PollTxHash)
+			if err != nil {
+				return jerr.Get("error getting memo poll question post", err)
+			}
+			post.VoteQuestion = memoPost
 		}
 	}
 	return nil

@@ -2,7 +2,7 @@
 
 <h2>{{ T "statistics" }}</h2>
 
-<table class="table left">
+<table class="table left table-striped">
     <tr>
         <th>{{ T "follow" 2 }}</th>
         <td>{{ formatBigInt .MemoFollowCount }}</td>
@@ -18,6 +18,14 @@
     <tr>
         <th>{{ T "Names_set" }}</th>
         <td>{{ formatBigInt .MemoSetNameCount }}</td>
+    </tr>
+    <tr>
+        <th>{{ T "Polls created" }}</th>
+        <td>{{ formatBigInt .MemoPollQuestionCount }}</td>
+    </tr>
+    <tr>
+        <th>{{ T "Poll votes" }}</th>
+        <td>{{ formatBigInt .MemoPollVoteCount }}</td>
     </tr>
     <tr>
         <th>{{ T "Total" }} On-chain Actions</th>

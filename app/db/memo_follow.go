@@ -2,12 +2,12 @@ package db
 
 import (
 	"bytes"
-	"github.com/memocash/memo/app/bitcoin/script"
-	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
 	"github.com/jchavannes/gorm"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/script"
+	"github.com/memocash/memo/app/bitcoin/wallet"
 	"html"
 	"time"
 )
@@ -255,4 +255,21 @@ func IsFollowing(followerPkHash []byte, followingPkHash []byte) (bool, error) {
 		return false, jerr.Get("error is follower query", err)
 	}
 	return cnt == 0, nil
+}
+
+func GetAllFollows(offset uint) ([]*MemoFollow, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	var memoFollows []*MemoFollow
+	result := db.
+		Limit(25).
+		Offset(offset).
+		Order("id ASC").
+		Find(&memoFollows)
+	if result.Error != nil {
+		return nil, jerr.Get("error running query", result.Error)
+	}
+	return memoFollows, nil
 }

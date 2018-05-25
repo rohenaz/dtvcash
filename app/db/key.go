@@ -192,3 +192,14 @@ func ContainsWatchedPkHash(pkHashes [][]byte) (bool, error) {
 	}
 	return len(keys) != 0, nil
 }
+
+func GetUserIdFromPkHash(pkHash []byte) (uint, error) {
+	var key Key
+	err := find(&key, Key{
+		PkHash: pkHash,
+	})
+	if err != nil {
+		return 0, jerr.Get("error getting key for user", err)
+	}
+	return key.UserId, nil
+}

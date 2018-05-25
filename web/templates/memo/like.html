@@ -2,7 +2,7 @@
 
 <h2>Like Memo</h2>
 
-{{ template "snippets/post.html" dict "Post" .Post "Compress" true "TimeZone" .TimeZone }}
+{{ template "snippets/post.html" dict "Post" .Post "Compress" true "TimeZone" .TimeZone "UserSettings" .UserSettings }}
 
 <form id="form-memo-like" method="post">
     <p>
@@ -10,21 +10,12 @@
     </p>
     <p>
         <label for="tip">Optional tip (min. 546)</label>
-        <input id="tip" type="text" name="tip" class="form-control" placeholder="0">
+        <input id="tip" type="text" name="tip" class="form-control" placeholder="0"
+               value="{{ .UserSettings.GetDefaultTipString }}">
     </p>
     <p>
-        <label for="password">Password</label>
-        <input id="password" type="password" name="password" class="form-control" placeholder="Password"
-               autocomplete="on" required>
-    </p>
-    <p>
-        <label for="save-password">
-            Save password
-        </label>
-        <input id="save-password" name="save-password" type="checkbox"/>
-    </p>
-    <p>
-        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Like">
+        <input class="btn btn-primary" type="submit" value="Like">
+        <a class="btn btn-default" href="post/{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
     </p>
 </form>
 

@@ -1,4 +1,5 @@
 {{ $tz := .TimeZone }}
+{{ $settings := .UserSettings }}
 {{ range .Posts }}
-{{ template "topics/post.html" dict "Post" . "Compress" false "TimeZone" $tz }}
+{{ template "topics/post.html" dict "Post" . "Compress" false "TimeZone" $tz "UserSettings" $settings }}
 {{ end }}

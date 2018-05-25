@@ -7,9 +7,9 @@ import (
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/bitcoin/script"
 	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/memocash/memo/app/util"
 	"html"
 	"net/url"
-	"sort"
 	"time"
 )
 
@@ -22,13 +22,15 @@ type MemoPost struct {
 	TxHash       []byte      `gorm:"unique;size:50"`
 	ParentHash   []byte
 	PkHash       []byte      `gorm:"index:pk_hash"`
-	PkScript     []byte
+	PkScript     []byte      `gorm:"size:500"`
 	Address      string
 	ParentTxHash []byte      `gorm:"index:parent_tx_hash"`
 	Parent       *MemoPost
 	Replies      []*MemoPost `gorm:"foreignkey:ParentTxHash"`
-	Topic        string      `gorm:"index:tag"`
-	Message      string
+	Topic        string      `gorm:"index:tag;size:500"`
+	Message      string      `gorm:"size:500"`
+	IsPoll       bool
+	IsVote       bool
 	BlockId      uint
 	Block        *Block
 	CreatedAt    time.Time
@@ -156,7 +158,7 @@ func GetPostReplyCounts(txHashes [][]byte) ([]TxHashCount, error) {
 		}
 		txHashCounts = append(txHashCounts, TxHashCount{
 			TxHash: txHash,
-			Count: count,
+			Count:  count,
 		})
 	}
 	return txHashCounts, nil
@@ -189,81 +191,6 @@ func GetPostReplies(txHash []byte, offset uint) ([]*MemoPost, error) {
 	return posts, nil
 }
 
-type memoPostSortByDate []*MemoPost
-
-func (txns memoPostSortByDate) Len() int      { return len(txns) }
-func (txns memoPostSortByDate) Swap(i, j int) { txns[i], txns[j] = txns[j], txns[i] }
-func (txns memoPostSortByDate) Less(i, j int) bool {
-	if bytes.Equal(txns[i].ParentHash, txns[j].TxHash) {
-		return true
-	}
-	if bytes.Equal(txns[i].TxHash, txns[j].ParentHash) {
-		return false
-	}
-	if txns[i].Block == nil && txns[j].Block == nil {
-		return txns[i].Id > txns[j].Id
-	}
-	if txns[i].Block == nil {
-		return true
-	}
-	if txns[j].Block == nil {
-		return false
-	}
-	if txns[i].Block.Height == txns[j].Block.Height {
-		return txns[i].Id > txns[j].Id
-	}
-	return txns[i].Block.Height > txns[j].Block.Height
-}
-
-type memoPostSortByDateAsc []*MemoPost
-
-func (txns memoPostSortByDateAsc) Len() int      { return len(txns) }
-func (txns memoPostSortByDateAsc) Swap(i, j int) { txns[i], txns[j] = txns[j], txns[i] }
-func (txns memoPostSortByDateAsc) Less(i, j int) bool {
-	if bytes.Equal(txns[i].ParentHash, txns[j].TxHash) {
-		return false
-	}
-	if bytes.Equal(txns[i].TxHash, txns[j].ParentHash) {
-		return true
-	}
-	if txns[i].Block == nil && txns[j].Block == nil {
-		return txns[i].Id < txns[j].Id
-	}
-	if txns[i].Block == nil {
-		return false
-	}
-	if txns[j].Block == nil {
-		return true
-	}
-	if txns[i].Block.Height == txns[j].Block.Height {
-		return txns[i].Id < txns[j].Id
-	}
-	return txns[i].Block.Height < txns[j].Block.Height
-}
-
-func GetPostsForPkHashes(pkHashes [][]byte, offset uint) ([]*MemoPost, error) {
-	if len(pkHashes) == 0 {
-		return nil, nil
-	}
-	var memoPosts []*MemoPost
-	db, err := getDb()
-	if err != nil {
-		return nil, jerr.Get("error getting db", err)
-	}
-	result := db.
-		Limit(25).
-		Offset(offset).
-		Preload(BlockTable).
-		Where("pk_hash in (?)", pkHashes).
-		Order("id DESC").
-		Find(&memoPosts)
-	if result.Error != nil {
-		return nil, jerr.Get("error getting memo posts", result.Error)
-	}
-	sort.Sort(memoPostSortByDate(memoPosts))
-	return memoPosts, nil
-}
-
 func GetPostsFeedForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 	var memoPosts []*MemoPost
 	db, err := getDb()
@@ -290,7 +217,6 @@ func GetPostsFeedForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
 	}
-	sort.Sort(memoPostSortByDate(memoPosts))
 	return memoPosts, nil
 }
 
@@ -314,16 +240,20 @@ func GetPostsForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
 	}
-	sort.Sort(memoPostSortByDate(memoPosts))
 	return memoPosts, nil
 }
 
-func GetUniqueMemoAPkHashes() ([][]byte, error) {
+func GetUniqueMemoAPkHashes(offset int) ([][]byte, error) {
 	db, err := getDb()
 	if err != nil {
 		return nil, jerr.Get("error getting db", err)
 	}
-	rows, err := db.Table("memo_posts").Select("DISTINCT(pk_hash)").Rows()
+	rows, err := db.
+		Table("memo_posts").
+		Select("DISTINCT(pk_hash)").
+		Limit(25).
+		Offset(offset).
+		Rows()
 	if err != nil {
 		return nil, jerr.Get("error getting distinct pk hashes", err)
 	}
@@ -351,12 +281,28 @@ func GetRecentPosts(offset uint) ([]*MemoPost, error) {
 		Limit(25).
 		Offset(offset).
 		Order("id DESC").
-		Where("address != ?", "15wck91ux5557CK4Wb42Vj6pqwdosgwd7H").
 		Find(&memoPosts)
 	if result.Error != nil {
 		return nil, jerr.Get("error running query", result.Error)
 	}
-	sort.Sort(memoPostSortByDate(memoPosts))
+	return memoPosts, nil
+}
+
+func GetRecentReplyPosts(offset uint) ([]*MemoPost, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	var memoPosts []*MemoPost
+	result := db.
+		Limit(25).
+		Offset(offset).
+		Order("id DESC").
+		Where("parent_tx_hash IS NOT NULL").
+		Find(&memoPosts)
+	if result.Error != nil {
+		return nil, jerr.Get("error running query", result.Error)
+	}
 	return memoPosts, nil
 }
 
@@ -404,6 +350,35 @@ func GetTopPosts(offset uint, timeStart time.Time, timeEnd time.Time) ([]*MemoPo
 	return sortedPosts, nil
 }
 
+const (
+	RankCountBoost int     = 60
+	RankGravity    float32 = 0.75
+)
+
+func GetRankedPosts(offset uint) ([]*MemoPost, error) {
+	db, err := getDb()
+	if err != nil {
+		return nil, jerr.Get("error getting db", err)
+	}
+	var coalescedTimestamp = "IF(COALESCE(blocks.timestamp, memo_posts.created_at) < memo_posts.created_at, blocks.timestamp, memo_posts.created_at)"
+	var scoreQuery = fmt.Sprintf("(COUNT(DISTINCT memo_likes.pk_hash)*%d-1)/POW(TIMESTAMPDIFF(MINUTE, "+coalescedTimestamp+", NOW())+2,%0.2f)", RankCountBoost, RankGravity)
+
+	var memoPosts []*MemoPost
+	result := db.
+		Joins("LEFT OUTER JOIN memo_likes ON (memo_posts.tx_hash = memo_likes.like_tx_hash)").
+		Joins("LEFT OUTER JOIN blocks ON (memo_posts.block_id = blocks.id)").
+		Where(coalescedTimestamp + " > DATE_SUB(NOW(), INTERVAL 3 DAY)").
+		Group("memo_posts.tx_hash").
+		Order(scoreQuery + " DESC").
+		Limit(25).
+		Offset(offset).
+		Find(&memoPosts)
+	if result.Error != nil {
+		return nil, jerr.Get("error running query", result.Error)
+	}
+	return memoPosts, nil
+}
+
 func GetPersonalizedTopPosts(selfPkHash []byte, offset uint, timeStart time.Time, timeEnd time.Time) ([]*MemoPost, error) {
 	topLikeTxHashes, err := GetPersonalizedRecentTopLikedTxHashes(selfPkHash, offset, timeStart, timeEnd)
 	if err != nil {
@@ -448,6 +423,10 @@ func (t Topic) GetUrlEncoded() string {
 	return url.QueryEscape(t.Name)
 }
 
+func (t Topic) GetTimeAgo() string {
+	return util.GetTimeAgo(t.RecentTime)
+}
+
 func GetUniqueTopics(offset uint, searchString string) ([]*Topic, error) {
 	db, err := getDb()
 	if err != nil {
@@ -455,7 +434,7 @@ func GetUniqueTopics(offset uint, searchString string) ([]*Topic, error) {
 	}
 	query := db.
 		Table("memo_posts").
-		Select("topic, MAX(memo_posts.created_at) AS max_time, COUNT(*)").
+		Select("topic, MAX(IF(COALESCE(blocks.timestamp, memo_posts.created_at) < memo_posts.created_at, blocks.timestamp, memo_posts.created_at)) AS max_time, COUNT(*)").
 		Joins("LEFT OUTER JOIN blocks ON (memo_posts.block_id = blocks.id)").
 		Group("topic").
 		Order("max_time DESC").
@@ -504,7 +483,9 @@ func GetPostsForTopic(topic string, offset uint) ([]*MemoPost, error) {
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
 	}
-	sort.Sort(memoPostSortByDateAsc(memoPosts))
+	for i, j := 0, len(memoPosts)-1; i < j; i, j = i+1, j-1 {
+		memoPosts[i], memoPosts[j] = memoPosts[j], memoPosts[i]
+	}
 	return memoPosts, nil
 }
 
@@ -528,6 +509,8 @@ func GetOlderPostsForTopic(topic string, firstPostId uint) ([]*MemoPost, error) 
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
 	}
-	sort.Sort(memoPostSortByDateAsc(memoPosts))
+	for i, j := 0, len(memoPosts)-1; i < j; i, j = i+1, j-1 {
+		memoPosts[i], memoPosts[j] = memoPosts[j], memoPosts[i]
+	}
 	return memoPosts, nil
 }

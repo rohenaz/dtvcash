@@ -2,12 +2,12 @@ package server
 
 import (
 	"bytes"
+	"github.com/jchavannes/jgo/jerr"
+	"github.com/jchavannes/jgo/web"
 	"github.com/memocash/memo/app/auth"
 	"github.com/memocash/memo/app/db"
 	"github.com/memocash/memo/app/profile"
 	"github.com/memocash/memo/app/res"
-	"github.com/jchavannes/jgo/jerr"
-	"github.com/jchavannes/jgo/web"
 	"net/http"
 	"strings"
 )
@@ -54,7 +54,7 @@ var indexRoute = web.Route{
 		}
 		r.Helper["Profile"] = pf
 
-		err = setFeed(r, key.PkHash)
+		err = setFeed(r, key.PkHash, user.Id)
 		if err != nil {
 			r.Error(jerr.Get("error setting feed", err), http.StatusInternalServerError)
 			return
@@ -68,6 +68,14 @@ var protocolRoute = web.Route{
 	Pattern: res.UrlProtocol,
 	Handler: func(r *web.Response) {
 		r.Helper["Title"] = "Memo - Protocol"
+		r.Render()
+	},
+}
+
+var guidesRoute = web.Route{
+	Pattern: res.UrlGuides,
+	Handler: func(r *web.Response) {
+		r.Helper["Title"] = "Memo - Guides"
 		r.Render()
 	},
 }
@@ -118,12 +126,12 @@ var feedRoute = web.Route{
 			return
 		}
 		r.Helper["Key"] = key
-		setFeed(r, key.PkHash)
+		setFeed(r, key.PkHash, user.Id)
 		r.Render()
 	},
 }
 
-func setFeed(r *web.Response, selfPkHash []byte) error {
+func setFeed(r *web.Response, selfPkHash []byte, userId uint) error {
 	offset := r.Request.GetUrlParameterInt("offset")
 	posts, err := profile.GetPostsFeed(selfPkHash, uint(offset))
 	if err != nil {
@@ -137,6 +145,10 @@ func setFeed(r *web.Response, selfPkHash []byte) error {
 	if err != nil {
 		return jerr.Get("error attaching likes to posts", err)
 	}
+	err = profile.AttachPollsToPosts(posts)
+	if err != nil {
+		return jerr.Get("error attaching polls to posts", err)
+	}
 	r.Helper["PostCount"] = len(posts)
 	for i := 0; i < len(posts); i++ {
 		post := posts[i]
@@ -144,6 +156,10 @@ func setFeed(r *web.Response, selfPkHash []byte) error {
 			posts = append(posts[:i], posts[i+1:]...)
 			i--
 		}
+	}
+	err = profile.SetShowMediaForPosts(posts, userId)
+	if err != nil {
+		return jerr.Get("error setting show media for posts", err)
 	}
 	r.Helper["Posts"] = posts
 	r.Helper["Offset"] = offset

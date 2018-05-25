@@ -2,15 +2,16 @@ package transaction
 
 import (
 	"bytes"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
+	"github.com/btcsuite/btcutil"
+	"github.com/jchavannes/btcd/txscript"
+	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/bitcoin/memo"
 	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
 	"github.com/memocash/memo/app/html-parser"
-	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/btcsuite/btcutil"
-	"github.com/jchavannes/btcd/txscript"
-	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/notify"
 )
 
 func GetMemoOutputIfExists(txn *db.Transaction) (*db.TransactionOut, error) {
@@ -90,6 +91,25 @@ func SaveMemo(txn *db.Transaction, out *db.TransactionOut, block *db.Block) erro
 		if err != nil {
 			return jerr.Get("error saving memo_post tag message", err)
 		}
+	case memo.CodePollCreate:
+		err = saveMemoPollQuestion(txn, out, blockId, inputAddress, parentHash)
+		if err != nil {
+			return jerr.Get("error saving memo_poll_question (single)", err)
+		}
+	case memo.CodePollOption:
+		err = saveMemoPollOption(txn, out, blockId, inputAddress, parentHash)
+		if err != nil {
+			return jerr.Get("error saving memo poll option", err)
+		}
+	case memo.CodePollVote:
+		err = saveMemoPollVote(txn, out, blockId, inputAddress, parentHash)
+		if err != nil {
+			return jerr.Get("error saving memo poll vote", err)
+		}
+		err = saveMemoVotePost(txn, out, blockId, inputAddress, parentHash)
+		if err != nil {
+			return jerr.Get("error saving memo poll vote post", err)
+		}
 	}
 	return nil
 }
@@ -140,12 +160,14 @@ func saveMemoPost(txn *db.Transaction, out *db.TransactionOut, blockId uint, inp
 		}
 		return nil
 	}
-	var message string
-	if len(out.PkScript) > 81 {
-		message = string(out.PkScript[6:])
-	} else {
-		message = string(out.PkScript[5:])
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from message", err)
 	}
+	if len(pushData) != 2 {
+		return jerr.Newf("invalid message, incorrect push data (%d)", len(pushData))
+	}
+	var message = string(pushData[1])
 	memoPost = &db.MemoPost{
 		TxHash:     txn.Hash,
 		PkHash:     inputAddress.ScriptAddress(),
@@ -178,12 +200,14 @@ func saveMemoSetName(txn *db.Transaction, out *db.TransactionOut, blockId uint, 
 		}
 		return nil
 	}
-	var name string
-	if len(out.PkScript) > 81 {
-		name = string(out.PkScript[6:])
-	} else {
-		name = string(out.PkScript[5:])
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from set name", err)
 	}
+	if len(pushData) != 2 {
+		return jerr.Newf("invalid set name, incorrect push data (%d)", len(pushData))
+	}
+	var name = string(pushData[1])
 	memoSetName = &db.MemoSetName{
 		TxHash:     txn.Hash,
 		PkHash:     inputAddress.ScriptAddress(),
@@ -238,6 +262,14 @@ func saveMemoFollow(txn *db.Transaction, out *db.TransactionOut, blockId uint, i
 	if err != nil && ! cache.IsMissError(err) {
 		return jerr.Get("error clearing cache", err)
 	}
+	if !unfollow {
+		go func() {
+			err = notify.AddNewFollowerNotification(memoFollow, true)
+			if err != nil {
+				jerr.Get("error adding new follower notification", err).Print()
+			}
+		}()
+	}
 	return nil
 }
 
@@ -289,6 +321,12 @@ func saveMemoLike(txn *db.Transaction, out *db.TransactionOut, blockId uint, inp
 	if err != nil {
 		return jerr.Get("error saving memo_like", err)
 	}
+	go func() {
+		err = notify.AddLikeNotification(memoLike, true)
+		if err != nil {
+			jerr.Get("error adding like notification", err).Print()
+		}
+	}()
 	return nil
 }
 
@@ -308,11 +346,19 @@ func saveMemoReply(txn *db.Transaction, out *db.TransactionOut, blockId uint, in
 		}
 		return nil
 	}
-
 	if len(out.PkScript) < 38 {
 		return jerr.Newf("invalid reply, length too short (%d)", len(out.PkScript))
 	}
-	txHash, err := chainhash.NewHash(out.PkScript[5:37])
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from memo reply message", err)
+	}
+	if len(pushData) != 3 {
+		return jerr.Newf("invalid reply message, incorrect push data (%d)", len(pushData))
+	}
+	var replyTxHash = pushData[1]
+	var messageRaw = pushData[2]
+	txHash, err := chainhash.NewHash(replyTxHash)
 	if err != nil {
 		return jerr.Get("error parsing transaction hash", err)
 	}
@@ -323,13 +369,19 @@ func saveMemoReply(txn *db.Transaction, out *db.TransactionOut, blockId uint, in
 		ParentHash:   parentHash,
 		Address:      inputAddress.EncodeAddress(),
 		ParentTxHash: txHash.CloneBytes(),
-		Message:      html_parser.EscapeWithEmojis(string(out.PkScript[38:])),
+		Message:      html_parser.EscapeWithEmojis(string(messageRaw)),
 		BlockId:      blockId,
 	}
 	err = memoPost.Save()
 	if err != nil {
 		return jerr.Get("error saving memo_reply", err)
 	}
+	go func() {
+		err = notify.AddReplyNotification(memoPost, true)
+		if err != nil {
+			jerr.Get("error adding reply notification", err).Print()
+		}
+	}()
 	return nil
 }
 
@@ -397,13 +449,14 @@ func saveMemoSetProfile(txn *db.Transaction, out *db.TransactionOut, blockId uin
 		}
 		return nil
 	}
-
-	var profile string
-	if len(out.PkScript) > 81 {
-		profile = string(out.PkScript[6:])
-	} else {
-		profile = string(out.PkScript[5:])
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from profile text", err)
 	}
+	if len(pushData) != 2 {
+		return jerr.Newf("invalid profile text, incorrect push data (%d)", len(pushData))
+	}
+	var profile = string(pushData[1])
 	memoSetProfile = &db.MemoSetProfile{
 		TxHash:     txn.Hash,
 		PkHash:     inputAddress.ScriptAddress(),
@@ -416,6 +469,231 @@ func saveMemoSetProfile(txn *db.Transaction, out *db.TransactionOut, blockId uin
 	err = memoSetProfile.Save()
 	if err != nil {
 		return jerr.Get("error saving memo_set_profile", err)
+	}
+	return nil
+}
+
+func saveMemoPollQuestion(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+	memoPost, err := db.GetMemoPost(txn.Hash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return jerr.Get("error getting memo_post", err)
+	}
+	if memoPost != nil {
+		if memoPost.BlockId != 0 || blockId == 0 {
+			return nil
+		}
+		memoPost.BlockId = blockId
+		err = memoPost.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_poll_question", err)
+		}
+		return nil
+	}
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from poll question", err)
+	}
+	if len(pushData) < 3 {
+		return jerr.Newf("invalid poll question, incorrect push data (%d)", len(pushData))
+	}
+	var pollType = memo.CodePollTypeSingle
+	if len(pushData) == 4 {
+		pollType = int(pushData[1][0])
+		pushData = pushData[1:]
+	}
+	if len(pushData[1]) == 0 {
+		return jerr.New("invalid push data for poll question, num options empty")
+	}
+	if len(pushData[2]) == 0 {
+		return jerr.New("invalid push data for poll question, question empty")
+	}
+	var numOptions = uint(pushData[1][0])
+	var question = string(pushData[2])
+	memoPost = &db.MemoPost{
+		TxHash:     txn.Hash,
+		PkHash:     inputAddress.ScriptAddress(),
+		PkScript:   out.PkScript,
+		Message:    html_parser.EscapeWithEmojis(question),
+		ParentHash: parentHash,
+		Address:    inputAddress.EncodeAddress(),
+		BlockId:    blockId,
+		IsPoll:     true,
+	}
+	err = memoPost.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_post for poll question", err)
+	}
+	memoPollQuestion := &db.MemoPollQuestion{
+		TxHash:     txn.Hash,
+		NumOptions: numOptions,
+		PollType:   pollType,
+	}
+	err = memoPollQuestion.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_set_profile", err)
+	}
+	return nil
+}
+
+func saveMemoPollOption(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+	memoPollOption, err := db.GetMemoPollOption(txn.Hash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return jerr.Get("error getting memo_poll_option", err)
+	}
+	if memoPollOption != nil {
+		if memoPollOption.BlockId != 0 || blockId == 0 {
+			return nil
+		}
+		memoPollOption.BlockId = blockId
+		err = memoPollOption.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_poll_option", err)
+		}
+		return nil
+	}
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from poll option", err)
+	}
+	if len(pushData) != 3 {
+		return jerr.Newf("invalid poll option, incorrect push data (%d)", len(pushData))
+	}
+	var pollTxHashRaw = pushData[1]
+	if len(pollTxHashRaw) == 0 {
+		return jerr.New("invalid push data for poll option, parent tx hash empty")
+	}
+	pollTxHash, err := chainhash.NewHash(pollTxHashRaw)
+	if err != nil {
+		return jerr.Get("error parsing transaction hash", err)
+	}
+	var option = string(pushData[2])
+	if len(option) == 0 {
+		return jerr.New("invalid push data for poll option, option empty")
+	}
+	memoPollOption = &db.MemoPollOption{
+		TxHash:     txn.Hash,
+		PkHash:     inputAddress.ScriptAddress(),
+		PkScript:   out.PkScript,
+		Option:     html_parser.EscapeWithEmojis(option),
+		PollTxHash: pollTxHash.CloneBytes(),
+		ParentHash: parentHash,
+		BlockId:    blockId,
+	}
+	err = memoPollOption.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_post for poll option", err)
+	}
+	return nil
+}
+
+func saveMemoPollVote(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+	memoPollVote, err := db.GetMemoPollVote(txn.Hash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return jerr.Get("error getting memo_poll_vote", err)
+	}
+	if memoPollVote != nil {
+		if memoPollVote.BlockId != 0 || blockId == 0 {
+			return nil
+		}
+		memoPollVote.BlockId = blockId
+		err = memoPollVote.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_poll_vote", err)
+		}
+		return nil
+	}
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from poll vote", err)
+	}
+	if len(pushData) < 2 {
+		return jerr.Newf("invalid poll vote, incorrect push data (%d)", len(pushData))
+	}
+	var optionTxHashRaw = pushData[1]
+	if len(optionTxHashRaw) == 0 {
+		return jerr.New("invalid push data for poll vote, option tx hash empty")
+	}
+	optionTxHash, err := chainhash.NewHash(optionTxHashRaw)
+	if err != nil {
+		return jerr.Get("error parsing option transaction hash", err)
+	}
+	var message string
+	if len(pushData) == 3 {
+		message = string(pushData[2])
+	}
+	var tipPkHash []byte
+	var tipAmount int64
+	for _, txOut := range txn.TxOut {
+		if len(txOut.KeyPkHash) == 0 || bytes.Equal(txOut.KeyPkHash, inputAddress.ScriptAddress()) {
+			continue
+		}
+		if len(tipPkHash) != 0 {
+			return jerr.New("error found multiple tip outputs, unable to process")
+		}
+		tipAmount += txOut.Value
+		tipPkHash = txOut.KeyPkHash
+	}
+	memoPollVote = &db.MemoPollVote{
+		TxHash:       txn.Hash,
+		PkHash:       inputAddress.ScriptAddress(),
+		PkScript:     out.PkScript,
+		Message:      html_parser.EscapeWithEmojis(message),
+		OptionTxHash: optionTxHash.CloneBytes(),
+		TipAmount:    tipAmount,
+		TipPkHash:    tipPkHash,
+		ParentHash:   parentHash,
+		BlockId:      blockId,
+	}
+	err = memoPollVote.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_post for poll vote", err)
+	}
+	return nil
+}
+
+func saveMemoVotePost(txn *db.Transaction, out *db.TransactionOut, blockId uint, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+	memoPost, err := db.GetMemoPost(txn.Hash)
+	if err != nil && ! db.IsRecordNotFoundError(err) {
+		return jerr.Get("error getting memo_post for poll vote", err)
+	}
+	if memoPost != nil {
+		if memoPost.BlockId != 0 || blockId == 0 {
+			return nil
+		}
+		memoPost.BlockId = blockId
+		err = memoPost.Save()
+		if err != nil {
+			return jerr.Get("error saving memo_post for poll vote", err)
+		}
+		return nil
+	}
+	pushData, err := txscript.PushedData(out.PkScript)
+	if err != nil {
+		return jerr.Get("error parsing push data from poll vote", err)
+	}
+	if len(pushData) < 2 {
+		return jerr.Newf("invalid poll vote, incorrect push data (%d)", len(pushData))
+	}
+	var message string
+	if len(pushData) == 3 {
+		message = string(pushData[2])
+	}
+	if message == "" {
+		return nil
+	}
+	memoPost = &db.MemoPost{
+		TxHash:     txn.Hash,
+		PkHash:     inputAddress.ScriptAddress(),
+		PkScript:   out.PkScript,
+		Message:    html_parser.EscapeWithEmojis(message),
+		ParentHash: parentHash,
+		Address:    inputAddress.EncodeAddress(),
+		BlockId:    blockId,
+		IsVote:     true,
+	}
+	err = memoPost.Save()
+	if err != nil {
+		return jerr.Get("error saving memo_post for poll vote", err)
 	}
 	return nil
 }

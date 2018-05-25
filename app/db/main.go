@@ -50,6 +50,12 @@ var dbInterfaces = []interface{}{
 	MemoLike{},
 	NodeStatus{},
 	MemoSetProfile{},
+	UserSettings{},
+	Notification{},
+	UserAction{},
+	MemoPollQuestion{},
+	MemoPollOption{},
+	MemoPollVote{},
 }
 
 func getDb() (*gorm.DB, error) {
@@ -84,6 +90,10 @@ func IsAlreadyExistsError(e error) bool {
 	return hasError(e, alreadyExistsErrorMessage)
 }
 
+func IsDuplicateEntryError(e error) bool {
+	return hasErrorPart(e, "Duplicate entry")
+}
+
 func hasError(e error, s string) bool {
 	if e == nil {
 		return false
@@ -94,6 +104,22 @@ func hasError(e error, s string) bool {
 	}
 	for _, errMessage := range err.Messages {
 		if errMessage == s {
+			return true
+		}
+	}
+	return false
+}
+
+func hasErrorPart(e error, s string) bool {
+	if e == nil {
+		return false
+	}
+	err, ok := e.(jerr.JError)
+	if !ok {
+		return strings.Contains(e.Error(), s)
+	}
+	for _, errMessage := range err.Messages {
+		if strings.Contains(errMessage, s) {
 			return true
 		}
 	}

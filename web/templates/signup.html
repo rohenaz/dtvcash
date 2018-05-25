@@ -1,61 +1,61 @@
 {{ template "snippets/header.html" . }}
 
-<h2>Sign Up</h2>
+<div class="col-md-6 col-md-offset-3">
 
-<p>
-    <i>
-        NOTE: This username is used for login purposes only and is not visible by anyone else.
-        Memo usernames are separate and require on-chain transactions using BCH.
-    </i>
-</p>
+    <h2>Account Signup</h2>
 
-<form id="form-signup" method="post">
-    <p>
-        <label for="username">Username</label>
-        <input id="username" type="text" name="username" class="form-control" placeholder="Username" autocomplete="on"
-               required autofocus>
-    </p>
-    <p>
-        <label for="password">Password</label>
-        <input id="password" type="password" name="password" class="form-control" placeholder="Password"
-               autocomplete="on" required>
-    </p>
-    <p>
-        <label for="retype-password">Retype Password</label>
-        <input id="retype-password" type="password" name="retype-password" class="form-control" placeholder="Password"
-               autocomplete="on" required>
-    </p>
-    <p>
-        <input type="radio" id="key-create" name="key-type" value="create" checked/>
-        <label for="key-create">Create Key</label>
-    </p>
-    <p>
-        <input type="radio" id="key-import" name="key-type" value="import"/>
-        <label for="key-import">Import Key</label>
-    </p>
-    <p id="private-key-field">
-        <label for="private-key">Private Key (WIF)</label>
-        <input id="private-key" type="password" name="private-key"/>
-    </p>
-    <p>
-        <input id="accept" name="accept" type="checkbox"/>
-        <label for="accept" style="max-width:500px;font-size:12px;">
-            Disclaimer: {{ template "snippets/disclaimer.html" }}
-        </label>
-    </p>
-    <p>
-        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign up"/>
-    </p>
-    <p>
-        Already have an account? <a href="login">Login here</a>.
-    </p>
-</form>
+    <form id="form-signup" method="post">
+        <p>
+            <label for="username">Username*</label>
+            <input id="username" type="text" name="username" class="form-control" placeholder="Username"
+                   required autofocus>
+            <span class="signup-notice">
+            * Your username is only used for logging in and will not be visible to anyone else
+        </span>
+        </p>
+        <p>
+            <label for="password">Password</label>
+            <input id="password" type="password" name="password" class="form-control" placeholder="Password"
+                   required>
+        </p>
+        <p>
+            <label for="retype-password">Retype Password</label>
+            <input id="retype-password" type="password" name="retype-password" class="form-control"
+                   placeholder="Password"
+                   required>
+        </p>
+        <p>
+            <input type="radio" id="key-create" name="key-type" value="create" checked/>
+            <label for="key-create">Create Key</label>
+        </p>
+        <p>
+            <input type="radio" id="key-import" name="key-type" value="import"/>
+            <label for="key-import">Import Key</label>
+        </p>
+        <p id="private-key-field">
+            <label for="private-key">Private Key (WIF)</label>
+            <input id="private-key" type="password" name="private-key"/>
+        </p>
+        <p class="disclaimer">
+            <input id="accept" name="accept" type="checkbox"/>
+            <label for="accept">
+                Disclaimer: {{ template "snippets/disclaimer.html" }}
+            </label>
+        </p>
+        <div class="clear"></div>
+        <p>
+            <br/>
+            <input class="btn btn-lg btn-primary btn-block" type="submit" value="Signup"/>
+            <br/>
+        </p>
+        <p class="other-link">
+            Already have an account? <a href="login">Login here</a>.
+            <br/>
+            <br/>
+        </p>
+    </form>
 
-<style type="text/css">
-    #private-key-field {
-        display: none;
-    }
-</style>
+</div>
 
 <script type="text/javascript">
     $(function () {

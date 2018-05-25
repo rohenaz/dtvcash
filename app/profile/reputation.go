@@ -3,9 +3,9 @@ package profile
 import (
 	"bytes"
 	"fmt"
+	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
-	"github.com/jchavannes/jgo/jerr"
 )
 
 type Reputation struct {
@@ -29,6 +29,9 @@ func (r Reputation) GetTotalFollowing() int {
 }
 
 func (r Reputation) GetPercentString() string {
+	if r.rep.TotalFollowing == 0 {
+		return "n/a"
+	}
 	return fmt.Sprintf("%.0f%%", float32(r.rep.TrustedFollowers)/float32(r.rep.TotalFollowing)*100)
 }
 

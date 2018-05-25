@@ -1,9 +1,9 @@
 (function () {
 
-    var maxPostBytes = 77;
-    var maxReplyBytes = 45;
+    var maxPostBytes = 217;
+    var maxReplyBytes = 184;
     var maxNameBytes = 77;
-    var maxProfileTextBytes = 77;
+    var maxProfileTextBytes = 217;
 
     /**
      * @param {jQuery} $ele
@@ -34,7 +34,6 @@
         }
 
         setMsgByteCount();
-        MemoApp.CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -54,13 +53,11 @@
                 return;
             }
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
                 return;
             }
-
-            MemoApp.CheckSavePassword($form);
 
             submitting = true;
             $.ajax({
@@ -116,7 +113,6 @@
         }
 
         setMsgByteCount();
-        MemoApp.CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -136,13 +132,11 @@
                 return;
             }
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
                 return;
             }
-
-            MemoApp.CheckSavePassword($form);
 
             submitting = true;
             $.ajax({
@@ -199,7 +193,6 @@
 
         setMsgByteCount();
 
-        MemoApp.CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -220,13 +213,11 @@
                 }
             }
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
                 return;
             }
-
-            MemoApp.CheckSavePassword($form);
 
             submitting = true;
             $.ajax({
@@ -265,7 +256,6 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.Follow = function ($form) {
-        MemoApp.CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -279,13 +269,11 @@
                 return;
             }
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
                 return;
             }
-
-            MemoApp.CheckSavePassword($form);
 
             submitting = true;
             $.ajax({
@@ -325,7 +313,6 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.Unfollow = function ($form) {
-        MemoApp.CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -339,13 +326,11 @@
                 return;
             }
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
                 return;
             }
-
-            MemoApp.CheckSavePassword($form);
 
             submitting = true;
             $.ajax({
@@ -384,7 +369,6 @@
      * @param {jQuery} $form
      */
     MemoApp.Form.Like = function ($form) {
-        MemoApp.CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -404,13 +388,11 @@
                 return;
             }
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
                 return;
             }
-
-            MemoApp.CheckSavePassword($form);
 
             submitting = true;
             $.ajax({
@@ -447,11 +429,18 @@
         });
     };
     /**
-     * @param {jQuery} $form
+     * @param {string} txHash
+     * @param {boolean} threaded
      */
-    MemoApp.Form.ReplyMemo = function ($form) {
+    MemoApp.Form.ReplyMemo = function (txHash, threaded) {
+        var $post = $("#post-" + txHash);
+        var $form = $("#reply-form-" + txHash);
+        var $replyCancel = $("#reply-cancel-" + txHash);
         var $message = $form.find("[name=message]");
         var $msgByteCount = $form.find(".message-byte-count");
+        var $replyLink = $("#reply-link-" + txHash);
+        var $broadcasting = $post.find(".broadcasting:eq(0)");
+        var $creating = $post.find(".creating:eq(0)");
         $message.on("input", function () {
             setMsgByteCount();
         });
@@ -466,8 +455,12 @@
             }
         }
 
+        $replyCancel.click(function(e) {
+            e.preventDefault();
+            $form.addClass("hidden");
+        });
+
         setMsgByteCount();
-        MemoApp.CheckLoadPassword($form);
         var submitting = false;
         $form.submit(function (e) {
             e.preventDefault();
@@ -487,18 +480,15 @@
                 return;
             }
 
-            var txHash = $form.find("[name=tx-hash]").val();
-            if (txHash.length === 0) {
-                alert("Form error, tx hash not set.");
-                return;
-            }
+            $creating.removeClass("hidden");
+            $replyLink.hide();
+            $form.hide();
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
                 return;
             }
-            MemoApp.CheckSavePassword($form);
 
             submitting = true;
             $.ajax({
@@ -509,13 +499,42 @@
                     message: message,
                     password: password
                 },
-                success: function (txHash) {
+                success: function (replyTxHash) {
                     submitting = false;
-                    if (!txHash || txHash.length === 0) {
+                    if (!replyTxHash || replyTxHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
-                    window.location = MemoApp.GetBaseUrl() + MemoApp.URL.MemoWait + "/" + txHash
+                    $creating.addClass("hidden");
+                    $broadcasting.removeClass("hidden");
+                    $.ajax({
+                        type: "POST",
+                        url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoWaitSubmit,
+                        data: {
+                            txHash: replyTxHash
+                        },
+                        success: function () {
+                            submitting = false;
+                            var url = MemoApp.URL.MemoPostAjax;
+                            if (threaded) {
+                                url = MemoApp.URL.MemoPostThreadedAjax
+                            }
+                            $.ajax({
+                                url: MemoApp.GetBaseUrl() + url + "/" + txHash,
+                                success: function (html) {
+                                    $("#post-" + txHash).replaceWith(html);
+                                },
+                                error: function (xhr) {
+                                    alert("error getting post via ajax (status: " + xhr.status + ")");
+                                }
+                            });
+                        },
+                        error: function () {
+                            submitting = false;
+                            $broadcasting.addClass("hidden");
+                            console.log("Error waiting for transaction to broadcast.");
+                        }
+                    });
                 },
                 error: function (xhr) {
                     submitting = false;
@@ -523,6 +542,11 @@
                         alert("Error unlocking key. " +
                             "Please verify your password is correct. " +
                             "If this problem persists, please try refreshing the page.");
+                        return;
+                    } else if (xhr.status === 402) {
+                        alert("Please make sure your account has enough funds. " +
+                            "Unable to find a spendable transaction output. " +
+                            "You may need to consolidate dust.")
                         return;
                     }
                     var errorMessage =
@@ -585,66 +609,61 @@
     };
 
     /**
-     * @param {jQuery} $like
      * @param {string} txHash
      */
-    MemoApp.Form.NewLike = function ($like, postTxHash) {
-        $like.find("#like-link-" + postTxHash).click(function (e) {
+    MemoApp.Form.ReplyLink = function(txHash) {
+        var $replyLink = $("#reply-link-" + txHash);
+        var $replyForm = $("#reply-form-" + txHash);
+        $replyLink.click(function(e) {
             e.preventDefault();
-            $("#like-info-" + postTxHash).hide();
-            $("#like-form-" + postTxHash).css({"display": "inline"});
+            $replyForm.removeClass("hidden");
         });
-        $like.find("#like-cancel-" + postTxHash).click(function (e) {
+    };
+
+    /**
+     * @param {jQuery} $like
+     * @param {string} txHash
+     * @param {boolean} threaded
+     */
+    MemoApp.Form.NewLike = function ($like, txHash, threaded) {
+        var $likeLink = $("#like-link-" + txHash);
+        var $likeCancel = $("#like-cancel-" + txHash);
+        var $likeInfo = $("#like-info-" + txHash);
+        var $likeForm = $("#like-form-" + txHash);
+        var $creating = $like.parent().find(".creating:eq(0)");
+        var $broadcasting = $like.parent().find(".broadcasting:eq(0)");
+
+        $likeLink.click(function (e) {
             e.preventDefault();
-            $("#like-info-" + postTxHash).show();
-            $("#like-form-" + postTxHash).css({"display": "none"});
+            $likeInfo.hide();
+            $likeForm.removeClass("hidden");
         });
-        var $form = $like.find("form");
-
-        var $passwordArea = $like.find(".password-area");
-        var $passwordClear = $like.find(".password-clear");
-
-        MemoApp.CheckLoadPassword($form);
-        if (localStorage.WalletPassword) {
-            $passwordArea.hide();
-            $passwordClear.addClass("show");
-        }
-        $passwordArea.find("[name=save-password]").change(function () {
-            if (this.checked) {
-                $passwordArea.hide();
-                $passwordClear.addClass("show");
-                MemoApp.CheckSavePassword($form);
-            }
+        $likeCancel.click(function (e) {
+            e.preventDefault();
+            $likeInfo.show();
+            $likeForm.addClass("hidden");
         });
-
-        var $broadcasting = $like.find(".broadcasting");
 
         var submitting = false;
-        $form.submit(function (e) {
+        $likeForm.submit(function (e) {
             e.preventDefault();
             if (submitting) {
                 return
             }
 
-            var txHash = $form.find("[name=tx-hash]").val();
-            if (txHash.length === 0) {
-                alert("Form error, tx hash not set.");
-                return;
-            }
-
-            var tip = $form.find("[name=tip]").val();
+            var tip = $likeForm.find("[name=tip]").val();
             if (tip.length !== 0 && tip < 546) {
                 alert("Must enter a tip greater than 546 (the minimum dust limit).");
                 return;
             }
+            $creating.removeClass("hidden");
+            $likeForm.hide();
 
-            var password = $form.find("[name=password]").val();
-            if (password.length === 0) {
-                alert("Must enter a password.");
+            var password = MemoApp.GetPassword();
+            if (!password.length) {
+                console.log("Password not set. Please try logging in again.");
                 return;
             }
-
-            MemoApp.CheckSavePassword($form);
 
             submitting = true;
             $.ajax({
@@ -655,26 +674,30 @@
                     tip: tip,
                     password: password
                 },
-                success: function (txHash) {
+                success: function (likeTxHash) {
                     submitting = false;
-                    if (!txHash || txHash.length === 0) {
+                    if (!likeTxHash || likeTxHash.length === 0) {
                         alert("Server error. Please try refreshing the page.");
                         return
                     }
-                    $broadcasting.addClass("show");
-                    $form.hide();
+                    $creating.addClass("hidden");
+                    $broadcasting.removeClass("hidden");
                     $.ajax({
                         type: "POST",
                         url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoWaitSubmit,
                         data: {
-                            txHash: txHash
+                            txHash: likeTxHash
                         },
                         success: function () {
                             submitting = false;
+                            var url = MemoApp.URL.MemoPostAjax;
+                            if (threaded) {
+                                url = MemoApp.URL.MemoPostThreadedAjax
+                            }
                             $.ajax({
-                                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostAjax + "/" + postTxHash,
+                                url: MemoApp.GetBaseUrl() + url + "/" + txHash,
                                 success: function (html) {
-                                    $("#post-" + postTxHash).replaceWith(html);
+                                    $("#post-" + txHash).replaceWith(html);
                                 },
                                 error: function (xhr) {
                                     alert("error getting post via ajax (status: " + xhr.status + ")");
@@ -683,7 +706,7 @@
                         },
                         error: function () {
                             submitting = false;
-                            $broadcasting.removeClass("show");
+                            $broadcasting.addClass("hidden");
                             console.log("Error waiting for transaction to broadcast.");
                         }
                     });
@@ -694,6 +717,11 @@
                         alert("Error unlocking key. " +
                             "Please verify your password is correct. " +
                             "If this problem persists, please try refreshing the page.");
+                        return;
+                    } else if (xhr.status === 402) {
+                        alert("Please make sure your account has enough funds. " +
+                            "Unable to find a spendable transaction output. " +
+                            "You may need to consolidate dust.");
                         return;
                     }
                     var errorMessage =
@@ -733,7 +761,7 @@
         $link.click(function (e) {
             e.preventDefault();
             $.ajax({
-                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostThreadedAjax,
+                url: MemoApp.GetBaseUrl() + MemoApp.URL.MemoPostMoreThreadedAjax,
                 data: {
                     txHash: txHash,
                     offset: offset + 25
