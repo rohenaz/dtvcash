@@ -699,6 +699,13 @@ table.poll-results td:nth-of-type(2) {
     font-style: italic;
     margin-left: 10px;
 }
+.votes-table tr td:nth-of-type(1) {
+    word-break: break-word;
+}
+.votes-table tr td:nth-of-type(4) {
+    width: 150px;
+    min-width: 150px;
+}
 
 
 body.dark #new-poll-form .glyphicon-remove {
