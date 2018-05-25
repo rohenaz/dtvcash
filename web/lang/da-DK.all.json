@@ -97,7 +97,10 @@
   },
   {
     "id": "like",
-    "translation": ""
+    "translation": {
+      "one": "",
+      "other": ""
+    }
   },
   {
     "id": "replies",
@@ -201,7 +204,10 @@
   },
   {
     "id": "follow",
-    "translation": ""
+    "translation": {
+      "one": "",
+      "other": ""
+    }
   },
   {
     "id": "unfollow",
@@ -265,6 +271,61 @@
   },
   {
     "id": "Guides",
+    "translation": ""
+  },
+  {
+    "id": "Signup",
+    "translation": ""
+  },
+  {
+    "id": "Memo",
+    "translation": ""
+  },
+  {
+    "id": "Poll",
+    "translation": ""
+  },
+  {
+    "id": "Notifications",
+    "translation": ""
+  },
+  {
+    "id": "Settings",
+    "translation": ""
+  },
+  {
+    "id": "new_poll",
+    "translation": ""
+  },
+  {
+    "id": "type",
+    "translation": ""
+  },
+  {
+    "id": "select_one_option",
+    "translation": ""
+  },
+  {
+    "id": "select_multiple_options",
+    "translation": ""
+  },
+  {
+    "id": "question",
+    "translation": ""
+  },
+  {
+    "id": "option",
+    "translation": {
+      "one": "",
+      "other": ""
+    }
+  },
+  {
+    "id": "add_option",
+    "translation": ""
+  },
+  {
+    "id": "create_poll",
     "translation": ""
   }
 ]
