@@ -571,12 +571,8 @@ func AttachPollsToPosts(posts []*Post) error {
 				Question:   question,
 				SelfPkHash: post.SelfPkHash,
 			}
-			var optionHashes [][]byte
-			for _, option := range question.Options {
-				optionHashes = append(optionHashes, option.TxHash)
-			}
 			single := question.PollType == memo.CodePollTypeSingle
-			votes, err := db.GetVotesForOptions(optionHashes, single)
+			votes, err := db.GetVotesForOptions(question.TxHash, single)
 			if err != nil {
 				if db.IsRecordNotFoundError(err) {
 					continue

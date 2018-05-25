@@ -43,3 +43,11 @@ func GetMemoPollQuestion(txHash []byte) (*MemoPollQuestion, error) {
 	}
 	return &memoPollQuestion, nil
 }
+
+func GetCountMemoPollQuestion() (uint, error) {
+	cnt, err := count(&MemoPollQuestion{})
+	if err != nil {
+		return 0, jerr.Get("error getting total count", err)
+	}
+	return cnt, nil
+}

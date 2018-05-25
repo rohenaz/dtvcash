@@ -20,6 +20,14 @@
         <td>{{ formatBigInt .MemoSetNameCount }}</td>
     </tr>
     <tr>
+        <th>{{ T "Polls created" }}</th>
+        <td>{{ formatBigInt .MemoPollQuestionCount }}</td>
+    </tr>
+    <tr>
+        <th>{{ T "Poll votes" }}</th>
+        <td>{{ formatBigInt .MemoPollVoteCount }}</td>
+    </tr>
+    <tr>
         <th>{{ T "Total" }} On-chain Actions</th>
         <th>{{ formatBigInt .MemoTotalActionCount }}</th>
     </tr>

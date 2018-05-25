@@ -6,6 +6,7 @@ import (
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/bitcoin/memo"
 	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/util"
 )
 
 type Vote struct {
@@ -24,6 +25,15 @@ func (v Vote) GetTxHashString() string {
 	return v.Vote.GetTransactionHashString()
 }
 
+func (v Vote) GetTimeAgo() string {
+	if v.Vote.Block != nil && v.Vote.Block.Timestamp.Before(v.Vote.CreatedAt) {
+		ts := v.Vote.Block.Timestamp
+		return util.GetTimeAgo(ts)
+	} else {
+		return util.GetTimeAgo(v.Vote.CreatedAt)
+	}
+}
+
 func GetVotesForTxHash(txHash []byte) ([]*Vote, error) {
 	question, err := db.GetMemoPollQuestion(txHash)
 	if err != nil {
@@ -33,12 +43,8 @@ func GetVotesForTxHash(txHash []byte) ([]*Vote, error) {
 	if numOptions < 2 || int(question.NumOptions) != numOptions {
 		return nil, jerr.Get("invalid question", err)
 	}
-	var optionHashes [][]byte
-	for _, option := range question.Options {
-		optionHashes = append(optionHashes, option.TxHash)
-	}
 	single := question.PollType == memo.CodePollTypeSingle
-	dbVotes, err := db.GetVotesForOptions(optionHashes, single)
+	dbVotes, err := db.GetVotesForOptions(question.TxHash, single)
 	if err != nil {
 		if db.IsRecordNotFoundError(err) {
 			return []*Vote{}, nil
