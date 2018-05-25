@@ -4,7 +4,7 @@
 
 <div class="col-md-8 col-md-offset-2">
 
-    <h2 class="center">Notifications</h2>
+    <h2 class="center">{{ T "Notifications" }}</h2>
 
 {{ if and (eq .NextOffset 25) (lt (len .Notifications) 25) }}{{ else }}
     <p class="pagination">

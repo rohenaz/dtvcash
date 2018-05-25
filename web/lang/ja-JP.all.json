@@ -97,7 +97,10 @@
   },
   {
     "id": "like",
-    "translation": "いいね"
+    "translation": {
+      "one": "いいね",
+      "other": "いいね"
+    }
   },
   {
     "id": "replies",
@@ -116,7 +119,7 @@
     "translation": "パーソナライズ"
   },
   {
-    "id": "new",
+    "id": "New",
     "translation": "新着"
   },
   {
@@ -201,7 +204,10 @@
   },
   {
     "id": "follow",
-    "translation": "フォロー"
+    "translation": {
+      "one": "フォロー",
+      "other": "フォロー"
+    }
   },
   {
     "id": "unfollow",
@@ -270,5 +276,21 @@
   {
     "id": "Signup",
     "translation": "サインアップ"
+  },
+  {
+    "id": "Memo",
+    "translation": "投稿"
+  },
+  {
+    "id": "Poll",
+    "translation": "投票"
+  },
+  {
+    "id": "Notifications",
+    "translation": "通知"
+  },
+  {
+    "id": "Settings",
+    "translation": "設定"
   }
 ]

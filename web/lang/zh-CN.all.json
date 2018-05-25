@@ -97,7 +97,10 @@
   },
   {
     "id": "like",
-    "translation": "点赞"
+    "translation": {
+      "one": "点赞",
+      "other": "点赞"
+    }
   },
   {
     "id": "replies",
@@ -116,7 +119,7 @@
     "translation": "个性化"
   },
   {
-    "id": "new",
+    "id": "New",
     "translation": "新"
   },
   {
@@ -201,7 +204,10 @@
   },
   {
     "id": "follow",
-    "translation": "关注"
+    "translation": {
+      "one": "关注",
+      "other": "关注"
+    }
   },
   {
     "id": "unfollow",
@@ -270,5 +276,21 @@
   {
     "id": "Signup",
     "translation": "注册"
+  },
+  {
+    "id": "Memo",
+    "translation": "记事本"
+  },
+  {
+    "id": "Poll",
+    "translation": "轮询"
+  },
+  {
+    "id": "Notifications",
+    "translation": "通知"
+  },
+  {
+    "id": "Settings",
+    "translation": "设置"
   }
 ]

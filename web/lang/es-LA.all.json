@@ -119,7 +119,7 @@
     "translation": "Perzonalido"
   },
   {
-    "id": "new",
+    "id": "New",
     "translation": "Nuevo"
   },
   {
@@ -276,5 +276,21 @@
   {
     "id": "Signup",
     "translation": "Regístrate"
+  },
+  {
+    "id": "Memo",
+    "translation": "Memo"
+  },
+  {
+    "id": "Poll",
+    "translation": "Encuesta"
+  },
+  {
+    "id": "Notifications",
+    "translation": "Notificaciones"
+  },
+  {
+    "id": "Settings",
+    "translation": "Configuraciones"
   }
 ]
