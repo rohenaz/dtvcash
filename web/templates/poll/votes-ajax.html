@@ -5,6 +5,7 @@
             <th>Name</th>
             <th>Option</th>
             <th>Tip</th>
+            <th>Time</th>
             <th>Message</th>
         </tr>
         </thead>
@@ -14,6 +15,7 @@
             <td><a href="profile/{{ .GetProfileHashString }}">{{ .Name }}</a></td>
             <td>{{ .Option }}</td>
             <td>{{ .Tip }}</td>
+            <td>{{ .GetTimeAgo }}</td>
             <td>{{ if .Message }}<a href="post/{{ .GetTxHashString }}">{{ .Message }}</a>{{ end }}</td>
         </tr>
         {{ end }}

@@ -6,6 +6,7 @@ import (
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/memocash/memo/app/bitcoin/memo"
 	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/util"
 )
 
 type Vote struct {
@@ -22,6 +23,15 @@ func (v Vote) GetProfileHashString() string {
 
 func (v Vote) GetTxHashString() string {
 	return v.Vote.GetTransactionHashString()
+}
+
+func (v Vote) GetTimeAgo() string {
+	if v.Vote.Block != nil && v.Vote.Block.Timestamp.Before(v.Vote.CreatedAt) {
+		ts := v.Vote.Block.Timestamp
+		return util.GetTimeAgo(ts)
+	} else {
+		return util.GetTimeAgo(v.Vote.CreatedAt)
+	}
 }
 
 func GetVotesForTxHash(txHash []byte) ([]*Vote, error) {

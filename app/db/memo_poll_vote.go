@@ -74,6 +74,7 @@ func GetVotesForOptions(options [][]byte, single bool) ([]*MemoPollVote, error) 
 	}
 	result := db.
 		Where("option_tx_hash IN (?)", options).
+		Order("created_at DESC").
 		Find(&memoPollVotes)
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo poll votes", result.Error)
