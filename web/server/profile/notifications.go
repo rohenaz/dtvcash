@@ -3,11 +3,11 @@ package profile
 import (
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
-	"github.com/memocash/memo/app/auth"
-	"github.com/memocash/memo/app/cache"
-	"github.com/memocash/memo/app/db"
-	"github.com/memocash/memo/app/notify"
-	"github.com/memocash/memo/app/res"
+	"github.com/rohenaz/dtvcash/app/auth"
+	"github.com/rohenaz/dtvcash/app/cache"
+	"github.com/rohenaz/dtvcash/app/db"
+	"github.com/rohenaz/dtvcash/app/notify"
+	"github.com/rohenaz/dtvcash/app/res"
 	"net/http"
 )
 

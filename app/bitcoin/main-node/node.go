@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/jchavannes/btcd/peer"
 	"github.com/jchavannes/btcd/wire"
-	"github.com/memocash/memo/app/bitcoin/wallet"
-	"github.com/memocash/memo/app/config"
-	"github.com/memocash/memo/app/db"
+	"github.com/rohenaz/dtvcash/app/bitcoin/wallet"
+	"github.com/rohenaz/dtvcash/app/config"
+	"github.com/rohenaz/dtvcash/app/db"
 	"log"
 	"net"
 )

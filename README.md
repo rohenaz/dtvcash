@@ -10,7 +10,7 @@
 
 - Get repo
     ```sh
-    go get github.com/memocash/memo/...
+    go get github.com/rohenaz/dtvcash/...
     ```
 
 - Create config.yaml

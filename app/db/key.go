@@ -2,8 +2,8 @@ package db
 
 import (
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/bitcoin/wallet"
-	"github.com/memocash/memo/app/crypto"
+	"github.com/rohenaz/dtvcash/app/bitcoin/wallet"
+	"github.com/rohenaz/dtvcash/app/crypto"
 	"time"
 )
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/db"
+	"github.com/rohenaz/dtvcash/app/db"
 )
 
 func onVerAck(n *Node, msg *wire.MsgVerAck) {

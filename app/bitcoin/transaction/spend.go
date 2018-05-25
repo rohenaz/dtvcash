@@ -1,7 +1,7 @@
 package transaction
 
 import (
-	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/rohenaz/dtvcash/app/bitcoin/wallet"
 )
 
 type SpendOutput struct {

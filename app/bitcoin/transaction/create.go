@@ -7,9 +7,9 @@ import (
 	"github.com/jchavannes/btcd/txscript"
 	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/bitcoin/memo"
-	"github.com/memocash/memo/app/bitcoin/wallet"
-	"github.com/memocash/memo/app/db"
+	"github.com/rohenaz/dtvcash/app/bitcoin/memo"
+	"github.com/rohenaz/dtvcash/app/bitcoin/wallet"
+	"github.com/rohenaz/dtvcash/app/db"
 )
 
 const DustMinimumOutput int64 = 546

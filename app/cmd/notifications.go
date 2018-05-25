@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/db"
-	"github.com/memocash/memo/app/notify"
+	"github.com/rohenaz/dtvcash/app/db"
+	"github.com/rohenaz/dtvcash/app/notify"
 	"github.com/spf13/cobra"
 )
 

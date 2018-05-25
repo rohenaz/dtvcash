@@ -5,7 +5,7 @@ import (
 	"encoding/gob"
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/config"
+	"github.com/rohenaz/dtvcash/app/config"
 )
 
 var conn *memcache.Client

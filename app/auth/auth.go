@@ -2,7 +2,7 @@ package auth
 
 import (
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/db"
+	"github.com/rohenaz/dtvcash/app/db"
 )
 
 func IsLoggedIn(cookieId string) bool {
@@ -11,7 +11,7 @@ func IsLoggedIn(cookieId string) bool {
 		panic(jerr.Get("error getting session from db", err))
 		return false
 	}
-	if session.UserId > 0 && ! session.HasLoggedOut {
+	if session.UserId > 0 && !session.HasLoggedOut {
 		return true
 	}
 	return false

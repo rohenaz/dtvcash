@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/memocash/memo/app/db"
-	"github.com/memocash/memo/app/html-parser"
+	"github.com/rohenaz/dtvcash/app/db"
+	"github.com/rohenaz/dtvcash/app/html-parser"
 	"github.com/spf13/cobra"
 	"log"
 )

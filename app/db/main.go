@@ -6,7 +6,7 @@ import (
 	"github.com/jchavannes/gorm"
 	_ "github.com/jchavannes/gorm/dialects/mysql"
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/config"
+	"github.com/rohenaz/dtvcash/app/config"
 	"reflect"
 	"strings"
 	"unicode"

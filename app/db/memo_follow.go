@@ -6,8 +6,8 @@ import (
 	"github.com/btcsuite/btcutil"
 	"github.com/jchavannes/gorm"
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/bitcoin/script"
-	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/rohenaz/dtvcash/app/bitcoin/script"
+	"github.com/rohenaz/dtvcash/app/bitcoin/wallet"
 	"html"
 	"time"
 )

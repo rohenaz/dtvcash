@@ -2,7 +2,7 @@ package notify
 
 import (
 	"time"
-	"github.com/memocash/memo/app/util"
+	"github.com/rohenaz/dtvcash/app/util"
 )
 
 type Generic interface {

@@ -3,8 +3,8 @@ package topics
 import (
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
-	"github.com/memocash/memo/app/res"
-	"github.com/memocash/memo/app/watcher"
+	"github.com/rohenaz/dtvcash/app/res"
+	"github.com/rohenaz/dtvcash/app/watcher"
 	"net/http"
 	"net/url"
 )

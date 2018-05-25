@@ -3,7 +3,7 @@ package cache
 import (
 	"fmt"
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/db"
+	"github.com/rohenaz/dtvcash/app/db"
 )
 
 type UnreadNotifications struct {

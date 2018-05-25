@@ -2,8 +2,8 @@ package profile
 
 import (
 	"bytes"
-	"github.com/memocash/memo/app/bitcoin/wallet"
-	"github.com/memocash/memo/app/db"
+	"github.com/rohenaz/dtvcash/app/bitcoin/wallet"
+	"github.com/rohenaz/dtvcash/app/db"
 	"github.com/btcsuite/btcutil"
 	"github.com/jchavannes/jgo/jerr"
 )

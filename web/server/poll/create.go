@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
-	"github.com/memocash/memo/app/auth"
-	"github.com/memocash/memo/app/bitcoin/memo"
-	"github.com/memocash/memo/app/bitcoin/transaction"
-	"github.com/memocash/memo/app/db"
-	"github.com/memocash/memo/app/mutex"
-	"github.com/memocash/memo/app/res"
+	"github.com/rohenaz/dtvcash/app/auth"
+	"github.com/rohenaz/dtvcash/app/bitcoin/memo"
+	"github.com/rohenaz/dtvcash/app/bitcoin/transaction"
+	"github.com/rohenaz/dtvcash/app/db"
+	"github.com/rohenaz/dtvcash/app/mutex"
+	"github.com/rohenaz/dtvcash/app/res"
 	"net/http"
 )
 

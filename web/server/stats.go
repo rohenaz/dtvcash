@@ -3,8 +3,8 @@ package server
 import (
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
-	"github.com/memocash/memo/app/db"
-	"github.com/memocash/memo/app/res"
+	"github.com/rohenaz/dtvcash/app/db"
+	"github.com/rohenaz/dtvcash/app/res"
 	"net/http"
 )
 

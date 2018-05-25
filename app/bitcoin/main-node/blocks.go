@@ -6,8 +6,8 @@ import (
 	"github.com/jchavannes/bchutil"
 	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/bitcoin/transaction"
-	"github.com/memocash/memo/app/db"
+	"github.com/rohenaz/dtvcash/app/bitcoin/transaction"
+	"github.com/rohenaz/dtvcash/app/db"
 )
 
 const MinCheckHeight = 525000

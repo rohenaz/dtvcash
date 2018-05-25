@@ -2,7 +2,7 @@ package wallet
 
 import (
 	"fmt"
-	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/rohenaz/dtvcash/app/bitcoin/wallet"
 	"github.com/jchavannes/jgo/jerr"
 	"testing"
 )

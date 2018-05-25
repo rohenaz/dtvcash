@@ -2,7 +2,7 @@ package transaction
 
 import (
 	"bytes"
-	"github.com/memocash/memo/app/db"
+	"github.com/rohenaz/dtvcash/app/db"
 )
 
 func GetPkHashesFromTxn(dbTxn *db.Transaction) [][]byte {

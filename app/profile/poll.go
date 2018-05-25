@@ -2,8 +2,8 @@ package profile
 
 import (
 	"bytes"
-	"github.com/memocash/memo/app/bitcoin/memo"
-	"github.com/memocash/memo/app/db"
+	"github.com/rohenaz/dtvcash/app/bitcoin/memo"
+	"github.com/rohenaz/dtvcash/app/db"
 )
 
 type Poll struct {

@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/memocash/memo/app/db"
+	"github.com/rohenaz/dtvcash/app/db"
 	"github.com/spf13/cobra"
 	"log"
 )

@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"github.com/memocash/memo/app/db"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/rohenaz/dtvcash/app/db"
 	"golang.org/x/crypto/bcrypt"
 )
 

@@ -4,8 +4,8 @@ import (
 	"github.com/jchavannes/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
-	"github.com/memocash/memo/app/profile"
-	"github.com/memocash/memo/app/res"
+	"github.com/rohenaz/dtvcash/app/profile"
+	"github.com/rohenaz/dtvcash/app/res"
 	"net/http"
 )
 

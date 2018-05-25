@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/bitcoin/wallet"
-	"github.com/memocash/memo/app/db"
+	"github.com/rohenaz/dtvcash/app/bitcoin/wallet"
+	"github.com/rohenaz/dtvcash/app/db"
 	"time"
 )
 

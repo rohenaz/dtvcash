@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/memocash/memo/app/bitcoin/main-node"
+	"github.com/rohenaz/dtvcash/app/bitcoin/main-node"
 	"github.com/spf13/cobra"
 	"os"
 )

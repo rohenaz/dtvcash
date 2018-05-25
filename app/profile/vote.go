@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/bitcoin/memo"
-	"github.com/memocash/memo/app/db"
-	"github.com/memocash/memo/app/util"
+	"github.com/rohenaz/dtvcash/app/bitcoin/memo"
+	"github.com/rohenaz/dtvcash/app/db"
+	"github.com/rohenaz/dtvcash/app/util"
 )
 
 type Vote struct {

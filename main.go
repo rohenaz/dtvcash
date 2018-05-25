@@ -1,6 +1,6 @@
 package main
 
-import "github.com/memocash/memo/app/cmd"
+import "github.com/rohenaz/dtvcash/app/cmd"
 
 func main() {
 	cmd.Execute()

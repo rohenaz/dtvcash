@@ -3,7 +3,7 @@ package crypto_test
 import (
 	"fmt"
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/crypto"
+	"github.com/rohenaz/dtvcash/app/crypto"
 	"testing"
 )
 

@@ -3,7 +3,7 @@ package notify
 import (
 	"bytes"
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/db"
+	"github.com/rohenaz/dtvcash/app/db"
 )
 
 func GetNotificationsFeed(pkHash []byte, offset uint) ([]*Notification, error) {

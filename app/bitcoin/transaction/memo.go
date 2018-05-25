@@ -6,12 +6,12 @@ import (
 	"github.com/btcsuite/btcutil"
 	"github.com/jchavannes/btcd/txscript"
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/bitcoin/memo"
-	"github.com/memocash/memo/app/bitcoin/wallet"
-	"github.com/memocash/memo/app/cache"
-	"github.com/memocash/memo/app/db"
-	"github.com/memocash/memo/app/html-parser"
-	"github.com/memocash/memo/app/notify"
+	"github.com/rohenaz/dtvcash/app/bitcoin/memo"
+	"github.com/rohenaz/dtvcash/app/bitcoin/wallet"
+	"github.com/rohenaz/dtvcash/app/cache"
+	"github.com/rohenaz/dtvcash/app/db"
+	"github.com/rohenaz/dtvcash/app/html-parser"
+	"github.com/rohenaz/dtvcash/app/notify"
 )
 
 func GetMemoOutputIfExists(txn *db.Transaction) (*db.TransactionOut, error) {

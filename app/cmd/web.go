@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"github.com/jchavannes/jgo/jlog"
-	"github.com/memocash/memo/app/res"
-	"github.com/memocash/memo/web/server"
+	"github.com/rohenaz/dtvcash/app/res"
+	"github.com/rohenaz/dtvcash/web/server"
 	"github.com/spf13/cobra"
 	"math/rand"
 )

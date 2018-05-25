@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"github.com/memocash/memo/app/db"
+	"github.com/rohenaz/dtvcash/app/db"
 	"github.com/jchavannes/jgo/jerr"
 )
 

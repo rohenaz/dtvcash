@@ -3,7 +3,7 @@ package db
 import (
 	"github.com/jchavannes/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/bitcoin/wallet"
+	"github.com/rohenaz/dtvcash/app/bitcoin/wallet"
 	"time"
 )
 

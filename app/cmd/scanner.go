@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/jchavannes/jgo/jerr"
-	"github.com/memocash/memo/app/bitcoin/scanner"
+	"github.com/rohenaz/dtvcash/app/bitcoin/scanner"
 	"github.com/spf13/cobra"
 	"strconv"
 )
