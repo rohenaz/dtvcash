@@ -89,9 +89,15 @@ const (
 	UrlTopicsMorePosts    = "/topics/more-posts"
 	UrlTopicsPostAjax     = "/topics/post-ajax"
 
-	TmplTopicView  = "/topics/view"
-	TmplTopicPost  = "/topics/post"
-	TmplTopicPosts = "/topics/posts"
+	TmplTopicView = "/topics/view"
+	TmplTopicPost = "/topics/post"
+)
+
+const (
+	UrlPollCreate       = "/poll/create"
+	UrlPollCreateSubmit = "/poll/create-submit"
+	UrlPollVoteSubmit   = "/poll/vote-submit"
+	UrlPollVotesAjax    = "/poll/votes-ajax"
 )
 
 const (

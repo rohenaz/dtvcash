@@ -12,7 +12,7 @@
 <form id="form-new-topic-message" method="post">
     <input type="hidden" name="topic" value="{{ .Topic }}"/>
     <p>
-        <label for="message">{{ T "message" }} <span class="message-byte-count"></span></label>
+        <label for="message">{{ T "message" }} <span class="message-byte-count byte-count"></span></label>
         <input id="message" type="text" name="message" class="form-control" placeholder="{{ T "message" }}"
                required/>
     </p>

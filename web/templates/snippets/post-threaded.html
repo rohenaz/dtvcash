@@ -40,6 +40,10 @@
     {{ .Post.GetMessage }}
     </p>
 
+{{ if .Post.IsPoll }}
+    {{ template "snippets/poll.html" dict "Post" .Post "Threaded" false }}
+{{ end }}
+
 {{ if .Post.Likes }}
     <p>
     {{ len .Post.Likes }} likes -

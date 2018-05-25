@@ -1,4 +1,4 @@
-package memo
+package poll
 
 import (
 	"fmt"
@@ -10,68 +10,14 @@ import (
 	"github.com/memocash/memo/app/bitcoin/memo"
 	"github.com/memocash/memo/app/bitcoin/transaction"
 	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/html-parser"
 	"github.com/memocash/memo/app/mutex"
-	"github.com/memocash/memo/app/profile"
 	"github.com/memocash/memo/app/res"
 	"net/http"
 )
 
-var likeRoute = web.Route{
-	Pattern:    res.UrlMemoLike + "/" + urlTxHash.UrlPart(),
-	NeedsLogin: true,
-	Handler: func(r *web.Response) {
-		txHashString := r.Request.GetUrlNamedQueryVariable(urlTxHash.Id)
-		txHash, err := chainhash.NewHashFromStr(txHashString)
-		if err != nil {
-			r.Error(jerr.Get("error getting transaction hash", err), http.StatusInternalServerError)
-			return
-		}
-		user, err := auth.GetSessionUser(r.Session.CookieId)
-		if err != nil {
-			r.Error(jerr.Get("error getting session user", err), http.StatusInternalServerError)
-			return
-		}
-		key, err := db.GetKeyForUser(user.Id)
-		if err != nil {
-			r.Error(jerr.Get("error getting key for user", err), http.StatusInternalServerError)
-			return
-		}
-		hasSpendableTxOut, err := db.HasSpendable(key.PkHash)
-		if err != nil {
-			r.Error(jerr.Get("error getting spendable tx out", err), http.StatusInternalServerError)
-			return
-		}
-		if ! hasSpendableTxOut {
-			r.SetRedirect(res.UrlNeedFunds)
-			return
-		}
-		post, err := profile.GetPostByTxHashWithReplies(txHash.CloneBytes(), key.PkHash, 0)
-		if err != nil {
-			r.Error(jerr.Get("error getting post", err), http.StatusInternalServerError)
-			return
-		}
-		err = profile.AttachParentToPosts([]*profile.Post{post})
-		if err != nil {
-			r.Error(jerr.Get("error attaching parent to post", err), http.StatusInternalServerError)
-			return
-		}
-		err = profile.AttachPollsToPosts([]*profile.Post{post})
-		if err != nil {
-			r.Error(jerr.Get("error attaching polls to posts", err), http.StatusInternalServerError)
-			return
-		}
-		err = profile.AttachLikesToPosts([]*profile.Post{post})
-		if err != nil {
-			r.Error(jerr.Get("error attaching likes to posts", err), http.StatusInternalServerError)
-			return
-		}
-		r.Helper["Post"] = post
-		r.RenderTemplate(res.UrlMemoLike)
-	},
-}
-
-var likeSubmitRoute = web.Route{
-	Pattern:     res.UrlMemoLikeSubmit,
+var voteSubmitRoute = web.Route{
+	Pattern:     res.UrlPollVoteSubmit,
 	NeedsLogin:  true,
 	CsrfProtect: true,
 	Handler: func(r *web.Response) {
@@ -81,7 +27,10 @@ var likeSubmitRoute = web.Route{
 			r.Error(jerr.Get("error getting transaction hash", err), http.StatusInternalServerError)
 			return
 		}
-		memoPost, err := db.GetMemoPost(txHash.CloneBytes())
+		option := html_parser.EscapeWithEmojis(r.Request.GetFormValue("option"))
+		message := r.Request.GetFormValue("message")
+
+		memoPollOption, err := db.GetMemoPollOptionByOption(txHash.CloneBytes(), option)
 		if err != nil {
 			r.Error(jerr.Get("error getting memo_post", err), http.StatusInternalServerError)
 			return
@@ -106,17 +55,18 @@ var likeSubmitRoute = web.Route{
 		}
 
 		userAddress := key.GetAddress()
-		postAddress := memoPost.GetAddress()
+		postAddress := memoPollOption.GetAddress()
 
 		var tx *wire.MsgTx
 
-		var fee = int64(memo.MaxTxFee - memo.MaxPostSize + len(txHash.CloneBytes()))
+		var fee = int64(memo.MaxTxFee - memo.MaxVoteCommentSize + len(message))
 		tip := int64(r.Request.GetFormValueInt("tip"))
 		var minInput = fee + transaction.DustMinimumOutput + tip
 
 		transactions := []transaction.SpendOutput{{
-			Type: transaction.SpendOutputTypeMemoLike,
-			Data: txHash.CloneBytes(),
+			Type:    transaction.SpendOutputTypeMemoPollVote,
+			Data:    memoPollOption.TxHash,
+			RefData: []byte(message),
 		}}
 
 		mutex.Lock(key.PkHash)

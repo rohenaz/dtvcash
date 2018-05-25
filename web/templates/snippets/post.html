@@ -28,7 +28,8 @@
         {{ else }}
             {{ T "posted" }}
         {{ end }}
-            <a title="{{ .Post.GetTimeString .TimeZone }}" href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeAgo }}</a>
+            <a title="{{ .Post.GetTimeString .TimeZone }}"
+               href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ .Post.GetTimeAgo }}</a>
         {{- if .Post.Memo.Topic }}
             in <a href="topic/{{ .Post.Memo.GetUrlEncodedTopic }}">{{ .Post.Memo.Topic }}</a>
         {{ end }}
@@ -48,6 +49,9 @@
     <p class="message">
     {{ .Post.GetMessage }}
     </p>
+{{ if .Post.IsPoll }}
+    {{ template "snippets/poll.html" dict "Post" .Post "Threaded" false }}
+{{ end }}
     <p class="likes">
         <i>
             <a href="post/{{ .Post.Memo.GetTransactionHashString }}">{{ len .Post.Likes }} {{ T "likes" }}</a>
@@ -60,7 +64,8 @@
 {{ if not .Compress }}
     <div class="actions">
     {{ if .Post.IsLoggedIn }}
-        <a id="reply-link-{{ .Post.Memo.GetTransactionHashString }}" class="btn btn-default" href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">
+        <a id="reply-link-{{ .Post.Memo.GetTransactionHashString }}" class="btn btn-default"
+           href="memo/reply/{{ .Post.Memo.GetTransactionHashString }}">
             <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>{{ T "reply" }}
         </a>
         <span class="creating hidden btn btn-warning">Creating...</span>
@@ -68,7 +73,8 @@
         <div class="like" id="like-{{ .Post.Memo.GetTransactionHashString }}">
             <span class="like-info" id="like-info-{{ .Post.Memo.GetTransactionHashString }}">
                 <a class="btn btn-default like-link" id="like-link-{{ .Post.Memo.GetTransactionHashString }}"
-                   href="#"><span class="glyphicon glyphicon-heart{{ if not .Post.HasLiked }}-empty{{ end }}" aria-hidden="true"></span>{{ T "like" 1 }}</a>
+                   href="#"><span class="glyphicon glyphicon-heart{{ if not .Post.HasLiked }}-empty{{ end }}"
+                                  aria-hidden="true"></span>{{ T "like" 1 }}</a>
             </span>
             <form class="like-form hidden form-inline" id="like-form-{{ .Post.Memo.GetTransactionHashString }}">
                 <label for="tip-{{ .Post.Memo.GetTransactionHashString }}">Tip</label>
@@ -76,7 +82,8 @@
                        class="form-control input-sm"
                        placeholder="0" value="{{ .UserSettings.GetDefaultTipString }}"/>
                 <input class="btn btn-sm btn-primary" type="submit" value="Like">
-                <a href="#" class="like-cancel btn btn-sm btn-default" id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
+                <a href="#" class="like-cancel btn btn-sm btn-default"
+                   id="like-cancel-{{ .Post.Memo.GetTransactionHashString }}">Cancel</a>
             </form>
         </div>
     {{ end }}
@@ -92,7 +99,7 @@
 </div>
 
 <script type="text/javascript">
-    (function() {
+    (function () {
         var foreground = {{ if eq .UserSettings.Theme "dark" }}[224, 224, 224, 255]{{ else }}[0, 0, 0, 255]{{ end }};
         var background = [0, 0, 0, 0];
         var data = new Identicon('{{ .Post.Memo.GetAddressString }}', {

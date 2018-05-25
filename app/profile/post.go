@@ -3,12 +3,13 @@ package profile
 import (
 	"bytes"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/memo"
 	"github.com/memocash/memo/app/cache"
 	"github.com/memocash/memo/app/db"
+	"github.com/memocash/memo/app/util"
 	"regexp"
 	"strings"
 	"time"
-	"github.com/memocash/memo/app/util"
 )
 
 type Post struct {
@@ -22,6 +23,7 @@ type Post struct {
 	Replies    []*Post
 	Reputation *Reputation
 	ShowMedia  bool
+	Poll       *Poll
 }
 
 func (p Post) IsSelf() bool {
@@ -52,6 +54,17 @@ func (p Post) GetMessage() string {
 	}
 	msg = addLinks(msg)
 	return msg
+}
+
+func (p Post) IsPoll() bool {
+	if !p.Memo.IsPoll || p.Poll == nil {
+		return false
+	}
+	numOptions := len(p.Poll.Question.Options)
+	if numOptions >= 2 && int(p.Poll.Question.NumOptions) == numOptions {
+		return true
+	}
+	return false
 }
 
 func addYoutubeVideos(msg string) string {
@@ -536,6 +549,39 @@ func SetShowMediaForPosts(posts []*Post, userId uint) error {
 	if settings.Integrations == db.SettingIntegrationsAll {
 		for _, post := range posts {
 			post.ShowMedia = true
+		}
+	}
+	return nil
+}
+
+func AttachPollsToPosts(posts []*Post) error {
+	for _, post := range posts {
+		if post.Memo.IsPoll {
+			question, err := db.GetMemoPollQuestion(post.Memo.TxHash)
+			if err != nil {
+				return jerr.Get("error getting memo poll question", err)
+			}
+			numOptions := len(question.Options)
+			if numOptions < 2 || int(question.NumOptions) != numOptions {
+				continue
+			}
+			post.Poll = &Poll{
+				Question:   question,
+				SelfPkHash: post.SelfPkHash,
+			}
+			var optionHashes [][]byte
+			for _, option := range question.Options {
+				optionHashes = append(optionHashes, option.TxHash)
+			}
+			single := question.PollType == memo.CodePollTypeSingle
+			votes, err := db.GetVotesForOptions(optionHashes, single)
+			if err != nil {
+				if db.IsRecordNotFoundError(err) {
+					continue
+				}
+				return jerr.Get("error getting votes for options", err)
+			}
+			post.Poll.Votes = votes
 		}
 	}
 	return nil

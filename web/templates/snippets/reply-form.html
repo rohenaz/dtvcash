@@ -1,6 +1,6 @@
 <form class="reply-form {{ if .Hidden }}hidden{{ end }}" id="reply-form-{{ .Post.Memo.GetTransactionHashString }}" method="post">
     <p>
-        <label for="message-{{ .Post.Memo.GetTransactionHashString }}">Message <span class="message-byte-count"></span></label>
+        <label for="message-{{ .Post.Memo.GetTransactionHashString }}">Message <span class="message-byte-count byte-count"></span></label>
         <textarea id="message-{{ .Post.Memo.GetTransactionHashString }}" type="text" name="message" class="form-control"
                   placeholder="Message" required></textarea>
     </p>

@@ -4,13 +4,15 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
-	"github.com/memocash/memo/app/bitcoin/script"
-	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
 	"github.com/jchavannes/btcd/txscript"
 	"github.com/jchavannes/jgo/jerr"
+	"github.com/memocash/memo/app/bitcoin/memo"
+	"github.com/memocash/memo/app/bitcoin/script"
+	"github.com/memocash/memo/app/bitcoin/wallet"
 	"html"
+	"sort"
 	"strings"
 	"time"
 )
@@ -157,6 +159,45 @@ func GetSpendableTxOut(pkHash []byte, fee int64) (*TransactionOut, error) {
 		return nil, jerr.New("unable to find an output to spend")
 	}
 	return txOut, nil
+}
+
+type txOutSortByValue []*TransactionOut
+
+func (txOuts txOutSortByValue) Len() int      { return len(txOuts) }
+func (txOuts txOutSortByValue) Swap(i, j int) { txOuts[i], txOuts[j] = txOuts[j], txOuts[i] }
+func (txOuts txOutSortByValue) Less(i, j int) bool {
+	return txOuts[i].Value > txOuts[j].Value
+}
+
+func GetSpendableTxOuts(pkHash []byte, fee int64) ([]*TransactionOut, error) {
+	transactions, err := GetTransactionsForPkHash(pkHash)
+	if err != nil {
+		return nil, jerr.Get("error getting transactions", err)
+	}
+	var spendableOuts []*TransactionOut
+	for _, txn := range transactions {
+		for _, out := range txn.TxOut {
+			if out.TxnInHashString == "" && bytes.Equal(out.KeyPkHash, pkHash) {
+				spendableOuts = append(spendableOuts, out)
+			}
+		}
+	}
+	sort.Sort(txOutSortByValue(spendableOuts))
+	var outsToUse []*TransactionOut
+	var totalValue int64
+	for _, spendableOut := range spendableOuts {
+		outsToUse = append(outsToUse, spendableOut)
+		totalValue += spendableOut.Value
+		if totalValue > fee {
+			break
+		}
+		fee += memo.AdditionalInputFee
+	}
+
+	if totalValue < fee {
+		return nil, jerr.New("unable to find enough value to spend")
+	}
+	return outsToUse, nil
 }
 
 func HasSpendable(pkHash []byte) (bool, error) {

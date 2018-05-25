@@ -105,6 +105,13 @@ var waitSubmitRoute = web.Route{
 				return
 			}
 			r.Write(strings.TrimLeft(res.UrlTopicView + "/" + post.Topic, "/"))
+		case memo.CodePollOption:
+			memoPollOption, err := db.GetMemoPollOption(txHash.CloneBytes())
+			if err != nil {
+				r.Error(jerr.Get("error getting memo_poll_option from db", err), http.StatusInternalServerError)
+				return
+			}
+			r.Write(strings.TrimLeft(res.UrlMemoPost + "/" + memoPollOption.GetPollTransactionHashString(), "/"))
 		}
 	},
 }

@@ -2,9 +2,9 @@ package transaction
 
 import (
 	"fmt"
-	"github.com/memocash/memo/app/bitcoin/wallet"
 	"github.com/jchavannes/btcd/txscript"
 	"github.com/jchavannes/btcd/wire"
+	"github.com/memocash/memo/app/bitcoin/wallet"
 )
 
 func GetTxInfo(msg *wire.MsgTx) string {
