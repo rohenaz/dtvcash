@@ -2,6 +2,7 @@ package main_node
 
 import (
 	"fmt"
+
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/btcd/wire"
 	"github.com/jchavannes/jgo/jerr"
@@ -9,7 +10,7 @@ import (
 )
 
 func onTx(n *Node, msg *wire.MsgTx) {
-	if !n.HeaderSyncComplete || !n.BlocksSyncComplete  {
+	if !n.HeaderSyncComplete || !n.BlocksSyncComplete {
 		return
 	}
 	savedTxn, memoTxn, err := transaction.ConditionallySaveTransaction(msg, nil)
@@ -18,6 +19,7 @@ func onTx(n *Node, msg *wire.MsgTx) {
 	}
 	if savedTxn {
 		if memoTxn {
+			// ToDo - Send websocket message if its a post
 			fmt.Println("Saved unconfirmed memo txn")
 		} else {
 			fmt.Println("Saved unconfirmed txn")

@@ -20,6 +20,24 @@
     <script type="text/javascript" src="{{ $file }}"></script>
 {{- end }}
 
+    <script>
+        if (window["WebSocket"]) {
+            ws = new WebSocket('ws://localhost:8261/ws')
+            /* Handle Connect */
+            ws.onopen = function(evt) {
+                console.log('connection opened')
+            }
+            /* Handle Disconnect */
+            ws.onclose = function(evt) {
+                console.log('connection closed')
+            }
+            /* Incoming websocket message */
+            ws.onmessage = function(evt) {
+                console.log('got we message')
+            }
+        }
+    </script>
+
     <script type="text/javascript">
         $(function () {
             MemoApp.InitTimeZone();

@@ -200,3 +200,10 @@ var newPostsRoute = web.Route{
 		r.SetRedirect(res.UrlPostsNew)
 	},
 }
+
+var websocketRoute = web.Route{
+	Pattern: res.UrlWebsocket,
+	Handler: func(r *web.Response) {
+		r.GetWebSocket()
+	}
+}
