@@ -205,6 +205,9 @@ var newPostsRoute = web.Route{
 var websocketRoute = web.Route{
 	Pattern: res.UrlWebsocket,
 	Handler: func(r *web.Response) {
-		r.GetWebSocket()
+		socket, err := r.GetWebSocket()
+		if err != nil {
+			r.Error(jerr.Get("error opening socket", err), http.StatusInternalServerError)
+		}
 	},
 }
