@@ -2,14 +2,15 @@ package profile
 
 import (
 	"bytes"
+	"regexp"
+	"strings"
+	"time"
+
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/rohenaz/dtvcash/app/bitcoin/memo"
 	"github.com/rohenaz/dtvcash/app/cache"
 	"github.com/rohenaz/dtvcash/app/db"
 	"github.com/rohenaz/dtvcash/app/util"
-	"regexp"
-	"strings"
-	"time"
 )
 
 type Post struct {
@@ -58,7 +59,7 @@ func (p Post) GetMessage() string {
 	return msg
 }
 
-func (p Post) HasMagnet bool {
+func (p Post) HasMagnet() bool {
 	var re = regexp.MustCompile(`(magnet:\?xt=urn:btih:[a-z0-9]{40})`)
 	if re {
 		return true
@@ -180,7 +181,7 @@ func GetPostsFeed(selfPkHash []byte, offset uint) ([]*Post, error) {
 	names := make(map[string]string)
 	for _, pkHash := range foundPkHashes {
 		setName, err := db.GetNameForPkHash(pkHash)
-		if err != nil && ! db.IsRecordNotFoundError(err) {
+		if err != nil && !db.IsRecordNotFoundError(err) {
 			return nil, jerr.Get("error getting name for hash", err)
 		}
 		if setName == nil {
@@ -333,7 +334,7 @@ func GetRecentPosts(selfPkHash []byte, offset uint) ([]*Post, error) {
 	for _, dbPost := range dbPosts {
 		var name string
 		setName, err := db.GetNameForPkHash(dbPost.PkHash)
-		if err != nil && ! db.IsRecordNotFoundError(err) {
+		if err != nil && !db.IsRecordNotFoundError(err) {
 			return nil, jerr.Get("error getting name for hash", err)
 		}
 		if setName != nil {
@@ -428,7 +429,7 @@ func GetTopPosts(selfPkHash []byte, offset uint, timeStart time.Time, timeEnd ti
 	for _, dbPost := range dbPosts {
 		var name string
 		setName, err := db.GetNameForPkHash(dbPost.PkHash)
-		if err != nil && ! db.IsRecordNotFoundError(err) {
+		if err != nil && !db.IsRecordNotFoundError(err) {
 			return nil, jerr.Get("error getting name for hash", err)
 		}
 		if setName != nil {
@@ -458,7 +459,7 @@ func GetPostsForTopic(tag string, selfPkHash []byte, offset uint) ([]*Post, erro
 	for _, dbPost := range dbPosts {
 		var name string
 		setName, err := db.GetNameForPkHash(dbPost.PkHash)
-		if err != nil && ! db.IsRecordNotFoundError(err) {
+		if err != nil && !db.IsRecordNotFoundError(err) {
 			return nil, jerr.Get("error getting name for hash", err)
 		}
 		if setName != nil {
@@ -483,7 +484,7 @@ func GetOlderPostsForTopic(tag string, selfPkHash []byte, firstPostId uint) ([]*
 	for _, dbPost := range dbPosts {
 		var name string
 		setName, err := db.GetNameForPkHash(dbPost.PkHash)
-		if err != nil && ! db.IsRecordNotFoundError(err) {
+		if err != nil && !db.IsRecordNotFoundError(err) {
 			return nil, jerr.Get("error getting name for hash", err)
 		}
 		if setName != nil {
