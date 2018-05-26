@@ -12,7 +12,7 @@ html {
 }
 
 a {
-    color: #00AAff;
+    color: #2b2b2b;
 }
 
 h1 {
@@ -296,10 +296,7 @@ img.identicon {
     display: inline-block;
     margin-right: 10px;
 }
-.posts-nav a:hover,
-.posts-nav a.sel {
-    text-decoration: underline;
-}
+
 span.page {
     display: inline-block;
     margin: 0 10px;
@@ -426,9 +423,7 @@ span.page {
     color: #000;
     text-decoration: none;
 }
-.topic-post .name a:hover {
-    text-decoration: underline;
-}
+
 .topic-post .name .time {
     font-weight: normal;
     font-size: 12px;
@@ -504,9 +499,7 @@ span.page {
     font-style: italic;
     text-decoration: none;
 }
-#password-clear a:hover {
-    text-decoration: underline;
-}
+
 .search-form {
     display: inline;
     margin-bottom: 0;
