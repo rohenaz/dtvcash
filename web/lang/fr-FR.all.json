@@ -171,6 +171,10 @@
     "translation": "posté a"
   },
   {
+    "id": "posted",
+    "translation": "posté"
+  },
+  {
     "id": "view_on_block_explorer",
     "translation": "Voir sur le Block Explorer"
   },
@@ -264,5 +268,64 @@
   {
     "id": "Delete_Account",
     "translation": "Supprimer mon compte"
+  },
+  {
+    "id": "Guides",
+    "translation": "Guides"
+  },
+  {
+    "id": "Signup",
+    "translation": "S'inscrire"
+  },
+  {
+    "id": "Memo",
+    "translation": "Memo"
+  },
+  {
+    "id": "Poll",
+    "translation": "Sondage"
+  },
+  {
+    "id": "Notifications",
+    "translation": "Notifications"
+  },
+  {
+    "id": "Settings",
+    "translation": "Paramètres"
+  },
+  {
+    "id": "new_poll",
+    "translation": "nouveau sondage"
+  },
+  {
+    "id": "type",
+    "translation": "genre"
+  },
+  {
+    "id": "select_one_option",
+    "translation": "Un vote par adresse"
+  },
+  {
+    "id": "select_multiple_options",
+    "translation": "Beaucoup de votes par adresse"
+  },
+  {
+    "id": "question",
+    "translation": "question"
+  },
+  {
+    "id": "option",
+    "translation": {
+      "one": "option",
+      "other": "options"
+    }
+  },
+  {
+    "id": "add_option",
+    "translation": "ajouter une option"
+  },
+  {
+    "id": "create_poll",
+    "translation": "créer un sondage"
   }
 ]
