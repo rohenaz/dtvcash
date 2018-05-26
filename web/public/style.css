@@ -12,7 +12,7 @@ html {
 }
 
 a {
-    color: #30ccff;
+    color: #00AAff;
 }
 
 h1 {
@@ -256,6 +256,7 @@ img.identicon {
     width: 24px;
     height: 24px;
     margin-right: 3px;
+    opacity: .25;
 }
 .reply img.identicon {
     width: 18px;
