@@ -202,12 +202,28 @@ var newPostsRoute = web.Route{
 	},
 }
 
+/* Structures */
+type Message struct {
+	Name string
+	Body string
+	Time int64
+}
+
 var websocketRoute = web.Route{
 	Pattern: res.UrlWebsocket,
 	Handler: func(r *web.Response) {
 		socket, err := r.GetWebSocket()
 		if err != nil {
 			r.Error(jerr.Get("error opening socket", err), http.StatusInternalServerError)
+		}
+
+		msg := new(Message)
+
+		conn := socket.ws
+		err := conn.WriteJSON(msg)
+
+		if err != nil {
+			r.Error(jerr.Get("error opening socket 2", err), http.StatusInternalServerError)
 		}
 	},
 }
