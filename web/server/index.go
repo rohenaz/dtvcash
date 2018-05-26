@@ -219,8 +219,7 @@ var websocketRoute = web.Route{
 
 		msg := new(Message)
 
-		conn := socket.ws
-		err = conn.WriteJSON(msg)
+		err = socket.WriteJSON(msg)
 
 		if err != nil {
 			r.Error(jerr.Get("error opening socket 2", err), http.StatusInternalServerError)
