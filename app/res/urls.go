@@ -20,6 +20,7 @@ const (
 	UrlFeed         = "/feed"
 	UrlAbout        = "/about"
 	UrlNotFound     = "/404"
+	UrlWebsocket    = "/ws"
 )
 
 const (
