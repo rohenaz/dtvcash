@@ -202,26 +202,26 @@ var newPostsRoute = web.Route{
 	},
 }
 
-type Message struct {
-	Name string
-	Body string
-	Time int64
-}
+// type Message struct {
+// 	Name string
+// 	Body string
+// 	Time int64
+// }
 
-var websocketRoute = web.Route{
-	Pattern: res.UrlWebsocket,
-	Handler: func(r *web.Response) {
-		socket, err := r.GetWebSocket()
-		if err != nil {
-			r.Error(jerr.Get("error opening socket", err), http.StatusInternalServerError)
-		}
+// // var websocketRoute = web.Route{
+// // 	Pattern: res.UrlWebsocket,
+// // 	Handler: func(r *web.Response) {
+// // 		socket, err := r.GetWebSocket()
+// // 		if err != nil {
+// // 			r.Error(jerr.Get("error opening socket", err), http.StatusInternalServerError)
+// // 		}
 
-		msg := new(Message)
+// // 		msg := new(Message)
 
-		err = socket.WriteJSON(msg)
+// // 		err = socket.WriteJSON(msg)
 
-		if err != nil {
-			r.Error(jerr.Get("error opening socket 2", err), http.StatusInternalServerError)
-		}
-	},
-}
+// // 		if err != nil {
+// // 			r.Error(jerr.Get("error opening socket 2", err), http.StatusInternalServerError)
+// // 		}
+// // 	},
+// // }
