@@ -60,7 +60,7 @@
 {{if .Post.HasMagnet}}
     <script type="text/javascript">
         var client = new WebTorrent()
-        var torrentId = {{.Post.MagnetLink}}
+        var torrentId = '{{.Post.MagnetLink}}'
         client.add(torrentId, function (torrent) {
         // Torrents can contain many files. Let's use the .mp4 file
         var file = torrent.files.find(function (file) {
