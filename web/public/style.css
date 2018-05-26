@@ -193,7 +193,7 @@ a.disabled {
 }
 .post .message {
     margin: 12px 0;
-    font-size: 32px;
+    font-size: 28px;
 }
 .post .likes {
     margin: 10px 0;
@@ -813,17 +813,17 @@ body.dark .dropdown-menu .divider {
 }
 body.dark .dropdown-menu>li>a:focus,
 body.dark .dropdown-menu>li>a:hover {
-    color: #5e992b;
+    color: #30ccff;
     background: #2b3e50;
 }
 body.dark .navbar-default .navbar-brand {
-    color: #5e992b;
+    color: #30ccff;
 }
 body.dark table.notifications-table td.like {
     color: #f00;
 }
 body.dark table.notifications-table td.reply {
-    color: #5e992b;
+    color: #30ccff;
 }
 body.dark .notify-post .reply {
     border-color: #3e5973;
