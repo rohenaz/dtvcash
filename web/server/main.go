@@ -1,8 +1,14 @@
 package server
 
 import (
+	"io/ioutil"
+	"log"
+	"net/http"
+	"strings"
+
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
+	"github.com/nicksnyder/go-i18n/i18n"
 	"github.com/rohenaz/dtvcash/app/auth"
 	"github.com/rohenaz/dtvcash/app/bitcoin/queuer"
 	"github.com/rohenaz/dtvcash/app/cache"
@@ -15,17 +21,12 @@ import (
 	"github.com/rohenaz/dtvcash/web/server/posts"
 	"github.com/rohenaz/dtvcash/web/server/profile"
 	"github.com/rohenaz/dtvcash/web/server/topics"
-	"github.com/nicksnyder/go-i18n/i18n"
-	"io/ioutil"
-	"log"
-	"net/http"
-	"strings"
 )
 
 var UseMinJS bool
 
 func isLoggedIn(r *web.Response) bool {
-	if ! auth.IsLoggedIn(r.Session.CookieId) {
+	if !auth.IsLoggedIn(r.Session.CookieId) {
 		r.SetRedirect(res.UrlLogin)
 		return false
 	}
@@ -53,15 +54,13 @@ func preHandler(r *web.Response) {
 			return
 		}
 	}
-	r.Helper["Title"] = "Memo"
+	r.Helper["Title"] = "DTV.Cash"
 	r.Helper["Description"] = "Decentralized on-chain social network built on Bitcoin Cash"
 	r.Helper["BaseUrl"] = res.GetBaseUrl(r)
-	if r.Request.HttpRequest.Host != "memo.cash" {
+	if r.Request.HttpRequest.Host != "dtv.cash" {
 		r.Helper["Dev"] = true
-		r.Helper["GoogleId"] = "UA-23518512-10"
 	} else {
 		r.Helper["Dev"] = false
-		r.Helper["GoogleId"] = "UA-23518512-9"
 	}
 	if auth.IsLoggedIn(r.Session.CookieId) {
 		user, err := auth.GetSessionUser(r.Session.CookieId)
@@ -104,12 +103,12 @@ func preHandler(r *web.Response) {
 	if lang == "" {
 		lang = r.Request.GetHeader("Accept-Language")
 	}
-	if ! isValidLang(lang) {
+	if !isValidLang(lang) {
 		lang = "en-US"
 	}
 
 	r.SetFuncMap(map[string]interface{}{
-		"T": i18n.MustTfunc(lang),
+		"T":     i18n.MustTfunc(lang),
 		"Title": strings.Title,
 	})
 }
