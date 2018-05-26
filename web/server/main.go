@@ -179,6 +179,7 @@ func Run(sessionCookieInsecure bool) {
 				newPostsRoute,
 				statsRoute,
 				feedRoute,
+				websocketRoute,
 				//testsRoute,
 			},
 			poll.GetRoutes(),
