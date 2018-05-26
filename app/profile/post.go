@@ -58,6 +58,14 @@ func (p Post) GetMessage() string {
 	return msg
 }
 
+func (p Post) HasMagnet bool {
+	var re = regexp.MustCompile(`(magnet:\?xt=urn:btih:[a-z0-9]{40})`)
+	if re {
+		return true
+	}
+	return false
+}
+
 func (p Post) IsPoll() bool {
 	if !p.Memo.IsPoll || p.Poll == nil {
 		return false

@@ -57,6 +57,9 @@
     <p class="message">
     {{ .Post.GetMessage }}
     </p>
+    {{if .Post.HasMagnet}}
+    MAGNET!
+    {{end}}
 {{ if .Post.IsPoll }}
     {{ template "snippets/poll.html" dict "Post" .Post "Threaded" false }}
 {{ end }}
