@@ -717,11 +717,11 @@ body.dark #new-poll-form .glyphicon-remove:hover {
     color: rgba(255,0,0,1);
 }
 body.dark {
-    background: #2b3e50;
+    background: #222222;
     color: #e0e0e0;
 }
 body.dark .post {
-    background: #2b3e50;
+    background: #222222;
     border-color: #666;
 }
 body.dark .table-striped>tbody>tr:nth-of-type(odd) {
@@ -762,7 +762,7 @@ body.dark .pagination a.disabled {
     color: #777;
 }
 body.dark .navbar-default {
-    background: #2b3e50;
+    background: #222222;
     border-color: #666;
 }
 body.dark .footer {
@@ -814,7 +814,7 @@ body.dark .dropdown-menu .divider {
 body.dark .dropdown-menu>li>a:focus,
 body.dark .dropdown-menu>li>a:hover {
     color: #30ccff;
-    background: #2b3e50;
+    background: #222222;
 }
 body.dark .navbar-default .navbar-brand {
     color: #30ccff;
