@@ -12,6 +12,7 @@ var JsFiles = []string{
 	"lib/identicon.js",
 	"lib/jstz.min.js",
 	"lib/bootstrap.min.js",
+	"lib/webtorrent.min.js",
 	"js/init.js",
 	"js/login.js",
 	"js/signup.js",
@@ -62,7 +63,7 @@ func GetResJsFiles() []string {
 func GetMinJsFiles() []string {
 	var fileList []string
 	for _, file := range JsFiles {
-		if ! strings.HasPrefix(file, "http") {
+		if !strings.HasPrefix(file, "http") {
 			continue
 		}
 		fileList = append(fileList, fmt.Sprintf("%s?ver=%d", file, appendNumber))
