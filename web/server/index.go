@@ -202,7 +202,6 @@ var newPostsRoute = web.Route{
 	},
 }
 
-/* Structures */
 type Message struct {
 	Name string
 	Body string
