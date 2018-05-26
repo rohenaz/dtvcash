@@ -58,9 +58,10 @@
     {{ .Post.GetMessage }}
     </p>
 {{if .Post.HasMagnet}}
+    <div id="message-{{.Post.Memo.Id}}"></div>
     <script type="text/javascript">
         var client = new WebTorrent()
-        var torrentId = '{{.Post.MagnetLink}}'
+        var torrentId = '{{.Post.MagnetLink}}&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com'
         client.add(torrentId, function (torrent) {
         // Torrents can contain many files. Let's use the .mp4 file
         var file = torrent.files.find(function (file) {
@@ -71,7 +72,6 @@
         file.appendTo('#message-{{.Post.Memo.Id}}')
         })
     </script>
-    <div id="message-{{.Post.Memo.Id}}"></div>
 {{end}}
 {{ if .Post.IsPoll }}
     {{ template "snippets/poll.html" dict "Post" .Post "Threaded" false }}
