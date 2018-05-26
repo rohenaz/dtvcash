@@ -12,7 +12,7 @@ html {
 }
 
 a {
-    color: #487521;
+    color: #30ccff;
 }
 
 h1 {
@@ -636,7 +636,7 @@ table.notifications-table td.like {
     color: #b00;
 }
 table.notifications-table td.reply {
-    color: #487521;
+    color: #30ccff;
 }
 .notifications-table a,
 .notify-post {
@@ -750,7 +750,7 @@ body.dark a.btn-leave {
     background-color: transparent;
 }
 body.dark a {
-    color: #6eb332;
+    color: #30ccff;
 }
 body.dark a.btn {
     color: #fff;
