@@ -48,7 +48,7 @@ var blockedIps = []string{
 }
 
 func preHandler(r *web.Response) {
-	log.Println("pre-handling", r.Request.GetURI)
+	log.Println("pre-handling", r.Request.GetURI())
 	for _, blockedIp := range blockedIps {
 		if r.Request.GetSourceIP() == blockedIp {
 			r.Error(jerr.Newf("blocked ip: %s\n", blockedIp), http.StatusUnauthorized)
