@@ -9,6 +9,13 @@ import (
 	"github.com/rohenaz/dtvcash/app/bitcoin/transaction"
 )
 
+/* Structures */
+type Message struct {
+	Name string
+	Body string
+	Time int64
+}
+
 func onTx(n *Node, msg *wire.MsgTx) {
 	if !n.HeaderSyncComplete || !n.BlocksSyncComplete {
 		return
@@ -20,6 +27,7 @@ func onTx(n *Node, msg *wire.MsgTx) {
 	if savedTxn {
 		if memoTxn {
 			// ToDo - Send websocket message if its a post
+
 			fmt.Println("Saved unconfirmed memo txn")
 		} else {
 			fmt.Println("Saved unconfirmed txn")

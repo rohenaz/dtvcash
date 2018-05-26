@@ -2,21 +2,22 @@ package server
 
 import (
 	"bytes"
+	"net/http"
+	"strings"
+
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/jchavannes/jgo/web"
 	"github.com/rohenaz/dtvcash/app/auth"
 	"github.com/rohenaz/dtvcash/app/db"
 	"github.com/rohenaz/dtvcash/app/profile"
 	"github.com/rohenaz/dtvcash/app/res"
-	"net/http"
-	"strings"
 )
 
 var indexRoute = web.Route{
 	Pattern: res.UrlIndex,
 	Handler: func(r *web.Response) {
 		r.Helper["Nav"] = "home"
-		if ! auth.IsLoggedIn(r.Session.CookieId) {
+		if !auth.IsLoggedIn(r.Session.CookieId) {
 			r.Render()
 			return
 		}
@@ -152,7 +153,7 @@ func setFeed(r *web.Response, selfPkHash []byte, userId uint) error {
 	r.Helper["PostCount"] = len(posts)
 	for i := 0; i < len(posts); i++ {
 		post := posts[i]
-		if strings.ToLower(post.Name) == "memo" && ! bytes.Equal(post.Memo.PkHash, []byte{0x9a, 0x60, 0xa8, 0x54, 0x27, 0xc, 0x2f, 0xc2, 0xdd, 0x4d, 0xd4, 0xd3, 0xba, 0x0, 0xf2, 0x6, 0x8f, 0xd, 0x75, 0xd6}) {
+		if strings.ToLower(post.Name) == "memo" && !bytes.Equal(post.Memo.PkHash, []byte{0x9a, 0x60, 0xa8, 0x54, 0x27, 0xc, 0x2f, 0xc2, 0xdd, 0x4d, 0xd4, 0xd3, 0xba, 0x0, 0xf2, 0x6, 0x8f, 0xd, 0x75, 0xd6}) {
 			posts = append(posts[:i], posts[i+1:]...)
 			i--
 		}
@@ -168,7 +169,7 @@ func setFeed(r *web.Response, selfPkHash []byte, userId uint) error {
 	if offset > 25 {
 		prevOffset = offset - 25
 	}
-	page := offset / 25 + 1
+	page := offset/25 + 1
 	r.Helper["Page"] = page
 	r.Helper["PrevOffset"] = prevOffset
 	r.Helper["NextOffset"] = offset + 25
@@ -205,5 +206,5 @@ var websocketRoute = web.Route{
 	Pattern: res.UrlWebsocket,
 	Handler: func(r *web.Response) {
 		r.GetWebSocket()
-	}
+	},
 }
