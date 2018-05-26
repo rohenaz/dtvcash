@@ -171,6 +171,10 @@
     "translation": "postat på"
   },
   {
+    "id": "posted",
+    "translation": "postat"
+  },
+  {
     "id": "view_on_block_explorer",
     "translation": "Visa på Block Explorer"
   },
@@ -264,5 +268,64 @@
   {
     "id": "Delete_Account",
     "translation": "Radera Konto"
+  },
+  {
+    "id": "Guides",
+    "translation": "Guider"
+  },
+  {
+    "id": "Signup",
+    "translation": "Skapa Konto"
+  },
+  {
+    "id": "Memo",
+    "translation": "Memo"
+  },
+  {
+    "id": "Poll",
+    "translation": "Röstning"
+  },
+  {
+    "id": "Notifications",
+    "translation": "Aviseringar"
+  },
+  {
+    "id": "Settings",
+    "translation": "Inställningar"
+  },
+  {
+    "id": "new_poll",
+    "translation": "ny omröstning"
+  },
+  {
+    "id": "type",
+    "translation": "typ"
+  },
+  {
+    "id": "select_one_option",
+    "translation": "En röst"
+  },
+  {
+    "id": "select_multiple_options",
+    "translation": "Flera omröstningar"
+  },
+  {
+    "id": "question",
+    "translation": "fråga"
+  },
+  {
+    "id": "option",
+    "translation": {
+      "one": "option",
+      "other": "options"
+    }
+  },
+  {
+    "id": "add_option",
+    "translation": "lägg till option"
+  },
+  {
+    "id": "create_poll",
+    "translation": "skapa röstning"
   }
 ]
