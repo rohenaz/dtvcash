@@ -1,0 +1,331 @@
+[
+  {
+    "id": "home",
+    "translation": "Accueil"
+  },
+  {
+    "id": "dashboard",
+    "translation": "Tableau de bord"
+  },
+  {
+    "id": "new_memo",
+    "translation": "Nouveau Memo"
+  },
+  {
+    "id": "posts",
+    "translation": "Posts"
+  },
+  {
+    "id": "profiles",
+    "translation": "Profils"
+  },
+  {
+    "id": "login",
+    "translation": "Connexion"
+  },
+  {
+    "id": "logout",
+    "translation": "Déconnexion <b>{{.Username}}</b>"
+  },
+  {
+    "id": "about",
+    "translation": "À-propos"
+  },
+  {
+    "id": "protocol",
+    "translation": "Protocole"
+  },
+  {
+    "id": "disclaimer",
+    "translation": "Avertissement"
+  },
+  {
+    "id": "statistics",
+    "translation": "Statistiques"
+  },
+  {
+    "id": "name",
+    "translation": "Nom"
+  },
+  {
+    "id": "address",
+    "translation": "Adresse"
+  },
+  {
+    "id": "followers",
+    "translation": "Followers"
+  },
+  {
+    "id": "following",
+    "translation": "Following"
+  },
+  {
+    "id": "balance",
+    "translation": "Solde"
+  },
+  {
+    "id": "profile",
+    "translation": "Profil"
+  },
+  {
+    "id": "actions",
+    "translation": "Actions"
+  },
+  {
+    "id": "view_your_profile",
+    "translation": "Voir mon Profil"
+  },
+  {
+    "id": "set_name",
+    "translation": "Set Name"
+  },
+  {
+    "id": "set_profile",
+    "translation": "Set Profile Text"
+  },
+  {
+    "id": "export_key",
+    "translation": "Exporter ma clé"
+  },
+  {
+    "id": "change_password",
+    "translation": "Changer de Mot de Passe"
+  },
+  {
+    "id": "reply",
+    "translation": "Répondre"
+  },
+  {
+    "id": "like",
+    "translation": {
+      "one": "Like",
+      "other": "Likes"
+    }
+  },
+  {
+    "id": "replies",
+    "translation": "réponses"
+  },
+  {
+    "id": "likes",
+    "translation": "likes"
+  },
+  {
+    "id": "top",
+    "translation": "Top"
+  },
+  {
+    "id": "personalized",
+    "translation": "Personnalisé"
+  },
+  {
+    "id": "new",
+    "translation": "Nouveau"
+  },
+  {
+    "id": "archive",
+    "translation": "Archiver"
+  },
+  {
+    "id": "last_hour",
+    "translation": "Dernière heure"
+  },
+  {
+    "id": "last_24_hours",
+    "translation": "Dernières 24 heures"
+  },
+  {
+    "id": "last_7_days",
+    "translation": "Cette semaine"
+  },
+  {
+    "id": "all_time",
+    "translation": "Tout"
+  },
+  {
+    "id": "message",
+    "translation": "Message"
+  },
+  {
+    "id": "password",
+    "translation": "Mot de passe"
+  },
+  {
+    "id": "save_password",
+    "translation": "Enregistrer le mot de passe"
+  },
+  {
+    "id": "post",
+    "translation": "Poster"
+  },
+  {
+    "id": "profile_text",
+    "translation": "Texte de Profil"
+  },
+  {
+    "id": "feed",
+    "translation": "Feed"
+  },
+  {
+    "id": "posted_at",
+    "translation": "posté a"
+  },
+  {
+    "id": "posted",
+    "translation": "posté"
+  },
+  {
+    "id": "view_on_block_explorer",
+    "translation": "Voir sur le Block Explorer"
+  },
+  {
+    "id": "view_address_on_block_explorer",
+    "translation": "Voir l'Adresse sur le Block Explorer"
+  },
+  {
+    "id": "view_name_on_block_explorer",
+    "translation": "Voir le Nom sur le Block Explorer"
+  },
+  {
+    "id": "page",
+    "translation": "Page"
+  },
+  {
+    "id": "previous",
+    "translation": "Précédent"
+  },
+  {
+    "id": "next",
+    "translation": "Suivant"
+  },
+  {
+    "id": "connections",
+    "translation": "Connexions"
+  },
+  {
+    "id": "follow",
+    "translation": {
+      "one": "Follow",
+      "other": "Follows"
+    }
+  },
+  {
+    "id": "unfollow",
+    "translation": "Ne plus suivre"
+  },
+  {
+    "id": "next_day",
+    "translation": "Jour Suivant"
+  },
+  {
+    "id": "previous_day",
+    "translation": "Jour Précédent"
+  },
+  {
+    "id": "Topic",
+    "translation": "Topic"
+  },
+  {
+    "id": "Topics",
+    "translation": "Topics"
+  },
+  {
+    "id": "Send",
+    "translation": "Envoyer"
+  },
+  {
+    "id": "Existing_Topics",
+    "translation": "Topics Existants"
+  },
+  {
+    "id": "Create_new_topic",
+    "translation": "Créer un nouveau topic"
+  },
+  {
+    "id": "Most_recent_post",
+    "translation": "Post le plus récent"
+  },
+  {
+    "id": "Total_posts",
+    "translation": "Total posts"
+  },
+  {
+    "id": "Back_to_topics",
+    "translation": "Revenir aux topics"
+  },
+  {
+    "id": "Forget_password",
+    "translation": "Enlever mon mot de passe du cache"
+  },
+  {
+    "id": "Names_set",
+    "translation": "Names set"
+  },
+  {
+    "id": "Total",
+    "translation": "Total"
+  },
+  {
+    "id": "Delete_Account",
+    "translation": "Supprimer mon compte"
+  },
+  {
+    "id": "Guides",
+    "translation": "Guides"
+  },
+  {
+    "id": "Signup",
+    "translation": "S'inscrire"
+  },
+  {
+    "id": "Memo",
+    "translation": "Memo"
+  },
+  {
+    "id": "Poll",
+    "translation": "Sondage"
+  },
+  {
+    "id": "Notifications",
+    "translation": "Notifications"
+  },
+  {
+    "id": "Settings",
+    "translation": "Paramètres"
+  },
+  {
+    "id": "new_poll",
+    "translation": "nouveau sondage"
+  },
+  {
+    "id": "type",
+    "translation": "genre"
+  },
+  {
+    "id": "select_one_option",
+    "translation": "Un vote par adresse"
+  },
+  {
+    "id": "select_multiple_options",
+    "translation": "Beaucoup de votes par adresse"
+  },
+  {
+    "id": "question",
+    "translation": "question"
+  },
+  {
+    "id": "option",
+    "translation": {
+      "one": "option",
+      "other": "options"
+    }
+  },
+  {
+    "id": "add_option",
+    "translation": "ajouter une option"
+  },
+  {
+    "id": "create_poll",
+    "translation": "créer un sondage"
+  }
+]
