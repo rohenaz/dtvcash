@@ -721,7 +721,7 @@ body.dark .post-header {
     border-color: #666;
 }
 body.dark .table-striped>tbody>tr:nth-of-type(odd) {
-    background: #304559;
+    background: rgb(53, 52, 58);
 }
 body.dark .table>tbody>tr>td,
 body.dark .table>tbody>tr>th,
@@ -786,7 +786,7 @@ body.dark .form-control {
     background: #374f66;
 }
 body.dark .topic-post:nth-of-type(odd) {
-    background: #304559;
+    background: rgb(53, 52, 58);
 }
 body.dark .topic-post {
     border-color: #666;
