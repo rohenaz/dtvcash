@@ -391,7 +391,6 @@ span.page {
 .topic-post {
     padding: 5px 10px 5px 40px;
     word-break: break-word;
-    border-bottom: 1px solid #eee;
 }
 .topic-post:nth-of-type(odd) {
     background: #f9f9f9;
@@ -416,6 +415,7 @@ span.page {
 }
 .topic-post .post-header,
 .topic-post .post-header p {
+    border: 0;
     margin: 0;
 }
 .topic-post .name {
