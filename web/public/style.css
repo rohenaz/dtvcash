@@ -755,8 +755,10 @@ body.dark .pagination a.disabled {
     color: #777;
 }
 body.dark .navbar-default {
+    border: 0;
+    border-radius: 0;
+    border: 1px solid #666;
     background: #222222;
-    border-color: #666;
 }
 body.dark .footer {
     border-color: #666;
