@@ -789,6 +789,8 @@ body.dark .nav>li>a:hover {
 body.dark .form-control {
     color: #e0e0e0;
     background: #374f66;
+    border: 0;
+    border-radius: 0;
 }
 body.dark .topic-post:nth-of-type(odd) {
     background: rgb(53, 52, 58);
