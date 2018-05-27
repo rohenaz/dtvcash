@@ -717,6 +717,9 @@ body.dark .post {
     background: #222222;
     border-color: #666;
 }
+body.dark .post-header {
+    border-color: #666;
+}
 body.dark .table-striped>tbody>tr:nth-of-type(odd) {
     background: #304559;
 }
@@ -757,7 +760,7 @@ body.dark .pagination a.disabled {
 body.dark .navbar-default {
     border: 0;
     border-radius: 0;
-    border: 1px solid #666;
+    border-bottom: 1px solid #666;
     background: #222222;
 }
 body.dark .footer {
