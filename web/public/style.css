@@ -729,13 +729,13 @@ body.dark .table>thead>tr>th {
     border-color: #666;
 }
 body.dark .post .reply {
-    background-color: rgb(23, 32, 38);
+    background-color: rgb(53, 52, 58);
     border-color: #666;
 }
 body.dark .btn-default {
     color: #e0e0e0;
     border-color: #666;
-    background-color: rgb(23, 32, 38);
+    background-color: rgb(53, 52, 58);
 }
 body.dark a.btn-leave {
     color: #888;
