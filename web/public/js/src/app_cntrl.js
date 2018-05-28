@@ -52,7 +52,7 @@ AppCntrl.watchers = {
       console.log('autoload visible!')
       let offset = window.location.search.split('offset=')[1] || 0
       let newOffset = parseInt(offset) + 25
-      Silica.goTo('http://dtv.cash/feed?offset=' + newOffset)
+      window.location.href = 'http://dtv.cash/feed?offset=' + newOffset
     }
   }
 }
