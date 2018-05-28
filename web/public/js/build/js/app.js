@@ -50,8 +50,9 @@ var module$contents$controllers$app_instance = null, module$exports$controllers$
   var $$jscomp$super$this$$;
   $element$$ = void 0 === $element$$ ? document.createElement("div") : $element$$;
   null === module$contents$controllers$app_instance && (module$contents$controllers$app_instance = $$jscomp$super$this$$ = Silica.Controllers.Base.call(this, $element$$) || this, $$jscomp$super$this$$.loadMore = !1, $$jscomp$super$this$$.loadingMore = !1, window.onscroll = function $window$onscroll$() {
-    $$jscomp$this$$.loadMore = $$jscomp$this$$.autoLoadVisible();
-    console.info("visible?", $$jscomp$this$$.loadMore);
+    $$jscomp$this$$.autoLoadVisible() !== $$jscomp$this$$.loadMore && Silica.apply(function() {
+      $$jscomp$this$$.loadMore = !0;
+    });
   });
   var $$jscomp$this$$ = $$jscomp$super$this$$;
   module$contents$controllers$app_instance.el !== $element$$ && (module$contents$controllers$app_instance.el = $element$$);

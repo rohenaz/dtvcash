@@ -11,8 +11,13 @@ class AppCntrl extends Silica.Controllers.Base {
       this.loadMore = false
       this.loadingMore = false
       window.onscroll = () => {
-        this.loadMore = this.autoLoadVisible()
-        console.info('visible?', this.loadMore)
+
+        let visible = this.autoLoadVisible()
+        if (visible !== this.loadMore) {
+          Silica.apply(() => {
+            this.loadMore = true
+          })
+        }
       }
     }
 
