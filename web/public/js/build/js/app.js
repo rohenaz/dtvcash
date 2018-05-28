@@ -65,7 +65,9 @@ module$exports$controllers$app.prototype.autoLoadVisible = function $module$expo
 module$exports$controllers$app.watchers = {loadMore:function $module$exports$controllers$app$watchers$loadMore$($newVal$$, $oldVal$$) {
   $newVal$$ && console.log("autoload visible!");
 }};
-var module$exports$Dtv = {}, module$contents$Dtv_D = {AppCntrl:module$exports$controllers$app};
+var module$exports$Dtv = {}, module$contents$Dtv_Dtv = {AppCntrl:module$exports$controllers$app};
+window.Dtv = module$contents$Dtv_Dtv;
+Silica.setContext("Dtv");
 Silica.compile(document);
 
 }.call(window, window));
