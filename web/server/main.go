@@ -45,6 +45,7 @@ func getCsrfToken(cookieId string) string {
 var blockedIps = []string{
 	"91.130.64.132",
 	"49.195.117.8",
+	"190.74.107.59",
 }
 
 func preHandler(r *web.Response) {
