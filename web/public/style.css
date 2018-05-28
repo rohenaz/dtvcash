@@ -634,7 +634,7 @@ table.notifications-table td.like {
     color: #b00;
 }
 table.notifications-table td.reply {
-    color: #30ccff;
+    color: rgb(79, 188, 255);
 }
 .notifications-table a,
 .notify-post {
@@ -751,7 +751,7 @@ body.dark a.btn-leave {
     background-color: transparent;
 }
 body.dark a {
-    color: #30ccff;
+    color: rgb(79, 188, 255);
 }
 body.dark a.btn {
     color: #fff;
@@ -818,17 +818,17 @@ body.dark .dropdown-menu .divider {
 }
 body.dark .dropdown-menu>li>a:focus,
 body.dark .dropdown-menu>li>a:hover {
-    color: #30ccff;
+    color: rgb(79, 188, 255);
     background: #222222;
 }
 body.dark .navbar-default .navbar-brand {
-    color: #30ccff;
+    color: rgb(79, 188, 255);
 }
 body.dark table.notifications-table td.like {
     color: #f00;
 }
 body.dark table.notifications-table td.reply {
-    color: #30ccff;
+    color: rgb(79, 188, 255);
 }
 body.dark .notify-post .reply {
     border-color: #3e5973;
