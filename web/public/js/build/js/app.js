@@ -60,7 +60,11 @@ var module$contents$controllers$app_instance = null, module$exports$controllers$
 $jscomp.inherits(module$exports$controllers$app, Silica.Controllers.Base);
 module$exports$controllers$app.prototype.autoLoadVisible = function $module$exports$controllers$app$$autoLoadVisible$() {
   var $elem$$ = document.getElementById("autoload");
-  return !!($elem$$.offsetWidth || $elem$$.offsetHeight || $elem$$.getClientRects().length);
+  return $elem$$ ? this.isElementInViewport($elem$$) : !1;
+};
+module$exports$controllers$app.prototype.isElementInViewport = function $module$exports$controllers$app$$isElementInViewport$($el_rect$$) {
+  $el_rect$$ = $el_rect$$.getBoundingClientRect();
+  return 0 <= $el_rect$$.top && 0 <= $el_rect$$.left && $el_rect$$.bottom <= (window.innerHeight || document.documentElement.clientHeight) && $el_rect$$.right <= (window.innerWidth || document.documentElement.clientWidth);
 };
 module$exports$controllers$app.watchers = {loadMore:function $module$exports$controllers$app$watchers$loadMore$($newVal$$, $oldVal$$) {
   $newVal$$ && console.log("autoload visible!");
