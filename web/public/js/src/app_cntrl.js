@@ -8,7 +8,12 @@ class AppCntrl extends Silica.Controllers.Base {
       super(element)
       instance = this
 
+      this.loadMore = false
+      window.onscroll = () => {
+        this.loadMore = this.autoLoadVisible()
+      }
     }
+
     if (instance.el !== element) {
       instance.el = element
     }
@@ -23,7 +28,7 @@ class AppCntrl extends Silica.Controllers.Base {
 }
 
 AppCntrl.watchers = {
-  'autoloadVisible': function (newVal, oldVal) {
+  'loadMore': function (newVal, oldVal) {
     if (newVal) {
       console.log('autoload visible!')
     }
