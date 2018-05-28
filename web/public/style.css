@@ -841,3 +841,9 @@ body.dark .poll .votes {
     background: #374f66;
     border-color: #3e5973;
 }
+
+#autoload {
+    background: #b00;
+    height: 5px;
+    width: 100%;
+}
