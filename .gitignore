@@ -3,5 +3,4 @@ dtvcash
 .idea
 .DS_Store
 kube
-web/public/js/closure-compiler-v20180506.jar
-web/public/js/build
+build_cache
