@@ -11,3 +11,7 @@ window['Dtv'] = Dtv
 
 Silica.setContext('Dtv')
 Silica.compile(document)
+
+Silica.apply(() => {
+  console.log('must call apply')
+})

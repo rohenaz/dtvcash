@@ -23,8 +23,8 @@ class AppCntrl extends Silica.Controllers.Base {
   }
 
   autoLoadVisible () {
-    let el = document.getElementById('autoload')
-    return (el && el.offsetParent === null)
+    let elem = document.getElementById('autoload')
+    return !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length )
   }
 }
 
