@@ -371,11 +371,7 @@ span.page {
     display: inline-block;
 }
 #all-posts {
-    max-height: 50%;
-    overflow-y: scroll;
-    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
     margin-bottom: 12px;
-    border: 1px solid #eee;
 }
 @-moz-document url-prefix() {
     #all-posts {

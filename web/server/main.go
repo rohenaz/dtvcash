@@ -55,8 +55,8 @@ func preHandler(r *web.Response) {
 			return
 		}
 	}
-	r.Helper["Title"] = "DTV.Cash"
-	r.Helper["Description"] = "Decentralized on-chain social network built on Bitcoin Cash"
+	r.Helper["Title"] = "DTV - Videos from the Bitcoin Cash blockchain"
+	r.Helper["Description"] = "On-chain video feeds built on Bitcoin Cash using the memo protocol"
 	r.Helper["BaseUrl"] = res.GetBaseUrl(r)
 	if r.Request.HttpRequest.Host != "dtv.cash" {
 		r.Helper["Dev"] = true
