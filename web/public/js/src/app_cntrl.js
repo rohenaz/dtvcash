@@ -11,6 +11,7 @@ class AppCntrl extends Silica.Controllers.Base {
       this.loadMore = false
       window.onscroll = () => {
         this.loadMore = this.autoLoadVisible()
+        console.info('visible?', this.loadMore)
       }
     }
 
