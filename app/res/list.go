@@ -23,7 +23,7 @@ var JsFiles = []string{
 	"js/poll.js",
 	"js/silica.min.js",
 	"js/vote.js",
-	"js/src/build/js/app.js",
+	"js/build/js/app.js",
 }
 
 var CssFiles = []string{
