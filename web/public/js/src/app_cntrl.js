@@ -9,6 +9,7 @@ class AppCntrl extends Silica.Controllers.Base {
       instance = this
 
       this.loadMore = false
+      this.loadingMore = false
       window.onscroll = () => {
         this.loadMore = this.autoLoadVisible()
         console.info('visible?', this.loadMore)
@@ -42,7 +43,10 @@ class AppCntrl extends Silica.Controllers.Base {
 AppCntrl.watchers = {
   'loadMore': function (newVal, oldVal) {
     if (newVal) {
+      this.LoadingMore = true
       console.log('autoload visible!')
+      let offset = window.location.search.split('offset=')[1]
+      Silica.goTo('http://dtv.cash/feed?offset=' + offset)
     }
   }
 }

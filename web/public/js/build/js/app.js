@@ -49,7 +49,7 @@ $jscomp.inherits = function $$jscomp$inherits$($childCtor$$, $parentCtor$$) {
 var module$contents$controllers$app_instance = null, module$exports$controllers$app = function $module$exports$controllers$app$($element$$) {
   var $$jscomp$super$this$$;
   $element$$ = void 0 === $element$$ ? document.createElement("div") : $element$$;
-  null === module$contents$controllers$app_instance && (module$contents$controllers$app_instance = $$jscomp$super$this$$ = Silica.Controllers.Base.call(this, $element$$) || this, $$jscomp$super$this$$.loadMore = !1, window.onscroll = function $window$onscroll$() {
+  null === module$contents$controllers$app_instance && (module$contents$controllers$app_instance = $$jscomp$super$this$$ = Silica.Controllers.Base.call(this, $element$$) || this, $$jscomp$super$this$$.loadMore = !1, $$jscomp$super$this$$.loadingMore = !1, window.onscroll = function $window$onscroll$() {
     $$jscomp$this$$.loadMore = $$jscomp$this$$.autoLoadVisible();
     console.info("visible?", $$jscomp$this$$.loadMore);
   });
@@ -66,8 +66,8 @@ module$exports$controllers$app.prototype.isElementInViewport = function $module$
   $el_rect$$ = $el_rect$$.getBoundingClientRect();
   return 0 <= $el_rect$$.top && 0 <= $el_rect$$.left && $el_rect$$.bottom <= (window.innerHeight || document.documentElement.clientHeight) && $el_rect$$.right <= (window.innerWidth || document.documentElement.clientWidth);
 };
-module$exports$controllers$app.watchers = {loadMore:function $module$exports$controllers$app$watchers$loadMore$($newVal$$, $oldVal$$) {
-  $newVal$$ && console.log("autoload visible!");
+module$exports$controllers$app.watchers = {loadMore:function $module$exports$controllers$app$watchers$loadMore$($newVal_offset$$, $oldVal$$) {
+  $newVal_offset$$ && (this.LoadingMore = !0, console.log("autoload visible!"), $newVal_offset$$ = window.location.search.split("offset=")[1], Silica.goTo("http://dtv.cash/feed?offset=" + $newVal_offset$$));
 }};
 var module$exports$Dtv = {}, module$contents$Dtv_Dtv = {AppCntrl:module$exports$controllers$app};
 window.Dtv = module$contents$Dtv_Dtv;
