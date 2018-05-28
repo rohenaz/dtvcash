@@ -59,8 +59,8 @@ var module$contents$controllers$app_instance = null, module$exports$controllers$
 };
 $jscomp.inherits(module$exports$controllers$app, Silica.Controllers.Base);
 module$exports$controllers$app.prototype.autoLoadVisible = function $module$exports$controllers$app$$autoLoadVisible$() {
-  var $el$$ = document.getElementById("autoload");
-  return $el$$ && null === $el$$.offsetParent;
+  var $elem$$ = document.getElementById("autoload");
+  return !!($elem$$.offsetWidth || $elem$$.offsetHeight || $elem$$.getClientRects().length);
 };
 module$exports$controllers$app.watchers = {loadMore:function $module$exports$controllers$app$watchers$loadMore$($newVal$$, $oldVal$$) {
   $newVal$$ && console.log("autoload visible!");
@@ -69,6 +69,9 @@ var module$exports$Dtv = {}, module$contents$Dtv_Dtv = {AppCntrl:module$exports$
 window.Dtv = module$contents$Dtv_Dtv;
 Silica.setContext("Dtv");
 Silica.compile(document);
+Silica.apply(function() {
+  console.log("must call apply");
+});
 
 }.call(window, window));
 //# sourceMappingURL=/js/app.js.map
