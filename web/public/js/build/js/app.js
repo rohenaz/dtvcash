@@ -49,15 +49,20 @@ $jscomp.inherits = function $$jscomp$inherits$($childCtor$$, $parentCtor$$) {
 var module$contents$controllers$app_instance = null, module$exports$controllers$app = function $module$exports$controllers$app$($element$$) {
   var $$jscomp$super$this$$;
   $element$$ = void 0 === $element$$ ? document.createElement("div") : $element$$;
-  null === module$contents$controllers$app_instance && (module$contents$controllers$app_instance = $$jscomp$super$this$$ = Silica.Controllers.Base.call(this, $element$$) || this);
+  null === module$contents$controllers$app_instance && (module$contents$controllers$app_instance = $$jscomp$super$this$$ = Silica.Controllers.Base.call(this, $element$$) || this, $$jscomp$super$this$$.loadMore = !1, window.onscroll = function $window$onscroll$() {
+    $$jscomp$this$$.loadMore = $$jscomp$this$$.autoLoadVisible();
+    console.info("visible?", $$jscomp$this$$.loadMore);
+  });
+  var $$jscomp$this$$ = $$jscomp$super$this$$;
   module$contents$controllers$app_instance.el !== $element$$ && (module$contents$controllers$app_instance.el = $element$$);
   return module$contents$controllers$app_instance;
 };
 $jscomp.inherits(module$exports$controllers$app, Silica.Controllers.Base);
 module$exports$controllers$app.prototype.autoLoadVisible = function $module$exports$controllers$app$$autoLoadVisible$() {
-  return null === document.getElementById("autoload").offsetParent;
+  var $el$$ = document.getElementById("autoload");
+  return $el$$ && null === $el$$.offsetParent;
 };
-module$exports$controllers$app.watchers = {autoloadVisible:function $module$exports$controllers$app$watchers$autoloadVisible$($newVal$$, $oldVal$$) {
+module$exports$controllers$app.watchers = {loadMore:function $module$exports$controllers$app$watchers$loadMore$($newVal$$, $oldVal$$) {
   $newVal$$ && console.log("autoload visible!");
 }};
 var module$exports$Dtv = {}, module$contents$Dtv_D = {AppCntrl:module$exports$controllers$app};
