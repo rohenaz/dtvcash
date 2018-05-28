@@ -15,6 +15,19 @@ class AppCntrl extends Silica.Controllers.Base {
 
     return instance
   }
+
+  autoLoadVisible () {
+    let el = document.getElementById('autoload')
+    return (el.offsetParent === null)
+  }
+}
+
+AppCntrl.watchers = {
+  'autoloadVisible': function (newVal, oldVal) {
+    if (newVal) {
+      console.log('autoload visible!')
+    }
+  }
 }
 
 exports = AppCntrl

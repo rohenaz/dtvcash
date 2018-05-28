@@ -3,3 +3,4 @@
 {{ range .Posts }}
 {{ template "snippets/post.html" dict "Post" . "Compress" false "TimeZone" $tz "UserSettings" $settings }}
 {{ end }}
+<div id="autoload"></div>

@@ -54,6 +54,12 @@ var module$contents$controllers$app_instance = null, module$exports$controllers$
   return module$contents$controllers$app_instance;
 };
 $jscomp.inherits(module$exports$controllers$app, Silica.Controllers.Base);
+module$exports$controllers$app.prototype.autoLoadVisible = function $module$exports$controllers$app$$autoLoadVisible$() {
+  return null === document.getElementById("autoload").offsetParent;
+};
+module$exports$controllers$app.watchers = {autoloadVisible:function $module$exports$controllers$app$watchers$autoloadVisible$($newVal$$, $oldVal$$) {
+  $newVal$$ && console.log("autoload visible!");
+}};
 var module$exports$Dtv = {}, module$contents$Dtv_D = {AppCntrl:module$exports$controllers$app};
 Silica.compile(document);
 
