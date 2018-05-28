@@ -50,7 +50,7 @@ AppCntrl.watchers = {
     if (newVal) {
       this.LoadingMore = true
       console.log('autoload visible!')
-      let offset = window.location.search.split('offset=')[1]
+      let offset = window.location.search.split('offset=')[1] || 0
       let newOffset = parseInt(offset) + 25
       Silica.goTo('http://dtv.cash/feed?offset=' + newOffset)
     }

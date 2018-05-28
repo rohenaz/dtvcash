@@ -68,7 +68,7 @@ module$exports$controllers$app.prototype.isElementInViewport = function $module$
   return 0 <= $el_rect$$.top && 0 <= $el_rect$$.left && $el_rect$$.bottom <= (window.innerHeight || document.documentElement.clientHeight) && $el_rect$$.right <= (window.innerWidth || document.documentElement.clientWidth);
 };
 module$exports$controllers$app.watchers = {loadMore:function $module$exports$controllers$app$watchers$loadMore$($newOffset_newVal_offset$$, $oldVal$$) {
-  $newOffset_newVal_offset$$ && (this.LoadingMore = !0, console.log("autoload visible!"), $newOffset_newVal_offset$$ = window.location.search.split("offset=")[1], $newOffset_newVal_offset$$ = parseInt($newOffset_newVal_offset$$) + 25, Silica.goTo("http://dtv.cash/feed?offset=" + $newOffset_newVal_offset$$));
+  $newOffset_newVal_offset$$ && (this.LoadingMore = !0, console.log("autoload visible!"), $newOffset_newVal_offset$$ = window.location.search.split("offset=")[1] || 0, $newOffset_newVal_offset$$ = parseInt($newOffset_newVal_offset$$) + 25, Silica.goTo("http://dtv.cash/feed?offset=" + $newOffset_newVal_offset$$));
 }};
 var module$exports$Dtv = {}, module$contents$Dtv_Dtv = {AppCntrl:module$exports$controllers$app};
 window.Dtv = module$contents$Dtv_Dtv;
