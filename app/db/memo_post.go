@@ -3,14 +3,15 @@ package db
 import (
 	"bytes"
 	"fmt"
+	"html"
+	"net/url"
+	"time"
+
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/jchavannes/jgo/jerr"
 	"github.com/rohenaz/dtvcash/app/bitcoin/script"
 	"github.com/rohenaz/dtvcash/app/bitcoin/wallet"
 	"github.com/rohenaz/dtvcash/app/util"
-	"html"
-	"net/url"
-	"time"
 )
 
 const (
@@ -18,13 +19,13 @@ const (
 )
 
 type MemoPost struct {
-	Id           uint        `gorm:"primary_key"`
-	TxHash       []byte      `gorm:"unique;size:50"`
+	Id           uint   `gorm:"primary_key"`
+	TxHash       []byte `gorm:"unique;size:50"`
 	ParentHash   []byte
-	PkHash       []byte      `gorm:"index:pk_hash"`
-	PkScript     []byte      `gorm:"size:500"`
+	PkHash       []byte `gorm:"index:pk_hash"`
+	PkScript     []byte `gorm:"size:500"`
 	Address      string
-	ParentTxHash []byte      `gorm:"index:parent_tx_hash"`
+	ParentTxHash []byte `gorm:"index:parent_tx_hash"`
 	Parent       *MemoPost
 	Replies      []*MemoPost `gorm:"foreignkey:ParentTxHash"`
 	Topic        string      `gorm:"index:tag;size:500"`
@@ -314,10 +315,11 @@ func GetRecentPostsForTopic(topic string, lastPostId uint) ([]*MemoPost, error) 
 	var memoPosts []*MemoPost
 	result := db.
 		Where("id > ?", lastPostId).
+		Where("message RLIKE ?", "magnet").
 		Order("id ASC").
 		Find(&memoPosts, MemoPost{
-		Topic: topic,
-	})
+			Topic: topic,
+		})
 	if result.Error != nil {
 		return nil, jerr.Get("error running recent topic post query", result.Error)
 	}
