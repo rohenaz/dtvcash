@@ -73,7 +73,7 @@
     {{ .Post.GetMessage }}
     </div>
 {{if .Post.HasMagnet}}
-    <div id="message-{{.Post.Memo.Id}}"></div>
+    <div id="message-{{.Post.Memo.Id}}">Finding Peers...</div>
     <script type="text/javascript">
         var client = new WebTorrent()
         var torrentId = '{{.Post.MagnetLink}}&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com'
