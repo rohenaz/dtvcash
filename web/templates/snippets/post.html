@@ -58,7 +58,7 @@
     {{ .Post.GetMessage }}
     </p>
 {{if .Post.HasMagnet}}
-    <div id="message-{{.Post.Memo.Id}}"></div>
+    <div id="message-{{.Post.Memo.Id}}">Finding Peers...</div>
     <script type="text/javascript">
         var client = []
         client['{{.Post.Memo.Id}}'] = new WebTorrent()
