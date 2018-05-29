@@ -232,6 +232,7 @@ func GetPostsForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 	}
 	query := db.
 		Preload(BlockTable).
+		Where("Message RLIKE ?", "magnet").
 		Order("id DESC").
 		Limit(25).
 		Offset(offset)
