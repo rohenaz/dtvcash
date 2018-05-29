@@ -25,5 +25,5 @@ func GetRoutes() []web.Route {
 }
 
 func preHandler(r *web.Response) {
-	r.Helper["Nav"] = "channels"
+	r.Helper["Nav"] = "topics"
 }

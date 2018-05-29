@@ -514,8 +514,8 @@ func GetOlderPostsForTopic(topic string, firstPostId uint) ([]*MemoPost, error) 
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
 	}
-	for i, j := 0, len(memoPosts)-1; i < j; i, j = i+1, j-1 {
-		memoPosts[i], memoPosts[j] = memoPosts[j], memoPosts[i]
-	}
+	// for i, j := 0, len(memoPosts)-1; i < j; i, j = i+1, j-1 {
+	// 	memoPosts[i], memoPosts[j] = memoPosts[j], memoPosts[i]
+	// }
 	return memoPosts, nil
 }
