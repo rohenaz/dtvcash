@@ -132,7 +132,7 @@ a.disabled {
 }
 .navbar-brand {
     margin-right: 25px;
-    padding: 10px 15px 20px;
+    font-size: 24px;
     font-weight: bold;
 }
 .nav-item.notifications span {
