@@ -232,12 +232,10 @@ func GetPostsForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 	}
 	query := db.
 		Preload(BlockTable).
-		Where("Message RLIKE ?", "magnet").
-		Or("Message RLIKE ?", "youtube").
-		Or("Message RLIKE ?", "youtube").
 		Order("id DESC").
 		Limit(25).
-		Offset(offset)
+		Offset(offset).
+		Where("Message LIKE '%magnet:?xt=urn:btih:%' OR Message RLIKE 'youtube' OR Message RLIKE 'youtu.be'")
 	result := query.Find(&memoPosts, &MemoPost{
 		PkHash: pkHash,
 	})
