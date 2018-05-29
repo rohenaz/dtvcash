@@ -478,7 +478,7 @@ func GetPostsForTopic(topic string, offset uint) ([]*MemoPost, error) {
 	}
 	query := db.
 		Preload(BlockTable).
-		Where("Message RLIKE ?", "magnet").
+		Where("Message RLIKE ?", "(magnet:\?xt=urn:btih:[a-z0-9]{40})").
 		Or("Message RLIKE ?", "youtube").
 		Or("Message RLIKE ?", "youtu.be").
 		Order("id DESC").
