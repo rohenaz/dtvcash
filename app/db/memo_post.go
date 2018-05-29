@@ -316,7 +316,7 @@ func GetRecentPostsForTopic(topic string, lastPostId uint) ([]*MemoPost, error) 
 	result := db.
 		Where("id > ?", lastPostId).
 		Where("message RLIKE ?", "magnet").
-		Order("id ASC").
+		Order("id DESC").
 		Find(&memoPosts, MemoPost{
 			Topic: topic,
 		})
