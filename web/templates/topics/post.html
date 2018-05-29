@@ -75,7 +75,8 @@
 {{if .Post.HasMagnet}}
     <div id="message-{{.Post.Memo.Id}}">Finding Peers...</div>
     <script type="text/javascript">
-        var client['{{.Post.Memo.Id}}'] = new WebTorrent()
+        var client = []
+        client['{{.Post.Memo.Id}}'] = new WebTorrent()
         var torrentId = '{{.Post.MagnetLink}}&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com'
         client['{{.Post.Memo.Id}}'].add(torrentId, (torrent) => {
         // Torrents can contain many files. Let's use the .mp4 file
