@@ -72,6 +72,28 @@
     <div class="message">
     {{ .Post.GetMessage }}
     </div>
+{{if .Post.HasMagnet}}
+    <div id="message-{{.Post.Memo.Id}}"></div>
+    <script type="text/javascript">
+        var client = new WebTorrent()
+        var torrentId = '{{.Post.MagnetLink}}&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com'
+        client.add(torrentId, (torrent) => {
+        // Torrents can contain many files. Let's use the .mp4 file
+        var file = torrent.files.find((file) => {
+            return file.name.endsWith('.mp4')
+        })
+
+        // Display the file by adding it to the DOM. Supports video, audio, image, etc. files
+        if(file) {
+            file.appendTo('#message-{{.Post.Memo.Id}}')
+        } else {
+            let el = document.getElementById('message-{{.Post.Memo.Id}}')
+            el.innerHTML = 'No mp4 found in this torrent'
+        }
+
+        })
+    </script>
+{{end}}
     </div>
     <script type="text/javascript">
         (function() {
