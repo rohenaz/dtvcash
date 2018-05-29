@@ -443,7 +443,8 @@ func GetUniqueTopics(offset uint, searchString string) ([]*Topic, error) {
 		Group("topic").
 		Order("max_time DESC").
 		Limit(25).
-		Offset(offset)
+		Offset(offset).
+		Where("Message LIKE '%magnet:?xt=urn:btih:%' OR Message RLIKE 'youtube' OR Message RLIKE 'youtu.be'")
 	if searchString != "" {
 		query = query.Where("topic LIKE ?", fmt.Sprintf("%%%s%%", searchString))
 	} else {
