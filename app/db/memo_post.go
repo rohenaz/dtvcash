@@ -480,10 +480,10 @@ func GetPostsForTopic(topic string, offset uint) ([]*MemoPost, error) {
 		Preload(BlockTable).
 		Order("id DESC").
 		Limit(26).
-		Offset(offset)
+		Offset(offset).
+		Where("Message LIKE '%magnet:?xt=urn:btih:%' OR Message RLIKE 'youtube' OR Message RLIKE 'youtu.be'")
 	result := query.Find(&memoPosts, &MemoPost{
-		Message: "LIKE '%magnet:?xt=urn:btih:%' OR Message RLIKE 'youtube' OR Message RLIKE 'youtu.be'",
-		Topic:   topic,
+		Topic: topic,
 	})
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
