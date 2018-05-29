@@ -482,7 +482,7 @@ func GetPostsForTopic(topic string, offset uint) ([]*MemoPost, error) {
 		Limit(26).
 		Offset(offset)
 	result := query.Find(&memoPosts, &MemoPost{
-		Message: "LIKE magnet:?xt=urn:btih:% OR Message RLIKE 'youtube' OR Message RLIKE 'youtu.be'",
+		Message: "LIKE '%magnet:?xt=urn:btih:%' OR Message RLIKE 'youtube' OR Message RLIKE 'youtu.be'",
 		Topic:   topic,
 	})
 	if result.Error != nil {
