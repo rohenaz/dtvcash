@@ -481,11 +481,11 @@ func GetPostsForTopic(topic string, offset uint) ([]*MemoPost, error) {
 		Order("id DESC").
 		Limit(26).
 		Offset(offset)
-		db.Find(&users, "name <> ? AND age > ?", "jinzhu", 20)
+	db.Find(&users, "name <> ? AND age > ?", "jinzhu", 20)
 	result := query.Find(&memoPosts, &MemoPost{
-		Message: "LIKE ? OR RLIKE ? OR RLIKE ?"
-		Topic: topic,
-	}, "%magnet:?xt=urn:btih:%", "youtube", "youtu.be")
+		Message: "LIKE magnet:?xt=urn:btih:% OR Message RLIKE 'youtube' OR Message RLIKE 'youtu.be'",
+		Topic:   topic,
+	})
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
 	}
