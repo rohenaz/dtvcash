@@ -214,6 +214,7 @@ func GetPostsFeedForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 		Preload(BlockTable).
 		Joins("JOIN ("+joinSelect+") fsq ON (memo_posts.pk_hash = fsq.follow_pk_hash)", pkHash).
 		Order("id DESC").
+		Where("Message LIKE '%magnet:?xt=urn:btih:%' OR Message RLIKE 'youtube' OR Message RLIKE 'youtu.be'").
 		Find(&memoPosts)
 	if result.Error != nil {
 		return nil, jerr.Get("error getting memo posts", result.Error)
