@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"html"
-	"log"
 	"net/url"
 	"time"
 
@@ -316,12 +315,10 @@ func GetRecentPostsForTopic(topic string, lastPostId uint) ([]*MemoPost, error) 
 	var memoPosts []*MemoPost
 	result := db.
 		Where("id > ?", lastPostId).
-		Where("message RLIKE ?", "magnet").
 		Order("id DESC").
 		Find(&memoPosts, MemoPost{
 			Topic: topic,
 		})
-	log.Println("got recent posts for topic")
 	if result.Error != nil {
 		return nil, jerr.Get("error running recent topic post query", result.Error)
 	}
@@ -478,6 +475,7 @@ func GetPostsForTopic(topic string, offset uint) ([]*MemoPost, error) {
 	}
 	query := db.
 		Preload(BlockTable).
+		Where("message RLIKE ?", "magnet").
 		Order("id DESC").
 		Limit(26).
 		Offset(offset)
