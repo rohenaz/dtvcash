@@ -234,7 +234,7 @@ func GetPostsForPkHash(pkHash []byte, offset uint) ([]*MemoPost, error) {
 		Preload(BlockTable).
 		Where("Message RLIKE ?", "magnet").
 		Or("Message RLIKE ?", "youtube").
-		Or("Message RLIKE ?", "youtu.be").
+		Or("Message RLIKE ?", "youtube").
 		Order("id DESC").
 		Limit(25).
 		Offset(offset)
@@ -478,7 +478,9 @@ func GetPostsForTopic(topic string, offset uint) ([]*MemoPost, error) {
 	}
 	query := db.
 		Preload(BlockTable).
-		Where("message RLIKE ?", "magnet").
+		Where("Message RLIKE ?", "magnet").
+		Or("Message RLIKE ?", "youtube").
+		Or("Message RLIKE ?", "youtu.be").
 		Order("id DESC").
 		Limit(26).
 		Offset(offset)
