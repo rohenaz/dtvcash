@@ -481,7 +481,6 @@ func GetPostsForTopic(topic string, offset uint) ([]*MemoPost, error) {
 		Order("id DESC").
 		Limit(26).
 		Offset(offset)
-	db.Find(&users, "name <> ? AND age > ?", "jinzhu", 20)
 	result := query.Find(&memoPosts, &MemoPost{
 		Message: "LIKE magnet:?xt=urn:btih:% OR Message RLIKE 'youtube' OR Message RLIKE 'youtu.be'",
 		Topic:   topic,
