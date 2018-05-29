@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"html"
+	"log"
 	"net/url"
 	"time"
 
@@ -320,6 +321,7 @@ func GetRecentPostsForTopic(topic string, lastPostId uint) ([]*MemoPost, error) 
 		Find(&memoPosts, MemoPost{
 			Topic: topic,
 		})
+	log.Println("got recent posts for topic")
 	if result.Error != nil {
 		return nil, jerr.Get("error running recent topic post query", result.Error)
 	}
