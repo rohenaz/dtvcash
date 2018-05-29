@@ -9,7 +9,7 @@
   },
   {
     "id": "new_memo",
-    "translation": "New Memo"
+    "translation": "New Video"
   },
   {
     "id": "posts",
@@ -120,7 +120,7 @@
   },
   {
     "id": "new",
-    "translation": "new"
+    "translation": "Publish"
   },
   {
     "id": "archive",
@@ -223,11 +223,11 @@
   },
   {
     "id": "Topic",
-    "translation": "Topic"
+    "translation": "Channel"
   },
   {
     "id": "Topics",
-    "translation": "Topics"
+    "translation": "Channels"
   },
   {
     "id": "Send",
@@ -235,23 +235,23 @@
   },
   {
     "id": "Existing_Topics",
-    "translation": "Existing Topics"
+    "translation": "Existing Channels"
   },
   {
     "id": "Create_new_topic",
-    "translation": "Create new topic"
+    "translation": "Create new channel"
   },
   {
     "id": "Most_recent_post",
-    "translation": "Most recent post"
+    "translation": "Most recent video"
   },
   {
     "id": "Total_posts",
-    "translation": "Total posts"
+    "translation": "Total videos"
   },
   {
     "id": "Back_to_topics",
-    "translation": "Back to topics"
+    "translation": "Back to channels"
   },
   {
     "id": "Forget_password",

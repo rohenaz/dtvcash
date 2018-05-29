@@ -53,8 +53,7 @@
     <div class="container">
         <div class="navbar-header">
             <a class="navbar-brand navbar-left" href="">
-                <img class="logo img-fluid" src="img/memo-logo-header.png"/>
-                DTV.Cash
+                DTV
             </a>
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
@@ -67,24 +66,26 @@
             <ul class="nav navbar-nav">
             {{ $nav := .Nav }}
             {{ $user := . }}
+            <li {{ if eq $nav "topics" }}class="active"{{ end }}><a href="topics">{{ T "topics" }}</a></li>
             {{ if .Username }}
-                <li {{ if eq $nav "home" }}class="active"{{ end }}><a href="">{{ T "feed" }}</a></li>
+                <!-- <li {{ if eq $nav "home" }}class="active"{{ end }}><a href="">{{ T "feed" }}</a></li> -->
             {{ else }}
                 <li {{ if eq $nav "home" }}class="active"{{ end }}><a href="">{{ T "about" }}</a></li>
             {{ end }}
+
+                <!-- <li {{ if eq $nav "posts" }}class="active"{{ end }}><a href="posts/ranked">{{ T "posts" }}</a></li> -->
+                <!-- <li {{ if eq $nav "profiles" }}class="active"{{ end }}><a href="profiles">{{ T "profiles" }}</a></li> -->
+
             {{ if .Username }}
                 <li {{ if eq $nav "new" }}class="active"{{ end }}>
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ T "publish" | Title }}</a>
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ T "new" | Title }}</a>
                     <ul class="dropdown-menu dropdown-menu-left">
                         <li><a href="memo/new">{{ T "Memo" }}</a></li>
                         <li><a href="poll/create">{{ T "Poll" }}</a></li>
                     </ul>
                 </li>
             {{ end }}
-                <!-- <li {{ if eq $nav "posts" }}class="active"{{ end }}><a href="posts/ranked">{{ T "posts" }}</a></li> -->
-                <!-- <li {{ if eq $nav "profiles" }}class="active"{{ end }}><a href="profiles">{{ T "profiles" }}</a></li> -->
-                <li {{ if eq $nav "topics" }}class="active"{{ end }}><a href="topics">{{ T "channels" }}</a></li>
             {{ if not .Username }}
                 <li {{ if eq $nav "signup" }}class="active"{{ end }}><a href="signup">{{ T "Signup" }}</a></li>
             {{ end }}
