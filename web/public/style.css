@@ -45,11 +45,16 @@ video {
     margin: 10px auto;
 }
 .video-container {
-    position:relative;
-    padding-bottom:56.25%;
-    padding-top:0px;
-    height:0;
-    overflow:hidden;
+    border: 0;
+    position: fixed;
+    padding-top: 0px;
+    height: 0;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
 }
 .video-container iframe,
 .video-container video {
