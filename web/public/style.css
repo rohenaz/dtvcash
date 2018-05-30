@@ -47,11 +47,11 @@ video {
 .video-container {
     border: 0;
     position: relative;
-    padding-top: 0px;
-    height: 0;
-    overflow: hidden;
+    padding: 0;
+    width: 100%;
 }
 .video-container.playing {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
