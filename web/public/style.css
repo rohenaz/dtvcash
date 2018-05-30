@@ -46,15 +46,16 @@ video {
 }
 .video-container {
     border: 0;
-    position: fixed;
+    position: relative;
     padding-top: 0px;
     height: 0;
     overflow: hidden;
+}
+.video-container.playing {
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-
 }
 .video-container iframe,
 .video-container video {
