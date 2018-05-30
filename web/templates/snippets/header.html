@@ -66,7 +66,7 @@
             <ul class="nav navbar-nav">
             {{ $nav := .Nav }}
             {{ $user := . }}
-            <li {{ if eq $nav "topics" }}class="active"{{ end }}><a href="topics">{{ T "topics" | Channels }}</a></li>
+            <li {{ if eq $nav "topics" }}class="active"{{ end }}><a href="topics">{{ T "topics" }}</a></li>
             {{ if .Username }}
                 <!-- <li {{ if eq $nav "home" }}class="active"{{ end }}><a href="">{{ T "feed" }}</a></li> -->
             {{ else }}
