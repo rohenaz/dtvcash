@@ -48,6 +48,7 @@ video {
     border: 0;
     position: relative;
     padding: 0;
+    height: 600px;
     width: 100%;
 }
 .video-container.playing {
