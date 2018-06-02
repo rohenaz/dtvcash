@@ -388,7 +388,7 @@ span.page {
         height: 50%;
     }
 }
-.form-new-topic-message {
+#form-new-topic-message {
     position: fixed;
     left: 0;
     width: 100%;
