@@ -81,7 +81,11 @@
         client['{{.Post.Memo.Id}}'].add(torrentId, (torrent) => {
         // Torrents can contain many files. Let's use the .mp4 file
         var file = torrent.files.find((file) => {
-            return file.name.endsWith('.mp4')
+            // mp4 first
+            let mp4 = file.name.endsWith('.mp4')
+            // mp3 second
+            let mp3 = file.name.endsWith('.mp3')
+            return mp4 || mp3
         })
 
         // Display the file by adding it to the DOM. Supports video, audio, image, etc. files
