@@ -28,7 +28,6 @@ var JsFiles = []string{
 
 var CssFiles = []string{
 	"lib/jquery-ui.min.css",
-	"lib/bootstrap.min.css",
 	"style.css",
 }
 
