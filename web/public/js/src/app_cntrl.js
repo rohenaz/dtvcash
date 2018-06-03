@@ -47,26 +47,25 @@ class AppCntrl extends Silica.Controllers.Base {
   startWebtorrent (el, id, magnet) {
     console.log('starting webtorrnt with id, magnet')
     var client = []
-    client[id] = new WebTorrent()
+    client[id] = new window.WebTorrent()
     var torrentId = magnet + '&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com'
     client[id].add(torrentId, (torrent) => {
     // Torrents can contain many files. Let's use the .mp4 file
-    var file = torrent.files.find((file) => {
+      var file = torrent.files.find((file) => {
         // mp4 first
         let mp4 = file.name.endsWith('.mp4')
         // mp3 second
         let mp3 = file.name.endsWith('.mp3')
         return mp4 || mp3
-    })
+      })
 
-    // Display the file by adding it to the DOM. Supports video, audio, image, etc. files
-    if(file) {
+      // Display the file by adding it to the DOM. Supports video, audio, image, etc. files
+      if(file) {
         file.appendTo('#message-' + id)
-    } else {
+      } else {
         let el = document.getElementById('message-' + id)
         el.innerHTML = 'No mp4 found in this torrent'
-    }
-
+      }
     })
   }
 }

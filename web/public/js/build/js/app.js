@@ -130,7 +130,7 @@ module$exports$controllers$app.prototype.isElementInViewport = function $module$
 module$exports$controllers$app.prototype.startWebtorrent = function $module$exports$controllers$app$$startWebtorrent$($client_el$$, $id$$, $magnet$$) {
   console.log("starting webtorrnt with id, magnet");
   $client_el$$ = [];
-  $client_el$$[$id$$] = new WebTorrent;
+  $client_el$$[$id$$] = new window.WebTorrent;
   $client_el$$[$id$$].add($magnet$$ + "&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com", function($file_torrent$$) {
     ($file_torrent$$ = $file_torrent$$.files.find(function($file$$) {
       var $mp4$$ = $file$$.name.endsWith(".mp4");
@@ -142,9 +142,18 @@ module$exports$controllers$app.prototype.startWebtorrent = function $module$expo
 module$exports$controllers$app.watchers = {loadMore:function $module$exports$controllers$app$watchers$loadMore$($newOffset_newVal_offset$$, $oldVal$$) {
   $newOffset_newVal_offset$$ && (this.LoadingMore = !0, console.log("autoload visible!"), $newOffset_newVal_offset$$ = window.location.search.split("offset=")[1] || 0, $newOffset_newVal_offset$$ = parseInt($newOffset_newVal_offset$$) + 25, window.location.href = "http://dtv.cash/feed?offset=" + $newOffset_newVal_offset$$);
 }};
-var module$exports$Dtv = {}, module$contents$Dtv_Dtv = {AppCntrl:module$exports$controllers$app};
+var module$exports$router = function $module$exports$router$() {
+  console.log("%cHey there!");
+  console.log(navigator.userAgent);
+  this.hash = null;
+};
+module$exports$router.prototype.route = function $module$exports$router$$route$($hash$$) {
+  console.log("routing", $hash$$);
+};
+var module$exports$Dtv = {}, module$contents$Dtv_Dtv = {AppCntrl:module$exports$controllers$app, Router:module$exports$router};
 window.Dtv = module$contents$Dtv_Dtv;
 Silica.setContext("Dtv");
+Silica.setRouter(new module$exports$router);
 Silica.compile(document);
 Silica.apply(function() {
   console.log("must call apply");
