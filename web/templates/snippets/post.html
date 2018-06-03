@@ -58,7 +58,7 @@
     {{ .Post.GetMessage }}
     </p>
 {{if .Post.HasMagnet}}
-    <div id="message-{{.Post.Memo.Id}}" data-click='startWebtorrent({{.Post.Memo.Id}}, {{.Post.MagnetLink}})'>Play</div>
+    <div id="message-{{.Post.Memo.Id}}" data-click="startWebtorrent('{{.Post.Memo.Id}}', '{{.Post.MagnetLink}}')">Play</div>
 {{end}}
 {{ if .Post.IsPoll }}
     {{ template "snippets/poll.html" dict "Post" .Post "Threaded" false }}

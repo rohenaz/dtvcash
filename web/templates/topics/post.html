@@ -73,7 +73,7 @@
     {{ .Post.GetMessage }}
     </div>
 {{if .Post.HasMagnet}}
-    <div id="message-{{.Post.Memo.Id}}" data-click='startWebtorrent({{.Post.Memo.Id}}, {{.Post.MagnetLink}})'>Play</div>
+    <div id="message-{{.Post.Memo.Id}}" data-click="startWebtorrent('{{.Post.Memo.Id}}', '{{.Post.MagnetLink}}')">Play</div>
 {{end}}
     </div>
     <script type="text/javascript">
