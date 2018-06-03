@@ -45,6 +45,7 @@ class AppCntrl extends Silica.Controllers.Base {
   }
 
   startWebtorrent (el, id, magnet) {
+    console.log('starting webtorrnt with id, magnet')
     var client = []
     client[id] = new WebTorrent()
     var torrentId = magnet + '&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com'

@@ -128,6 +128,7 @@ module$exports$controllers$app.prototype.isElementInViewport = function $module$
   return 0 <= $el_rect$$.top && 0 <= $el_rect$$.left && $el_rect$$.bottom <= (window.innerHeight || document.documentElement.clientHeight) && $el_rect$$.right <= (window.innerWidth || document.documentElement.clientWidth);
 };
 module$exports$controllers$app.prototype.startWebtorrent = function $module$exports$controllers$app$$startWebtorrent$($client_el$$, $id$$, $magnet$$) {
+  console.log("starting webtorrnt with id, magnet");
   $client_el$$ = [];
   $client_el$$[$id$$] = new WebTorrent;
   $client_el$$[$id$$].add($magnet$$ + "&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com", function($file_torrent$$) {
