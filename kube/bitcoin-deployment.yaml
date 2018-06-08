@@ -26,7 +26,7 @@ spec:
             secretKeyRef:
               name: bitcoin
               key: rpcpass
-        image: gcr.io/bchnode/github-rohenaz-dtvcash:b708896a7e4b3571ce9c869c5c2b9fca112db15d
+        image: gcr.io/bchnode/github-rohenaz-dtvcash:c0e64862ade7346cd59c22dfe1c199110e062892
         name: bitcoin
         volumeMounts:
           - mountPath: /data
