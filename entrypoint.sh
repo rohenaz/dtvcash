@@ -31,6 +31,5 @@
 # ./dtvcash web&
 # ./dtvcash main-node
 
-bitcoind --deamon &
 dtvcash web &
 dtvcash main-node
