@@ -22,12 +22,12 @@ RUN mkdir "$BCH_DATA" \
 VOLUME /data
 
 RUN go get -u github.com/rohenaz/dtvcash
-COPY config.yaml /go/src/github.com/rohenaz/config.yaml
-RUN go build /go/src/github.com/rohenaz/dtvcash
-RUN mv dtvcash /go/bin/
+COPY config.yaml /go/src/github.com/rohenaz/dtvcash/config.yaml
+RUN go build /home/bitcoin/go/src/github.com/rohenaz/dtvcash
+RUN mv /home/bitcoin/go/src/github.com/rohenaz/dtvcash/dtvcash /go/bin/
 COPY entrypoint.sh /entrypoint.sh
 USER bitcoin
 ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 8332 8333 18332 18333
-CMD ["bitcoind"]
+# CMD ["bitcoind"]
