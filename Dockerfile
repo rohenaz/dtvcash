@@ -9,16 +9,16 @@ ENV BCH_SHA256 eccf8b61ba0549f6839e586c7dc6fc4bf6d7591ac432aaea8a7df0266b113d27
 
 ADD $BCH_URL /tmp/bitcoin.tar.gz
 RUN cd /tmp \
-	&& echo "$BCH_SHA256  bitcoin.tar.gz" | sha256sum -c - \
-	&& tar -xzvf bitcoin.tar.gz -C /usr/local --strip-components=1 --exclude=*-qt \
-	&& rm bitcoin.tar.gz
+    && echo "$BCH_SHA256  bitcoin.tar.gz" | sha256sum -c - \
+    && tar -xzvf bitcoin.tar.gz -C /usr/local --strip-components=1 --exclude=*-qt \
+    && rm bitcoin.tar.gz
 
 RUN addgroup bitcoin && adduser --gecos "" --home /home/bitcoin --disabled-password --ingroup bitcoin bitcoin
 ENV BCH_DATA /data
 RUN mkdir "$BCH_DATA" \
-	&& chown -R bitcoin:bitcoin "$BCH_DATA" \
-	&& ln -sfn "$BCH_DATA" /home/bitcoin/.bitcoin \
-	&& chown -h bitcoin:bitcoin /home/bitcoin/.bitcoin
+    && chown -R bitcoin:bitcoin "$BCH_DATA" \
+    && ln -sfn "$BCH_DATA" /home/bitcoin/.bitcoin \
+    && chown -h bitcoin:bitcoin /home/bitcoin/.bitcoin
 VOLUME /data
 
 RUN go get -u github.com/rohenaz/dtvcash
