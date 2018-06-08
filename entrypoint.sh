@@ -26,3 +26,7 @@ if [[ "$1" == "bitcoin-cli" || "$1" == "bitcoin-tx" || "$1" == "bitcoind" || "$1
 fi
 
 exec "$@"
+
+go build /go/src/github.com/rohenaz/dtvcash/
+cd /go/src/github.com/rohenaz/dtvcash/ && ./dtvcash web&
+cd /go/src/github.com/rohenaz/dtvcash/ && ./dtvcash main-node

@@ -1,7 +1,7 @@
 # Copyright (c) 2018 nChain Ltd
 # Distributed under the GNU GPL v3.0, see accompanying file LICENSE for details
 # based on work by Adrian Macneil from https://github.com/amacneil/docker-bitcoin
-FROM golang:stretch
+FROM debian:stretch-slim
 
 ENV BCH_VERSION 0.17.2
 ENV BCH_URL https://download.bitcoinabc.org/${BCH_VERSION}/linux/bitcoin-abc-${BCH_VERSION}-x86_64-linux-gnu.tar.gz
@@ -21,8 +21,6 @@ RUN mkdir "$BCH_DATA" \
 	&& chown -h bitcoin:bitcoin /home/bitcoin/.bitcoin
 VOLUME /data
 
-RUN go get -u github.com/rohenaz/dtvcash
-COPY config.yaml /go/src/github.com/rohenaz/config.yaml
 COPY entrypoint.sh /entrypoint.sh
 USER bitcoin
 ENTRYPOINT ["/entrypoint.sh"]
