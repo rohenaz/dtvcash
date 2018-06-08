@@ -3,7 +3,7 @@
 # based on work by Adrian Macneil from https://github.com/amacneil/docker-bitcoin
 FROM golang:stretch
 
-ENV BCH_VERSION 0.17.2
+ENV BCH_VERSION 0.17.1
 ENV BCH_URL https://download.bitcoinabc.org/${BCH_VERSION}/linux/bitcoin-abc-${BCH_VERSION}-x86_64-linux-gnu.tar.gz
 ENV BCH_SHA256 eccf8b61ba0549f6839e586c7dc6fc4bf6d7591ac432aaea8a7df0266b113d27
 
