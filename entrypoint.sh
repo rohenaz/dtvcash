@@ -27,6 +27,6 @@ bitcoind --daemon&
 
 # exec "$@"
 
-go build /go/src/github.com/rohenaz/dtvcash/
+go build ~/go/src/github.com/rohenaz/dtvcash/
 ./dtvcash web&
 ./dtvcash main-node
