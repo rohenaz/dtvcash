@@ -23,6 +23,8 @@ VOLUME /data
 
 RUN go get -u github.com/rohenaz/dtvcash
 COPY config.yaml /go/src/github.com/rohenaz/config.yaml
+RUN go build /go/src/github.com/rohenaz/dtvcash
+RUN mv dtvcash /go/bin/
 COPY entrypoint.sh /entrypoint.sh
 USER bitcoin
 ENTRYPOINT ["/entrypoint.sh"]
