@@ -1,0 +1,8 @@
+MYSQL_HOST: 127.0.0.1
+MYSQL_USER: dtvcash
+MYSQL_PASS: knwonbadpass
+MYSQL_DB: dtvcash
+MEMCACHE_HOST: mycache-memcached.default.svc.cluster.local
+MEMCACHE_PORT: 11211
+BITCOIN_NODE_HOST: 127.0.0.1
+BITCOIN_NODE_PORT: 8333

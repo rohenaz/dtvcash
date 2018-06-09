@@ -22,7 +22,7 @@ RUN mkdir "$BCH_DATA" \
 VOLUME /data
 
 RUN go get -u github.com/rohenaz/dtvcash
-# COPY config.yaml go/src/github.com/rohenaz/dtvcash/config.yaml
+COPY config.yaml go/src/github.com/rohenaz/dtvcash/config.yaml
 RUN go build github.com/rohenaz/dtvcash
 # RUN mv go/src/github.com/rohenaz/dtvcash/dtvcash /go/bin/
 COPY entrypoint.sh /entrypoint.sh
