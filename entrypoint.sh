@@ -30,6 +30,6 @@
 # go build ~/go/src/github.com/rohenaz/dtvcash/
 # ./dtvcash web&
 # ./dtvcash main-node
-bitcoind --daemon &
+bitcoind &
 dtvcash web &
 dtvcash main-node
