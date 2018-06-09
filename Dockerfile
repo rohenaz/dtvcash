@@ -27,6 +27,7 @@ RUN go build github.com/rohenaz/dtvcash
 # dont need this bc go build it building it in the gopath?
 # RUN mv /home/bitcoin/go/src/github.com/rohenaz/dtvcash/dtvcash /go/bin/
 COPY entrypoint.sh /entrypoint.sh
+# COPY bitcoin.conf /bitcoin.conf
 USER bitcoin
 
 EXPOSE 8332 8333 18332 18333
