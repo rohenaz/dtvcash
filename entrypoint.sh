@@ -23,13 +23,13 @@
 
 # 	exec gosu bitcoin "$@"
 # fi
-# bitcoind --daemon&
+
 
 # exec "$@"
 
 # go build ~/go/src/github.com/rohenaz/dtvcash/
 # ./dtvcash web&
 # ./dtvcash main-node
-
+bitcoind --daemon &
 dtvcash web &
 dtvcash main-node

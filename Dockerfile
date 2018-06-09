@@ -28,7 +28,8 @@ RUN go build github.com/rohenaz/dtvcash
 # RUN mv /home/bitcoin/go/src/github.com/rohenaz/dtvcash/dtvcash /go/bin/
 COPY entrypoint.sh /entrypoint.sh
 USER bitcoin
-ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 8332 8333 18332 18333
-CMD ["bitcoind"]
+# CMD ["bitcoind"]
+
+ENTRYPOINT ["/entrypoint.sh"]
