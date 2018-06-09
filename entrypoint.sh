@@ -24,7 +24,9 @@ if [[ "$1" == "bitcoin-cli" || "$1" == "bitcoin-tx" || "$1" == "bitcoind" || "$1
 	exec gosu bitcoin "$@"
 fi
 
-
+echo $GOPATH
+echo $BCH_DATA
+echo $1
 exec "$@"
 
 # go build ~/go/src/github.com/rohenaz/dtvcash/
