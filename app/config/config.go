@@ -55,7 +55,7 @@ func init() {
 	viper.AddConfigPath(".")
 	err := viper.ReadInConfig()
 	if err != nil {
-		fmt.Println("Config file not found :( $HOME/.memo")
+		fmt.Println("Config file not found", err)
 	}
 }
 
