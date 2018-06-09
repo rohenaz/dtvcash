@@ -15,10 +15,10 @@ RUN cd /tmp \
 
 RUN addgroup bitcoin && adduser --gecos "" --home /home/bitcoin --disabled-password --ingroup bitcoin bitcoin
 ENV BCH_DATA /data
-RUN mkdir "$BCH_DATA" \
-    && chown -R bitcoin:bitcoin "$BCH_DATA" \
-    && ln -sfn "$BCH_DATA" /home/bitcoin/.bitcoin \
-    && chown -h bitcoin:bitcoin /home/bitcoin/.bitcoin
+# RUN mkdir "$BCH_DATA" \
+#     && chown -R bitcoin:bitcoin "$BCH_DATA" \
+#     && ln -sfn "$BCH_DATA" /home/bitcoin/.bitcoin \
+#     && chown -h bitcoin:bitcoin /home/bitcoin/.bitcoin
 VOLUME /data
 
 RUN go get -u github.com/rohenaz/dtvcash
