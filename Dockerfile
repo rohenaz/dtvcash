@@ -24,6 +24,7 @@ VOLUME /data
 RUN go get -u github.com/rohenaz/dtvcash
 COPY config.yaml /home/bitcoin/go/src/github.com/rohenaz/dtvcash/config.yaml
 RUN go build github.com/rohenaz/dtvcash
+# dont need this bc go build it building it in the gopath?
 # RUN mv /home/bitcoin/go/src/github.com/rohenaz/dtvcash/dtvcash /go/bin/
 COPY entrypoint.sh /entrypoint.sh
 USER bitcoin
