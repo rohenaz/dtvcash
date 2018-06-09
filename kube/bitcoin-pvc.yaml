@@ -1,8 +1,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: bitcoin-disk
+  name: bitcoin-data
 spec:
+  storageClassName: standard
   accessModes:
     - ReadWriteOnce
   resources:
